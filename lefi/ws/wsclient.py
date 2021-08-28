@@ -78,8 +78,9 @@ class WebSocketClient:
         if event == "READY":
             self.session_id = data["session_id"]
 
-        if event.lower() in self.client.events:
-            for callback in self.client.events[event.lower()]:
+        name = event.lower()
+        if name in self.client.events:
+            for callback in self.client.events[name]:
                 await callback(data)
 
     async def resume(self) -> None:
