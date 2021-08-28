@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing
+import inspect
 
 import asyncio
 
@@ -16,11 +17,33 @@ class Client:
     ):
         self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_event_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
-        self.ws: WebSocketClient = None  # type: ignore
+        self.ws: WebSocketClient = WebSocketClient(self)
+
+        self.events: typing.Dict[str, typing.List[typing.Callable]] = {}
+
+    def add_listener(self, func: typing.Callable, event_name: typing.Optional[str]):
+        name = event_name or func.__name__
+        if not inspect.iscoroutinefunction(func):
+            raise TypeError("Callback must be a coroutine")
+
+        if name in self.events:
+            self.events[name].append(func)
+        self.events[name] = [func]
+
+    def on(
+        self, event_name: typing.Optional[str] = None
+    ) -> typing.Callable[..., typing.Callable]:
+        def inner(func: typing.Callable) -> typing.Callable:
+            self.add_listener(func, event_name)
+            return func
+
+        return inner
+
+    async def connect(self) -> None:
+        await self.ws.start()
+
+    async def login(self, token: str) -> None:
+        await self.http.login(token)
 
     async def start(self) -> None:
-        data = await self.http.get_bot_gateway()
-        ws = await self.http.ws_connect(data["url"])
-        self.ws = WebSocketClient(self, ws)
-
-        await self.ws.start()
+        await asyncio.gather(self.login(self.http.token), self.connect())

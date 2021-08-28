@@ -16,9 +16,6 @@ class HTTPClient:
         self.session: aiohttp.ClientSession = None  # type:ignore
         self.token: str = token
 
-    def build_url(self, url) -> str:
-        return f"{BASE}{url}"
-
     async def _create_session(
         self, loop: typing.Optional[asyncio.AbstractEventLoop] = None
     ) -> aiohttp.ClientSession:
@@ -40,3 +37,8 @@ class HTTPClient:
 
     async def ws_connect(self, url: str) -> aiohttp.ClientWebSocketResponse:
         return await self.session.ws_connect(url)
+
+    async def login(self, token: str):
+        resp = await self.request("GET", f"{BASE}/users/@me")
+        if resp.status == 401:
+            raise ValueError("Invalid login token")

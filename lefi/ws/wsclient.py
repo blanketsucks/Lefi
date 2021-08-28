@@ -16,12 +16,15 @@ logger = logging.getLogger(__name__)
 
 
 class WebSocketClient:
-    def __init__(self, client: Client, ws: aiohttp.ClientWebSocketResponse):
-        self.ws: aiohttp.ClientWebSocketResponse = ws
+    def __init__(self, client: Client):
+        self.ws: aiohttp.ClientWebSocketResponse = None  # type: ignore
         self.client: Client = client
         self.seq: int = 0
 
     async def start(self) -> None:
+        data = await self.client.http.get_bot_gateway()
+        self.ws = await self.client.http.ws_connect(data["url"])
+
         await asyncio.gather(
             self.identify(), self.start_heartbeat(), self.read_messages()
         )
@@ -38,7 +41,11 @@ class WebSocketClient:
                     await self.dispatch(recieved_data["t"], recieved_data["d"])
 
     async def dispatch(self, event: str, data: typing.Dict) -> None:
-        print(event)
+        logger.info(f"DISPATCHED EVENT: {event}")
+
+        if event.lower() in self.client.events:
+            for callback in self.client.events[event.lower()]:
+                await callback(data)
 
     async def identify(self) -> None:
         data = await self.ws.receive()
