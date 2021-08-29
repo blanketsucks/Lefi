@@ -7,8 +7,11 @@ import aiohttp
 
 import sys
 import logging
-
 import enum
+
+from ..objects import (
+    Message
+)
 
 if typing.TYPE_CHECKING:
     from ..client import Client
@@ -16,6 +19,11 @@ if typing.TYPE_CHECKING:
 __all__ = ("WebSocketClient",)
 
 logger = logging.getLogger(__name__)
+
+
+EVENT_MAPPING: typing.Dict[str, typing.Any] = {
+    "message_create": Message,
+}
 
 
 class OpCodes(enum.IntFlag):
@@ -48,6 +56,9 @@ class WebSocketClient:
             self.identify(), self.start_heartbeat(), self.read_messages()
         )
 
+    async def parse_event_data(self, event_name: str, data: typing.Dict):
+        return EVENT_MAPPING[event_name](self.client.http, data)
+
     async def reconnect(self) -> None:
         if not self.ws.closed and self.ws:
             await self.ws.close()
@@ -67,9 +78,11 @@ class WebSocketClient:
                     logger.info("HEARTBEAT ACKNOWLEDGED")
 
                 if recieved_data["op"] == OpCodes.RESUME:
+                    logger.info("RESUMED")
                     await self.resume()
 
                 if recieved_data["op"] == OpCodes.RECONNECT:
+                    logger.info("RECONNECT")
                     await self.reconnect()
 
     async def dispatch(self, event: str, data: typing.Dict) -> None:
@@ -81,6 +94,8 @@ class WebSocketClient:
         name = event.lower()
         if name in self.client.events:
             for callback in self.client.events[name]:
+                data = await self.parse_event_data(name, data)
+
                 await callback(data)
 
     async def resume(self) -> None:

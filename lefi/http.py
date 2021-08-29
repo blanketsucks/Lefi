@@ -42,3 +42,6 @@ class HTTPClient:
         resp = await self.request("GET", f"{BASE}/users/@me")
         if resp.status == 401:
             raise ValueError("Invalid login token")
+
+    async def get_channel(self, guild_id: int, channel_id: int):
+        print("A")
