@@ -42,6 +42,7 @@ class WebSocketClient:
         self.seq: int = 0
         self.EVENT_MAPPING: typing.Dict[str, typing.Any] = {
             "message_create": self.client._state.parse_message_create,
+            "guild_create": self.client._state.parse_guild_create,
         }
 
     async def start(self) -> None:

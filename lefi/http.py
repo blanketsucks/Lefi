@@ -5,6 +5,8 @@ import typing
 import asyncio
 import aiohttp
 
+from .objects import Message
+
 __all__ = ("HTTPClient",)
 
 BASE: str = "https://discord.com/api/v9"
@@ -42,3 +44,11 @@ class HTTPClient:
         resp = await self.request("GET", f"{BASE}/users/@me")
         if resp.status == 401:
             raise ValueError("Invalid login token")
+
+    async def send_message(self, channel_id: int, content: str) -> typing.Dict:
+        payload = {"content": content}
+
+        resp = await self.request(
+            "POST", f"{BASE}/channels/{channel_id}/messages", json=payload
+        )
+        return await resp.json()

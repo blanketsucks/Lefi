@@ -6,7 +6,7 @@ import collections
 import asyncio
 import re
 
-from .objects import Message
+from .objects import Message, Guild, Channel
 
 if typing.TYPE_CHECKING:
     from .client import Client
@@ -46,6 +46,8 @@ class State:
         self.loop = loop
 
         self._messages = Cache[Message](1000)
+        self._guilds = Cache[Guild](None)
+        self._channels = Cache[Channel](None)
 
     async def dispatch(self, event: str, payload: typing.Any) -> None:
         name = event.lower()
@@ -53,5 +55,22 @@ class State:
             for callback in self.client.events[name]:
                 await callback(payload)
 
+    async def parse_guild_create(self, data: typing.Dict) -> None:
+        channels = [Channel(self, payload) for payload in data["channels"]]
+        for channel in channels:
+            self._channels[channel.id] = channel
+
+        guild = Guild(self, data)
+        guild.channels.extend(channels)
+
+        await self.dispatch("guild_create", guild)
+
     async def parse_message_create(self, data: typing.Dict) -> None:
-        await self.dispatch("message_create", Message(data))
+        channel = self._channels.get(data["channel_id"]) or Channel(
+            self, {"id": data["channel_id"]}
+        )
+        channel._guild = self._guilds.get(data.get("guild_id"))  # type: ignore
+        await self.dispatch("message_create", Message(self, data, channel))
+
+    def create_message(self, data: typing.Dict, channel: Channel):
+        return Message(self, data, channel)
