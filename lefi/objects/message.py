@@ -1,7 +1,14 @@
 from __future__ import annotations
 
-from .base import BaseObject
+import typing
+
+__all__ = ("Message",)
 
 
-class Message(BaseObject):
-    ...
+class Message:
+    def __init__(self, data: typing.Dict):
+        self._data = data
+
+    @property
+    def id(self) -> int:
+        return self._data["id"]

@@ -9,9 +9,7 @@ import sys
 import logging
 import enum
 
-from ..objects import (
-    Message
-)
+from ..objects import Message
 
 if typing.TYPE_CHECKING:
     from ..client import Client
@@ -103,7 +101,7 @@ class WebSocketClient:
             "op": 6,
             "token": self.client.http.token,
             "session_id": self.session_id,
-            "seq": self.seq
+            "seq": self.seq,
         }
         await self.ws.send_json(payload)
 

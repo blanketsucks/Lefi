@@ -6,6 +6,7 @@ import inspect
 import asyncio
 
 from .http import HTTPClient
+from .state import State
 from .ws import WebSocketClient
 
 __all__ = ("Client",)
@@ -18,6 +19,7 @@ class Client:
         self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_event_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
         self.ws: WebSocketClient = WebSocketClient(self)
+        self._state: State = State(self, self.loop)
 
         self.events: typing.Dict[str, typing.List[typing.Callable]] = {}
 
@@ -28,7 +30,7 @@ class Client:
 
         if name in self.events:
             self.events[name].append(func)
-        self.events[name] = [func]
+            self.events[name] = [func]
 
     def on(
         self, event_name: typing.Optional[str] = None
