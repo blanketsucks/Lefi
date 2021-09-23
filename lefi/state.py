@@ -46,5 +46,3 @@ class State:
         self.loop = loop
 
         self._messages = Cache[Message](1000)
-
-    def handle_message(self, data: typing.Dict, *, mode: string) -> Message
