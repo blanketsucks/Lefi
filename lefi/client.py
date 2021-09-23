@@ -23,15 +23,13 @@ class Client:
 
         self.events: typing.Dict[str, typing.List[typing.Callable]] = {}
 
-    def add_listener(self, func: typing.Callable, event_name: typing.Optional[str]):
+    def add_listener(self, func: typing.Callable, event_name: typing.Optional[str]) -> None:
         name = event_name or func.__name__
         if not inspect.iscoroutinefunction(func):
             raise TypeError("Callback must be a coroutine")
 
-        if name in self.events:
-            return self.events[name].append(func)
-
-        self.events[name] = [func]
+        callbacks = self.events.setdefault(name, [])
+        callbacks.append(func)
 
     def on(
         self, event_name: typing.Optional[str] = None
