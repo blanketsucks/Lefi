@@ -9,6 +9,9 @@ from .http import HTTPClient
 from .state import State
 from .ws import WebSocketClient
 
+if typing.TYPE_CHECKING:
+    from .objects import Message
+
 __all__ = ("Client",)
 
 
@@ -48,3 +51,6 @@ class Client:
 
     async def start(self) -> None:
         await asyncio.gather(self.login(self.http.token), self.connect())
+
+    def get_message(self, id: int) -> typing.Optional[Message]:
+        return self._state._messages.get(id)

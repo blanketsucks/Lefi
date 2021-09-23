@@ -70,7 +70,9 @@ class State:
             self, {"id": data["channel_id"]}
         )
         channel._guild = self._guilds.get(data.get("guild_id"))  # type: ignore
-        await self.dispatch("message_create", Message(self, data, channel))
+        message = Message(self, data, channel)
+        self._messages[int(message.id)] = message
+        await self.dispatch("message_create", message)
 
     def create_message(self, data: typing.Dict, channel: Channel):
         return Message(self, data, channel)
