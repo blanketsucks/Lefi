@@ -46,3 +46,12 @@ class State:
         self.loop = loop
 
         self._messages = Cache[Message](1000)
+
+    async def dispatch(self, event: str, payload: typing.Any) -> None:
+        name = event.lower()
+        if name in self.client.events:
+            for callback in self.client.events[name]:
+                await callback(payload)
+
+    async def parse_message_create(self, data: typing.Dict) -> None:
+        await self.dispatch("message_create", Message(data))

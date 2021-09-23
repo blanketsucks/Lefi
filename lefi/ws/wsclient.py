@@ -19,11 +19,6 @@ __all__ = ("WebSocketClient",)
 logger = logging.getLogger(__name__)
 
 
-EVENT_MAPPING: typing.Dict[str, typing.Any] = {
-    "message_create": Message,
-}
-
-
 class OpCodes(enum.IntFlag):
     DISPATCH = 0
     HEARTBEAT = 1
@@ -45,6 +40,9 @@ class WebSocketClient:
         self.client: Client = client
         self.closed: bool = False
         self.seq: int = 0
+        self.EVENT_MAPPING: typing.Dict[str, typing.Any] = {
+            "message_create": self.client._state.parse_message_create,
+        }
 
     async def start(self) -> None:
         data = await self.client.http.get_bot_gateway()
@@ -55,7 +53,8 @@ class WebSocketClient:
         )
 
     async def parse_event_data(self, event_name: str, data: typing.Dict):
-        return EVENT_MAPPING[event_name](self.client.http, data)
+        if event_parse := self.EVENT_MAPPING.get(event_name):
+            await event_parse(data)
 
     async def reconnect(self) -> None:
         if not self.ws.closed and self.ws:
@@ -85,16 +84,10 @@ class WebSocketClient:
 
     async def dispatch(self, event: str, data: typing.Dict) -> None:
         logger.info(f"DISPATCHED EVENT: {event}")
-
         if event == "READY":
             self.session_id = data["session_id"]
 
-        name = event.lower()
-        if name in self.client.events:
-            for callback in self.client.events[name]:
-                data = await self.parse_event_data(name, data)
-
-                await callback(data)
+        await self.parse_event_data(event.lower(), data)
 
     async def resume(self) -> None:
         payload = {
