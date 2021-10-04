@@ -9,7 +9,7 @@ import sys
 import logging
 import enum
 
-from ..objects import Message
+from ..utils import MISSING
 
 if typing.TYPE_CHECKING:
     from ..client import Client
@@ -35,12 +35,13 @@ class OpCodes(enum.IntFlag):
 
 class WebSocketClient:
     def __init__(self, client: Client):
-        self.ws: aiohttp.ClientWebSocketResponse = None  # type: ignore
-        self.heartbeat_delay: float = None  # type: ignore
+        self.ws: aiohttp.ClientWebSocketResponse = MISSING
+        self.heartbeat_delay: float = MISSING
         self.client: Client = client
         self.closed: bool = False
         self.seq: int = 0
-        self.EVENT_MAPPING: typing.Dict[str, typing.Any] = {
+
+        self.EVENT_MAPPING: typing.Dict[str, typing.Callable] = {
             "message_create": self.client._state.parse_message_create,
             "guild_create": self.client._state.parse_guild_create,
         }
@@ -53,7 +54,7 @@ class WebSocketClient:
             self.identify(), self.start_heartbeat(), self.read_messages()
         )
 
-    async def parse_event_data(self, event_name: str, data: typing.Dict):
+    async def parse_event_data(self, event_name: str, data: typing.Dict) -> None:
         if event_parse := self.EVENT_MAPPING.get(event_name):
             await event_parse(data)
 
@@ -64,7 +65,7 @@ class WebSocketClient:
 
         await self.start()
 
-    async def read_messages(self):
+    async def read_messages(self) -> None:
         async for message in self.ws:
             if message.type is aiohttp.WSMsgType.TEXT:
                 recieved_data = message.json()
@@ -73,18 +74,18 @@ class WebSocketClient:
                     await self.dispatch(recieved_data["t"], recieved_data["d"])
 
                 if recieved_data["op"] == OpCodes.HEARTBEAT_ACK:
-                    logger.info("HEARTBEAT ACKNOWLEDGED")
+                    logger.debug("HEARTBEAT ACKNOWLEDGED")
 
                 if recieved_data["op"] == OpCodes.RESUME:
-                    logger.info("RESUMED")
+                    logger.debug("RESUMED")
                     await self.resume()
 
                 if recieved_data["op"] == OpCodes.RECONNECT:
-                    logger.info("RECONNECT")
+                    logger.debug("RECONNECT")
                     await self.reconnect()
 
     async def dispatch(self, event: str, data: typing.Dict) -> None:
-        logger.info(f"DISPATCHED EVENT: {event}")
+        logger.debug(f"DISPATCHED EVENT: {event}")
         if event == "READY":
             self.session_id = data["session_id"]
 
@@ -118,7 +119,7 @@ class WebSocketClient:
         await self.ws.send_json(payload)
 
     async def start_heartbeat(self) -> None:
-        while True:
+        while not self.closed:
             self.seq += 1
             await self.ws.send_json({"op": 1, "d": self.seq})
             await asyncio.sleep(self.heartbeat_delay / 1000)

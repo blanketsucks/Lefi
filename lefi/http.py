@@ -6,6 +6,7 @@ import asyncio
 import aiohttp
 
 from .objects import Message
+from .utils import MISSING
 
 __all__ = ("HTTPClient",)
 
@@ -14,12 +15,12 @@ BASE: str = "https://discord.com/api/v9"
 
 class HTTPClient:
     def __init__(self, token: str, loop: asyncio.AbstractEventLoop):
-        self.loop: asyncio.AbstractEventLoop = loop
-        self.session: aiohttp.ClientSession = None  # type:ignore
         self.token: str = token
+        self.loop: asyncio.AbstractEventLoop = loop
+        self.session: aiohttp.ClientSession = MISSING
 
     async def _create_session(
-        self, loop: typing.Optional[asyncio.AbstractEventLoop] = None
+        self, loop: typing.Optional[asyncio.AbstractEventLoop] = MISSING
     ) -> aiohttp.ClientSession:
         return aiohttp.ClientSession(
             loop=self.loop or loop, headers={"Authorization": f"Bot {self.token}"}
@@ -34,13 +35,12 @@ class HTTPClient:
         return await self.session.request(method, url, *args, **kwargs)
 
     async def get_bot_gateway(self) -> typing.Dict:
-        resp = await self.request("GET", f"{BASE}/gateway/bot")
-        return await resp.json()
+        return await (await self.request("GET", f"{BASE}/gateway/bot")).json()
 
     async def ws_connect(self, url: str) -> aiohttp.ClientWebSocketResponse:
         return await self.session.ws_connect(url)
 
-    async def login(self, token: str):
+    async def login(self) -> None:
         resp = await self.request("GET", f"{BASE}/users/@me")
         if resp.status == 401:
             raise ValueError("Invalid login token")
@@ -48,7 +48,8 @@ class HTTPClient:
     async def send_message(self, channel_id: int, content: str) -> typing.Dict:
         payload = {"content": content}
 
-        resp = await self.request(
-            "POST", f"{BASE}/channels/{channel_id}/messages", json=payload
-        )
-        return await resp.json()
+        return await (
+            await self.request(
+                "POST", f"{BASE}/channels/{channel_id}/messages", json=payload
+            )
+        ).json()

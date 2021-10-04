@@ -4,9 +4,9 @@ import typing
 import collections
 
 import asyncio
-import re
 
 from .objects import Message, Guild, Channel
+from .utils import MISSING
 
 if typing.TYPE_CHECKING:
     from .client import Client
@@ -20,16 +20,12 @@ T = typing.TypeVar("T")
 
 
 class Cache(collections.OrderedDict[typing.Union[str, int], T]):
-    def __init__(self, maxlen: typing.Optional[int], *args, **kwargs):
+    def __init__(self, maxlen: typing.Optional[int] = MISSING, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.maxlen: typing.Optional[int] = maxlen
         self._max: int = 0
 
     def __repr__(self) -> str:
-        origin = str(self.__dict__["__orig_class__"])
-        if final := re.search("\[(.*)\]", origin):
-            return f"<Cache type={final.group(1)}>"
-
         return f"<Cache maxlen={self.maxlen}"
 
     def __setitem__(self, key: typing.Union[str, int], value: T) -> None:
@@ -46,8 +42,8 @@ class State:
         self.loop = loop
 
         self._messages = Cache[Message](1000)
-        self._guilds = Cache[Guild](None)
-        self._channels = Cache[Channel](None)
+        self._guilds = Cache[Guild]()
+        self._channels = Cache[Channel]()
 
     async def dispatch(self, event: str, payload: typing.Any) -> None:
         name = event.lower()
