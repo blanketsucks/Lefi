@@ -32,7 +32,7 @@ class Cache(collections.OrderedDict[typing.Union[str, int], T]):
         super().__setitem__(key, value)
         self._max += 1
 
-        if self.maxlen is not None and self._max > self.maxlen:
+        if self.maxlen and self._max > self.maxlen:
             self.popitem(False)
 
 
