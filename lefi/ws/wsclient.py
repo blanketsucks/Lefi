@@ -10,6 +10,7 @@ import logging
 import enum
 
 from ..utils import MISSING
+from ..objects import Intents
 
 if typing.TYPE_CHECKING:
     from ..client import Client
@@ -34,7 +35,8 @@ class OpCodes(enum.IntFlag):
 
 
 class WebSocketClient:
-    def __init__(self, client: Client):
+    def __init__(self, client: Client, intents: Intents=MISSING) -> None:
+        self.intents = Intents.default() if intents is MISSING else intents
         self.ws: aiohttp.ClientWebSocketResponse = MISSING
         self.heartbeat_delay: float = MISSING
         self.client: Client = client
@@ -43,15 +45,21 @@ class WebSocketClient:
 
         self.EVENT_MAPPING: typing.Dict[str, typing.Callable] = {
             "message_create": self.client._state.parse_message_create,
+            "message_update": self.client._state.parse_message_update,
+            "message_delete": self.client._state.parse_message_delete,
             "guild_create": self.client._state.parse_guild_create,
+            "channel_create": self.client._state.parse_channel_create,
+            "channel_update": self.client._state.parse_channel_update,
+            "channel_delete": self.client._state.parse_channel_delete,
         }
 
     async def start(self) -> None:
         data = await self.client.http.get_bot_gateway()
         self.ws = await self.client.http.ws_connect(data["url"])
 
+        await self.identify()
         await asyncio.gather(
-            self.identify(), self.start_heartbeat(), self.read_messages()
+            self.start_heartbeat(), self.read_messages()
         )
 
     async def parse_event_data(self, event_name: str, data: typing.Dict) -> None:
@@ -108,7 +116,7 @@ class WebSocketClient:
             "op": 2,
             "d": {
                 "token": self.client.http.token,
-                "intents": 32511,
+                "intents": self.intents.value,
                 "properties": {
                     "$os": sys.platform,
                     "$browser": "Lefi",
@@ -122,4 +130,6 @@ class WebSocketClient:
         while not self.closed:
             self.seq += 1
             await self.ws.send_json({"op": 1, "d": self.seq})
+            logger.info('Sent heartbeat')
+            
             await asyncio.sleep(self.heartbeat_delay / 1000)
