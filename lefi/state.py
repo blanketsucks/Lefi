@@ -115,7 +115,7 @@ class State:
         if message:
             self._messages.pop(message.id)
         else:
-            message = deleted
+            message = deleted  # type: ignore
 
         self.dispatch("message_delete", message)
 

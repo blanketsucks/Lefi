@@ -33,13 +33,13 @@ class HTTPClient:
             loop=self.loop or loop, headers={"Authorization": f"Bot {self.token}"}
         )
 
-    async def request(self, method: str, path: str, *args, **kwargs) -> Any:
+    async def request(self, method: str, path: str, **kwargs) -> Any:
         if self.session is MISSING or self.session.closed:
             self.session = await self._create_session()
 
         url = BASE + path
 
-        async with self.session.request(method, url, *args, **kwargs) as resp:
+        async with self.session.request(method, url, **kwargs) as resp:
             try:
                 data = await resp.json()
             except aiohttp.ContentTypeError:
@@ -52,7 +52,7 @@ class HTTPClient:
                 retry_after = float(data["retry_after"])  # type: ignore
                 await asyncio.sleep(retry_after)
 
-                return await self.request(method=method, path=path, *args, **kwargs)
+                return await self.request(method=method, path=path, **kwargs)
 
             error = self.ERRORS.get(resp.status, HTTPException)
             raise error(data)
@@ -234,7 +234,7 @@ class HTTPClient:
         attachments: List[Dict[str, Any]] = MISSING,
         components: List[Dict[str, Any]] = MISSING,
     ) -> Dict[str, Any]:
-        payload = {}
+        payload: dict = {}
         update_payload(
             payload,
             content=content,
@@ -270,7 +270,7 @@ class HTTPClient:
         deny: int = MISSING,
         type: str = MISSING,
     ):
-        payload = {}
+        payload: dict = {}
         update_payload(payload, allow=allow, deny=deny, type=type)
 
         return await self.request(

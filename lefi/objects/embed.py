@@ -149,7 +149,7 @@ class Embed:
         return obj.to_dict() if obj is not MISSING else obj
 
     def to_dict(self) -> Dict[str, Any]:
-        payload = {}
+        payload: dict = {}
         update_payload(
             payload,
             title=self.title,
