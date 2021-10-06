@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import typing
+from typing import Protocol
 
 __all__ = ("Snowflake",)
 
 
-class Snowflake(typing.Protocol):
+class Snowflake(Protocol):
     id: int
-

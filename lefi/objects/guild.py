@@ -1,23 +1,24 @@
 from __future__ import annotations
 
-import typing
+from typing import TYPE_CHECKING, Union, Dict, Optional, List
 
-if typing.TYPE_CHECKING:
+
+if TYPE_CHECKING:
     from .channel import TextChannel, VoiceChannel, CategoryChannel, Channel
     from .member import Member
     from .role import Role
     from ..state import State
 
-    GuildChannels = typing.Union[TextChannel, VoiceChannel, CategoryChannel, Channel]
+    GuildChannels = Union[TextChannel, VoiceChannel, CategoryChannel, Channel]
 
 __all__ = ("Guild",)
 
 
 class Guild:
-    def __init__(self, state: State, data: typing.Dict):
-        self._channels: typing.Dict[int, GuildChannels] = {}
-        self._members: typing.Dict[int, Member] = {}
-        self._roles: typing.Dict[int, Role] = {}
+    def __init__(self, state: State, data: Dict):
+        self._channels: Dict[int, GuildChannels] = {}
+        self._members: Dict[int, Member] = {}
+        self._roles: Dict[int, Role] = {}
         self._state = state
         self._data = data
 
@@ -57,22 +58,22 @@ class Guild:
         return self._data["owner_id"]
 
     @property
-    def channels(self) -> typing.List[GuildChannels]:
+    def channels(self) -> List[GuildChannels]:
         return list(self._channels.values())
-    
+
     @property
-    def members(self) -> typing.List[Member]:
+    def members(self) -> List[Member]:
         return list(self._members.values())
 
     @property
-    def roles(self) -> typing.List[Role]:
+    def roles(self) -> List[Role]:
         return list(self._roles.values())
-    
-    def get_member(self, member_id: int) -> typing.Optional[Member]:
+
+    def get_member(self, member_id: int) -> Optional[Member]:
         return self._members.get(member_id)
 
-    def get_channel(self, channel_id: int) -> typing.Optional[GuildChannels]:
+    def get_channel(self, channel_id: int) -> Optional[GuildChannels]:
         return self._channels.get(channel_id)
 
-    def get_role(self, role_id: int) -> typing.Optional[Role]:
+    def get_role(self, role_id: int) -> Optional[Role]:
         return self._roles.get(role_id)

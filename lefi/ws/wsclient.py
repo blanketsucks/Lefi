@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import typing
-
 import asyncio
 import aiohttp
+
+import typing
 
 import sys
 import logging
@@ -35,7 +35,7 @@ class OpCodes(enum.IntFlag):
 
 
 class WebSocketClient:
-    def __init__(self, client: Client, intents: Intents=MISSING) -> None:
+    def __init__(self, client: Client, intents: Intents = MISSING) -> None:
         self.intents = Intents.default() if intents is MISSING else intents
         self.ws: aiohttp.ClientWebSocketResponse = MISSING
         self.heartbeat_delay: float = MISSING
@@ -58,9 +58,7 @@ class WebSocketClient:
         self.ws = await self.client.http.ws_connect(data["url"])
 
         await self.identify()
-        await asyncio.gather(
-            self.start_heartbeat(), self.read_messages()
-        )
+        await asyncio.gather(self.start_heartbeat(), self.read_messages())
 
     async def parse_event_data(self, event_name: str, data: typing.Dict) -> None:
         if event_parse := self.EVENT_MAPPING.get(event_name):
@@ -130,6 +128,5 @@ class WebSocketClient:
         while not self.closed:
             self.seq += 1
             await self.ws.send_json({"op": 1, "d": self.seq})
-            logger.info('Sent heartbeat')
-            
+            logger.info("HEARTBEAT SENT")
             await asyncio.sleep(self.heartbeat_delay / 1000)

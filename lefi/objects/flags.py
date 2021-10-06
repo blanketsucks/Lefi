@@ -1,10 +1,9 @@
+from __future__ import annotations
+
 from enum import IntFlag
 
-__all__ = (
-    'UserFlags',
-    'Intents',
-    'Permissions'
-)
+__all__ = ("UserFlags", "Intents", "Permissions")
+
 
 class UserFlags(IntFlag):
     NONE = 0
@@ -21,6 +20,7 @@ class UserFlags(IntFlag):
     VERIFIED_BOT = 1 << 16
     VERIFIED_DEVELOPER = 1 << 17
     CERTIFIED_MODERATOR = 1 << 18
+
 
 class Intents(IntFlag):
     NONE = 0
@@ -41,42 +41,43 @@ class Intents(IntFlag):
     DIRECT_MESSAGE_TYPING = 1 << 14
 
     @classmethod
-    def all(cls):
+    def all(cls) -> Intents:
         return cls(
-            cls.GUILDS |
-            cls.GUILD_MEMBERS |
-            cls.GUILD_BANS |
-            cls.GUILD_EMOJIS_AND_STICKERS |
-            cls.GUILD_INTEGRATIONS |
-            cls.GUILD_WEBHOOKS |
-            cls.GUILD_INVITES |
-            cls.GUILD_VOICE_STATES |
-            cls.GUILD_PRESENCES |
-            cls.GUILD_MESSAGES |
-            cls.GUILD_MESSAGE_REACTIONS |
-            cls.GUILD_MESSAGE_TYPING |
-            cls.DIRECT_MESSAGES |
-            cls.DIRECT_MESSAGE_REACTIONS |
-            cls.DIRECT_MESSAGE_TYPING   
+            cls.GUILDS
+            | cls.GUILD_MEMBERS
+            | cls.GUILD_BANS
+            | cls.GUILD_EMOJIS_AND_STICKERS
+            | cls.GUILD_INTEGRATIONS
+            | cls.GUILD_WEBHOOKS
+            | cls.GUILD_INVITES
+            | cls.GUILD_VOICE_STATES
+            | cls.GUILD_PRESENCES
+            | cls.GUILD_MESSAGES
+            | cls.GUILD_MESSAGE_REACTIONS
+            | cls.GUILD_MESSAGE_TYPING
+            | cls.DIRECT_MESSAGES
+            | cls.DIRECT_MESSAGE_REACTIONS
+            | cls.DIRECT_MESSAGE_TYPING
         )
 
     @classmethod
-    def default(cls):
+    def default(cls) -> Intents:
         return cls(
-            cls.GUILDS |
-            cls.GUILD_BANS |
-            cls.GUILD_EMOJIS_AND_STICKERS |
-            cls.GUILD_INTEGRATIONS |
-            cls.GUILD_WEBHOOKS |
-            cls.GUILD_INVITES |
-            cls.GUILD_VOICE_STATES |
-            cls.GUILD_MESSAGES |
-            cls.GUILD_MESSAGE_REACTIONS |
-            cls.GUILD_MESSAGE_TYPING |
-            cls.DIRECT_MESSAGES |
-            cls.DIRECT_MESSAGE_REACTIONS |
-            cls.DIRECT_MESSAGE_TYPING   
+            cls.GUILDS
+            | cls.GUILD_BANS
+            | cls.GUILD_EMOJIS_AND_STICKERS
+            | cls.GUILD_INTEGRATIONS
+            | cls.GUILD_WEBHOOKS
+            | cls.GUILD_INVITES
+            | cls.GUILD_VOICE_STATES
+            | cls.GUILD_MESSAGES
+            | cls.GUILD_MESSAGE_REACTIONS
+            | cls.GUILD_MESSAGE_TYPING
+            | cls.DIRECT_MESSAGES
+            | cls.DIRECT_MESSAGE_REACTIONS
+            | cls.DIRECT_MESSAGE_TYPING
         )
+
 
 class Permissions(IntFlag):
     CREATE_INSTANT_INVITE = 1 << 0
