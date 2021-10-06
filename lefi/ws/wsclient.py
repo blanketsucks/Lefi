@@ -130,6 +130,6 @@ class WebSocketClient:
         while not self.closed:
             self.seq += 1
             await self.ws.send_json({"op": 1, "d": self.seq})
-            print('sent hearbeat')
-            print(self.heartbeat_delay / 1000)
+            logger.info('Sent heartbeat')
+            
             await asyncio.sleep(self.heartbeat_delay / 1000)
