@@ -28,7 +28,7 @@ class Role:
         color: int=MISSING, 
         hoist: bool=MISSING, 
         mentionable: bool=MISSING
-    ):
+    ) -> Role:
         data = await self._state.http.modifiy_guild_role(
             guild_id=self.guild.id, 
             role_id=self.id,

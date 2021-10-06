@@ -83,8 +83,8 @@ class TextChannel(Channel):
         return int(self._data["last_message_id"])
 
     @property
-    def last_message(self) -> Message:
-        return self._state.get_message(self.last_message_id) # type: ignore
+    def last_message(self) -> typing.Optional[Message]:
+        return self._state.get_message(self.last_message_id)
     
     @property
     def rate_limit_per_user(self) -> int:
@@ -146,6 +146,7 @@ class DMChannel:
             embeds=[embed.to_dict() for embed in embeds]
         )
         return self._state.create_message(data, self)
+
     @property
     def id(self) -> int:
         return int(self._data['id'])

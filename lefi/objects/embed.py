@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 from typing import Any, Dict, List
 
@@ -18,7 +20,7 @@ class EmbedFooter:
         self.text = text
         self.icon_url = icon_url
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> Dict[str, Any]:
         payload = {'text': self.text}
         update_payload(payload, icon_url=self.icon_url)
 
@@ -30,7 +32,7 @@ class EmbedImage:
         self.height = height
         self.width = width
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> Dict[str, Any]:
         payload = {'url': self.url}
         update_payload(payload, height=self.height, width=self.width)
 
@@ -40,7 +42,7 @@ class EmbedVideo(EmbedImage):
     def __init__(self, *, url: str=MISSING, height: int = MISSING, width: int = MISSING) -> None:
         super().__init__(url=url, height=height, width=width)
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> Dict[str, Any]:
         return update_payload({}, **super().to_dict())
 
 class EmbedProvider:
@@ -48,7 +50,7 @@ class EmbedProvider:
         self.name = name
         self.url = url
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> Dict[str, Any]:
         return update_payload({}, name=self.name, url=self.url)
 
 class EmbedAuthor:
@@ -57,7 +59,7 @@ class EmbedAuthor:
         self.url = url
         self.icon_url = icon_url
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> Dict[str, Any]:
         return update_payload({}, name=self.name, url=self.url, icon_url=self.icon_url)
 
 class EmbedField:
@@ -66,7 +68,7 @@ class EmbedField:
         self.value = value
         self.inline = inline
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> Dict[str, Any]:
         return update_payload({}, name=self.name, value=self.value, inline=self.inline)
 
 class Embed:
@@ -97,34 +99,34 @@ class Embed:
         self.author = author
         self.fields = [] if fields is MISSING else fields
 
-    def set_footer(self, *, text: str, icon_url: str=MISSING):
+    def set_footer(self, *, text: str, icon_url: str=MISSING) -> Embed:
         self.footer = EmbedFooter(text=text, icon_url=icon_url)
         return self
 
-    def set_image(self, *, url: str, height: int=MISSING, width: int=MISSING):
+    def set_image(self, *, url: str, height: int=MISSING, width: int=MISSING) -> Embed:
         self.image = EmbedImage(url=url, height=height, width=width)
         return self
 
-    def set_video(self, *, url: str=MISSING, height: int=MISSING, width: int=MISSING):
+    def set_video(self, *, url: str=MISSING, height: int=MISSING, width: int=MISSING) -> Embed:
         self.video = EmbedVideo(url=url, height=height, width=width)
         return self
 
-    def set_provider(self, *, name: str=MISSING, url: str=MISSING):
+    def set_provider(self, *, name: str=MISSING, url: str=MISSING) -> Embed:
         self.provider = EmbedProvider(name=name, url=url)
         return self
 
-    def set_author(self, *, name: str, url: str=MISSING, icon_url: str=MISSING):
+    def set_author(self, *, name: str, url: str=MISSING, icon_url: str=MISSING) -> Embed:
         self.author = EmbedAuthor(name=name, url=url, icon_url=icon_url)
         return self
 
-    def add_field(self, *, name: str, value: str, inline: bool=True):
+    def add_field(self, *, name: str, value: str, inline: bool=True) -> Embed:
         self.fields.append(EmbedField(name=name, value=value, inline=inline))
         return self
 
     def _to_dict(self, obj: Any):
         return obj.to_dict() if obj is not MISSING else obj
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> Dict[str, Any]:
         payload = {}
         update_payload(
             payload,

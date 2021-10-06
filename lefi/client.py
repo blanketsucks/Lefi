@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from typing import Optional, Any, Union, Callable, Dict, List, TYPE_CHECKING, Coroutine
+from typing import Literal, Optional, Any, Tuple, Union, Callable, Dict, List, TYPE_CHECKING, Coroutine, overload
 import inspect
 
 import asyncio
+
+from lefi.objects.channel import Channel
 
 from .http import HTTPClient
 from .state import State
@@ -14,7 +16,15 @@ from .objects import Intents
 from .interactions import App
 
 if TYPE_CHECKING:
-    from .objects import Message
+    from .objects import (
+        Message, 
+        Guild, 
+        TextChannel, 
+        VoiceChannel,
+        CategoryChannel,
+        DMChannel,
+        User
+    )
 
 __all__ = ("Client",)
 
@@ -34,7 +44,8 @@ class Client:
         self._state: State = State(self, self.loop)
         self.ws: WebSocketClient = WebSocketClient(self, intents)
 
-        self.events: Dict[str, List[Union[Callable[..., Any], asyncio.Future]]] = {}
+        self.events: Dict[str, List[Callable[..., Any]]] = {}
+        self.futures: Dict[str, List[Tuple[asyncio.Future, Callable[..., bool]]]] = {}
 
     def add_listener(
         self,
@@ -75,18 +86,76 @@ class Client:
     def get_message(self, id: int) -> Optional[Message]:
         return self._state.get_message(id)
 
-    def get_guild(self, id: int):
+    def get_guild(self, id: int) -> Optional[Guild]:
         return self._state.get_guild(id)
 
-    def get_channel(self, id: int):
+    def get_channel(self, id: int) -> Optional[Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]]:
         return self._state.get_channel(id)
 
-    def get_user(self, id: int):
+    def get_user(self, id: int) -> Optional[User]:
         return self._state.get_user(id)
 
-    async def wait_for(self, event: str):
+    @overload
+    async def wait_for(
+        self, 
+        event: Literal['on_message_create'], 
+        *, 
+        check: Callable[[Message], bool]=MISSING, 
+        timeout: float=None
+    ) -> Message: ...
+    @overload
+    async def wait_for(
+        self, 
+        event: Literal['on_message_update'], 
+        *, 
+        check: Callable[[Message, Message], bool]=MISSING
+    ) -> Tuple[Message, Message]: ...
+    @overload
+    async def wait_for(
+        self, 
+        event: Literal['on_message_delete'], 
+        *, 
+        check: Callable[[Message], bool], 
+        timeout: float=None
+    ) -> Message: ...
+    @overload
+    async def wait_for(
+        self, 
+        event: Literal['on_guild_create'], 
+        *, 
+        check: Callable[[Guild], bool]=MISSING, 
+        timeout: float=None
+    ) -> Guild: ...
+    @overload
+    async def wait_for(
+        self, 
+        event: Literal['on_channel_create'], 
+        *, 
+        check: Callable[[Channel], bool]=MISSING, 
+        timeout: float=None
+    ) -> Channel: ...
+    @overload
+    async def wait_for(
+        self, 
+        event: Literal['on_channel_update'], 
+        *, 
+        check: Callable[[Channel, Channel], bool]=MISSING, 
+        timeout: float=None
+    ) -> Tuple[Channel, Channel]: ...
+    @overload
+    async def wait_for(
+        self, 
+        event: Literal['on_channel_delete'], 
+        *, 
+        check: Callable[[Channel], bool]=MISSING, 
+        timeout: float=None
+    ) -> Channel: ...
+    async def wait_for(self, event: str, *, check: Callable[..., bool]=MISSING, timeout: float=None) -> Any:
         future = self.loop.create_future()
-        callbacks = self.events.setdefault(event, [])
+        futures = self.futures.setdefault(event, [])
 
-        callbacks.append(future) # type: ignore
-        return await asyncio.wait_for(future, timeout=None)
+        if check is MISSING:
+            check = lambda *args: True
+
+        futures.append((future, check))
+        return await asyncio.wait_for(future, timeout=timeout)

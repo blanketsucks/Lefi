@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Dict, Any
+from typing import ClassVar, List, Dict, Any
 
 import asyncio
 import aiohttp
@@ -14,17 +14,17 @@ BASE: str = "https://discord.com/api/v9"
 
 
 class HTTPClient:
-    def __init__(self, token: str, loop: asyncio.AbstractEventLoop):
-        self.token: str = token
-        self.loop: asyncio.AbstractEventLoop = loop
-        self.session: aiohttp.ClientSession = MISSING
-
-        self.errors = {
+    ERRORS: ClassVar[Dict[int, Any]] = {
             400: BadRequest,
             401: Unauthorized,
             403: Forbidden,
             404: NotFound
         }
+
+    def __init__(self, token: str, loop: asyncio.AbstractEventLoop):
+        self.token: str = token
+        self.loop: asyncio.AbstractEventLoop = loop
+        self.session: aiohttp.ClientSession = MISSING
 
     async def _create_session(
         self, loop: asyncio.AbstractEventLoop = MISSING
@@ -61,7 +61,7 @@ class HTTPClient:
                     **kwargs
                 )
 
-            error = self.errors.get(resp.status, HTTPException)
+            error = self.ERRORS.get(resp.status, HTTPException)
             raise error(data)
 
     async def get_bot_gateway(self) -> Dict:
@@ -76,7 +76,7 @@ class HTTPClient:
         except (Forbidden, Unauthorized):
             raise ValueError('Invalid token')
 
-    async def get_channel(self, channel_id: int):
+    async def get_channel(self, channel_id: int) -> Dict[str, Any]:
         return await self.request('GET', f'/channels/{channel_id}')
 
     async def edit_text_channel(
@@ -92,7 +92,7 @@ class HTTPClient:
         permission_overwrites: List[Dict[str, Any]]=MISSING,
         parent_id: int=MISSING,
         default_auto_archive_duration: int=MISSING
-    ):
+    ) -> Dict[str, Any]:
         payload = update_payload(
             {},
             name=name,
@@ -117,7 +117,7 @@ class HTTPClient:
         user_limit: int=MISSING,
         rtc_region: str=MISSING,
         video_quality_mode: int=MISSING
-    ):
+    ) -> Dict[str, Any]:
         payload = update_payload(
             {},
             name=name,
@@ -138,7 +138,7 @@ class HTTPClient:
         before: int=MISSING, 
         after: int=MISSING, 
         limit: int=50
-    ):
+    ) -> Dict[str, Any]:
         params = {
             'limit': limit
         }
@@ -152,7 +152,7 @@ class HTTPClient:
 
         return await self.request('GET', f'/channels/{channel_id}/messages', params=params)
 
-    async def get_channel_message(self, channel_id: int, message_id: int):
+    async def get_channel_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
         return await self.request('GET', f'/channels/{channel_id}/messages/{message_id}')
 
     async def send_message(
@@ -166,7 +166,7 @@ class HTTPClient:
         message_reference: Dict[str, Any]=MISSING,
         components: List[Dict[str, Any]]=MISSING,
         sticker_ids: List[int]=MISSING
-    ):
+    ) -> Dict[str, Any]:
         payload = {
             'tts': tts
         }
@@ -183,7 +183,7 @@ class HTTPClient:
 
         return await self.request("POST", f"/channels/{channel_id}/messages", json=payload)
 
-    async def crosspost_message(self, channel_id: int, message_id: int):
+    async def crosspost_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
         return await self.request('POST', f'/channels/{channel_id}/messages/{message_id}/crosspost')
 
     async def create_reaction(self, channel_id: int, message_id: int, emoji: str):
@@ -192,7 +192,7 @@ class HTTPClient:
             path=f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me'
         )
 
-    async def delete_reaction(self, channel_id: int, message_id: int, emoji: str, user_id: int=MISSING):
+    async def delete_reaction(self, channel_id: int, message_id: int, emoji: str, user_id: int=MISSING) -> None:
         if user_id is not MISSING:
             path = f'/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/{user_id}'
         else:
@@ -208,7 +208,7 @@ class HTTPClient:
         *, 
         after: int=MISSING, 
         limit: int=25
-    ):
+    ) -> Dict[str, Any]:
         params = {
             'limit': limit
         }
@@ -234,7 +234,7 @@ class HTTPClient:
         allowed_mentions: Dict[str, Any]=MISSING,
         attachments: List[Dict[str, Any]]=MISSING,
         components: List[Dict[str, Any]]=MISSING
-    ):
+    ) -> Dict[str, Any]:
         payload = {}
         update_payload(
             payload,
@@ -427,7 +427,7 @@ class HTTPClient:
         name: str,
         image: str,
         roles: List[int]=MISSING,
-    ):
+    ) -> dict:
         payload = {
             'name': name,
             'image': image,
@@ -447,7 +447,7 @@ class HTTPClient:
         *, 
         name: str,
         roles: List[int]=MISSING
-    ):
+    ) -> dict:
         payload = {
             'name': name,
         }
@@ -462,7 +462,7 @@ class HTTPClient:
     async def delete_guild_emoji(self, guild_id: int, emoji_id: int):
         return await self.request('DELETE', f'/guilds/{guild_id}/emojis/{emoji_id}')
 
-    async def create_dm_channel(self, recipient_id: int):
+    async def create_dm_channel(self, recipient_id: int) -> Dict[str, Any]:
         payload = {'recipient_id': recipient_id}
         return await self.request('POST', f'/users/@me/channels', json=payload)
 
@@ -476,7 +476,7 @@ class HTTPClient:
         color: int=MISSING,
         hoist: bool=MISSING,
         mentionable: bool=MISSING
-    ):
+    ) -> Dict[str, Any]:
         payload = update_payload(
             {},
             name=name,

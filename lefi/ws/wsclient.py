@@ -45,7 +45,12 @@ class WebSocketClient:
 
         self.EVENT_MAPPING: typing.Dict[str, typing.Callable] = {
             "message_create": self.client._state.parse_message_create,
+            "message_update": self.client._state.parse_message_update,
+            "message_delete": self.client._state.parse_message_delete,
             "guild_create": self.client._state.parse_guild_create,
+            "channel_create": self.client._state.parse_channel_create,
+            "channel_update": self.client._state.parse_channel_update,
+            "channel_delete": self.client._state.parse_channel_delete,
         }
 
     async def start(self) -> None:
@@ -125,4 +130,6 @@ class WebSocketClient:
         while not self.closed:
             self.seq += 1
             await self.ws.send_json({"op": 1, "d": self.seq})
+            print('sent hearbeat')
+            print(self.heartbeat_delay / 1000)
             await asyncio.sleep(self.heartbeat_delay / 1000)

@@ -57,7 +57,7 @@ class Guild:
         return self._data["owner_id"]
 
     @property
-    def channels(self):
+    def channels(self) -> typing.List[GuildChannels]:
         return list(self._channels.values())
     
     @property
@@ -68,11 +68,11 @@ class Guild:
     def roles(self) -> typing.List[Role]:
         return list(self._roles.values())
     
-    def get_member(self, member_id: int):
+    def get_member(self, member_id: int) -> typing.Optional[Member]:
         return self._members.get(member_id)
 
-    def get_channel(self, channel_id: int):
+    def get_channel(self, channel_id: int) -> typing.Optional[GuildChannels]:
         return self._channels.get(channel_id)
 
-    def get_role(self, role_id: int):
+    def get_role(self, role_id: int) -> typing.Optional[Role]:
         return self._roles.get(role_id)

@@ -8,6 +8,7 @@ from .user import User
 if typing.TYPE_CHECKING:
     from ..state import State
     from .guild import Guild
+    from .role import Role
 
 __all__ = ('Member',)
 
@@ -25,11 +26,11 @@ class Member(User):
         return self._member.get('nick')
 
     @property
-    def roles(self) -> typing.List:
+    def roles(self) -> typing.List[Role]:
         return []
 
     @property
-    def joined_at(self):
+    def joined_at(self) -> datetime.datetime:
         return datetime.datetime.fromisoformat(self._member['joined_at'])
 
     @property

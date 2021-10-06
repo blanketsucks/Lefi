@@ -36,7 +36,7 @@ class Message:
         return self._data["id"]
 
     @property
-    def channel(self):
+    def channel(self) -> Channels:
         return self._channel
 
     @property

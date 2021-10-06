@@ -17,15 +17,15 @@ class Overwrite:
         return int(self._data['id'])
 
     @property
-    def type(self):
+    def type(self) -> OverwriteType:
         return OverwriteType(self._data['type'])
 
     @property
-    def allow(self):
+    def allow(self) -> Permissions:
         return Permissions(int(self._data.get('allow', 0)))
 
     @property
-    def deny(self):
+    def deny(self) -> Permissions:
         return Permissions(int(self._data.get('deny', 0)))
 
     

@@ -69,16 +69,18 @@ class State:
 
     def dispatch(self, event: str, *payload: typing.Any) -> None:
         events = self.client.events.get(event, [])
+        futures = self.client.futures.get(event, [])
+
+        for (future, check) in futures:
+            if check(*payload):
+                future.set_result(*payload)
+                futures.remove((future, check))
+
+                break
 
         for callback in events:
-            if isinstance(callback, asyncio.Future):
-                callback.set_result(*payload)
-                events.remove(callback)
-
-                continue
-
-            asyncio.create_task(callback(*payload))
-
+            self.loop.create_task(callback(*payload))
+                
     async def parse_guild_create(self, data: typing.Dict) -> None:
         guild = Guild(self, data)
 
@@ -91,19 +93,12 @@ class State:
 
     async def parse_message_create(self, data: typing.Dict) -> None:
         channel = self._channels.get(int(data["channel_id"]))
-
-        if not channel and not data.get('guild_id'):
-            chan = await self.http.create_dm_channel(data['author']['id'])
-            channel = self.create_channel(chan)
-
-            self._channels[channel.id] = channel
-
         message = Message(self, data, channel)
 
         self._messages[message.id] = message
         self.dispatch("message_create", message)
 
-    async def parse_message_delete(self, data: typing.Dict):
+    async def parse_message_delete(self, data: typing.Dict) -> None:
         deleted = DeletedMessage(data)
         message = self._messages.get(deleted.id)
 
@@ -114,7 +109,7 @@ class State:
 
         self.dispatch("message_delete", message)
 
-    async def parse_message_update(self, data: typing.Dict):
+    async def parse_message_update(self, data: typing.Dict) -> None:
         channel = self.get_channel(int(data["channel_id"]))
         if not channel:
             return
@@ -130,14 +125,17 @@ class State:
         self._messages[after.id] = after
         self.dispatch("message_update", before, after)
 
-    async def parse_channel_create(self, data: typing.Dict):
-        guild = self.get_guild(int(data["guild_id"]))
-        channel = self.create_channel(data, guild)
+    async def parse_channel_create(self, data: typing.Dict) -> None:
+        if guild_id := data.get('guild_id'):
+            guild = self.get_guild(int(guild_id))
+            channel = self.create_channel(data, guild)
+        else:
+            channel = self.create_channel(data)
 
         self._channels[channel.id] = channel
         self.dispatch("channel_create", channel)
 
-    async def parse_channel_update(self, data: typing.Dict):
+    async def parse_channel_update(self, data: typing.Dict) -> None:
         guild = self.get_guild(int(data["guild_id"]))
 
         before = self.get_channel(int(data["id"]))
@@ -146,7 +144,7 @@ class State:
         self._channels[after.id] = after
         self.dispatch("channel_update", before, after)
 
-    async def parse_channel_delete(self, data: typing.Dict):
+    async def parse_channel_delete(self, data: typing.Dict) -> None:
         channel = self.get_channel(int(data["id"]))
         self._channels.pop(channel.id)
 
@@ -167,17 +165,18 @@ class State:
     def get_guild(self, guild_id: int) -> typing.Optional[Guild]:
         return self._guilds.get(guild_id)
 
-    def get_channel(self, channel_id: int):
+    def get_channel(self, channel_id: int) -> typing.Optional[
+        typing.Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]]:
         return self._channels.get(channel_id)
 
-    def create_message(self, data: typing.Dict, channel: typing.Any):
+    def create_message(self, data: typing.Dict, channel: typing.Any) -> Message:
         return Message(self, data, channel)
 
     def create_channel(self, data: typing.Dict, *args) -> typing.Union[TextChannel, VoiceChannel, CategoryChannel, Channel]:
         cls = self._channel_mapping.get(int(data["type"]), Channel)
         return cls(self, data, *args)
     
-    def create_guild_channels(self, guild: Guild, data: typing.Dict):
+    def create_guild_channels(self, guild: Guild, data: typing.Dict) -> Guild:
         channels = {
             int(payload['id']): self.create_channel(payload, guild)
             for payload in data['channels']
@@ -189,7 +188,7 @@ class State:
         guild._channels = channels
         return guild
 
-    def create_guild_members(self, guild: Guild, data: typing.Dict):
+    def create_guild_members(self, guild: Guild, data: typing.Dict) -> Guild:
         members = {
             int(payload['user']['id']): Member(self, payload, guild)
             for payload in data['members']
@@ -198,7 +197,7 @@ class State:
         guild._members = members
         return guild
 
-    def create_guild_roles(self, guild: Guild, data: typing.Dict):
+    def create_guild_roles(self, guild: Guild, data: typing.Dict) -> Guild:
         roles = {
             int(payload['id']): Role(self, payload, guild)
             for payload in data['roles']
