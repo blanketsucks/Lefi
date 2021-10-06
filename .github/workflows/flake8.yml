@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  publish-package:
+  run-flake8:
     runs-on: ubuntu-latest
 
     steps:
