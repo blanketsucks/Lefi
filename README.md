@@ -42,9 +42,12 @@ asyncio.run(main())
 ## Documentation
 *Coming soon...*
 
-## Development
-_For developers_
-If you plan on contributing please open an issue beforehand
+## Contributing
+1. If you plan on contributing please open an issue beforehand
+2. Install pre-commit hooks (*makes it a lot easier for me*)
+    ```
+    pre-commit install
+    ```
 
 ## Contributors
 
