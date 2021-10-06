@@ -451,7 +451,7 @@ class HTTPClient:
 
     async def create_dm_channel(self, recipient_id: int) -> Dict[str, Any]:
         payload = {"recipient_id": recipient_id}
-        return await self.request("POST", f"/users/@me/channels", json=payload)
+        return await self.request("POST", "/users/@me/channels", json=payload)
 
     async def modifiy_guild_role(
         self,
