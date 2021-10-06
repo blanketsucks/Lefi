@@ -1,7 +1,21 @@
 # Lefi
-Work in progress discord API wrapper made in Python
+A discord API wrapper focused on clean code, and usability
 
-# Example(s)
+## Installation
+
+1. Poetry
+
+   ```
+   poetry add git+https://github.com/an-dyy/Lefi.git
+   ```
+
+2. Pip
+   ```
+   pip install git+https://github.com/an-dyy/Lefi.git
+   ```
+   *Note: After stable the wrapper will get a pip package rather then requiring to install from git*
+
+## Example(s)
 ```py
 import os
 import asyncio
@@ -25,4 +39,14 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-*Note: this is not a serious project*
+## Documentation
+*Coming soon...*
+
+## Development
+_For developers_
+If you plan on contributing please open an issue beforehand
+
+## Contributors
+
+- [blanketsucks](https://github.com/blanketsucks) - Contributor
+- [an-dyy](https://github.com/an-dyy) - creator and maintainer
