@@ -4,7 +4,6 @@ import inspect
 import asyncio
 
 from typing import (
-    Literal,
     Optional,
     Any,
     Tuple,
