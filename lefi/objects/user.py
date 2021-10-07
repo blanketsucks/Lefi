@@ -13,6 +13,31 @@ if TYPE_CHECKING:
 __all__ = ("User",)
 
 
+class ClientUser:
+    def __init__(self, state: State, data: Dict) -> None:
+        self._state = state
+        self._data = data
+
+    def __repr__(self) -> str:
+        return f""
+
+    @property
+    def username(self) -> str:
+        return self._data["username"]
+
+    @property
+    def email(self) -> Optional[str]:
+        return self._data.get("email")
+
+    @property
+    def flags(self) -> UserFlags:
+        return UserFlags(self._data.get("flags", 0))
+
+    @property
+    def discriminator(self) -> str:
+        return self._data["discriminator"]
+
+
 class User:
     def __init__(self, state: State, data: Dict) -> None:
         self._state = state

@@ -96,6 +96,10 @@ class State:
         for callback in events:
             self.loop.create_task(callback(*payload))
 
+    async def parse_ready(self, data: Dict) -> None:
+        client_user = User(self, data)
+        self.dispatch("ready", client_user)
+
     async def parse_guild_create(self, data: Dict) -> None:
         guild = Guild(self, data)
 
