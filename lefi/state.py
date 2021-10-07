@@ -73,13 +73,18 @@ class State:
         self._messages = Cache[Message](1000)
         self._users = Cache[User]()
         self._guilds = Cache[Guild]()
-        self._channels = Cache[
-            Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
-        ]()
+        self._channels = Cache[Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]]()
 
     def dispatch(self, event: str, *payload: Any) -> None:
         events = self.client.events.get(event, [])
         futures = self.client.futures.get(event, [])
+
+        if callbacks := self.client.once_events.get(event):
+            for index, callback in enumerate(callbacks):
+                self.loop.create_task(callback(*payload))
+                callbacks.pop(index)
+
+            return
 
         for future, check in futures:
             if check(*payload):
@@ -177,25 +182,18 @@ class State:
 
     def get_channel(
         self, channel_id: int
-    ) -> Optional[
-        Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
-    ]:
+    ) -> Optional[Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]]:
         return self._channels.get(channel_id)
 
     def create_message(self, data: Dict, channel: Any) -> Message:
         return Message(self, data, channel)
 
-    def create_channel(
-        self, data: Dict, *args
-    ) -> Union[TextChannel, VoiceChannel, CategoryChannel, Channel]:
+    def create_channel(self, data: Dict, *args) -> Union[TextChannel, VoiceChannel, CategoryChannel, Channel]:
         cls = self.CHANNEL_MAPPING.get(int(data["type"]), Channel)
         return cls(self, data, *args)  # type: ignore
 
     def create_guild_channels(self, guild: Guild, data: Dict) -> Guild:
-        channels = {
-            int(payload["id"]): self.create_channel(payload, guild)
-            for payload in data["channels"]
-        }
+        channels = {int(payload["id"]): self.create_channel(payload, guild) for payload in data["channels"]}
 
         for channel in channels.values():
             self._channels[channel.id] = channel
@@ -204,18 +202,13 @@ class State:
         return guild
 
     def create_guild_members(self, guild: Guild, data: Dict) -> Guild:
-        members = {
-            int(payload["user"]["id"]): Member(self, payload, guild)
-            for payload in data["members"]
-        }
+        members = {int(payload["user"]["id"]): Member(self, payload, guild) for payload in data["members"]}
 
         guild._members = members
         return guild
 
     def create_guild_roles(self, guild: Guild, data: Dict) -> Guild:
-        roles = {
-            int(payload["id"]): Role(self, payload, guild) for payload in data["roles"]
-        }
+        roles = {int(payload["id"]): Role(self, payload, guild) for payload in data["roles"]}
 
         guild._roles = roles
         return guild
