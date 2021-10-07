@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import typing
+from typing import Any
 
 __all__ = ("MISSING",)
 
@@ -16,4 +16,4 @@ class _MISSING:
         return 0
 
 
-MISSING: typing.Any = _MISSING()
+MISSING: Any = _MISSING()

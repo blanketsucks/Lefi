@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict
 
 from .flags import Permissions
-from ..utils import MISSING
 
 if TYPE_CHECKING:
     from .guild import Guild
@@ -24,11 +23,11 @@ class Role:
     async def edit(
         self,
         *,
-        name: str = MISSING,
-        permissions: Permissions = MISSING,
-        color: int = MISSING,
-        hoist: bool = MISSING,
-        mentionable: bool = MISSING
+        name: str = None,
+        permissions: Permissions = None,
+        color: int = None,
+        hoist: bool = None,
+        mentionable: bool = None
     ) -> Role:
         data = await self._state.http.modifiy_guild_role(
             guild_id=self.guild.id,

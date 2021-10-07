@@ -18,7 +18,6 @@ from .objects import (
     DeletedMessage,
 )
 from .objects.channel import Channel
-from .utils import MISSING
 
 if TYPE_CHECKING:
     from .client import Client
@@ -32,7 +31,7 @@ T = TypeVar("T")
 
 
 class Cache(collections.OrderedDict[Union[str, int], T]):
-    def __init__(self, maxlen: Optional[int] = MISSING, *args, **kwargs):
+    def __init__(self, maxlen: Optional[int] = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.maxlen: Optional[int] = maxlen
         self._max: int = 0
