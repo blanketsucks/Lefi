@@ -3,19 +3,30 @@ site_author: an-dyy
 site_description: A discord API wrapper focused on clean code, and usability
 
 theme:
+  features:
+    - search.suggest
+    - search.highlight
+    - search.sharing
+
   name: material
   palette:
-    - scheme: slate
-      primary: pink
+    - media: "(prefers-color-scheme: light)"
+
+      scheme: default
+      primary: deep purple
+      accent: purple
       toggle:
         icon: material/toggle-switch-off-outline
-        name: Switch to light mode
-    - scheme: default
-      primary: pink
-      toggle:
-        icon: material/toggle-switch
         name: Switch to dark mode
 
+    - media: "(prefers-color-scheme: dark)"
+
+      scheme: slate
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
 
 nav:
   - Home: index.md
@@ -26,15 +37,15 @@ nav:
     - Errors: API-Reference/errors.md
 
 plugins:
-- search
-- mkdocstrings:
-    handlers:
-      python:
-        rendering:
-          members_order: source
-        import:
-          - https://docs.python.org/3.9/objects.inv
-          - https://docs.aiohttp.org/en/stable/objects.inv
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          rendering:
+            members_order: source
+          import:
+            - https://docs.python.org/3.9/objects.inv
+            - https://docs.aiohttp.org/en/stable/objects.inv
 
 repo_name: an-dyy/Lefi
 repo_url: https://github.com/an-dyy/Lefi
