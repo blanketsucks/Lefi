@@ -6,6 +6,16 @@ __all__ = ("HTTPException", "Unauthorized", "BadRequest", "Forbidden", "NotFound
 
 
 class HTTPException(Exception):
+    """
+    Error representing an error received from the API.
+
+    Attributes:
+        data (Union[Dict[str, Any], str]): data received from the API.
+        messsage (str): The message for the error.
+        code (int): The code of the error.
+
+    """
+
     def __init__(self, data: Union[Dict[str, Any], str]) -> None:
         self.data = data
         self.message: str = ""
@@ -22,16 +32,32 @@ class HTTPException(Exception):
 
 
 class Unauthorized(HTTPException):
+    """
+    Represents a 401 error
+    """
+
     pass
 
 
 class BadRequest(HTTPException):
+    """
+    Represents a 400 error
+    """
+
     pass
 
 
 class Forbidden(HTTPException):
+    """
+    Represents a 403 error
+    """
+
     pass
 
 
 class NotFound(HTTPException):
+    """
+    Represents a 404 error
+    """
+
     pass
