@@ -4,16 +4,17 @@ site_description: A discord API wrapper focused on clean code, and usability
 
 theme:
   features:
-    - search.suggest
     - search.highlight
     - search.sharing
+    - navigation.top
+    - navigation.tabs
 
   name: material
   palette:
     - media: "(prefers-color-scheme: light)"
 
       scheme: default
-      primary: deep purple
+      primary: black
       accent: purple
       toggle:
         icon: material/toggle-switch-off-outline
@@ -22,7 +23,7 @@ theme:
     - media: "(prefers-color-scheme: dark)"
 
       scheme: slate
-      primary: deep purple
+      primary: black
       accent: purple
       toggle:
         icon: material/toggle-switch

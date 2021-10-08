@@ -172,6 +172,9 @@ class HTTPClient:
             permissions_overwrites (Optional[List[Dict[str, Any]]]): The new permission overwrites for the channel.
             default_auto_archive_duration (Optional[List[Dict[str, Any]]]): New time for threads to auto archive.
 
+        Returns:
+            The data received from the API after making the call.
+
         """
         payload = update_payload(
             {},
@@ -190,13 +193,33 @@ class HTTPClient:
         self,
         channel_id: int,
         *,
-        name: str = None,
-        position: int = None,
-        bitrate: int = None,
-        user_limit: int = None,
-        rtc_region: str = None,
-        video_quality_mode: int = None,
+        name: Optional[str] = None,
+        position: Optional[int] = None,
+        bitrate: Optional[int] = None,
+        user_limit: Optional[int] = None,
+        rtc_region: Optional[str] = None,
+        video_quality_mode: Optional[int] = None,
+        sync_permissions: Optional[bool] = None,
+        permissions_overwrites: Optional[List[Dict[str, Any]]] = None,
     ) -> Dict[str, Any]:
+        """
+        Makes an API call to edit a voice channel.
+
+        Parameters:
+            channel_id (int): The ID representing the voice channel to edit.
+            name (Optional[str]): The new name to give the channel.
+            position (Optional[int]): The new position of the channel.
+            bitrate (Optional[int]): The new bitrate of the channel.
+            user_limit (Optional[int]): The new user limit of the channel.
+            rtc_region (Optional[str]): The new rtc region of the channel.
+            video_quality_mode (Optional[int]): The new video quality of the channel.
+            sync_permissions (Optional[bool]): Whether or not to sync the permissions.
+            permissions_overwrites (Optional[List[Dict[str, Any]]]): The new permissions ovewrites for the channel.
+
+        Returns:
+            The data received from the API after the call.
+
+        """
         payload = update_payload(
             {},
             name=name,
@@ -205,6 +228,8 @@ class HTTPClient:
             user_limit=user_limit,
             rtc_region=rtc_region,
             video_quality_mode=video_quality_mode,
+            sync_permissions=sync_permissions,
+            permissions_overwrites=permissions_overwrites,
         )
 
         return await self.request("PATCH", f"/channels/{channel_id}", json=payload)
@@ -213,11 +238,26 @@ class HTTPClient:
         self,
         channel_id: int,
         *,
-        around: int = None,
-        before: int = None,
-        after: int = None,
+        around: Optional[int] = None,
+        before: Optional[int] = None,
+        after: Optional[int] = None,
         limit: int = 50,
     ) -> Dict[str, Any]:
+        """
+        Makes an API call to get a list of messages in a channel.
+        Only returns messages within the range of the parameters passed.
+
+        Parameters:
+            channel_id (int): The ID representing the channel.
+            around (Optional[int]): Gets messages around this message ID.
+            before (Optional[int]): Gets messages before this message ID.
+            after (Optional[int]): Gets messages after this message ID.
+            limit (int): THe amount of messages to grab.
+
+        Returns:
+            The data received after making the call.
+
+        """
         params = {"limit": limit}
 
         update_payload(params, around=around, before=before, after=after)
@@ -225,20 +265,48 @@ class HTTPClient:
         return await self.request("GET", f"/channels/{channel_id}/messages", params=params)
 
     async def get_channel_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call to get a specific message by ID.
+
+        Parameters:
+            channel_id (int): The channel ID which the message is in.
+            message_id (int): The messages ID.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         return await self.request("GET", f"/channels/{channel_id}/messages/{message_id}")
 
     async def send_message(
         self,
         channel_id: int,
-        content: str = None,
+        content: Optional[str] = None,
         *,
         tts: bool = False,
-        embeds: List[Dict[str, Any]] = None,
-        allowed_mentions: Dict[str, Any] = None,
-        message_reference: Dict[str, Any] = None,
-        components: List[Dict[str, Any]] = None,
-        sticker_ids: List[int] = None,
+        embeds: Optional[List[Dict[str, Any]]] = None,
+        allowed_mentions: Optional[Dict[str, Any]] = None,
+        message_reference: Optional[Dict[str, Any]] = None,
+        components: Optional[List[Dict[str, Any]]] = None,
+        sticker_ids: Optional[List[int]] = None,
     ) -> Dict[str, Any]:
+        """
+        Makes an API call to send a message.
+
+        Parameters:
+            channel_id (int): The ID of the channel which to send the message in.
+            content (Optional[str]): The content of the message.
+            tts (bool): Whether or not to send the message with text-to-speech.
+            embed (Optional[List[Dict[str, Any]]]): The embed to show when sending the message.
+            embeds (Optional[List[Dict[str, Any]]]): The list of embeds to send.
+            message_reference (Optional[Dict[str, Any]]): The messages to reference when sending the message.
+            components (Optional[List[Dict[str, Any]]]): The components to attach to the message.
+            sticker_ids (Optional[List[int]]): The stickers to send with the message.
+
+        Note:
+            Max embeds that can sent at a time is 10.
+
+        """
         payload = {"tts": tts}
 
         update_payload(
