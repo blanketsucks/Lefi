@@ -20,10 +20,18 @@ theme:
 nav:
   - Home: index.md
   - Getting-Started: getting-started.md
+  - API-Reference:
+    - Client: API-Reference/client.md
 
 plugins:
 - search
-- mkdocstrings
+- mkdocstrings:
+    handlers:
+      python:
+        rendering:
+          members_order: source
+        import:
+          - https://docs.python.org/3.9/objects.inv
 
 repo_name: an-dyy/Lefi
 repo_url: https://github.com/an-dyy/Lefi
