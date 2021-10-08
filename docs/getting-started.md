@@ -10,8 +10,9 @@ To install the wrapper you can use `pip`, `poetry` or any other manager you use.
 
 * Poetry
     ```
-    poetry add git+https://github.com/an-dyy/Lefi.git
+    poetry add git+https://github.com/an-dyy/Lefi.git --no-dev
     ```
+    *Note: If you plan on contributing, omit the `--no-dev` flag.*
 
 * Pip
     ```

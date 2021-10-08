@@ -6,8 +6,9 @@ A discord API wrapper focused on clean code, and usability
 1. Poetry
 
    ```
-   poetry add git+https://github.com/an-dyy/Lefi.git
+   poetry add git+https://github.com/an-dyy/Lefi.git --no-dev
    ```
+    *Note: if you plan on contributing, omit the `--no-dev` flag.
 
 2. Pip
    ```
