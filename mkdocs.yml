@@ -22,6 +22,7 @@ nav:
   - Getting-Started: getting-started.md
   - API-Reference:
     - Client: API-Reference/client.md
+    - HTTPClient: API-Reference/http.md
     - Errors: API-Reference/errors.md
 
 plugins:
@@ -33,6 +34,7 @@ plugins:
           members_order: source
         import:
           - https://docs.python.org/3.9/objects.inv
+          - https://docs.aiohttp.org/en/stable/objects.inv
 
 repo_name: an-dyy/Lefi
 repo_url: https://github.com/an-dyy/Lefi
