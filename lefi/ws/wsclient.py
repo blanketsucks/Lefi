@@ -43,6 +43,7 @@ class WebSocketClient:
         self.seq: int = 0
 
         self.EVENT_MAPPING: typing.Dict[str, typing.Callable] = {
+            "ready": self.client._state.parse_ready,
             "message_create": self.client._state.parse_message_create,
             "message_update": self.client._state.parse_message_update,
             "message_delete": self.client._state.parse_message_delete,
