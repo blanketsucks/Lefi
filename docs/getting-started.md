@@ -34,6 +34,10 @@ async def main() -> None:
     )  # NOTE: I'm on linux so I can just export, windows might need a `.env`
     client = lefi.Client(token)  # type: ignore
 
+    @client.once("ready")
+    async def on_ready(client_user: lefi.User) -> None:
+        print(f"LOGGED IN AS {client_user.id}")
+
     @client.on("message_create")
     async def message_create(message: lefi.Message) -> None:
         print(message)
