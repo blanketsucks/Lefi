@@ -2,91 +2,91 @@
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
-    
+
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
-      
+
         <meta name="description" content="A discord API wrapper focused on clean code, and usability">
-      
-      
-      
+
+
+
         <meta name="author" content="an-dyy">
-      
-      
+
+
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.2">
-    
-    
-      
+
+
+
         <title>HTTPClient - Lefi</title>
-      
-    
-    
+
+
+
       <link rel="stylesheet" href="../../assets/stylesheets/main.24c991ad.min.css">
-      
-        
+
+
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
-        
-      
-    
-    
-    
-      
-        
+
+
+
+
+
+
+
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
-      
-    
-    
-    
+
+
+
+
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
-    
-    
-      
 
 
-    
-    
+
+
+
+
+
   </head>
-  
-  
-    
-    
-      
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
     <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="purple">
-  
-    
+
+
     <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
-    
+
       <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
-    
+
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-      
-        
+
+
         <a href="#lefi.http.HTTPClient" class="md-skip">
           Skip to content
         </a>
-      
+
     </div>
     <div data-md-component="announce">
-      
+
     </div>
-    
-      
+
+
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="Lefi" class="md-header__button md-logo" aria-label="Lefi" data-md-component="logo">
-      
-  
+
+
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
 
     </a>
@@ -102,42 +102,42 @@
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
-            
+
               HTTPClient
-            
+
           </span>
         </div>
       </div>
     </div>
-    
+
       <form class="md-header__option" data-md-component="palette">
-        
-          
-          
+
+
+
           <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
-          
+
             <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
             </label>
-          
-        
-          
-          
+
+
+
+
           <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
-          
+
             <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg>
             </label>
-          
-        
+
+
       </form>
-    
-    
-    
+
+
+
       <label class="md-header__button md-icon" for="__search">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
       </label>
-      
+
 <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
@@ -148,12 +148,12 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
       </label>
       <nav class="md-search__options" aria-label="Search">
-        
+
         <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
         </button>
       </nav>
-      
+
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" data-md-scrollfix>
@@ -167,13 +167,13 @@
     </div>
   </div>
 </div>
-    
-    
+
+
       <div class="md-header__source">
-        
+
 <a href="https://github.com/an-dyy/Lefi/" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
-    
+
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
@@ -181,24 +181,24 @@
   </div>
 </a>
       </div>
-    
+
   </nav>
-  
+
 </header>
-    
+
     <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-            
+
+
+
+
+
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
   <div class="md-tabs__inner md-grid">
     <ul class="md-tabs__list">
-      
-        
-  
-  
+
+
+
+
 
 
   <li class="md-tabs__item">
@@ -207,10 +207,10 @@
     </a>
   </li>
 
-      
-        
-  
-  
+
+
+
+
 
 
   <li class="md-tabs__item">
@@ -219,60 +219,60 @@
     </a>
   </li>
 
-      
-        
-  
-  
-    
-  
 
 
-  
-  
-  
+
+
+
+
+
+
+
+
+
     <li class="md-tabs__item">
       <a href="../client/" class="md-tabs__link md-tabs__link--active">
         API-Reference
       </a>
     </li>
-  
 
-      
+
+
     </ul>
   </div>
 </nav>
-          
-        
-      
+
+
+
       <main class="md-main" data-md-component="main">
         <div class="md-main__inner md-grid">
-          
-            
-              
+
+
+
               <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
-                    
 
-  
+
+
 
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Lefi" class="md-nav__button md-logo" aria-label="Lefi" data-md-component="logo">
-      
-  
+
+
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
 
     </a>
     Lefi
   </label>
-  
+
     <div class="md-nav__source">
-      
+
 <a href="https://github.com/an-dyy/Lefi/" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
-    
+
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
@@ -280,846 +280,874 @@
   </div>
 </a>
     </div>
-  
-  <ul class="md-nav__list" data-md-scrollfix>
-    
-      
-      
-      
 
-  
-  
-  
+  <ul class="md-nav__list" data-md-scrollfix>
+
+
+
+
+
+
+
+
     <li class="md-nav__item">
       <a href="../.." class="md-nav__link">
         Home
       </a>
     </li>
-  
 
-    
-      
-      
-      
 
-  
-  
-  
+
+
+
+
+
+
+
+
     <li class="md-nav__item">
       <a href="../../getting-started/" class="md-nav__link">
         Getting-Started
       </a>
     </li>
-  
 
-    
-      
-      
-      
 
-  
-  
-    
-  
-  
-    
+
+
+
+
+
+
+
+
+
+
+
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-      
+
+
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
-      
-      
-      
-      
+
+
+
+
         <label class="md-nav__link" for="__nav_3">
           API-Reference
           <span class="md-nav__icon md-icon"></span>
         </label>
-      
+
       <nav class="md-nav" aria-label="API-Reference" data-md-level="1">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           API-Reference
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
+
+
+
+
+
+
     <li class="md-nav__item">
       <a href="../client/" class="md-nav__link">
         Client
       </a>
     </li>
-  
 
-            
-          
-            
-              
-  
-  
-    
-  
-  
+
+
+
+
+
+
+
+
+
+
     <li class="md-nav__item md-nav__item--active">
-      
+
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-      
+
+
+
         <label class="md-nav__link md-nav__link--active" for="__toc">
           HTTPClient
           <span class="md-nav__icon md-icon"></span>
         </label>
-      
+
       <a href="./" class="md-nav__link md-nav__link--active">
         HTTPClient
       </a>
-      
-        
+
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
+
+
+
+
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient" class="md-nav__link">
     lefi.http.HTTPClient
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.__init__" class="md-nav__link">
     __init__()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.request" class="md-nav__link">
     request()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_bot_gateway" class="md-nav__link">
     get_bot_gateway()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.ws_connect" class="md-nav__link">
     ws_connect()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.login" class="md-nav__link">
     login()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel" class="md-nav__link">
     get_channel()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.edit_text_channel" class="md-nav__link">
     edit_text_channel()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.edit_voice_channel" class="md-nav__link">
     edit_voice_channel()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel_messages" class="md-nav__link">
     get_channel_messages()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel_message" class="md-nav__link">
     get_channel_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.send_message" class="md-nav__link">
     send_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.crosspost_message" class="md-nav__link">
     crosspost_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.create_reaction" class="md-nav__link">
     create_reaction()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.delete_reaction" class="md-nav__link">
     delete_reaction()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_reactions" class="md-nav__link">
     get_reactions()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.delete_all_reactions" class="md-nav__link">
     delete_all_reactions()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.edit_message" class="md-nav__link">
     edit_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.delete_message" class="md-nav__link">
     delete_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.bulk_delete_messages" class="md-nav__link">
     bulk_delete_messages()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.edit_channel_permissions" class="md-nav__link">
     edit_channel_permissions()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.delete_channel_permissions" class="md-nav__link">
     delete_channel_permissions()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel_invites" class="md-nav__link">
     get_channel_invites()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.create_channel_invite" class="md-nav__link">
     create_channel_invite()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.follow_news_channel" class="md-nav__link">
     follow_news_channel()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.trigger_typing" class="md-nav__link">
     trigger_typing()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_pinned_messages" class="md-nav__link">
     get_pinned_messages()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.pin_message" class="md-nav__link">
     pin_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.unpin_message" class="md-nav__link">
     unpin_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.start_thread_with_message" class="md-nav__link">
     start_thread_with_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.start_thread_without_message" class="md-nav__link">
     start_thread_without_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.join_thread" class="md-nav__link">
     join_thread()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.add_thread_member" class="md-nav__link">
     add_thread_member()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.leave_thread" class="md-nav__link">
     leave_thread()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.remove_thread_member" class="md-nav__link">
     remove_thread_member()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.list_thread_members" class="md-nav__link">
     list_thread_members()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.list_public_archived_threads" class="md-nav__link">
     list_public_archived_threads()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.list_private_archived_threads" class="md-nav__link">
     list_private_archived_threads()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.list_joined_private_archived_threads" class="md-nav__link">
     list_joined_private_archived_threads()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.list_guild_emojis" class="md-nav__link">
     list_guild_emojis()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_guild_emoji" class="md-nav__link">
     get_guild_emoji()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.create_guild_emoji" class="md-nav__link">
     create_guild_emoji()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.modify_guild_emoji" class="md-nav__link">
     modify_guild_emoji()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.delete_guild_emoji" class="md-nav__link">
     delete_guild_emoji()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.create_dm_channel" class="md-nav__link">
     create_dm_channel()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.modifiy_guild_role" class="md-nav__link">
     modifiy_guild_role()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.delete_guild_role" class="md-nav__link">
     delete_guild_role()
   </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
 
-            
-          
-            
-              
-  
-  
-  
+</li>
+
+    </ul>
+
+</nav>
+
+    </li>
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../state/" class="md-nav__link">
+        State
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../cache/" class="md-nav__link">
+        Cache
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
     <li class="md-nav__item">
       <a href="../errors/" class="md-nav__link">
         Errors
       </a>
     </li>
-  
 
-            
-          
+
+
+
         </ul>
       </nav>
     </li>
-  
 
-    
+
+
   </ul>
 </nav>
                   </div>
                 </div>
               </div>
-            
-            
-              
+
+
+
               <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
-                    
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
+
+
+
+
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient" class="md-nav__link">
     lefi.http.HTTPClient
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.__init__" class="md-nav__link">
     __init__()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.request" class="md-nav__link">
     request()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_bot_gateway" class="md-nav__link">
     get_bot_gateway()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.ws_connect" class="md-nav__link">
     ws_connect()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.login" class="md-nav__link">
     login()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel" class="md-nav__link">
     get_channel()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.edit_text_channel" class="md-nav__link">
     edit_text_channel()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.edit_voice_channel" class="md-nav__link">
     edit_voice_channel()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel_messages" class="md-nav__link">
     get_channel_messages()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel_message" class="md-nav__link">
     get_channel_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.send_message" class="md-nav__link">
     send_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.crosspost_message" class="md-nav__link">
     crosspost_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.create_reaction" class="md-nav__link">
     create_reaction()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.delete_reaction" class="md-nav__link">
     delete_reaction()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_reactions" class="md-nav__link">
     get_reactions()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.delete_all_reactions" class="md-nav__link">
     delete_all_reactions()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.edit_message" class="md-nav__link">
     edit_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.delete_message" class="md-nav__link">
     delete_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.bulk_delete_messages" class="md-nav__link">
     bulk_delete_messages()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.edit_channel_permissions" class="md-nav__link">
     edit_channel_permissions()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.delete_channel_permissions" class="md-nav__link">
     delete_channel_permissions()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel_invites" class="md-nav__link">
     get_channel_invites()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.create_channel_invite" class="md-nav__link">
     create_channel_invite()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.follow_news_channel" class="md-nav__link">
     follow_news_channel()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.trigger_typing" class="md-nav__link">
     trigger_typing()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_pinned_messages" class="md-nav__link">
     get_pinned_messages()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.pin_message" class="md-nav__link">
     pin_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.unpin_message" class="md-nav__link">
     unpin_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.start_thread_with_message" class="md-nav__link">
     start_thread_with_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.start_thread_without_message" class="md-nav__link">
     start_thread_without_message()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.join_thread" class="md-nav__link">
     join_thread()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.add_thread_member" class="md-nav__link">
     add_thread_member()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.leave_thread" class="md-nav__link">
     leave_thread()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.remove_thread_member" class="md-nav__link">
     remove_thread_member()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.list_thread_members" class="md-nav__link">
     list_thread_members()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.list_public_archived_threads" class="md-nav__link">
     list_public_archived_threads()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.list_private_archived_threads" class="md-nav__link">
     list_private_archived_threads()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.list_joined_private_archived_threads" class="md-nav__link">
     list_joined_private_archived_threads()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.list_guild_emojis" class="md-nav__link">
     list_guild_emojis()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_guild_emoji" class="md-nav__link">
     get_guild_emoji()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.create_guild_emoji" class="md-nav__link">
     create_guild_emoji()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.modify_guild_emoji" class="md-nav__link">
     modify_guild_emoji()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.delete_guild_emoji" class="md-nav__link">
     delete_guild_emoji()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.create_dm_channel" class="md-nav__link">
     create_dm_channel()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.modifiy_guild_role" class="md-nav__link">
     modifiy_guild_role()
   </a>
-  
+
 </li>
-      
+
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.delete_guild_role" class="md-nav__link">
     delete_guild_role()
   </a>
-  
+
 </li>
-      
+
     </ul>
-  
+
 </nav>
                   </div>
                 </div>
               </div>
-            
-          
+
+
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
-              
-                
+
+
                   <a href="https://github.com/an-dyy/Lefi/edit/master/docs/API-Reference/http.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
-                
-                
+
+
                   <h1>HTTPClient</h1>
-                
+
                 <div class="doc doc-object doc-class">
 
 <a id="lefi.http.HTTPClient"></a>
@@ -1153,9 +1181,9 @@
         <td><p>The <a href="https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.ClientSession">aiohttp.ClientSession</a> to use for sending requests.</p></td>
       </tr>
   </tbody>
-</table>      <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This class is used behind the scenes, this is not intended to be called directly.</p>
+</table>      <div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>This class is used behind the scenes, <strong>this is not intended to be called directly</strong>.</p>
 </div>
 
 
@@ -1977,9 +2005,7 @@ Only returns messages within the range of the parameters passed.</p>
 
     <span class="n">update_payload</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">around</span><span class="o">=</span><span class="n">around</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">after</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2047,9 +2073,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_channel_message</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_channel_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to get a specific message by ID.</span>
 
@@ -2061,9 +2085,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2190,9 +2212,7 @@ Only returns messages within the range of the parameters passed.</p>
         <span class="n">sticker_ids</span><span class="o">=</span><span class="n">sticker_ids</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2260,9 +2280,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">crosspost_message</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">crosspost_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to crosspost a message.</span>
 
@@ -2274,9 +2292,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/crosspost&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/crosspost&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2667,9 +2683,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_all_reactions</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_all_reactions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to remove all reactions of a message.</span>
 
@@ -2682,9 +2696,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API After making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/reactions/</span><span class="si">{</span><span class="n">emoji</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/reactions/</span><span class="si">{</span><span class="n">emoji</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2910,9 +2922,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2980,9 +2990,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">bulk_delete_messages</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">bulk_delete_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to delete multiple messages.</span>
 
@@ -2995,9 +3003,7 @@ Only returns messages within the range of the parameters passed.</p>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">message_ids</span><span class="p">}</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/bulk-delete&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/bulk-delete&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -3181,9 +3187,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_channel_permissions</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">overwrite_id</span><span class="p">:</span> <span class="nb">int</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_channel_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">overwrite_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to delete an overwrite from a channel.</span>
 
@@ -3195,9 +3199,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/permissions/</span><span class="si">{</span><span class="n">overwrite_id</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/permissions/</span><span class="si">{</span><span class="n">overwrite_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -3416,9 +3418,7 @@ Only returns messages within the range of the parameters passed.</p>
         <span class="n">target_application_id</span><span class="o">=</span><span class="n">target_application_id</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/invites&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/invites&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -3486,9 +3486,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">follow_news_channel</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">webhook_channel_id</span><span class="p">:</span> <span class="nb">int</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">follow_news_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">webhook_channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to follow a news channel to send messages to a target channel.</span>
 
@@ -3501,9 +3499,7 @@ Only returns messages within the range of the parameters passed.</p>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;webhook_channel_id&quot;</span><span class="p">:</span> <span class="n">webhook_channel_id</span><span class="p">}</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/followers/@me&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/followers/@me&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4022,9 +4018,7 @@ Only returns messages within the range of the parameters passed.</p>
     <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;auto_archive_duration&quot;</span><span class="p">:</span> <span class="n">auto_archive_duration</span><span class="p">}</span>
     <span class="n">update_payload</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span> <span class="n">invitable</span><span class="o">=</span><span class="n">invitable</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/threads&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/threads&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4177,9 +4171,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/thread-members/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/thread-members/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4252,9 +4244,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/thread-members/@me&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/thread-members/@me&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4322,9 +4312,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">remove_thread_member</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">remove_thread_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call which removes a member from the thread.</span>
 
@@ -4336,9 +4324,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/thread-members/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/thread-members/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4505,9 +4491,7 @@ Only returns messages within the range of the parameters passed.</p>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">update_payload</span><span class="p">({},</span> <span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/threads/archived/public&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/threads/archived/public&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4601,9 +4585,7 @@ Only returns messages within the range of the parameters passed.</p>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">update_payload</span><span class="p">({},</span> <span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/threads/archived/private&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/threads/archived/private&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4961,9 +4943,7 @@ Only returns messages within the range of the parameters passed.</p>
         <span class="s2">&quot;roles&quot;</span><span class="p">:</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">roles</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">roles</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/guilds/</span><span class="si">{</span><span class="n">guild_id</span><span class="si">}</span><span class="s2">/emojis&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/guilds/</span><span class="si">{</span><span class="n">guild_id</span><span class="si">}</span><span class="s2">/emojis&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -5069,9 +5049,7 @@ Only returns messages within the range of the parameters passed.</p>
     <span class="p">}</span>
     <span class="n">update_payload</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="n">roles</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;PATCH&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/guilds/</span><span class="si">{</span><span class="n">guild_id</span><span class="si">}</span><span class="s2">/emojis/</span><span class="si">{</span><span class="n">emoji_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;PATCH&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/guilds/</span><span class="si">{</span><span class="n">guild_id</span><span class="si">}</span><span class="s2">/emojis/</span><span class="si">{</span><span class="n">emoji_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -5359,9 +5337,7 @@ Only returns messages within the range of the parameters passed.</p>
         <span class="n">mentionable</span><span class="o">=</span><span class="n">mentionable</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;PATCH&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/guilds/</span><span class="si">{</span><span class="n">guild_id</span><span class="si">}</span><span class="s2">/roles/</span><span class="si">{</span><span class="n">role_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;PATCH&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/guilds/</span><span class="si">{</span><span class="n">guild_id</span><span class="si">}</span><span class="s2">/roles/</span><span class="si">{</span><span class="n">role_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -5457,30 +5433,30 @@ Only returns messages within the range of the parameters passed.</p>
     </div>
 
   </div>
-                
-              
-              
-                
 
 
-              
+
+
+
+
+
             </article>
           </div>
         </div>
-        
+
           <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
             Back to top
           </a>
-        
+
       </main>
-      
-        
+
+
 <footer class="md-footer">
-  
+
     <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        
+
+
         <a href="../client/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Client" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
@@ -5494,51 +5470,51 @@ Only returns messages within the range of the parameters passed.</p>
             </div>
           </div>
         </a>
-      
-      
-        
-        <a href="../errors/" class="md-footer__link md-footer__link--next" aria-label="Next: Errors" rel="next">
+
+
+
+        <a href="../state/" class="md-footer__link md-footer__link--next" aria-label="Next: State" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Errors
+              State
             </div>
           </div>
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
           </div>
         </a>
-      
+
     </nav>
-  
+
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-footer-copyright">
-        
-        
+
+
           Made with
           <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
             Material for MkDocs
           </a>
-        
-        
+
+
       </div>
-      
+
     </div>
   </div>
 </footer>
-      
+
     </div>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     <script id="__config" type="application/json">{"base": "../..", "features": ["search.highlight", "search.sharing", "navigation.top", "navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.e99e714c.min.js", "version": null}</script>
-    
-    
+
+
       <script src="../../assets/javascripts/bundle.bc35569b.min.js"></script>
-      
-    
+
+
   </body>
 </html>

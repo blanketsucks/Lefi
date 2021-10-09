@@ -111,7 +111,7 @@ class Client:
         Returns:
             The decorated function after registering it as a listener.
 
-        Examples:
+        Example:
             ```py
             @client.on("message_create")
             async def on_message(message: lefi.Message) -> None:
@@ -126,6 +126,7 @@ class Client:
             @client.on("message_create")
             async def on_message2(message: lefi.Message) -> None:
                 print(message.content)
+            ```
 
         """
 
@@ -152,7 +153,7 @@ class Client:
         Returns:
             The decorated function after registering it as a listener.
 
-        Examples:
+        Example:
             ```py
             @client.once("ready")
             async def on_ready(client_user: lefi.User) -> None:
