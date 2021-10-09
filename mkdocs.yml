@@ -35,6 +35,8 @@ nav:
   - API-Reference:
     - Client: API-Reference/client.md
     - HTTPClient: API-Reference/http.md
+    - State: API-Reference/state.md
+    - Cache: API-Reference/cache.md
     - Errors: API-Reference/errors.md
 
 plugins:
