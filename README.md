@@ -1,4 +1,5 @@
 # Lefi
+[![Documentation Status](https://readthedocs.org/projects/lefi/badge/?version=latest)](https://lefi.readthedocs.io/en/latest/?badge=latest)
 A discord API wrapper focused on clean code, and usability
 
 ## Installation
