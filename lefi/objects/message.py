@@ -21,7 +21,9 @@ class DeletedMessage:
     def __init__(self, data: Dict) -> None:
         self.id: int = int(data["id"])
         self.channel_id: int = int(data["channel_id"])
-        self.guild_id: Optional[int] = int(data["guild_id"]) if "guild_id" in data else None
+        self.guild_id: Optional[int] = (
+            int(data["guild_id"]) if "guild_id" in data else None
+        )
 
 
 class Message:
@@ -51,18 +53,22 @@ class Message:
 
     @property
     def author(self) -> Union[User, Member]:
-        guild = self.guild
-        if guild is None:
+        if self.guild is None:
             return self._state.get_user(int(self._data["author"]["id"]))  # type: ignore
 
-        return guild.get_member(int(self._data["author"]["id"]))  # type: ignore
+        if author := self.guild.get_member(int(self._data["author"]["id"])):  # type: ignore
+            return author
+        else:
+            return self._state.add_user(self._data["author"])
 
     async def crosspost(self) -> Message:
         data = await self._state.http.crosspost_message(self.channel.id, self.id)
         return self._state.create_message(data, self.channel)
 
     async def add_reaction(self, reaction: str) -> None:
-        await self._state.http.create_reaction(channel_id=self.channel.id, message_id=self.id, emoji=reaction)
+        await self._state.http.create_reaction(
+            channel_id=self.channel.id, message_id=self.id, emoji=reaction
+        )
 
     async def remove_reaction(self, reaction: str, user: Snowflake = None) -> None:
         await self._state.http.delete_reaction(
