@@ -1,1 +1,1 @@
-::: lefi.objects.channel.DMChannel
+::: lefi.DMChannel

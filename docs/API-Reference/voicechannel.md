@@ -1,1 +1,1 @@
-::: lefi.objects.channel.VoiceChannel
+::: lefi.VoiceChannel

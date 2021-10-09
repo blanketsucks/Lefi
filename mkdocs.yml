@@ -40,7 +40,6 @@ nav:
     - Channel: API-Reference/channel.md
     - TextChannel: API-Reference/textchannel.md
     - VoiceChannel: API-Reference/voicechannel.md
-    - CategoryChannel: API-Reference/categorychannel.md
     - DMChannel: API-Reference/dmchannel.md
     - Cache: API-Reference/cache.md
     - Errors: API-Reference/errors.md

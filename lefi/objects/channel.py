@@ -15,35 +15,6 @@ if TYPE_CHECKING:
 __all__ = ("TextChannel", "DMChannel", "VoiceChannel", "CategoryChannel", "Channel")
 
 
-class Messageable:
-    def __init__(self, state: State):
-        self._state = state
-        self.id: int
-
-    async def send(
-        self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None
-    ) -> Message:
-        """
-        Sends a message to the channel.
-
-        Parameters:
-            content (Optional[str]): The content of the message.
-            embeds (Optional[List[lefi.Embed]]): The list of embeds to send with the message.
-
-        Returns:
-            The sent [lefi.Message][] instance.
-
-        """
-        embeds = [] if embeds is None else embeds
-
-        data = await self._state.client.http.send_message(
-            channel_id=self.id,
-            content=content,
-            embeds=[embed.to_dict() for embed in embeds],
-        )
-        return self._state.create_message(data, self)
-
-
 class Channel:
     """
     A class representing a discord channel.
@@ -108,13 +79,32 @@ class Channel:
         return [Overwrite(data) for data in self._data["permission_overwrites"]]
 
 
-class TextChannel(Channel, Messageable):
-    def __init__(self, state: State, data: Dict, guild: Guild):
-        super().__init__(state, data, guild)
-
+class TextChannel(Channel):
     """
     A class that represents a TextChannel.
     """
+    async def send(
+        self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None
+    ) -> Message:
+        """
+        Sends a message to the channel.
+
+        Parameters:
+            content (Optional[str]): The content of the message.
+            embeds (Optional[List[lefi.Embed]]): The list of embeds to send with the message.
+
+        Returns:
+            The sent [lefi.Message][] instance.
+
+        """
+        embeds = [] if embeds is None else embeds
+
+        data = await self._state.client.http.send_message(
+            channel_id=self.id,
+            content=content,
+            embeds=[embed.to_dict() for embed in embeds],
+        )
+        return self._state.create_message(data, self)
 
     async def fetch_message(self, message_id: int) -> Message:
         """
@@ -204,19 +194,41 @@ class CategoryChannel(Channel):
     pass
 
 
-class DMChannel(Messageable):
+class DMChannel:
     """
     A class that represents a Users DMChannel.
     """
 
     def __init__(self, state: State, data: Dict[str, Any]) -> None:
-        super().__init__(state)
         self._state = state
         self._data = data
         self._guild = None
 
     def __repr__(self) -> str:
         return f"<DMChannel id={self.id} type={self.type!r}>"
+
+    async def send(
+        self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None
+    ) -> Message:
+        """
+        Sends a message to the channel.
+
+        Parameters:
+            content (Optional[str]): The content of the message.
+            embeds (Optional[List[lefi.Embed]]): The list of embeds to send with the message.
+
+        Returns:
+            The sent [lefi.Message][] instance.
+
+        """
+        embeds = [] if embeds is None else embeds
+
+        data = await self._state.client.http.send_message(
+            channel_id=self.id,
+            content=content,
+            embeds=[embed.to_dict() for embed in embeds],
+        )
+        return self._state.create_message(data, self)
 
     @property
     def id(self) -> int:

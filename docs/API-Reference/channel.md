@@ -1,1 +1,1 @@
-::: lefi.objects.channel.Channel
+::: lefi.Channel
