@@ -208,8 +208,11 @@ class Client:
             @client.on("message_create")
             async def on_message(message: lefi.Message) -> None:
                 if message.content == "wait for next!":
-                    next_message = await client.wait_for("message_create", check=lambda msg: msg.content == "Hello!")
-                    await message.channel.send(f"got your message! `{next_message.content}`")
+                    next_message = await client.wait_for(
+                        "message_create",
+                        check=lambda msg: msg.author.id == 270700034985558017
+                    )
+                await message.channel.send(f"got your message! `{next_message.content}`")
             ```
 
         """
