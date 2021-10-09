@@ -66,7 +66,7 @@ class Client:
         """
 
         self.pub_key: Optional[str] = pub_key
-        self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_event_loop()
+        self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_running_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
         self._state: State = State(self, self.loop)
         self.ws: WebSocketClient = WebSocketClient(self, intents)
