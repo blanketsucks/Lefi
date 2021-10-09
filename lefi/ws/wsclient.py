@@ -46,7 +46,7 @@ class WebSocketClient:
         seq (int): The sequence received from `READY`.
 
     Danger:
-        This class is used behind the scenes. **THIS IS NOT MEANT TO BE TOUCHED.**. Doing so can cause bugs.
+        This class is used internally. **THIS IS NOT MEANT TO BE TOUCHED.**. Doing so can cause bugs.
 
     """
 

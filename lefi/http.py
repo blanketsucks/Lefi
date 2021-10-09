@@ -23,7 +23,7 @@ class HTTPClient:
         session (aiohttp.ClientSession): The [aiohttp.ClientSession][] to use for sending requests.
 
     Danger:
-        This class is used behind the scenes, **this is not intended to be called directly**.
+        This class is used internally, **this is not intended to be called directly**.
 
     """
 

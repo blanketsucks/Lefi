@@ -70,7 +70,7 @@ class State:
         http (lefi.HTTPClient): The [lefi.HTTPClient][] handling requests
 
     Danger:
-        This class is used behind the scenes. **It is not meant to called directly**
+        This class is used internally. **It is not meant to called directly**
 
     """
 
