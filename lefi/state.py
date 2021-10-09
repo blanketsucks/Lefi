@@ -69,7 +69,7 @@ class State:
         loop (asyncio.AbstractEventLoop): The [asyncio.AbstractEventLoop][] being used.
         http (lefi.HTTPClient): The [lefi.HTTPClient][] handling requests
 
-    Note:
+    Danger:
         This class is used behind the scenes. **It is not meant to called directly**
 
     """
