@@ -1,11 +1,46 @@
 from __future__ import annotations
 
 from enum import IntFlag
+from typing import Tuple, List, Optional
 
-__all__ = ("UserFlags", "Intents", "Permissions")
+__all__ = ("Flag", "ApplicationFlags", "MessageFlags", "SystemChannelFlags", "UserFlags", "Intents", "Permissions")
 
 
-class UserFlags(IntFlag):
+class Flag(IntFlag):
+    def items(self) -> List[Tuple[Optional[str], int]]:
+        return [(flag.name, flag.value) for flag in self.__class__ if self & flag]
+
+    def __iter__(self):
+        return iter(self.items())
+
+
+class ApplicationFlags(Flag):
+    GATEWAY_PRESENCE = 1 << 12
+    GATEWAY_PRESENCE_LIMITED = 1 << 13
+    GATEWAY_GUILD_MEMBERS = 1 << 14
+    GATEWAY_GUILD_MEMBERS_LIMITED = 1 << 15
+    VERIFICATION_PENDING_GUILD_LIMIT = 1 << 16
+    EMBEDDED = 1 << 17
+
+
+class MessageFlags(Flag):
+    CROSSPOSTED = 1 << 0
+    IS_CROSSPOST = 1 << 1
+    SUPPRESS_EMBEDS = 1 << 2
+    SOURCE_MESSAGE_DELETED = 1 << 3
+    URGENT = 1 << 4
+    HAS_THREAD = 1 << 5
+    EPHEMERAL = 1 << 6
+    LOADING = 1 << 7
+
+
+class SystemChannelFlags(Flag):
+    SUPPRESS_JOIN_NOTIFICATIONS = 1 << 0
+    SUPPRESS_PREMIUM_SUBSCRIPTIONS = 1 << 1
+    SUPPRESS_GUILD_REMINDER_NOTIFICATIONS = 1 << 2
+
+
+class UserFlags(Flag):
     NONE = 0
     EMPLOYEE = 1 << 0
     PARTNERED_SERVER_OWNER = 1 << 1
@@ -21,7 +56,8 @@ class UserFlags(IntFlag):
     VERIFIED_DEVELOPER = 1 << 17
     CERTIFIED_MODERATOR = 1 << 18
 
-class Intents(IntFlag):
+
+class Intents(Flag):
     NONE = 0
     GUILDS = 1 << 0
     GUILD_MEMBERS = 1 << 1
@@ -78,7 +114,7 @@ class Intents(IntFlag):
         )
 
 
-class Permissions(IntFlag):
+class Permissions(Flag):
     CREATE_INSTANT_INVITE = 1 << 0
     KICK_MEMBERS = 1 << 1
     BAN_MEMBERS = 1 << 2
