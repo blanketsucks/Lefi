@@ -19,7 +19,6 @@ from .http import HTTPClient
 from .state import State
 from .ws import WebSocketClient
 from .objects import Intents
-from .interactions import App
 
 if TYPE_CHECKING:
     from .objects import (
@@ -53,19 +52,15 @@ class Client:
         token: str,
         *,
         intents: Intents = None,
-        pub_key: Optional[str] = None,
         loop: Optional[asyncio.AbstractEventLoop] = None,
     ):
         """
         Parameters:
             token (str): The clients token, used for authorization (logging in, etc...) This is required.
             intents (Optional[lefi.Intents]): The intents to be used for the client.
-            pub_key (Optional[str]): The public key of the client. Only pass if you want interactions over HTTP.
             loop (Optional[asyncio.AbstractEventLoop]): The loop to use.
 
         """
-
-        self.pub_key: Optional[str] = pub_key
         self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_running_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
         self._state: State = State(self, self.loop)
@@ -189,12 +184,7 @@ class Client:
     async def start(self) -> None:
         """
         A method which calls [lefi.Client.login][] and [lefi.Client.connect][] in that order.
-        If `pub_key` is passed to the clients constructor it also creates an HTTP server to handle interactions.
         """
-        if self.pub_key:
-            self.server = App(self, self.pub_key)
-            await self.server.run()
-
         await asyncio.gather(self.login(), self.connect())
 
     async def wait_for(self, event: str, *, check: Callable[..., bool] = None, timeout: float = None) -> Any:
