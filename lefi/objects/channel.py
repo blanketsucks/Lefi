@@ -6,8 +6,6 @@ from .enums import ChannelType
 from .permissions import Overwrite
 from .embed import Embed
 
-from ..utils import MISSING
-
 if TYPE_CHECKING:
     from .user import User
     from ..state import State
@@ -61,10 +59,8 @@ class Channel:
 
 
 class TextChannel(Channel):
-    async def send(
-        self, content: str = MISSING, *, embeds: List[Embed] = MISSING
-    ) -> Message:
-        embeds = [] if embeds is MISSING else embeds
+    async def send(self, content: str = None, *, embeds: List[Embed] = None) -> Message:
+        embeds = [] if embeds is None else embeds
 
         data = await self._state.client.http.send_message(
             channel_id=self.id,
@@ -142,10 +138,8 @@ class DMChannel:
     def __repr__(self) -> str:
         return f"<DMChannel id={self.id} type={self.type!r}>"
 
-    async def send(
-        self, content: str = MISSING, *, embeds: List[Embed] = MISSING
-    ) -> Message:
-        embeds = [] if embeds is MISSING else embeds
+    async def send(self, content: str = None, *, embeds: List[Embed] = None) -> Message:
+        embeds = [] if embeds is None else embeds
 
         data = await self._state.client.http.send_message(
             channel_id=self.id,

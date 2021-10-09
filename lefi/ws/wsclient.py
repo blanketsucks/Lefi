@@ -9,8 +9,7 @@ import sys
 import logging
 import enum
 
-from ..utils import MISSING
-from ..objects import Intents
+from ..objects import Intents, User
 
 if typing.TYPE_CHECKING:
     from ..client import Client
@@ -35,10 +34,10 @@ class OpCodes(enum.IntFlag):
 
 
 class WebSocketClient:
-    def __init__(self, client: Client, intents: Intents = MISSING) -> None:
-        self.intents = Intents.default() if intents is MISSING else intents
-        self.ws: aiohttp.ClientWebSocketResponse = MISSING
-        self.heartbeat_delay: float = MISSING
+    def __init__(self, client: Client, intents: Intents = None) -> None:
+        self.intents = Intents.default() if intents is None else intents
+        self.ws: aiohttp.ClientWebSocketResponse = None  # type: ignore
+        self.heartbeat_delay: float = 0
         self.client: Client = client
         self.closed: bool = False
         self.seq: int = 0

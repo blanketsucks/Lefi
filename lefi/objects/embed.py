@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import datetime
 
-from ..utils import MISSING, update_payload
+from ..utils import update_payload
 
 __all__ = (
     "Embed",
@@ -18,7 +18,7 @@ __all__ = (
 
 
 class EmbedFooter:
-    def __init__(self, *, text: str, icon_url: str = MISSING) -> None:
+    def __init__(self, *, text: str, icon_url: str = None) -> None:
         self.text = text
         self.icon_url = icon_url
 
@@ -30,9 +30,7 @@ class EmbedFooter:
 
 
 class EmbedImage:
-    def __init__(
-        self, *, url: str, height: int = MISSING, width: int = MISSING
-    ) -> None:
+    def __init__(self, *, url: str, height: Optional[int] = None, width: Optional[int] = None) -> None:
         self.url = url
         self.height = height
         self.width = width
@@ -45,9 +43,7 @@ class EmbedImage:
 
 
 class EmbedVideo(EmbedImage):
-    def __init__(
-        self, *, url: str = MISSING, height: int = MISSING, width: int = MISSING
-    ) -> None:
+    def __init__(self, *, url: str, height: int = None, width: int = None) -> None:
         super().__init__(url=url, height=height, width=width)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -55,7 +51,7 @@ class EmbedVideo(EmbedImage):
 
 
 class EmbedProvider:
-    def __init__(self, *, name: str = MISSING, url: str = MISSING) -> None:
+    def __init__(self, *, name: str = None, url: str = None) -> None:
         self.name = name
         self.url = url
 
@@ -64,9 +60,7 @@ class EmbedProvider:
 
 
 class EmbedAuthor:
-    def __init__(
-        self, *, name: str, url: str = MISSING, icon_url: str = MISSING
-    ) -> None:
+    def __init__(self, *, name: str, url: str = None, icon_url: str = None) -> None:
         self.name = name
         self.url = url
         self.icon_url = icon_url
@@ -89,55 +83,47 @@ class Embed:
     def __init__(
         self,
         *,
-        title: str = MISSING,
-        description: str = MISSING,
-        color: int = MISSING,
-        url: str = MISSING,
-        timestamp: datetime.datetime = MISSING,
-        footer: EmbedFooter = MISSING,
-        image: EmbedImage = MISSING,
-        video: EmbedVideo = MISSING,
-        provider: EmbedProvider = MISSING,
-        author: EmbedAuthor = MISSING,
-        fields: List[EmbedField] = MISSING
+        title: str = None,
+        description: str = None,
+        color: int = None,
+        url: str = None,
+        timestamp: datetime.datetime = None,
+        footer: EmbedFooter = None,
+        image: EmbedImage = None,
+        video: EmbedVideo = None,
+        provider: EmbedProvider = None,
+        author: EmbedAuthor = None,
+        fields: List[EmbedField] = None
     ) -> None:
         self.title = title
         self.description = description
         self.color = color
         self.url = url
-        self.timestamp = (
-            timestamp.isoformat() if timestamp is not MISSING else timestamp
-        )
+        self.timestamp = timestamp.isoformat() if timestamp is not None else timestamp
         self.footer = footer
         self.image = image
         self.video = video
         self.provider = provider
         self.author = author
-        self.fields = [] if fields is MISSING else fields
+        self.fields = [] if fields is None else fields
 
-    def set_footer(self, *, text: str, icon_url: str = MISSING) -> Embed:
+    def set_footer(self, *, text: str, icon_url: str = None) -> Embed:
         self.footer = EmbedFooter(text=text, icon_url=icon_url)
         return self
 
-    def set_image(
-        self, *, url: str, height: int = MISSING, width: int = MISSING
-    ) -> Embed:
+    def set_image(self, *, url: str, height: int = None, width: int = None) -> Embed:
         self.image = EmbedImage(url=url, height=height, width=width)
         return self
 
-    def set_video(
-        self, *, url: str = MISSING, height: int = MISSING, width: int = MISSING
-    ) -> Embed:
+    def set_video(self, *, url: str, height: int = None, width: int = None) -> Embed:
         self.video = EmbedVideo(url=url, height=height, width=width)
         return self
 
-    def set_provider(self, *, name: str = MISSING, url: str = MISSING) -> Embed:
+    def set_provider(self, *, name: str = None, url: str = None) -> Embed:
         self.provider = EmbedProvider(name=name, url=url)
         return self
 
-    def set_author(
-        self, *, name: str, url: str = MISSING, icon_url: str = MISSING
-    ) -> Embed:
+    def set_author(self, *, name: str, url: str = None, icon_url: str = None) -> Embed:
         self.author = EmbedAuthor(name=name, url=url, icon_url=icon_url)
         return self
 
@@ -146,7 +132,7 @@ class Embed:
         return self
 
     def _to_dict(self, obj: Any):
-        return obj.to_dict() if obj is not MISSING else obj
+        return obj.to_dict() if obj is not None else obj
 
     def to_dict(self) -> Dict[str, Any]:
         payload: dict = {}
