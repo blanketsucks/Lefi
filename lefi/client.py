@@ -197,6 +197,41 @@ class Client:
 
         await asyncio.gather(self.login(), self.connect())
 
+    async def wait_for(self, event: str, *, check: Callable[..., bool] = None, timeout: float = None) -> Any:
+        """
+        Waits for an event to be dispatched that passes the check.
+
+        Parameters:
+            event (str): The event to wait for.
+            check (Callable[..., bool]): A function that takes the same args as the event, and returns a bool.
+            timeout (float): The time to wait before stopping.
+
+        Returns:
+            The return from a callback that matches with the event you are waiting for.
+
+        Note:
+            The check has to take in the same args as the event.
+            If no check is passed, everything will complete the check.
+
+        Example:
+            ```py
+            @client.on("message_create")
+            async def on_message(message: lefi.Message) -> None:
+                if message.content == "wait for next!":
+                    next_message = await client.wait_for("message_create", check=lambda msg: msg.content == "Hello!")
+                    await message.channel.send(f"got your message! `{next_message.content}`")
+            ```
+
+        """
+        future = self.loop.create_future()
+        futures = self.futures.setdefault(event, [])
+
+        if check is None:
+            check = lambda *_: True
+
+        futures.append((future, check))
+        return await asyncio.wait_for(future, timeout=timeout)
+
     def get_message(self, id: int) -> Optional[Message]:
         """
         Grabs a [lefi.Message][] instance if cached.
@@ -248,29 +283,3 @@ class Client:
 
         """
         return self._state.get_user(id)
-
-    async def wait_for(self, event: str, *, check: Callable[..., bool] = None, timeout: float = None) -> Any:
-        """
-        Waits for an event to be dispatched that passes the check.
-
-        Parameters:
-            event (str): The event to wait for.
-            check (Callable[..., bool]): A function that takes the same args as the event, and returns a bool.
-            timeout (float): The time to wait before stopping.
-
-        Returns:
-            The return from a callback that matches with the event you are waiting for.
-
-        Note:
-            The check has to take in the same args as the event.
-            If no check is passed, everything will complete the check.
-
-        """
-        future = self.loop.create_future()
-        futures = self.futures.setdefault(event, [])
-
-        if check is None:
-            check = lambda *args: True
-
-        futures.append((future, check))
-        return await asyncio.wait_for(future, timeout=timeout)
