@@ -95,7 +95,9 @@ class Client:
         callbacks = self.events.setdefault(name, [])
         callbacks.append(func)
 
-    def on(self, event_name: Optional[str] = None) -> Callable[..., Callable[..., Coroutine]]:
+    def on(
+        self, event_name: Optional[str] = None
+    ) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
 
@@ -119,7 +121,9 @@ class Client:
 
         return inner
 
-    def once(self, event_name: Optional[str] = None) -> Callable[..., Callable[..., Coroutine]]:
+    def once(
+        self, event_name: Optional[str] = None
+    ) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
         Similar to [lefi.Client.on][] but also cuts itself off the event after firing once.
@@ -199,7 +203,11 @@ class Client:
         """
         return self._state.get_guild(id)
 
-    def get_channel(self, id: int) -> Optional[Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]]:
+    def get_channel(
+        self, id: int
+    ) -> Optional[
+        Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]
+    ]:
         """
         Grabs a [lefi.Channel][] instance if cached.
 
@@ -225,7 +233,9 @@ class Client:
         """
         return self._state.get_user(id)
 
-    async def wait_for(self, event: str, *, check: Callable[..., bool] = None, timeout: float = None) -> Any:
+    async def wait_for(
+        self, event: str, *, check: Callable[..., bool] = None, timeout: float = None
+    ) -> Any:
         """
         Waits for an event to be dispatched that passes the check.
 

@@ -2,91 +2,91 @@
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
-
+    
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
-
+      
         <meta name="description" content="A discord API wrapper focused on clean code, and usability">
-
-
-
+      
+      
+      
         <meta name="author" content="an-dyy">
-
-
+      
+      
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.2">
-
-
-
+    
+    
+      
         <title>HTTPClient - Lefi</title>
-
-
-
+      
+    
+    
       <link rel="stylesheet" href="../../assets/stylesheets/main.24c991ad.min.css">
-
-
+      
+        
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
-
-
-
-
-
-
-
+        
+      
+    
+    
+    
+      
+        
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
-
-
-
-
+      
+    
+    
+    
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    
+      
 
 
-
-
-
-
-
+    
+    
   </head>
-
-
-
-
-
-
-
-
-
+  
+  
+    
+    
+      
+    
+    
+    
+    
     <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="purple">
-
-
+  
+    
     <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
-
+    
       <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
-
+    
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
-
-
+      
+        
         <a href="#lefi.http.HTTPClient" class="md-skip">
           Skip to content
         </a>
-
+      
     </div>
     <div data-md-component="announce">
-
+      
     </div>
-
-
+    
+      
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="Lefi" class="md-header__button md-logo" aria-label="Lefi" data-md-component="logo">
-
-
+      
+  
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
 
     </a>
@@ -102,42 +102,42 @@
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
-
+            
               HTTPClient
-
+            
           </span>
         </div>
       </div>
     </div>
-
+    
       <form class="md-header__option" data-md-component="palette">
-
-
-
+        
+          
+          
           <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
-
+          
             <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
             </label>
-
-
-
-
+          
+        
+          
+          
           <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
-
+          
             <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg>
             </label>
-
-
+          
+        
       </form>
-
-
-
+    
+    
+    
       <label class="md-header__button md-icon" for="__search">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
       </label>
-
+      
 <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
@@ -148,12 +148,12 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
       </label>
       <nav class="md-search__options" aria-label="Search">
-
+        
         <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
         </button>
       </nav>
-
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" data-md-scrollfix>
@@ -167,13 +167,13 @@
     </div>
   </div>
 </div>
-
-
+    
+    
       <div class="md-header__source">
-
+        
 <a href="https://github.com/an-dyy/Lefi/" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
-
+    
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
@@ -181,24 +181,24 @@
   </div>
 </a>
       </div>
-
+    
   </nav>
-
+  
 </header>
-
+    
     <div class="md-container" data-md-component="container">
-
-
-
-
-
+      
+      
+        
+          
+            
 <nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
   <div class="md-tabs__inner md-grid">
     <ul class="md-tabs__list">
-
-
-
-
+      
+        
+  
+  
 
 
   <li class="md-tabs__item">
@@ -207,10 +207,10 @@
     </a>
   </li>
 
-
-
-
-
+      
+        
+  
+  
 
 
   <li class="md-tabs__item">
@@ -219,60 +219,60 @@
     </a>
   </li>
 
+      
+        
+  
+  
+    
+  
 
 
-
-
-
-
-
-
-
-
-
+  
+  
+  
     <li class="md-tabs__item">
       <a href="../client/" class="md-tabs__link md-tabs__link--active">
         API-Reference
       </a>
     </li>
+  
 
-
-
+      
     </ul>
   </div>
 </nav>
-
-
-
+          
+        
+      
       <main class="md-main" data-md-component="main">
         <div class="md-main__inner md-grid">
-
-
-
+          
+            
+              
               <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
+                    
 
-
-
+  
 
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Lefi" class="md-nav__button md-logo" aria-label="Lefi" data-md-component="logo">
-
-
+      
+  
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
 
     </a>
     Lefi
   </label>
-
+  
     <div class="md-nav__source">
-
+      
 <a href="https://github.com/an-dyy/Lefi/" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
-
+    
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
@@ -280,356 +280,538 @@
   </div>
 </a>
     </div>
-
+  
   <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
 
-
-
-
-
-
-
-
+  
+  
+  
     <li class="md-nav__item">
       <a href="../.." class="md-nav__link">
         Home
       </a>
     </li>
+  
 
+    
+      
+      
+      
 
-
-
-
-
-
-
-
-
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../getting-started/" class="md-nav__link">
         Getting-Started
       </a>
     </li>
+  
 
+    
+      
+      
+      
 
-
-
-
-
-
-
-
-
-
-
-
+  
+  
+    
+  
+  
+    
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-
-
+      
+      
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
-
-
-
-
+      
+      
+      
+      
         <label class="md-nav__link" for="__nav_3">
           API-Reference
           <span class="md-nav__icon md-icon"></span>
         </label>
-
+      
       <nav class="md-nav" aria-label="API-Reference" data-md-level="1">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           API-Reference
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
-
-
-
-
-
-
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
       <a href="../client/" class="md-nav__link">
         Client
       </a>
     </li>
+  
 
-
-
-
-
-
-
-
-
-
-
+            
+          
+            
+              
+  
+  
+    
+  
+  
     <li class="md-nav__item md-nav__item--active">
-
+      
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-
-
-
+      
+      
+      
         <label class="md-nav__link md-nav__link--active" for="__toc">
           HTTPClient
           <span class="md-nav__icon md-icon"></span>
         </label>
-
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         HTTPClient
       </a>
-
-
+      
+        
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-
-
-
-
+  
+  
+  
+  
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient" class="md-nav__link">
     lefi.http.HTTPClient
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.__init__" class="md-nav__link">
     __init__()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.request" class="md-nav__link">
     request()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_bot_gateway" class="md-nav__link">
     get_bot_gateway()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.ws_connect" class="md-nav__link">
     ws_connect()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.login" class="md-nav__link">
     login()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel" class="md-nav__link">
     get_channel()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.edit_text_channel" class="md-nav__link">
     edit_text_channel()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.edit_voice_channel" class="md-nav__link">
     edit_voice_channel()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel_messages" class="md-nav__link">
     get_channel_messages()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel_message" class="md-nav__link">
     get_channel_message()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.send_message" class="md-nav__link">
     send_message()
   </a>
-
+  
 </li>
-
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.crosspost_message" class="md-nav__link">
+    crosspost_message()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.create_reaction" class="md-nav__link">
+    create_reaction()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.delete_reaction" class="md-nav__link">
+    delete_reaction()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.get_reactions" class="md-nav__link">
+    get_reactions()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.delete_all_reactions" class="md-nav__link">
+    delete_all_reactions()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.edit_message" class="md-nav__link">
+    edit_message()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.delete_message" class="md-nav__link">
+    delete_message()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.bulk_delete_messages" class="md-nav__link">
+    bulk_delete_messages()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.edit_channel_permissions" class="md-nav__link">
+    edit_channel_permissions()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.delete_channel_permissions" class="md-nav__link">
+    delete_channel_permissions()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.get_channel_invites" class="md-nav__link">
+    get_channel_invites()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.create_channel_invite" class="md-nav__link">
+    create_channel_invite()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.follow_news_channel" class="md-nav__link">
+    follow_news_channel()
+  </a>
+  
+</li>
+      
     </ul>
-
+  
 </nav>
-
+      
     </li>
+  
 
-
-
-
-
-
-
-
-
+            
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
       <a href="../errors/" class="md-nav__link">
         Errors
       </a>
     </li>
+  
 
-
-
-
+            
+          
         </ul>
       </nav>
     </li>
+  
 
-
-
+    
   </ul>
 </nav>
                   </div>
                 </div>
               </div>
-
-
-
+            
+            
+              
               <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
-
+                    
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-
-
-
-
+  
+  
+  
+  
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient" class="md-nav__link">
     lefi.http.HTTPClient
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.__init__" class="md-nav__link">
     __init__()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.request" class="md-nav__link">
     request()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_bot_gateway" class="md-nav__link">
     get_bot_gateway()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.ws_connect" class="md-nav__link">
     ws_connect()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.login" class="md-nav__link">
     login()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel" class="md-nav__link">
     get_channel()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.edit_text_channel" class="md-nav__link">
     edit_text_channel()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.edit_voice_channel" class="md-nav__link">
     edit_voice_channel()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel_messages" class="md-nav__link">
     get_channel_messages()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.get_channel_message" class="md-nav__link">
     get_channel_message()
   </a>
-
+  
 </li>
-
+      
         <li class="md-nav__item">
   <a href="#lefi.http.HTTPClient.send_message" class="md-nav__link">
     send_message()
   </a>
-
+  
 </li>
-
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.crosspost_message" class="md-nav__link">
+    crosspost_message()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.create_reaction" class="md-nav__link">
+    create_reaction()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.delete_reaction" class="md-nav__link">
+    delete_reaction()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.get_reactions" class="md-nav__link">
+    get_reactions()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.delete_all_reactions" class="md-nav__link">
+    delete_all_reactions()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.edit_message" class="md-nav__link">
+    edit_message()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.delete_message" class="md-nav__link">
+    delete_message()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.bulk_delete_messages" class="md-nav__link">
+    bulk_delete_messages()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.edit_channel_permissions" class="md-nav__link">
+    edit_channel_permissions()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.delete_channel_permissions" class="md-nav__link">
+    delete_channel_permissions()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.get_channel_invites" class="md-nav__link">
+    get_channel_invites()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.create_channel_invite" class="md-nav__link">
+    create_channel_invite()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.http.HTTPClient.follow_news_channel" class="md-nav__link">
+    follow_news_channel()
+  </a>
+  
+</li>
+      
     </ul>
-
+  
 </nav>
                   </div>
                 </div>
               </div>
-
-
+            
+          
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
-
-
+              
+                
                   <a href="https://github.com/an-dyy/Lefi/edit/master/docs/API-Reference/http.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
-
-
+                
+                
                   <h1>HTTPClient</h1>
-
+                
                 <div class="doc doc-object doc-class">
 
 <a id="lefi.http.HTTPClient"></a>
@@ -1487,7 +1669,9 @@ Only returns messages within the range of the parameters passed.</p>
 
     <span class="n">update_payload</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">around</span><span class="o">=</span><span class="n">around</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">after</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+    <span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -1555,7 +1739,9 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_channel_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_channel_message</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to get a specific message by ID.</span>
 
@@ -1567,7 +1753,9 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -1623,12 +1811,6 @@ Only returns messages within the range of the parameters passed.</p>
         <td><code>False</code></td>
       </tr>
       <tr>
-        <td><code>embed</code></td>
-        <td><code>Optional[List[Dict[str, Any]]]</code></td>
-        <td><p>The embed to show when sending the message.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
         <td><code>embeds</code></td>
         <td><code>Optional[List[Dict[str, Any]]]</code></td>
         <td><p>The list of embeds to send.</p></td>
@@ -1679,7 +1861,6 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        channel_id (int): The ID of the channel which to send the message in.</span>
 <span class="sd">        content (Optional[str]): The content of the message.</span>
 <span class="sd">        tts (bool): Whether or not to send the message with text-to-speech.</span>
-<span class="sd">        embed (Optional[List[Dict[str, Any]]]): The embed to show when sending the message.</span>
 <span class="sd">        embeds (Optional[List[Dict[str, Any]]]): The list of embeds to send.</span>
 <span class="sd">        message_reference (Optional[Dict[str, Any]]): The messages to reference when sending the message.</span>
 <span class="sd">        components (Optional[List[Dict[str, Any]]]): The components to attach to the message.</span>
@@ -1701,7 +1882,1320 @@ Only returns messages within the range of the parameters passed.</p>
         <span class="n">sticker_ids</span><span class="o">=</span><span class="n">sticker_ids</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.crosspost_message" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">crosspost_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">,</span> <span class="n">message_id</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to crosspost a message.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the channel to crosspost to.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>message_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the message which to crosspost.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>The data received after making the call.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">crosspost_message</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to crosspost a message.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID of the channel to crosspost to.</span>
+<span class="sd">        message_id (int): The ID of the message which to crosspost.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received after making the call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/crosspost&quot;</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.create_reaction" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_reaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">,</span> <span class="n">message_id</span><span class="p">,</span> <span class="n">emoji</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to add a reaction to a message.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the channel which the target message is in.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>message_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the message which to add the reaction to.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>emoji</code></td>
+        <td><code>str</code></td>
+        <td><p>The emoji which to add.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td><p>The data received from the API after making the call.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_reaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to add a reaction to a message.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID of the channel which the target message is in.</span>
+<span class="sd">        message_id (int): The ID of the message which to add the reaction to.</span>
+<span class="sd">        emoji (str): The emoji which to add.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received from the API after making the call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/reactions/</span><span class="si">{</span><span class="n">emoji</span><span class="si">}</span><span class="s2">/@me&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.delete_reaction" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">delete_reaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">,</span> <span class="n">message_id</span><span class="p">,</span> <span class="n">emoji</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to delete a reaction.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the channel which the target message is in.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>message_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the message.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>emoji</code></td>
+        <td><code>str</code></td>
+        <td><p>The emoji to remove from the message's reactions.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>user_id</code></td>
+        <td><code>Optional[int]</code></td>
+        <td><p>The ID of the user to remove from the reactions.</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>None</code></td>
+      <td><p>The data received from the API after making the call.</p></td>
+    </tr>
+  </tbody>
+</table>      <div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If no user_id is given it will delete the client's reaction.</p>
+</div>
+
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_reaction</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">user_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to delete a reaction.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID of the channel which the target message is in.</span>
+<span class="sd">        message_id (int): The ID of the message.</span>
+<span class="sd">        emoji (str): The emoji to remove from the message&#39;s reactions.</span>
+<span class="sd">        user_id (Optional[int]): The ID of the user to remove from the reactions.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received from the API after making the call.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        If no user_id is given it will delete the client&#39;s reaction.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">user_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/reactions/</span><span class="si">{</span><span class="n">emoji</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/reactions/</span><span class="si">{</span><span class="n">emoji</span><span class="si">}</span><span class="s2">/@me&quot;</span>
+
+    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.get_reactions" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_reactions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">,</span> <span class="n">message_id</span><span class="p">,</span> <span class="n">emoji</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to get a list of users who reacted to a message..</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the channel which the target message is in.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>message_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the message.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>emoji</code></td>
+        <td><code>str</code></td>
+        <td><p>The emoji from which to grab users from.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>after</code></td>
+        <td><code>int</code></td>
+        <td><p>Grab users after this user ID.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>limit</code></td>
+        <td><code>int</code></td>
+        <td><p>The max amount of users to grab.</p></td>
+        <td><code>25</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>The data received from the API after making the call.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_reactions</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">after</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to get a list of users who reacted to a message..</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID of the channel which the target message is in.</span>
+<span class="sd">        message_id (int): The ID of the message.</span>
+<span class="sd">        emoji (str): The emoji from which to grab users from.</span>
+<span class="sd">        after (int): Grab users after this user ID.</span>
+<span class="sd">        limit (int): The max amount of users to grab.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received from the API after making the call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">}</span>
+    <span class="n">update_payload</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">after</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/reactions/</span><span class="si">{</span><span class="n">emoji</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.delete_all_reactions" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">delete_all_reactions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">,</span> <span class="n">message_id</span><span class="p">,</span> <span class="n">emoji</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to remove all reactions of a message.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The channel which the target message is in.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>message_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the message.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>emoji</code></td>
+        <td><code>str</code></td>
+        <td><p>The reaction to remove.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>The data received from the API After making the call.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_all_reactions</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to remove all reactions of a message.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The channel which the target message is in.</span>
+<span class="sd">        message_id (int): The ID of the message.</span>
+<span class="sd">        emoji (str): The reaction to remove.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received from the API After making the call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/reactions/</span><span class="si">{</span><span class="n">emoji</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.edit_message" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">edit_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">,</span> <span class="n">message_id</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">embeds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allowed_mentions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attachments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to edit a message.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the channel which the target message is in.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>message_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the message.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>content</code></td>
+        <td><code>Optional[str]</code></td>
+        <td><p>The new content of the message.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>embeds</code></td>
+        <td><code>Optional[List[Dict[str, Any]]]</code></td>
+        <td><p>The new embeds of the message.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>flags</code></td>
+        <td><code>Optional[int]</code></td>
+        <td><p>The new flags of the message.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>allowed_mentions</code></td>
+        <td><code>Optional[int]</code></td>
+        <td><p>The new allowed mentions of the message.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>attachments</code></td>
+        <td><code>Optional[List[Dict[str, Any]]]</code></td>
+        <td><p>The new attachments of the message.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>components</code></td>
+        <td><code>Optional[List[Dict[str, Any]]]</code></td>
+        <td><p>The new components of the message.</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>The data received from the API after making the call.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">edit_message</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">content</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">embeds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">flags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">allowed_mentions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">attachments</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">components</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to edit a message.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID of the channel which the target message is in.</span>
+<span class="sd">        message_id (int): The ID of the message.</span>
+<span class="sd">        content (Optional[str]): The new content of the message.</span>
+<span class="sd">        embeds (Optional[List[Dict[str, Any]]]): The new embeds of the message.</span>
+<span class="sd">        flags (Optional[int]): The new flags of the message.</span>
+<span class="sd">        allowed_mentions (Optional[int]): The new allowed mentions of the message.</span>
+<span class="sd">        attachments (Optional[List[Dict[str, Any]]]): The new attachments of the message.</span>
+<span class="sd">        components (Optional[List[Dict[str, Any]]]): The new components of the message.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received from the API after making the call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">payload</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">update_payload</span><span class="p">(</span>
+        <span class="n">payload</span><span class="p">,</span>
+        <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span>
+        <span class="n">embeds</span><span class="o">=</span><span class="n">embeds</span><span class="p">,</span>
+        <span class="n">flags</span><span class="o">=</span><span class="n">flags</span><span class="p">,</span>
+        <span class="n">allowed_mentions</span><span class="o">=</span><span class="n">allowed_mentions</span><span class="p">,</span>
+        <span class="n">attachments</span><span class="o">=</span><span class="n">attachments</span><span class="p">,</span>
+        <span class="n">components</span><span class="o">=</span><span class="n">components</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;PATCH&quot;</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.delete_message" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">delete_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">,</span> <span class="n">message_id</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to delete a message.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the channel which the message is in.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>message_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID Of the message.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>The data received from the API after making the call.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to delete a message.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID of the channel which the message is in.</span>
+<span class="sd">        message_id (int): The ID Of the message.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received from the API after making the call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.bulk_delete_messages" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">bulk_delete_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">,</span> <span class="n">message_ids</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to delete multiple messages.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the channel which the message is in.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>message_ids</code></td>
+        <td><code>List[int]</code></td>
+        <td><p>The list of ID's representing messages of which to delete.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>The data received from the API after making the call.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">bulk_delete_messages</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to delete multiple messages.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID of the channel which the message is in.</span>
+<span class="sd">        message_ids (List[int]): The list of ID&#39;s representing messages of which to delete.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received from the API after making the call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">message_ids</span><span class="p">}</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/bulk-delete&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.edit_channel_permissions" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">edit_channel_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">,</span> <span class="n">overwrite_id</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">allow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deny</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to edit a channels permissions.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the channel.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>overwrite_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the overwrite.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>allow</code></td>
+        <td><code>Optional[int]</code></td>
+        <td><p>The bitwise value of all allowed permissions.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>deny</code></td>
+        <td><code>Optional[int]</code></td>
+        <td><p>The bitwise value of all denied permissison.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>type</code></td>
+        <td><code>Optional[int]</code></td>
+        <td><p>The type, 0 being a role and 1 being a member.</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>The data received from the API after making the call.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">edit_channel_permissions</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">overwrite_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">allow</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">deny</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to edit a channels permissions.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID of the channel.</span>
+<span class="sd">        overwrite_id (int): The ID of the overwrite.</span>
+<span class="sd">        allow (Optional[int]): The bitwise value of all allowed permissions.</span>
+<span class="sd">        deny (Optional[int]): The bitwise value of all denied permissison.</span>
+<span class="sd">        type (Optional[int]): The type, 0 being a role and 1 being a member.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received from the API after making the call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">payload</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">update_payload</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">allow</span><span class="o">=</span><span class="n">allow</span><span class="p">,</span> <span class="n">deny</span><span class="o">=</span><span class="n">deny</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/permissions/</span><span class="si">{</span><span class="n">overwrite_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.delete_channel_permissions" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">delete_channel_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">,</span> <span class="n">overwrite_id</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to delete an overwrite from a channel.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the channel.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>overwrite_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the overwrite.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>The data received from the API after making the call.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_channel_permissions</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">overwrite_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to delete an overwrite from a channel.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID of the channel.</span>
+<span class="sd">        overwrite_id (int): The ID of the overwrite.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received from the API after making the call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/permissions/</span><span class="si">{</span><span class="n">overwrite_id</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.get_channel_invites" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_channel_invites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to get a channels invites.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the channel.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>The data received from the API after making the call.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_channel_invites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to get a channels invites.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID of the channel.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received from the API after making the call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/invites&quot;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.create_channel_invite" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_channel_invite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_age</span><span class="o">=</span><span class="mi">86400</span><span class="p">,</span> <span class="n">max_uses</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">temporary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_user_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_application_id</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to create an invite.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the channel.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>max_age</code></td>
+        <td><code>int</code></td>
+        <td><p>The max age of the invite.</p></td>
+        <td><code>86400</code></td>
+      </tr>
+      <tr>
+        <td><code>max_uses</code></td>
+        <td><code>int</code></td>
+        <td><p>The max uses of the invite. 0 if unlimited.</p></td>
+        <td><code>0</code></td>
+      </tr>
+      <tr>
+        <td><code>temporary</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether or not the invite is temporary.</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>unique</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether or not the invite is unique.</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>target_type</code></td>
+        <td><code>Optional[int]</code></td>
+        <td><p>The type of the invite. For voice channels.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>target_user_id</code></td>
+        <td><code>Optional[int]</code></td>
+        <td><p>The ID of the user whose stream to invite to. For voice channels.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>target_application_id</code></td>
+        <td><code>Optional[int]</code></td>
+        <td><p>The ID of embedded application to invite from. For target type 2.</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>The data received from the API after making the call.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_channel_invite</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">max_age</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">86400</span><span class="p">,</span>
+    <span class="n">max_uses</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">temporary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">target_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">target_user_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">target_application_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to create an invite.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID of the channel.</span>
+<span class="sd">        max_age (int): The max age of the invite.</span>
+<span class="sd">        max_uses (int): The max uses of the invite. 0 if unlimited.</span>
+<span class="sd">        temporary (bool): Whether or not the invite is temporary.</span>
+<span class="sd">        unique (bool): Whether or not the invite is unique.</span>
+<span class="sd">        target_type (Optional[int]): The type of the invite. For voice channels.</span>
+<span class="sd">        target_user_id (Optional[int]): The ID of the user whose stream to invite to. For voice channels.</span>
+<span class="sd">        target_application_id (Optional[int]): The ID of embedded application to invite from. For target type 2.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received from the API after making the call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;max_age&quot;</span><span class="p">:</span> <span class="n">max_age</span><span class="p">,</span>
+        <span class="s2">&quot;max_uses&quot;</span><span class="p">:</span> <span class="n">max_uses</span><span class="p">,</span>
+        <span class="s2">&quot;temporary&quot;</span><span class="p">:</span> <span class="n">temporary</span><span class="p">,</span>
+        <span class="s2">&quot;unique&quot;</span><span class="p">:</span> <span class="n">unique</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">update_payload</span><span class="p">(</span>
+        <span class="n">payload</span><span class="p">,</span>
+        <span class="n">target_type</span><span class="o">=</span><span class="n">target_type</span><span class="p">,</span>
+        <span class="n">target_user_id</span><span class="o">=</span><span class="n">target_user_id</span><span class="p">,</span>
+        <span class="n">target_application_id</span><span class="o">=</span><span class="n">target_application_id</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/invites&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.http.HTTPClient.follow_news_channel" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">follow_news_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">,</span> <span class="n">webhook_channel_id</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Makes an API call to follow a news channel to send messages to a target channel.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID Of the channel.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>webhook_channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The target channel.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>The data received from the API after making the call.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">follow_news_channel</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">webhook_channel_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes an API call to follow a news channel to send messages to a target channel.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID Of the channel.</span>
+<span class="sd">        webhook_channel_id (int): The target channel.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The data received from the API after making the call.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;webhook_channel_id&quot;</span><span class="p">:</span> <span class="n">webhook_channel_id</span><span class="p">}</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/followers/@me&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
+    <span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -1735,48 +3229,35 @@ Only returns messages within the range of the parameters passed.</p>
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   </div>
 
     </div>
 
   </div>
+                
+              
+              
+                
 
 
-
-
-
-
-
+              
             </article>
           </div>
         </div>
-
+        
           <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
             Back to top
           </a>
-
+        
       </main>
-
-
+      
+        
 <footer class="md-footer">
-
+  
     <nav class="md-footer__inner md-grid" aria-label="Footer">
-
-
+      
+        
         <a href="../client/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Client" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
@@ -1790,9 +3271,9 @@ Only returns messages within the range of the parameters passed.</p>
             </div>
           </div>
         </a>
-
-
-
+      
+      
+        
         <a href="../errors/" class="md-footer__link md-footer__link--next" aria-label="Next: Errors" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
@@ -1806,35 +3287,35 @@ Only returns messages within the range of the parameters passed.</p>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
           </div>
         </a>
-
+      
     </nav>
-
+  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-footer-copyright">
-
-
+        
+        
           Made with
           <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
             Material for MkDocs
           </a>
-
-
+        
+        
       </div>
-
+      
     </div>
   </div>
 </footer>
-
+      
     </div>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     <script id="__config" type="application/json">{"base": "../..", "features": ["search.highlight", "search.sharing", "navigation.top", "navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.e99e714c.min.js", "version": null}</script>
-
-
+    
+    
       <script src="../../assets/javascripts/bundle.bc35569b.min.js"></script>
-
-
+      
+    
   </body>
 </html>
