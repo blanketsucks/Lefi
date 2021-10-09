@@ -95,9 +95,7 @@ class Client:
         callbacks = self.events.setdefault(name, [])
         callbacks.append(func)
 
-    def on(
-        self, event_name: Optional[str] = None
-    ) -> Callable[..., Callable[..., Coroutine]]:
+    def on(self, event_name: Optional[str] = None) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
 
@@ -113,6 +111,22 @@ class Client:
         Returns:
             The decorated function after registering it as a listener.
 
+        Examples:
+            ```py
+            @client.on("message_create")
+            async def on_message(message: lefi.Message) -> None:
+                await message.channel.send("Got your message!")
+            ```
+
+            ```py
+            @client.on("message_create")
+            async def on_message(message: lefi.Message) -> None:
+                await message.channel.send("Got your message!")
+
+            @client.on("message_create")
+            async def on_message2(message: lefi.Message) -> None:
+                print(message.content)
+
         """
 
         def inner(func: Callable[..., Coroutine]) -> Callable[..., Coroutine]:
@@ -121,9 +135,7 @@ class Client:
 
         return inner
 
-    def once(
-        self, event_name: Optional[str] = None
-    ) -> Callable[..., Callable[..., Coroutine]]:
+    def once(self, event_name: Optional[str] = None) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
         Similar to [lefi.Client.on][] but also cuts itself off the event after firing once.
@@ -139,6 +151,13 @@ class Client:
 
         Returns:
             The decorated function after registering it as a listener.
+
+        Examples:
+            ```py
+            @client.once("ready")
+            async def on_ready(client_user: lefi.User) -> None:
+                print(f"logged in as {client_user.username}")
+            ```
 
         """
 
@@ -203,11 +222,7 @@ class Client:
         """
         return self._state.get_guild(id)
 
-    def get_channel(
-        self, id: int
-    ) -> Optional[
-        Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]
-    ]:
+    def get_channel(self, id: int) -> Optional[Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]]:
         """
         Grabs a [lefi.Channel][] instance if cached.
 
@@ -233,9 +248,7 @@ class Client:
         """
         return self._state.get_user(id)
 
-    async def wait_for(
-        self, event: str, *, check: Callable[..., bool] = None, timeout: float = None
-    ) -> Any:
+    async def wait_for(self, event: str, *, check: Callable[..., bool] = None, timeout: float = None) -> Any:
         """
         Waits for an event to be dispatched that passes the check.
 
