@@ -681,15 +681,50 @@ class HTTPClient:
         """
         return await self.request("GET", f"/channels/{channel_id}/pins")
 
-    async def pin_message(self, channel_id: int, message_id: int):
+    async def pin_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call to pin a message.
+
+        Parameters:
+            channel_id (int): The ID of the channel where the message is.
+            message_id (int): The ID of the message.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         return await self.request("PUT", f"/channels/{channel_id}/pins/{message_id}")
 
-    async def unpin_message(self, channel_id: int, message_id: int):
+    async def unpin_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call to unpin a message.
+
+        Parameters:
+            channel_id (int): The ID Of the channel where the message is.
+            message_id (int): The ID of the message.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         return await self.request("DELETE", f"/channels/{channel_id}/pins/{message_id}")
 
     async def start_thread_with_message(
         self, channel_id: int, message_id: int, *, name: str, auto_archive_duration: int
-    ):
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to start a thread with a message.
+
+        Parameters:
+            channel_id (int): The ID of the channel which the message is in.
+            message_id (int): The ID Of the message.
+            name (str): The name of the thread.
+            auto_archive_duration (int): The time it takes to auto archive the thread.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         payload = {"name": name, "auto_archive_duration": auto_archive_duration}
         return await self.request(
             method="POST",
@@ -703,9 +738,23 @@ class HTTPClient:
         *,
         name: str,
         auto_archive_duration: int,
-        type: int = None,
-        invitable: bool = None,
-    ):
+        type: Optional[int] = None,
+        invitable: Optional[bool] = None,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to start a thread without a message.
+
+        Parameters:
+            channel_id (int): The ID of the channel where the thread will be created.
+            name (str): The name of the thread.
+            auto_archive_duration (int): The time it takes to auto archive the thread.
+            type (int): The type of the thread to create.
+            invitable (bool): Whether or not members can invite other members to the thread. Only in private threads.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         payload = {"name": name, "auto_archive_duration": auto_archive_duration}
         update_payload(payload, type=type, invitable=invitable)
 
@@ -713,49 +762,148 @@ class HTTPClient:
             method="POST", path=f"/channels/{channel_id}/threads", json=payload
         )
 
-    async def join_thread(self, channel_id: int):
+    async def join_thread(self, channel_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call which makes the client join the given thread.
+
+        Parameters:
+            channel_id (int): The ID of the thread.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         return await self.request("PUT", f"/channels/{channel_id}/thread-members/@me")
 
-    async def add_thread_member(self, channel_id: int, user_id: int):
+    async def add_thread_member(self, channel_id: int, user_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call which adds another member to the thread.
+
+        Parameters:
+            channel_id (int): The ID of the thread.
+            user_id (int): The ID of the user to add.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         return await self.request(
             "PUT", f"/channels/{channel_id}/thread-members/{user_id}"
         )
 
-    async def leave_thread(self, channel_id: int):
+    async def leave_thread(self, channel_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call which makes the client leave the thread.
+
+        Parameters:
+            channel_id (int): The ID of the thread.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         return await self.request(
             "DELETE", f"/channels/{channel_id}/thread-members/@me"
         )
 
-    async def remove_thread_member(self, channel_id: int, user_id: int):
+    async def remove_thread_member(
+        self, channel_id: int, user_id: int
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call which removes a member from the thread.
+
+        Parameters:
+            channel_id (int): The ID of the thread.
+            user_id (int): The ID of the user to remove.
+
+        Returns:
+            The data received from the API after making the call
+
+        """
         return await self.request(
             "DELETE", f"/channels/{channel_id}/thread-members/{user_id}"
         )
 
-    async def list_thread_members(self, channel_id: int):
+    async def list_thread_members(self, channel_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call to get all of the members of a thread.
+
+        Parameters:
+            channel_id (int): The ID of the thread.
+
+        Returns:
+            The data received from the API after making the call
+
+        """
         return await self.request("GET", f"/channels/{channel_id}/thread-members")
 
-    async def list_active_threads(self, channel_id: int):
-        return await self.request("GET", f"/channels/{channel_id}/threads/active")
-
     async def list_public_archived_threads(
-        self, channel_id: int, *, before: int = None, limit: int = None
-    ):
+        self,
+        channel_id: int,
+        *,
+        before: Optional[int] = None,
+        limit: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call which list all the public archived threads in the channel.
+
+        Parameters:
+            channel_id (int): The ID of the channel which the threads are inside of.
+            before (Optional[int]): Grab threads before this time.
+            limit (Optional[int]): The amount of threads to grab.
+
+        Returns:
+            The data received from the API after making the call
+
+        """
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
             "GET", f"/channels/{channel_id}/threads/archived/public", params=params
         )
 
     async def list_private_archived_threads(
-        self, channel_id: int, *, before: int = None, limit: int = None
+        self,
+        channel_id: int,
+        *,
+        before: Optional[int] = None,
+        limit: Optional[int] = None,
     ):
+        """
+        Makes an API call which list all the private archived threads in the channel.
+
+        Parameters:
+            channel_id (int): The ID of the channel which the threads are inside of.
+            before (Optional[int]): Grab threads before this time.
+            limit (Optional[int]): The amount of threads to grab.
+
+        Returns:
+            The data received from the API after making the call
+
+        """
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
             "GET", f"/channels/{channel_id}/threads/archived/private", params=params
         )
 
     async def list_joined_private_archived_threads(
-        self, channel_id: int, *, before: int = None, limit: int = None
-    ):
+        self,
+        channel_id: int,
+        *,
+        before: Optional[int] = None,
+        limit: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call which list all the private archived threads in the channel which the client has joined.
+
+        Parameters:
+            channel_id (int): The ID of the channel which the threads are inside of.
+            before (Optional[int]): Grab threads before this time.
+            limit (Optional[int]): The amount of threads to grab.
+
+        Returns:
+            The data received from the API after making the call
+
+        """
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
             "GET",
@@ -763,10 +911,31 @@ class HTTPClient:
             params=params,
         )
 
-    async def list_guild_emojis(self, guild_id: int):
+    async def list_guild_emojis(self, guild_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call to get a list of the guilds emojis.
+
+        Parameters:
+            guild_id (int): The ID of the guild to grab from.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         return await self.request("GET", f"/guilds/{guild_id}/emojis")
 
-    async def get_guild_emoji(self, guild_id: int, emoji_id: int):
+    async def get_guild_emoji(self, guild_id: int, emoji_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call to get an emoji from the guild.
+
+        Parameters:
+            guild_id (int): The ID of the guild to grab from.
+            emoji_id (int): The ID of the emoji to get.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         return await self.request("GET", f"/guilds/{guild_id}/emojis/{emoji_id}")
 
     async def create_guild_emoji(
@@ -775,8 +944,21 @@ class HTTPClient:
         *,
         name: str,
         image: str,
-        roles: List[int] = None,
-    ) -> dict:
+        roles: Optional[List[int]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to create an emoji.
+
+        Parameters:
+            guild_id (int): The ID of the guild to create the emoji in.
+            name (str): The name of the emoji.
+            image (str): The image of the emoji.
+            roles (Optional[List[int]]): The list of roles that can use this emoji.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         payload = {
             "name": name,
             "image": image,
@@ -788,8 +970,26 @@ class HTTPClient:
         )
 
     async def modify_guild_emoji(
-        self, guild_id: int, emoji_id: int, *, name: str, roles: List[int] = None
-    ) -> dict:
+        self,
+        guild_id: int,
+        emoji_id: int,
+        *,
+        name: str,
+        roles: Optional[List[int]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to edit an emoji.
+
+        Parameters:
+            guild_id (int): The ID of the guild where the emoji is.
+            emoji_id (int): The ID of the emoji.
+            name (str): The new name of the emoji.
+            roles (Optional[List[int]]): The new list of roles that can use this emoji.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         payload = {
             "name": name,
         }
@@ -799,10 +999,31 @@ class HTTPClient:
             method="PATCH", path=f"/guilds/{guild_id}/emojis/{emoji_id}", json=payload
         )
 
-    async def delete_guild_emoji(self, guild_id: int, emoji_id: int):
+    async def delete_guild_emoji(self, guild_id: int, emoji_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call which deletes an emoji.
+
+        Parameters:
+            guild_id (int): The ID of the guild where the emoji is in.
+            emoji_id (int): The ID of the emoji to delete.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         return await self.request("DELETE", f"/guilds/{guild_id}/emojis/{emoji_id}")
 
     async def create_dm_channel(self, recipient_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call which creates a DM channel to a user.
+
+        Parameters:
+            recipient_id (int): The ID of the user which to open the DM channel to.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         payload = {"recipient_id": recipient_id}
         return await self.request("POST", "/users/@me/channels", json=payload)
 
@@ -811,12 +1032,28 @@ class HTTPClient:
         guild_id: int,
         role_id: int,
         *,
-        name: str = None,
-        permissions: int = None,
-        color: int = None,
-        hoist: bool = None,
-        mentionable: bool = None,
+        name: Optional[str] = None,
+        permissions: Optional[int] = None,
+        color: Optional[int] = None,
+        hoist: Optional[bool] = None,
+        mentionable: Optional[bool] = None,
     ) -> Dict[str, Any]:
+        """
+        Makes an API call which edits a role.
+
+        Parameters:
+            guild_id (int): The ID of the guild where the role is.
+            role_id (int): The ID of the role.
+            name (Optional[str]): The new name of the role.
+            permissions (Optional[int]): The new permissions of the role.
+            color (Optional[int]): The new color of the role.
+            hoist (Optional[bool]): Whether or not to hoist the role.
+            mentionable (Optional[bool]): Whether or not the role should be mentionable.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         payload = update_payload(
             {},
             name=name,
@@ -830,5 +1067,16 @@ class HTTPClient:
             method="PATCH", path=f"/guilds/{guild_id}/roles/{role_id}", json=payload
         )
 
-    async def delete_guild_role(self, guild_id: int, role_id: int):
+    async def delete_guild_role(self, guild_id: int, role_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call which deletes a role.
+
+        Parameters:
+            guild_id (int): The ID of the guild where the role is.
+            role_id (int): The ID of the role.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
         return await self.request("DELETE", f"/guilds/{guild_id}/roles/{role_id}")
