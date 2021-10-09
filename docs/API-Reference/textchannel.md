@@ -1,0 +1,1 @@
+::: lefi.objects.channel.TextChannel
