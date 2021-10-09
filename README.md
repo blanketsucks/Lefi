@@ -6,8 +6,9 @@ A discord API wrapper focused on clean code, and usability
 1. Poetry
 
    ```
-   poetry add git+https://github.com/an-dyy/Lefi.git
+   poetry add git+https://github.com/an-dyy/Lefi.git --no-dev
    ```
+    *Note: if you plan on contributing, omit the `--no-dev` flag.*
 
 2. Pip
    ```
@@ -29,6 +30,10 @@ async def main() -> None:
     )  # NOTE: I'm on linux so I can just export, windows might need a `.env`
     client = lefi.Client(token)  # type: ignore
 
+    @client.once("ready")
+    async def on_ready(client_user: lefi.User) -> None:
+        print(f"LOGGED IN AS {client_user.id}")
+
     @client.on("message_create")
     async def message_create(message: lefi.Message) -> None:
         print(message)
@@ -40,7 +45,7 @@ asyncio.run(main())
 ```
 
 ## Documentation
-*Coming soon...*
+[Here!](https://an-dyy.github.io/Lefi)
 
 ## Contributing
 1. If you plan on contributing please open an issue beforehand

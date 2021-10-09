@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Union, Dict, Optional
 
-from ..utils import Snowflake, MISSING
+from ..utils import Snowflake
 
 if TYPE_CHECKING:
     from .channel import TextChannel, DMChannel
@@ -21,9 +21,7 @@ class DeletedMessage:
     def __init__(self, data: Dict) -> None:
         self.id: int = int(data["id"])
         self.channel_id: int = int(data["channel_id"])
-        self.guild_id: Optional[int] = (
-            int(data["guild_id"]) if "guild_id" in data else None
-        )
+        self.guild_id: Optional[int] = int(data["guild_id"]) if "guild_id" in data else None
 
 class Message:
     def __init__(self, state: State, data: Dict, channel: Channels):
@@ -63,16 +61,14 @@ class Message:
         return self._state.create_message(data, self.channel)
 
     async def add_reaction(self, reaction: str) -> None:
-        await self._state.http.create_reaction(
-            channel_id=self.channel.id, message_id=self.id, emoji=reaction
-        )
+        await self._state.http.create_reaction(channel_id=self.channel.id, message_id=self.id, emoji=reaction)
 
-    async def remove_reaction(self, reaction: str, user: Snowflake = MISSING) -> None:
+    async def remove_reaction(self, reaction: str, user: Snowflake = None) -> None:
         await self._state.http.delete_reaction(
             channel_id=self.channel.id,
             message_id=self.id,
             emoji=reaction,
-            user_id=user.id,
+            user_id=user.id if user is not None else user,
         )
 
     async def delete(self) -> None:

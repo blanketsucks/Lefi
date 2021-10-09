@@ -1,12 +1,18 @@
 [tool.poetry]
 name = "lefi"
 version = "0.1.0"
-description = ""
+description = "A discord API wrapper focused on clean code, and usability"
 authors = ["an-dyy <yrisxl@gmail.com>"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/an-dyy/Lefi"
+repository = "https://github.com/an-dyy/Lefi"
+keywords = ["discord", "discordbot"]
+packages = [{include = "lefi"}]
+include = ["LICENSE"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 aiohttp = "^3.7.4"
 PyNaCl = "^1.4.0"
 
@@ -16,6 +22,9 @@ black = "^21.7b0"
 mypy = "^0.910"
 pytest = "^6.2.5"
 pre-commit = "^2.15.0"
+mkdocstrings = "^0.16.2"
+mkdocs = "^1.2.2"
+mkdocs-material = "^7.3.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
