@@ -40,7 +40,7 @@ asyncio.run(main())
 ```
 
 ## Documentation
-*Coming soon...*
+[Here!](https://an-dyy.github.io/Lefi)
 
 ## Contributing
 1. If you plan on contributing please open an issue beforehand
