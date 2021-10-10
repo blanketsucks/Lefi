@@ -87,6 +87,20 @@ class TextChannel(Channel):
     def __init__(self, state: State, data: Dict, guild: Guild):
         super().__init__(state, data, guild)
 
+    async def fetch_history(self, **kwargs) -> List[Message]:
+        """
+        Makes an API call to grab messages from the channel.
+
+        Parameters:
+            **kwargs (Any): The option to pass to [lefi.HTTPClient.get_channel_messages][].
+
+        Returns:
+            A list of the fetched [lefi.Message][] instances.
+
+        """
+        data = await self._state.http.get_channel_messages(self.id, **kwargs)
+        return [self._state.create_message(payload, self) for payload in data]  # type: ignore
+
     async def edit(self, **kwargs) -> TextChannel:
         """
         Edits the channel.

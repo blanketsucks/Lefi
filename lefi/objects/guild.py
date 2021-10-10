@@ -47,7 +47,7 @@ class Guild:
     async def add_role(self, name: str, **kwargs) -> Role:
         """
         Creates a new role in the guild.
-        
+
         Parameters:
             name (str): The name of the role.
             **kwargs (Any): Extra options to pass to [lefi.HTTPClient.create_guild_role][].
