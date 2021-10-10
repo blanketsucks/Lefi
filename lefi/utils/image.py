@@ -12,7 +12,7 @@ def get_mimetype(data: bytes):
     if not type_:
         raise ValueError("Unable to determine image type")
 
-    if not type_ in ("jpeg", "png", "gif"):
+    if type_ not in ("jpeg", "png", "gif"):
         raise ValueError("Unsupported image type")
 
     return f"image/{type_}"
