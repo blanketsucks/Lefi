@@ -1,1 +1,1 @@
-::: lefi.Channel
+::: lefi.channel
