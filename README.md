@@ -1,7 +1,7 @@
 # Lefi
 [![Documentation Status](https://readthedocs.org/projects/lefi/badge/?version=latest)](https://lefi.readthedocs.io/en/latest/?badge=latest)
-![Pytest](https://github.com/an-dyy/Lefi/actions/workflows/run-pytest.yml/badge.svg)
-![Mypy](https://github.com/an-dyy/Lefi/actions/workflows/mypy.yml/badge.svg)
+![Pytest](https://github.com/an-dyy/Lefi/actions/workflows/run-pytest.yml/badge.svg?event=push)
+![Mypy](https://github.com/an-dyy/Lefi/actions/workflows/mypy.yml/badge.svg?event=push)
 
 A discord API wrapper focused on clean code, and usability
 
