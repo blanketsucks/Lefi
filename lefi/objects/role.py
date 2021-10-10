@@ -50,11 +50,11 @@ class Role:
             The role after editting.
 
         """
-        data = await self._state.http.modifiy_guild_role(
+        data = await self._state.http.modify_guild_role(
             guild_id=self.guild.id,
             role_id=self.id,
             name=name,
-            permissions=permissions,
+            permissions=permissions.value if permissions else None,
             color=color,
             hoist=hoist,
             mentionable=mentionable,

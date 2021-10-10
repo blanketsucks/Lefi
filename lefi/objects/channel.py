@@ -87,9 +87,7 @@ class TextChannel(Channel):
     def __init__(self, state: State, data: Dict, guild: Guild):
         super().__init__(state, data, guild)
 
-    async def send(
-        self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None
-    ) -> Message:
+    async def send(self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None) -> Message:
         """
         Sends a message to the channel.
 
@@ -214,9 +212,7 @@ class DMChannel:
     def __repr__(self) -> str:
         return f"<DMChannel id={self.id} type={self.type!r}>"
 
-    async def send(
-        self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None
-    ) -> Message:
+    async def send(self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None) -> Message:
         """
         Sends a message to the channel.
 

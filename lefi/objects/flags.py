@@ -1,120 +1,250 @@
 from __future__ import annotations
 
-from enum import IntFlag
+from typing import Tuple, Any, Dict, Type
 
-__all__ = ("UserFlags", "Intents", "Permissions")
-
-
-class UserFlags(IntFlag):
-    NONE = 0
-    EMPLOYEE = 1 << 0
-    PARTNERED_SERVER_OWNER = 1 << 1
-    HYPERSQUAD_EVENTS = 1 << 2
-    BUG_HUNTER_LEVEL_1 = 1 << 3
-    HOUSE_BRAVERY = 1 << 6
-    HOUSE_BRILLIANCE = 1 << 7
-    HOUSE_BALANCE = 1 << 8
-    EARLY_SUPPORTER = 1 << 9
-    TEAM_USER = 1 << 10
-    BUG_HUNTER_LEVEL_2 = 1 << 14
-    VERIFIED_BOT = 1 << 16
-    VERIFIED_DEVELOPER = 1 << 17
-    CERTIFIED_MODERATOR = 1 << 18
+__all__ = ("Flag", "ApplicationFlags", "MessageFlags", "SystemChannelFlags", "UserFlags", "Intents", "Permissions")
 
 
-class Intents(IntFlag):
-    NONE = 0
-    GUILDS = 1 << 0
-    GUILD_MEMBERS = 1 << 1
-    GUILD_BANS = 1 << 2
-    GUILD_EMOJIS_AND_STICKERS = 1 << 3
-    GUILD_INTEGRATIONS = 1 << 4
-    GUILD_WEBHOOKS = 1 << 5
-    GUILD_INVITES = 1 << 6
-    GUILD_VOICE_STATES = 1 << 7
-    GUILD_PRESENCES = 1 << 8
-    GUILD_MESSAGES = 1 << 9
-    GUILD_MESSAGE_REACTIONS = 1 << 10
-    GUILD_MESSAGE_TYPING = 1 << 11
-    DIRECT_MESSAGES = 1 << 12
-    DIRECT_MESSAGE_REACTIONS = 1 << 13
-    DIRECT_MESSAGE_TYPING = 1 << 14
+class FlagValue(int):
+    _name_: str
+    _value_: int
+
+    def __new__(cls, name: str, value: int):
+        obj = super().__new__(cls, value)
+
+        obj._name_ = name
+        obj._value_ = value
+
+        return obj
+
+    def __repr__(self) -> str:
+        return f"<FlagValue name={self.name!r} value={self.value}>"
+
+    @property
+    def name(self) -> str:
+        return self._name_
+
+    @property
+    def value(self) -> int:
+        return self._value_
+
+
+class FlagMeta(type):
+    __members__: Dict[str, FlagValue]
+
+    def __new__(cls, name: str, bases: Tuple[Type], attrs: Dict[str, Any]):
+        members: Dict[str, FlagValue] = {}
+
+        for attr, value in attrs.copy().items():
+            is_method = callable(value) or isinstance(value, (staticmethod, classmethod))
+            if not attr.startswith(("__", "_")) and not is_method:
+                members[attr] = FlagValue(attr, value)  # type: ignore
+                del attrs[attr]
+
+        attrs["__members__"] = members
+        return super().__new__(cls, name, bases, attrs)
+
+    def __getattr__(cls, name: str) -> FlagValue:
+        value = cls.__members__.get(name)
+        if not value:
+            raise AttributeError(f"{cls.__name__} has no attribute {name!r}")
+
+        return value
+
+    def __iter__(self):
+        return iter(self.__members__.values())
+
+
+class Flag(metaclass=FlagMeta):
+    __members__: Dict[str, FlagValue]
+    __values__: Dict[FlagValue, bool]
+    value: int
+
+    def __init__(self, value: int = 0, **kwargs: bool) -> None:
+        self.value = value
+        self.__values__ = {}
+
+        cls = type(self)
+
+        for flag in cls:
+            if flag & value:
+                self.__values__[flag] = True
+            else:
+                ret = kwargs.get(flag.name, False)
+
+                if ret:
+                    self.value |= flag
+                else:
+                    self.value &= ~flag
+
+                self.__values__[flag] = ret
+
+    def __getattr__(self, name: str) -> bool:
+        flag = self.__members__.get(name)
+        if not flag:
+            raise AttributeError(f"{type(self).__name__} has no attribute {name!r}")
+
+        return bool(self.value & flag.value)
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        flag = self.__members__.get(name)
+        if not flag:
+            return super().__setattr__(name, value)
+
+        if self.value & flag:
+            return
+
+        if value:
+            self.value |= flag
+        else:
+            self.value &= ~flag
+
+        self.__values__[flag] = value
+
+    def __iter__(self):
+        return iter(self.__values__.items())
+
+    def __repr__(self) -> str:
+        name = self.__class__.__name__
+        return f"<{name} value={self.value}>"
+
+
+class ApplicationFlags(Flag):
+    gateway_presence = 1 << 12
+    gateway_presence_limited = 1 << 13
+    gateway_guild_members = 1 << 14
+    gateway_guild_members_limited = 1 << 15
+    verification_pending_guild_limit = 1 << 16
+    embedded = 1 << 17
+
+
+class MessageFlags(Flag):
+    crossposted = 1 << 0
+    is_crossposted = 1 << 1
+    suppress_embeds = 1 << 2
+    source_message_deleted = 1 << 3
+    urgent = 1 << 4
+    has_thread = 1 << 5
+    ephemeral = 1 << 6
+    loading = 1 << 7
+
+
+class SystemChannelFlags(Flag):
+    suppress_join_notifications = 1 << 0
+    suppress_premium_subscriptions = 1 << 1
+    suppress_guild_reminder_notifications = 1 << 2
+
+
+class UserFlags(Flag):
+    none = 0
+    employee = 1 << 0
+    partnered_server_owner = 1 << 1
+    hypersquad_events = 1 << 2
+    bug_hunter_level_1 = 1 << 3
+    house_bravery = 1 << 6
+    house_brilliance = 1 << 7
+    house_balance = 1 << 8
+    early_supporter = 1 << 9
+    team_user = 1 << 10
+    bug_hunter_level_2 = 1 << 14
+    verified_bot = 1 << 16
+    verified_developer = 1 << 17
+    certified_moderator = 1 << 18
+
+
+class Intents(Flag):
+    none = 0
+    guilds = 1 << 0
+    guild_members = 1 << 1
+    guild_bans = 1 << 2
+    guild_emojis_and_stickers = 1 << 3
+    guild_intergrations = 1 << 4
+    guild_webhooks = 1 << 5
+    guild_invites = 1 << 6
+    guild_voice_states = 1 << 7
+    guild_presences = 1 << 8
+    guild_messages = 1 << 9
+    guild_message_reactions = 1 << 10
+    guild_message_typing = 1 << 11
+    direct_messages = 1 << 12
+    direct_message_reactions = 1 << 13
+    direct_message_typing = 1 << 14
 
     @classmethod
-    def all(cls) -> Intents:
+    def all(cls):
         return cls(
-            cls.GUILDS
-            | cls.GUILD_MEMBERS
-            | cls.GUILD_BANS
-            | cls.GUILD_EMOJIS_AND_STICKERS
-            | cls.GUILD_INTEGRATIONS
-            | cls.GUILD_WEBHOOKS
-            | cls.GUILD_INVITES
-            | cls.GUILD_VOICE_STATES
-            | cls.GUILD_PRESENCES
-            | cls.GUILD_MESSAGES
-            | cls.GUILD_MESSAGE_REACTIONS
-            | cls.GUILD_MESSAGE_TYPING
-            | cls.DIRECT_MESSAGES
-            | cls.DIRECT_MESSAGE_REACTIONS
-            | cls.DIRECT_MESSAGE_TYPING
+            cls.guilds
+            | cls.guild_members
+            | cls.guild_bans
+            | cls.guild_emojis_and_stickers
+            | cls.guild_intergrations
+            | cls.guild_webhooks
+            | cls.guild_invites
+            | cls.guild_voice_states
+            | cls.guild_presences
+            | cls.guild_messages
+            | cls.guild_message_reactions
+            | cls.guild_message_typing
+            | cls.direct_messages
+            | cls.direct_message_reactions
+            | cls.direct_message_typing
         )
 
     @classmethod
-    def default(cls) -> Intents:
+    def default(cls):
         return cls(
-            cls.GUILDS
-            | cls.GUILD_BANS
-            | cls.GUILD_EMOJIS_AND_STICKERS
-            | cls.GUILD_INTEGRATIONS
-            | cls.GUILD_WEBHOOKS
-            | cls.GUILD_INVITES
-            | cls.GUILD_VOICE_STATES
-            | cls.GUILD_MESSAGES
-            | cls.GUILD_MESSAGE_REACTIONS
-            | cls.GUILD_MESSAGE_TYPING
-            | cls.DIRECT_MESSAGES
-            | cls.DIRECT_MESSAGE_REACTIONS
-            | cls.DIRECT_MESSAGE_TYPING
+            cls.guilds
+            | cls.guild_bans
+            | cls.guild_emojis_and_stickers
+            | cls.guild_intergrations
+            | cls.guild_webhooks
+            | cls.guild_invites
+            | cls.guild_voice_states
+            | cls.guild_messages
+            | cls.guild_message_reactions
+            | cls.guild_message_typing
+            | cls.direct_messages
+            | cls.direct_message_reactions
+            | cls.direct_message_typing
         )
 
 
-class Permissions(IntFlag):
-    CREATE_INSTANT_INVITE = 1 << 0
-    KICK_MEMBERS = 1 << 1
-    BAN_MEMBERS = 1 << 2
-    ADMINISTRATOR = 1 << 3
-    MANAGE_CHANNELS = 1 << 4
-    MANAGE_GUILD = 1 << 5
-    ADD_REACTIONS = 1 << 6
-    VIEW_AUDIT_LOG = 1 << 7
-    PRIORITY_SPEAKER = 1 << 8
-    STREAM = 1 << 9
-    VIEW_CHANNEL = 1 << 10
-    SEND_MESSAGES = 1 << 11
-    SEND_TTS_MESSAGES = 1 << 12
-    MANAGE_MESSAGES = 1 << 13
-    EMBED_LINKS = 1 << 14
-    ATTACH_FILES = 1 << 15
-    READ_MESSAGE_HISTORY = 1 << 16
-    MENTION_EVERYONE = 1 << 17
-    USE_EXTERNAL_EMOJIS = 1 << 18
-    CONNECT = 1 << 20
-    SPEAK = 1 << 21
-    MUTE_MEMBERS = 1 << 22
-    DEAFEN_MEMBERS = 1 << 23
-    MOVE_MEMBERS = 1 << 24
-    USE_VAD = 1 << 25
-    CHANGE_NICKNAME = 1 << 26
-    MANAGE_NICKNAMES = 1 << 27
-    MANAGE_ROLES = 1 << 28
-    MANAGE_WEBHOOKS = 1 << 29
-    MANAGE_EMOJIS_AND_STICKERS = 1 << 30
-    USE_APPLICATION_COMMANDS = 1 << 31
-    REQUEST_TO_SPEAK = 1 << 32
-    MANAGE_THREADS = 1 << 34
-    CREATE_PUBLIC_THREADS = 1 << 35
-    CREATE_PRIVATE_THREADS = 1 << 36
-    USE_EXTERNAL_STICKERS = 1 << 37
-    SEND_MESSAGES_IN_THREADS = 1 << 38
-    START_EMBEDDED_ACTIVITIES = 1 << 39
+class Permissions(Flag):
+    create_instant_invite = 1 << 0
+    kick_members = 1 << 1
+    ban_members = 1 << 2
+    administrator = 1 << 3
+    manage_channels = 1 << 4
+    manage_guild = 1 << 5
+    add_reactions = 1 << 6
+    view_audit_log = 1 << 7
+    priority_speaker = 1 << 8
+    stream = 1 << 9
+    view_channel = 1 << 10
+    send_messages = 1 << 11
+    send_tts_messages = 1 << 12
+    manage_messages = 1 << 13
+    embed_links = 1 << 14
+    attach_files = 1 << 15
+    read_message_history = 1 << 16
+    mention_everyone = 1 << 17
+    use_external_emojis = 1 << 18
+    connect = 1 << 20
+    speak = 1 << 21
+    mute_members = 1 << 22
+    deafen_members = 1 << 23
+    move_members = 1 << 24
+    use_vad = 1 << 25
+    change_nickname = 1 << 26
+    manage_nicknames = 1 << 27
+    manage_roles = 1 << 28
+    manage_webhooks = 1 << 29
+    manage_emojis_and_stickers = 1 << 30
+    use_application_commands = 1 << 31
+    request_to_speak = 1 << 32
+    manage_threads = 1 << 34
+    create_public_threads = 1 << 35
+    create_private_threads = 1 << 36
+    use_external_stickers = 1 << 37
+    send_messages_in_threads = 1 << 38
+    start_embedded_activities = 1 << 39
