@@ -83,6 +83,10 @@ class TextChannel(Channel):
     """
     A class that represents a TextChannel.
     """
+
+    def __init__(self, state: State, data: Dict, guild: Guild):
+        super().__init__(state, data, guild)
+
     async def send(
         self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None
     ) -> Message:
@@ -160,6 +164,9 @@ class VoiceChannel(Channel):
     """
     Represents a VoiceChannel.
     """
+
+    def __init__(self, state: State, data: Dict, guild: Guild):
+        super().__init__(state, data, guild)
 
     @property
     def user_limit(self) -> int:
