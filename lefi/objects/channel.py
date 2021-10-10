@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Any, List, Dict
+from typing import TYPE_CHECKING, Optional, Any, List, Dict, Iterable
 
 from .enums import ChannelType
 from .permissions import Overwrite
@@ -87,7 +87,36 @@ class TextChannel(Channel):
     def __init__(self, state: State, data: Dict, guild: Guild):
         super().__init__(state, data, guild)
 
-    async def send(self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None) -> Message:
+    async def edit(self, **kwargs) -> TextChannel:
+        """
+        Edits the channel.
+
+        Parameters:
+            **kwargs (Any): The options to pass to [lefi.HTTPClient.edit_text_channel][].
+
+        Returns:
+            The [lefi.TextChannel][] instance after editting.
+
+        """
+
+        await self._state.http.edit_text_channel(self.id, **kwargs)
+        return self
+
+    async def delete_messages(self, messages: Iterable[Message]) -> None:
+        """
+        Bulk deletes messages from the channel.
+
+        Parameters:
+            messages (Iterable[lefi.Message]): The list of messages to delete.
+
+        """
+        await self._state.http.bulk_delete_messages(
+            self.id, message_ids=[msg.id for msg in messages]
+        )
+
+    async def send(
+        self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None
+    ) -> Message:
         """
         Sends a message to the channel.
 
@@ -212,7 +241,9 @@ class DMChannel:
     def __repr__(self) -> str:
         return f"<DMChannel id={self.id} type={self.type!r}>"
 
-    async def send(self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None) -> Message:
+    async def send(
+        self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None
+    ) -> Message:
         """
         Sends a message to the channel.
 
