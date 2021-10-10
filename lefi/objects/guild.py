@@ -41,7 +41,8 @@ class Guild:
             The guild after editting
 
         """
-        await self._state.http.modify_guild(self.id, **kwargs)
+        data = await self._state.http.modify_guild(self.id, **kwargs)
+        self._data = data
         return self
 
     async def add_role(self, name: str, **kwargs) -> Role:
@@ -57,7 +58,9 @@ class Guild:
 
         """
         data = await self._state.http.create_guild_role(self.id, name=name, **kwargs)
-        return Role(self._state, data, self)
+        role = Role(self._state, data, self)
+        self._roles[role.id] = role
+        return role
 
     def get_member(self, member_id: int) -> Optional[Member]:
         """

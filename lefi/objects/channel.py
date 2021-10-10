@@ -113,7 +113,8 @@ class TextChannel(Channel):
 
         """
 
-        await self._state.http.edit_text_channel(self.id, **kwargs)
+        data = await self._state.http.edit_text_channel(self.id, **kwargs)
+        self._data = data
         return self
 
     async def delete_messages(self, messages: Iterable[Message]) -> None:
