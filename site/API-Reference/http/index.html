@@ -735,6 +735,118 @@
   
   
     <li class="md-nav__item">
+      <a href="../wsclient/" class="md-nav__link">
+        WebSocketClient
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../state/" class="md-nav__link">
+        State
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../channel/" class="md-nav__link">
+        Channel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../textchannel/" class="md-nav__link">
+        TextChannel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voicechannel/" class="md-nav__link">
+        VoiceChannel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dmchannel/" class="md-nav__link">
+        DMChannel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../embed/" class="md-nav__link">
+        Embed
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cache/" class="md-nav__link">
+        Cache
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../errors/" class="md-nav__link">
         Errors
       </a>
@@ -1153,9 +1265,9 @@
         <td><p>The <a href="https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.ClientSession">aiohttp.ClientSession</a> to use for sending requests.</p></td>
       </tr>
   </tbody>
-</table>      <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This class is used behind the scenes, this is not intended to be called directly.</p>
+</table>      <div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>This class is used internally, <strong>this is not intended to be called directly</strong>.</p>
 </div>
 
 
@@ -1977,9 +2089,7 @@ Only returns messages within the range of the parameters passed.</p>
 
     <span class="n">update_payload</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">around</span><span class="o">=</span><span class="n">around</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">after</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2047,9 +2157,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_channel_message</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_channel_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to get a specific message by ID.</span>
 
@@ -2061,9 +2169,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2190,9 +2296,7 @@ Only returns messages within the range of the parameters passed.</p>
         <span class="n">sticker_ids</span><span class="o">=</span><span class="n">sticker_ids</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2260,9 +2364,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">crosspost_message</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">crosspost_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to crosspost a message.</span>
 
@@ -2274,9 +2376,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/crosspost&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/crosspost&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2667,9 +2767,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_all_reactions</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_all_reactions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to remove all reactions of a message.</span>
 
@@ -2682,9 +2780,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API After making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/reactions/</span><span class="si">{</span><span class="n">emoji</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">/reactions/</span><span class="si">{</span><span class="n">emoji</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2910,9 +3006,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/</span><span class="si">{</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2980,9 +3074,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">bulk_delete_messages</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">bulk_delete_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to delete multiple messages.</span>
 
@@ -2995,9 +3087,7 @@ Only returns messages within the range of the parameters passed.</p>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">message_ids</span><span class="p">}</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/bulk-delete&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/messages/bulk-delete&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -3181,9 +3271,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_channel_permissions</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">overwrite_id</span><span class="p">:</span> <span class="nb">int</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_channel_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">overwrite_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to delete an overwrite from a channel.</span>
 
@@ -3195,9 +3283,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/permissions/</span><span class="si">{</span><span class="n">overwrite_id</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/permissions/</span><span class="si">{</span><span class="n">overwrite_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -3416,9 +3502,7 @@ Only returns messages within the range of the parameters passed.</p>
         <span class="n">target_application_id</span><span class="o">=</span><span class="n">target_application_id</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/invites&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/invites&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -3486,9 +3570,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">follow_news_channel</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">webhook_channel_id</span><span class="p">:</span> <span class="nb">int</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">follow_news_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">webhook_channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call to follow a news channel to send messages to a target channel.</span>
 
@@ -3501,9 +3583,7 @@ Only returns messages within the range of the parameters passed.</p>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;webhook_channel_id&quot;</span><span class="p">:</span> <span class="n">webhook_channel_id</span><span class="p">}</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/followers/@me&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/followers/@me&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4022,9 +4102,7 @@ Only returns messages within the range of the parameters passed.</p>
     <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;auto_archive_duration&quot;</span><span class="p">:</span> <span class="n">auto_archive_duration</span><span class="p">}</span>
     <span class="n">update_payload</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span> <span class="n">invitable</span><span class="o">=</span><span class="n">invitable</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/threads&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/threads&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4177,9 +4255,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/thread-members/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/thread-members/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4252,9 +4328,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/thread-members/@me&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/thread-members/@me&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4322,9 +4396,7 @@ Only returns messages within the range of the parameters passed.</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/http.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">remove_thread_member</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">remove_thread_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes an API call which removes a member from the thread.</span>
 
@@ -4336,9 +4408,7 @@ Only returns messages within the range of the parameters passed.</p>
 <span class="sd">        The data received from the API after making the call</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/thread-members/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/thread-members/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4505,9 +4575,7 @@ Only returns messages within the range of the parameters passed.</p>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">update_payload</span><span class="p">({},</span> <span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/threads/archived/public&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/threads/archived/public&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4601,9 +4669,7 @@ Only returns messages within the range of the parameters passed.</p>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">update_payload</span><span class="p">({},</span> <span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/threads/archived/private&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/channels/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">/threads/archived/private&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4961,9 +5027,7 @@ Only returns messages within the range of the parameters passed.</p>
         <span class="s2">&quot;roles&quot;</span><span class="p">:</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">roles</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">roles</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/guilds/</span><span class="si">{</span><span class="n">guild_id</span><span class="si">}</span><span class="s2">/emojis&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/guilds/</span><span class="si">{</span><span class="n">guild_id</span><span class="si">}</span><span class="s2">/emojis&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -5069,9 +5133,7 @@ Only returns messages within the range of the parameters passed.</p>
     <span class="p">}</span>
     <span class="n">update_payload</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">roles</span><span class="o">=</span><span class="n">roles</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;PATCH&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/guilds/</span><span class="si">{</span><span class="n">guild_id</span><span class="si">}</span><span class="s2">/emojis/</span><span class="si">{</span><span class="n">emoji_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;PATCH&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/guilds/</span><span class="si">{</span><span class="n">guild_id</span><span class="si">}</span><span class="s2">/emojis/</span><span class="si">{</span><span class="n">emoji_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -5359,9 +5421,7 @@ Only returns messages within the range of the parameters passed.</p>
         <span class="n">mentionable</span><span class="o">=</span><span class="n">mentionable</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;PATCH&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/guilds/</span><span class="si">{</span><span class="n">guild_id</span><span class="si">}</span><span class="s2">/roles/</span><span class="si">{</span><span class="n">role_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;PATCH&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/guilds/</span><span class="si">{</span><span class="n">guild_id</span><span class="si">}</span><span class="s2">/roles/</span><span class="si">{</span><span class="n">role_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -5497,13 +5557,13 @@ Only returns messages within the range of the parameters passed.</p>
       
       
         
-        <a href="../errors/" class="md-footer__link md-footer__link--next" aria-label="Next: Errors" rel="next">
+        <a href="../wsclient/" class="md-footer__link md-footer__link--next" aria-label="Next: WebSocketClient" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Errors
+              WebSocketClient
             </div>
           </div>
           <div class="md-footer__button md-icon">

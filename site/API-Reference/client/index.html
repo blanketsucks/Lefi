@@ -434,6 +434,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#lefi.client.Client.wait_for" class="md-nav__link">
+    wait_for()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#lefi.client.Client.get_message" class="md-nav__link">
     get_message()
   </a>
@@ -461,13 +468,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#lefi.client.Client.wait_for" class="md-nav__link">
-    wait_for()
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -485,6 +485,118 @@
     <li class="md-nav__item">
       <a href="../http/" class="md-nav__link">
         HTTPClient
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wsclient/" class="md-nav__link">
+        WebSocketClient
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../state/" class="md-nav__link">
+        State
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../channel/" class="md-nav__link">
+        Channel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../textchannel/" class="md-nav__link">
+        TextChannel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voicechannel/" class="md-nav__link">
+        VoiceChannel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dmchannel/" class="md-nav__link">
+        DMChannel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../embed/" class="md-nav__link">
+        Embed
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cache/" class="md-nav__link">
+        Cache
       </a>
     </li>
   
@@ -591,6 +703,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#lefi.client.Client.wait_for" class="md-nav__link">
+    wait_for()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#lefi.client.Client.get_message" class="md-nav__link">
     get_message()
   </a>
@@ -614,13 +733,6 @@
         <li class="md-nav__item">
   <a href="#lefi.client.Client.get_user" class="md-nav__link">
     get_user()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#lefi.client.Client.wait_for" class="md-nav__link">
-    wait_for()
   </a>
   
 </li>
@@ -679,7 +791,7 @@
       <tr>
         <td><code>ws</code></td>
         <td><code>lefi.WebSocketClient</code></td>
-        <td><p>The <a href="./wsclient.md">WebSocketClient</a> which handles the gateway.</p></td>
+        <td><p>The <a href="../wsclient/">WebSocketClient</a> which handles the gateway.</p></td>
       </tr>
   </tbody>
 </table>
@@ -701,7 +813,7 @@
 
 
 <h2 id="lefi.client.Client.__init__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">intents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pub_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">intents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
@@ -736,12 +848,6 @@
         <td><code>None</code></td>
       </tr>
       <tr>
-        <td><code>pub_key</code></td>
-        <td><code>Optional[str]</code></td>
-        <td><p>The public key of the client. Only pass if you want interactions over HTTP.</p></td>
-        <td><code>None</code></td>
-      </tr>
-      <tr>
         <td><code>loop</code></td>
         <td><code>Optional[asyncio.AbstractEventLoop]</code></td>
         <td><p>The loop to use.</p></td>
@@ -756,20 +862,16 @@
     <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">intents</span><span class="p">:</span> <span class="n">Intents</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">pub_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters:</span>
 <span class="sd">        token (str): The clients token, used for authorization (logging in, etc...) This is required.</span>
 <span class="sd">        intents (Optional[lefi.Intents]): The intents to be used for the client.</span>
-<span class="sd">        pub_key (Optional[str]): The public key of the client. Only pass if you want interactions over HTTP.</span>
 <span class="sd">        loop (Optional[asyncio.AbstractEventLoop]): The loop to use.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">pub_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">pub_key</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="n">loop</span> <span class="ow">or</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="n">loop</span> <span class="ow">or</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="p">:</span> <span class="n">HTTPClient</span> <span class="o">=</span> <span class="n">HTTPClient</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">:</span> <span class="n">State</span> <span class="o">=</span> <span class="n">State</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="p">:</span> <span class="n">WebSocketClient</span> <span class="o">=</span> <span class="n">WebSocketClient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intents</span><span class="p">)</span>
@@ -908,11 +1010,23 @@ And if no event name is passed it defaults to the functions name.</p>
     </tr>
   </tbody>
 </table>
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="nd">@client</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">&quot;message_create&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">lefi</span><span class="o">.</span><span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;Got your message!&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nd">@client</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">&quot;message_create&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">lefi</span><span class="o">.</span><span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;Got your message!&quot;</span><span class="p">)</span>
+
+<span class="nd">@client</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">&quot;message_create&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">on_message2</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">lefi</span><span class="o">.</span><span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</code></pre></div>
+
         <details class="quote">
           <summary>Source code in <code>lefi/client.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">on</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Coroutine</span><span class="p">]]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Coroutine</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A decorator that registers the decorated function to an event.</span>
 
@@ -927,6 +1041,23 @@ And if no event name is passed it defaults to the functions name.</p>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The decorated function after registering it as a listener.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        ```py</span>
+<span class="sd">        @client.on(&quot;message_create&quot;)</span>
+<span class="sd">        async def on_message(message: lefi.Message) -&gt; None:</span>
+<span class="sd">            await message.channel.send(&quot;Got your message!&quot;)</span>
+<span class="sd">        ```</span>
+
+<span class="sd">        ```py</span>
+<span class="sd">        @client.on(&quot;message_create&quot;)</span>
+<span class="sd">        async def on_message(message: lefi.Message) -&gt; None:</span>
+<span class="sd">            await message.channel.send(&quot;Got your message!&quot;)</span>
+
+<span class="sd">        @client.on(&quot;message_create&quot;)</span>
+<span class="sd">        async def on_message2(message: lefi.Message) -&gt; None:</span>
+<span class="sd">            print(message.content)</span>
+<span class="sd">        ```</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -999,11 +1130,15 @@ Functions decorated with <a href="#lefi.client.Client.once">lefi.Client.once</a>
     </tr>
   </tbody>
 </table>
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="nd">@client</span><span class="o">.</span><span class="n">once</span><span class="p">(</span><span class="s2">&quot;ready&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">on_ready</span><span class="p">(</span><span class="n">client_user</span><span class="p">:</span> <span class="n">lefi</span><span class="o">.</span><span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;logged in as </span><span class="si">{</span><span class="n">client_user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
         <details class="quote">
           <summary>Source code in <code>lefi/client.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">once</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Coroutine</span><span class="p">]]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">once</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Coroutine</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A decorator that registers the decorated function to an event.</span>
 <span class="sd">    Similar to [lefi.Client.on][] but also cuts itself off the event after firing once.</span>
@@ -1019,6 +1154,13 @@ Functions decorated with <a href="#lefi.client.Client.once">lefi.Client.once</a>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The decorated function after registering it as a listener.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        ```py</span>
+<span class="sd">        @client.once(&quot;ready&quot;)</span>
+<span class="sd">        async def on_ready(client_user: lefi.User) -&gt; None:</span>
+<span class="sd">            print(f&quot;logged in as {client_user.username}&quot;)</span>
+<span class="sd">        ```</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1121,21 +1263,141 @@ This is to make sure that proper authorization has been passed.</p>
 
     <div class="doc doc-contents ">
 
-      <p>A method which calls <a href="#lefi.client.Client.login">lefi.Client.login</a> and <a href="#lefi.client.Client.connect">lefi.Client.connect</a> in that order.
-If <code>pub_key</code> is passed to the clients constructor it also creates an HTTP server to handle interactions.</p>
+      <p>A method which calls <a href="#lefi.client.Client.login">lefi.Client.login</a> and <a href="#lefi.client.Client.connect">lefi.Client.connect</a> in that order.</p>
 
         <details class="quote">
           <summary>Source code in <code>lefi/client.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A method which calls [lefi.Client.login][] and [lefi.Client.connect][] in that order.</span>
-<span class="sd">    If `pub_key` is passed to the clients constructor it also creates an HTTP server to handle interactions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pub_key</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pub_key</span><span class="p">)</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-
     <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">login</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">())</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.client.Client.wait_for" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Waits for an event to be dispatched that passes the check.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>event</code></td>
+        <td><code>str</code></td>
+        <td><p>The event to wait for.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>check</code></td>
+        <td><code>Callable[..., bool]</code></td>
+        <td><p>A function that takes the same args as the event, and returns a bool.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>timeout</code></td>
+        <td><code>float</code></td>
+        <td><p>The time to wait before stopping.</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Any</code></td>
+      <td><p>The return from a callback that matches with the event you are waiting for.</p></td>
+    </tr>
+  </tbody>
+</table>      <div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The check has to take in the same args as the event.
+If no check is passed, everything will complete the check.</p>
+</div>
+
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="nd">@client</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">&quot;message_create&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">lefi</span><span class="o">.</span><span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">content</span> <span class="o">==</span> <span class="s2">&quot;wait for next!&quot;</span><span class="p">:</span>
+        <span class="n">next_message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span>
+            <span class="s2">&quot;message_create&quot;</span><span class="p">,</span>
+            <span class="n">check</span><span class="o">=</span><span class="k">lambda</span> <span class="n">msg</span><span class="p">:</span> <span class="n">msg</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">270700034985558017</span>
+        <span class="p">)</span>
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;got your message! `</span><span class="si">{</span><span class="n">next_message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">`&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>lefi/client.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Waits for an event to be dispatched that passes the check.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        event (str): The event to wait for.</span>
+<span class="sd">        check (Callable[..., bool]): A function that takes the same args as the event, and returns a bool.</span>
+<span class="sd">        timeout (float): The time to wait before stopping.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The return from a callback that matches with the event you are waiting for.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        The check has to take in the same args as the event.</span>
+<span class="sd">        If no check is passed, everything will complete the check.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        ```py</span>
+<span class="sd">        @client.on(&quot;message_create&quot;)</span>
+<span class="sd">        async def on_message(message: lefi.Message) -&gt; None:</span>
+<span class="sd">            if message.content == &quot;wait for next!&quot;:</span>
+<span class="sd">                next_message = await client.wait_for(</span>
+<span class="sd">                    &quot;message_create&quot;,</span>
+<span class="sd">                    check=lambda msg: msg.author.id == 270700034985558017</span>
+<span class="sd">                )</span>
+<span class="sd">            await message.channel.send(f&quot;got your message! `{next_message.content}`&quot;)</span>
+<span class="sd">        ```</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_future</span><span class="p">()</span>
+    <span class="n">futures</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="p">[])</span>
+
+    <span class="k">if</span> <span class="n">check</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">check</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">_</span><span class="p">:</span> <span class="kc">True</span>
+
+    <span class="n">futures</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">future</span><span class="p">,</span> <span class="n">check</span><span class="p">))</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -1296,7 +1558,7 @@ If <code>pub_key</code> is passed to the clients constructor it also creates an 
 
     <div class="doc doc-contents ">
 
-      <p>Grabs a [lefi.Channel][] instance if cached.</p>
+      <p>Grabs a <a href="../channel/#lefi.objects.channel.Channel">lefi.Channel</a> instance if cached.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -1328,17 +1590,13 @@ If <code>pub_key</code> is passed to the clients constructor it also creates an 
   <tbody>
     <tr>
       <td><code>Optional[Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]]</code></td>
-      <td><p>The [lefi.Channel][] instance related to the ID. Else None if not found</p></td>
+      <td><p>The <a href="../channel/#lefi.objects.channel.Channel">lefi.Channel</a> instance related to the ID. Else None if not found</p></td>
     </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>lefi/client.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_channel</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span>
-    <span class="n">Union</span><span class="p">[</span><span class="n">TextChannel</span><span class="p">,</span> <span class="n">VoiceChannel</span><span class="p">,</span> <span class="n">DMChannel</span><span class="p">,</span> <span class="n">CategoryChannel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">]</span>
-<span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">TextChannel</span><span class="p">,</span> <span class="n">VoiceChannel</span><span class="p">,</span> <span class="n">DMChannel</span><span class="p">,</span> <span class="n">CategoryChannel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Grabs a [lefi.Channel][] instance if cached.</span>
 
@@ -1420,111 +1678,6 @@ If <code>pub_key</code> is passed to the clients constructor it also creates an 
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h2 id="lefi.client.Client.wait_for" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-async"><code>async</code></small>
-  </span>
-
-</h2>
-
-    <div class="doc doc-contents ">
-
-      <p>Waits for an event to be dispatched that passes the check.</p>
-
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>event</code></td>
-        <td><code>str</code></td>
-        <td><p>The event to wait for.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>check</code></td>
-        <td><code>Callable[..., bool]</code></td>
-        <td><p>A function that takes the same args as the event, and returns a bool.</p></td>
-        <td><code>None</code></td>
-      </tr>
-      <tr>
-        <td><code>timeout</code></td>
-        <td><code>float</code></td>
-        <td><p>The time to wait before stopping.</p></td>
-        <td><code>None</code></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>Any</code></td>
-      <td><p>The return from a callback that matches with the event you are waiting for.</p></td>
-    </tr>
-  </tbody>
-</table>      <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The check has to take in the same args as the event.
-If no check is passed, everything will complete the check.</p>
-</div>
-
-        <details class="quote">
-          <summary>Source code in <code>lefi/client.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Waits for an event to be dispatched that passes the check.</span>
-
-<span class="sd">    Parameters:</span>
-<span class="sd">        event (str): The event to wait for.</span>
-<span class="sd">        check (Callable[..., bool]): A function that takes the same args as the event, and returns a bool.</span>
-<span class="sd">        timeout (float): The time to wait before stopping.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        The return from a callback that matches with the event you are waiting for.</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        The check has to take in the same args as the event.</span>
-<span class="sd">        If no check is passed, everything will complete the check.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_future</span><span class="p">()</span>
-    <span class="n">futures</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="p">[])</span>
-
-    <span class="k">if</span> <span class="n">check</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">check</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="kc">True</span>
-
-    <span class="n">futures</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">future</span><span class="p">,</span> <span class="n">check</span><span class="p">))</span>
-    <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>

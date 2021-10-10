@@ -1,4 +1,6 @@
 # Lefi
+[![Documentation Status](https://readthedocs.org/projects/lefi/badge/?version=latest)](https://lefi.readthedocs.io/en/latest/?badge=latest)
+
 A discord API wrapper focused on clean code, and usability
 
 ## Installation
@@ -45,7 +47,7 @@ asyncio.run(main())
 ```
 
 ## Documentation
-[Here!](https://an-dyy.github.io/Lefi)
+[Here!](https://lefi.readthedocs.io/en/latest/)
 
 ## Contributing
 1. If you plan on contributing please open an issue beforehand

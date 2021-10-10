@@ -35,6 +35,11 @@ nav:
   - API-Reference:
     - Client: API-Reference/client.md
     - HTTPClient: API-Reference/http.md
+    - WebSocketClient: API-Reference/wsclient.md
+    - State: API-Reference/state.md
+    - Channel: API-Reference/channel.md
+    - Embed: API-Reference/embed.md
+    - Cache: API-Reference/cache.md
     - Errors: API-Reference/errors.md
 
 plugins:

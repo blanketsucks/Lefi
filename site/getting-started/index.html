@@ -432,6 +432,118 @@
   
   
     <li class="md-nav__item">
+      <a href="../API-Reference/wsclient/" class="md-nav__link">
+        WebSocketClient
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../API-Reference/state/" class="md-nav__link">
+        State
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../API-Reference/channel/" class="md-nav__link">
+        Channel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../API-Reference/textchannel/" class="md-nav__link">
+        TextChannel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../API-Reference/voicechannel/" class="md-nav__link">
+        VoiceChannel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../API-Reference/dmchannel/" class="md-nav__link">
+        DMChannel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../API-Reference/embed/" class="md-nav__link">
+        Embed
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../API-Reference/cache/" class="md-nav__link">
+        Cache
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../API-Reference/errors/" class="md-nav__link">
         Errors
       </a>
@@ -548,6 +660,10 @@
         <span class="s2">&quot;discord_token&quot;</span>
     <span class="p">)</span>  <span class="c1"># NOTE: I&#39;m on linux so I can just export, windows might need a `.env`</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">lefi</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="nd">@client</span><span class="o">.</span><span class="n">once</span><span class="p">(</span><span class="s2">&quot;ready&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">on_ready</span><span class="p">(</span><span class="n">client_user</span><span class="p">:</span> <span class="n">lefi</span><span class="o">.</span><span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LOGGED IN AS </span><span class="si">{</span><span class="n">client_user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="nd">@client</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">&quot;message_create&quot;</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">message_create</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">lefi</span><span class="o">.</span><span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

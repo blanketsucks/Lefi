@@ -23,6 +23,7 @@ class DeletedMessage:
         self.channel_id: int = int(data["channel_id"])
         self.guild_id: Optional[int] = int(data["guild_id"]) if "guild_id" in data else None
 
+
 class Message:
     def __init__(self, state: State, data: Dict, channel: Channels):
         self._channel = channel
@@ -50,11 +51,13 @@ class Message:
 
     @property
     def author(self) -> Union[User, Member]:
-        guild = self.guild
-        if guild is None:
+        if self.guild is None:
             return self._state.get_user(int(self._data["author"]["id"]))  # type: ignore
 
-        return guild.get_member(int(self._data["author"]["id"]))  # type: ignore
+        if author := self.guild.get_member(int(self._data["author"]["id"])):  # type: ignore
+            return author
+        else:
+            return self._state.add_user(self._data["author"])
 
     async def crosspost(self) -> Message:
         data = await self._state.http.crosspost_message(self.channel.id, self.id)

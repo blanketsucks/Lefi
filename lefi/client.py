@@ -19,7 +19,6 @@ from .http import HTTPClient
 from .state import State
 from .ws import WebSocketClient
 from .objects import Intents
-from .interactions import App
 
 if TYPE_CHECKING:
     from .objects import (
@@ -53,19 +52,15 @@ class Client:
         token: str,
         *,
         intents: Intents = None,
-        pub_key: Optional[str] = None,
         loop: Optional[asyncio.AbstractEventLoop] = None,
     ):
         """
         Parameters:
             token (str): The clients token, used for authorization (logging in, etc...) This is required.
             intents (Optional[lefi.Intents]): The intents to be used for the client.
-            pub_key (Optional[str]): The public key of the client. Only pass if you want interactions over HTTP.
             loop (Optional[asyncio.AbstractEventLoop]): The loop to use.
 
         """
-
-        self.pub_key: Optional[str] = pub_key
         self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_running_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
         self._state: State = State(self, self.loop)
@@ -95,9 +90,7 @@ class Client:
         callbacks = self.events.setdefault(name, [])
         callbacks.append(func)
 
-    def on(
-        self, event_name: Optional[str] = None
-    ) -> Callable[..., Callable[..., Coroutine]]:
+    def on(self, event_name: Optional[str] = None) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
 
@@ -113,6 +106,23 @@ class Client:
         Returns:
             The decorated function after registering it as a listener.
 
+        Example:
+            ```py
+            @client.on("message_create")
+            async def on_message(message: lefi.Message) -> None:
+                await message.channel.send("Got your message!")
+            ```
+
+            ```py
+            @client.on("message_create")
+            async def on_message(message: lefi.Message) -> None:
+                await message.channel.send("Got your message!")
+
+            @client.on("message_create")
+            async def on_message2(message: lefi.Message) -> None:
+                print(message.content)
+            ```
+
         """
 
         def inner(func: Callable[..., Coroutine]) -> Callable[..., Coroutine]:
@@ -121,9 +131,7 @@ class Client:
 
         return inner
 
-    def once(
-        self, event_name: Optional[str] = None
-    ) -> Callable[..., Callable[..., Coroutine]]:
+    def once(self, event_name: Optional[str] = None) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
         Similar to [lefi.Client.on][] but also cuts itself off the event after firing once.
@@ -139,6 +147,13 @@ class Client:
 
         Returns:
             The decorated function after registering it as a listener.
+
+        Example:
+            ```py
+            @client.once("ready")
+            async def on_ready(client_user: lefi.User) -> None:
+                print(f"logged in as {client_user.username}")
+            ```
 
         """
 
@@ -169,13 +184,46 @@ class Client:
     async def start(self) -> None:
         """
         A method which calls [lefi.Client.login][] and [lefi.Client.connect][] in that order.
-        If `pub_key` is passed to the clients constructor it also creates an HTTP server to handle interactions.
         """
-        if self.pub_key:
-            self.server = App(self, self.pub_key)
-            await self.server.run()
-
         await asyncio.gather(self.login(), self.connect())
+
+    async def wait_for(self, event: str, *, check: Callable[..., bool] = None, timeout: float = None) -> Any:
+        """
+        Waits for an event to be dispatched that passes the check.
+
+        Parameters:
+            event (str): The event to wait for.
+            check (Callable[..., bool]): A function that takes the same args as the event, and returns a bool.
+            timeout (float): The time to wait before stopping.
+
+        Returns:
+            The return from a callback that matches with the event you are waiting for.
+
+        Note:
+            The check has to take in the same args as the event.
+            If no check is passed, everything will complete the check.
+
+        Example:
+            ```py
+            @client.on("message_create")
+            async def on_message(message: lefi.Message) -> None:
+                if message.content == "wait for next!":
+                    next_message = await client.wait_for(
+                        "message_create",
+                        check=lambda msg: msg.author.id == 270700034985558017
+                    )
+                await message.channel.send(f"got your message! `{next_message.content}`")
+            ```
+
+        """
+        future = self.loop.create_future()
+        futures = self.futures.setdefault(event, [])
+
+        if check is None:
+            check = lambda *_: True
+
+        futures.append((future, check))
+        return await asyncio.wait_for(future, timeout=timeout)
 
     def get_message(self, id: int) -> Optional[Message]:
         """
@@ -203,11 +251,7 @@ class Client:
         """
         return self._state.get_guild(id)
 
-    def get_channel(
-        self, id: int
-    ) -> Optional[
-        Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]
-    ]:
+    def get_channel(self, id: int) -> Optional[Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]]:
         """
         Grabs a [lefi.Channel][] instance if cached.
 
@@ -232,31 +276,3 @@ class Client:
 
         """
         return self._state.get_user(id)
-
-    async def wait_for(
-        self, event: str, *, check: Callable[..., bool] = None, timeout: float = None
-    ) -> Any:
-        """
-        Waits for an event to be dispatched that passes the check.
-
-        Parameters:
-            event (str): The event to wait for.
-            check (Callable[..., bool]): A function that takes the same args as the event, and returns a bool.
-            timeout (float): The time to wait before stopping.
-
-        Returns:
-            The return from a callback that matches with the event you are waiting for.
-
-        Note:
-            The check has to take in the same args as the event.
-            If no check is passed, everything will complete the check.
-
-        """
-        future = self.loop.create_future()
-        futures = self.futures.setdefault(event, [])
-
-        if check is None:
-            check = lambda *args: True
-
-        futures.append((future, check))
-        return await asyncio.wait_for(future, timeout=timeout)

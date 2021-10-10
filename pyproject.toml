@@ -12,7 +12,7 @@ packages = [{include = "lefi"}]
 include = ["LICENSE"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 aiohttp = "^3.7.4"
 PyNaCl = "^1.4.0"
 
