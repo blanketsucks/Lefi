@@ -216,6 +216,21 @@ class VoiceChannel(Channel):
     def __init__(self, state: State, data: Dict, guild: Guild):
         super().__init__(state, data, guild)
 
+    async def edit(self, **kwargs) -> VoiceChannel:
+        """
+        Edits the channel.
+
+        Parameters:
+            **kwargs (Any): The options to pass to [lefi.HTTPClient.edit_voice_channel][].
+
+        Returns:
+            The [lefi.VoiceChannel][] instance after editting.
+
+        """
+        data = await self._state.http.edit_voice_channel(**kwargs)
+        self._data = data
+        return self
+
     @property
     def user_limit(self) -> int:
         """
