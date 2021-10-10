@@ -39,7 +39,7 @@ async def main() -> None:
         print(f"LOGGED IN AS {client_user.id}")
 
     @client.on("message_create")
-    async def message_create(message: lefi.Message) -> None:
+    async def on_message_create(message: lefi.Message) -> None:
         print(message)
 
     await client.start()
