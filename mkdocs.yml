@@ -41,6 +41,7 @@ nav:
     - Guild: API-Reference/guild.md
     - Member: API-Reference/member.md
     - Message: API-Reference/message.md
+    - Overwrite: API-Reference/permissions.md
     - Embed: API-Reference/embed.md
     - Cache: API-Reference/cache.md
     - Errors: API-Reference/errors.md
