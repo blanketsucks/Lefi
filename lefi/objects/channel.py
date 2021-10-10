@@ -209,7 +209,7 @@ class DMChannel:
     def __init__(self, state: State, data: Dict[str, Any]) -> None:
         self._state = state
         self._data = data
-        self._guild = None
+        self.guild = None
 
     def __repr__(self) -> str:
         return f"<DMChannel id={self.id} type={self.type!r}>"
