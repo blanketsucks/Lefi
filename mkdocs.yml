@@ -40,6 +40,7 @@ nav:
     - Channel: API-Reference/channel.md
     - Guild: API-Reference/guild.md
     - Member: API-Reference/member.md
+    - User: API-Reference/user.md
     - Message: API-Reference/message.md
     - Overwrite: API-Reference/permissions.md
     - Role: API-Reference/role.md
