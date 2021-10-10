@@ -42,6 +42,7 @@ nav:
     - Member: API-Reference/member.md
     - Message: API-Reference/message.md
     - Overwrite: API-Reference/permissions.md
+    - Role: API-Reference/role.md
     - Embed: API-Reference/embed.md
     - Cache: API-Reference/cache.md
     - Errors: API-Reference/errors.md
