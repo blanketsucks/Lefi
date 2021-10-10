@@ -104,9 +104,7 @@ class State:
         self._messages = Cache[Message](1000)
         self._users = Cache[User]()
         self._guilds = Cache[Guild]()
-        self._channels = Cache[
-            Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
-        ]()
+        self._channels = Cache[Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]]()
 
     def dispatch(self, event: str, *payload: Any) -> None:
         """
@@ -325,9 +323,7 @@ class State:
 
     def get_channel(
         self, channel_id: int
-    ) -> Optional[
-        Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
-    ]:
+    ) -> Optional[Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]]:
         """
         Grabs a channel from the cache.
 
@@ -354,9 +350,7 @@ class State:
         """
         return Message(self, data, channel)
 
-    def create_channel(
-        self, data: Dict, *args
-    ) -> Union[TextChannel, VoiceChannel, CategoryChannel, Channel]:
+    def create_channel(self, data: Dict, *args) -> Union[TextChannel, VoiceChannel, CategoryChannel, Channel]:
         """
         Creates a Channel instance.
 
@@ -383,10 +377,7 @@ class State:
             The [lefi.Guild][] instance passed in.
 
         """
-        channels = {
-            int(payload["id"]): self.create_channel(payload, guild)
-            for payload in data["channels"]
-        }
+        channels = {int(payload["id"]): self.create_channel(payload, guild) for payload in data["channels"]}
 
         for channel in channels.values():
             self._channels[channel.id] = channel
@@ -406,10 +397,7 @@ class State:
             The [lefi.Guild][] instance passed in.
 
         """
-        members = {
-            int(payload["user"]["id"]): Member(self, payload, guild)
-            for payload in data["members"]
-        }
+        members = {int(payload["user"]["id"]): Member(self, payload, guild) for payload in data["members"]}
         guild._members = members
         return guild
 
@@ -425,9 +413,7 @@ class State:
             The [lefi.Guild][] instance passed in.
 
         """
-        roles = {
-            int(payload["id"]): Role(self, payload, guild) for payload in data["roles"]
-        }
+        roles = {int(payload["id"]): Role(self, payload, guild) for payload in data["roles"]}
 
         guild._roles = roles
         return guild

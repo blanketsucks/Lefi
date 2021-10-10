@@ -1,5 +1,7 @@
 # Lefi
 [![Documentation Status](https://readthedocs.org/projects/lefi/badge/?version=latest)](https://lefi.readthedocs.io/en/latest/?badge=latest)
+![Pytest](https://github.com/an-dyy/Lefi/actions/workflows/run-pytest.yml/badge.svg?event=push)
+![Mypy](https://github.com/an-dyy/Lefi/actions/workflows/mypy.yml/badge.svg?event=push)
 
 A discord API wrapper focused on clean code, and usability
 
@@ -37,7 +39,7 @@ async def main() -> None:
         print(f"LOGGED IN AS {client_user.id}")
 
     @client.on("message_create")
-    async def message_create(message: lefi.Message) -> None:
+    async def on_message_create(message: lefi.Message) -> None:
         print(message)
 
     await client.start()
@@ -58,5 +60,5 @@ asyncio.run(main())
 
 ## Contributors
 
-- [blanketsucks](https://github.com/blanketsucks) - Contributor
+- [blanketsucks](https://github.com/blanketsucks) - contributor
 - [an-dyy](https://github.com/an-dyy) - creator and maintainer
