@@ -115,7 +115,11 @@ class TextChannel(Channel):
         )
 
     async def send(
-        self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None
+        self,
+        content: Optional[str] = None,
+        *,
+        embeds: Optional[List[Embed]] = None,
+        **kwargs,
     ) -> Message:
         """
         Sends a message to the channel.
@@ -123,6 +127,7 @@ class TextChannel(Channel):
         Parameters:
             content (Optional[str]): The content of the message.
             embeds (Optional[List[lefi.Embed]]): The list of embeds to send with the message.
+            **kwargs (Any): Extra options to pass to [lefi.HTTPClient.send_message][]
 
         Returns:
             The sent [lefi.Message][] instance.
