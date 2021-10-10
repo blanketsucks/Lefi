@@ -30,6 +30,74 @@ class Guild:
     def __repr__(self) -> str:
         return f"<Guild id={self.id}>"
 
+    async def edit(self, **kwargs) -> Guild:
+        """
+        Edits the guild.
+
+        Parameters:
+            **kwargs (Any): Options to pass to [lefi.HTTPClient.modify_guild][]
+
+        Returns:
+            The guild after editting
+
+        """
+        await self._state.http.modify_guild(self.id, **kwargs)
+        return self
+
+    async def add_role(self, name: str, **kwargs) -> Role:
+        """
+        Creates a new role in the guild.
+        
+        Parameters:
+            name (str): The name of the role.
+            **kwargs (Any): Extra options to pass to [lefi.HTTPClient.create_guild_role][].
+
+        Returns:
+            The newly created [lefi.Role][] instance.
+
+        """
+        data = await self._state.http.create_guild_role(self.id, name=name, **kwargs)
+        return Role(self._state, data, self)
+
+    def get_member(self, member_id: int) -> Optional[Member]:
+        """
+        Gets a member from the guilds member cache.
+
+        Parameters:
+            member_id (int): The ID of the member.
+
+        Returns:
+            The [lefi.Member][] instance corresponding to the ID if found.
+
+        """
+        return self._members.get(member_id)
+
+    def get_channel(self, channel_id: int) -> Optional[GuildChannels]:
+        """
+        Gets a channel from the guilds channel cache.
+
+        Parameters:
+            channel_id (int): The ID of the channel.
+
+        Returns:
+            The [lefi.Channel][] instance corresponding to the ID if found.
+
+        """
+        return self._channels.get(channel_id)
+
+    def get_role(self, role_id: int) -> Optional[Role]:
+        """
+        Gets a role from the guilds role cache.
+
+        Parameters:
+            role_id (int): The ID of the role.
+
+        Returns:
+            The [lefi.Role][] instance corresponding to the ID if found.
+
+        """
+        return self._roles.get(role_id)
+
     @property
     def id(self) -> int:
         """
@@ -89,59 +157,34 @@ class Guild:
     @property
     def channels(self) -> List[GuildChannels]:
         """
-        The list of channels belonging to the guild.
+        The list of [lefi.Channel][] instances belonging to the guild.
         """
         return list(self._channels.values())
 
     @property
     def members(self) -> List[Member]:
         """
-        The list of members belonging to the guild.
+        The list of [lefi.Member][] instances belonging to the guild.
         """
         return list(self._members.values())
 
     @property
     def roles(self) -> List[Role]:
         """
-        The list of roles belonging to the guild.
+        The list of [lefi.Role][] instances belonging to the guild.
         """
         return list(self._roles.values())
 
-    def get_member(self, member_id: int) -> Optional[Member]:
+    @property
+    def default_role(self) -> Role:
         """
-        Gets a member from the guilds member cache.
-
-        Parameters:
-            member_id (int): The ID of the member.
-
-        Returns:
-            The [lefi.Member][] instance corresponding to the ID if found.
-
+        The guild's default role.
         """
-        return self._members.get(member_id)
+        return self.get_role(self.id)  # type: ignore
 
-    def get_channel(self, channel_id: int) -> Optional[GuildChannels]:
+    @property
+    def member_count(self) -> int:
         """
-        Gets a channel from the guilds channel cache.
-
-        Parameters:
-            channel_id (int): The ID of the channel.
-
-        Returns:
-            The [lefi.Channel][] instance corresponding to the ID if found.
-
+        The guild's member count
         """
-        return self._channels.get(channel_id)
-
-    def get_role(self, role_id: int) -> Optional[Role]:
-        """
-        Gets a role from the guilds role cache.
-
-        Parameters:
-            role_id (int): The ID of the role.
-
-        Returns:
-            The [lefi.Role][] instance corresponding to the ID if found.
-
-        """
-        return self._roles.get(role_id)
+        return len(self._members)

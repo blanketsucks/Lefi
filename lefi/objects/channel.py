@@ -139,6 +139,7 @@ class TextChannel(Channel):
             channel_id=self.id,
             content=content,
             embeds=[embed.to_dict() for embed in embeds],
+            **kwargs
         )
         return self._state.create_message(data, self)
 
