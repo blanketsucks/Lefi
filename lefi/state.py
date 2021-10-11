@@ -127,7 +127,7 @@ class State:
             *payload (Any): The data after parsing is finished.
 
         """
-        events = self.client.events.get(event, {})
+        events = self.client.events.get(event, {})  # type: ignore
         futures = self.client.futures.get(event, [])
 
         if callbacks := self.client.once_events.get(event):
