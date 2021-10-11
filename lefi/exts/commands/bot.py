@@ -25,8 +25,8 @@ CMD = TypeVar("CMD", bound=Command)
 class Bot(lefi.Client):
     def __init__(self, prefix: str, token: str, *args, **kwargs) -> None:
         super().__init__(token, *args, **kwargs)
-        self.add_listener(self.parse_commands, "message_create")
-        self.add_listener(self.handle_command_error, "command_error")
+        self.add_listener(self.parse_commands, "message_create", False)
+        self.add_listener(self.handle_command_error, "command_error", False)
 
         self.checks: List[Callable[..., bool]] = []
         self.commands: Dict[str, Command] = {}
@@ -42,10 +42,6 @@ class Bot(lefi.Client):
             return command
 
         return inner
-
-    def handler(self, func: Callable[..., Coroutine]) -> Callable[..., Coroutine]:
-        self.events["command_error"][0] = func
-        return func
 
     def get_command(self, name: str) -> Optional[Command]:
         return self.commands.get(name)

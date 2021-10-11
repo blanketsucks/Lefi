@@ -3,7 +3,17 @@ from __future__ import annotations
 import asyncio
 import collections
 
-from typing import TYPE_CHECKING, Optional, TypeVar, Union, Dict, Any, Type
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+    TypeVar,
+    Union,
+    Dict,
+    Any,
+    Type,
+    Callable,
+    Coroutine,
+)
 
 from .objects import (
     Message,
@@ -117,7 +127,7 @@ class State:
             *payload (Any): The data after parsing is finished.
 
         """
-        events = self.client.events.get(event, [])
+        events = self.client.events.get(event, {})
         futures = self.client.futures.get(event, [])
 
         if callbacks := self.client.once_events.get(event):
@@ -134,7 +144,7 @@ class State:
 
                 break
 
-        for callback in events:
+        for callback in events.values():
             self.loop.create_task(callback(*payload))
 
     async def parse_ready(self, data: Dict) -> None:

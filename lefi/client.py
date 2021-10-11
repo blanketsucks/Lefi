@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import inspect
 import asyncio
+import inspect
 
 from typing import (
     Optional,
@@ -16,7 +16,7 @@ from typing import (
 )
 
 from .http import HTTPClient
-from .state import State
+from .state import State, Cache
 from .ws import WebSocketClient
 from .objects import Intents
 
@@ -66,14 +66,12 @@ class Client:
         self._state: State = State(self, self.loop)
         self.ws: WebSocketClient = WebSocketClient(self, intents)
 
-        self.events: Dict[str, List[Callable[..., Any]]] = {}
+        self.events: Dict[str, Cache[Callable[..., Any]]] = {}
         self.once_events: Dict[str, List[Callable[..., Any]]] = {}
         self.futures: Dict[str, List[Tuple[asyncio.Future, Callable[..., bool]]]] = {}
 
     def add_listener(
-        self,
-        func: Callable[..., Coroutine],
-        event_name: Optional[str],
+        self, func: Callable[..., Coroutine], event_name: Optional[str], overwrite: bool
     ) -> None:
         """
         Registers listener, basically connecting an event to a callback.
@@ -81,21 +79,34 @@ class Client:
         Parameters:
             func (Callable[..., Coroutine]): The callback to register for an event.
             event_name (Optional[str]): The event to register, if None it will pass the decorated functions name.
+            overwrite (bool): Whether or not to clear every callback except for the current one being registered.
 
         """
         name = event_name or func.__name__
         if not inspect.iscoroutinefunction(func):
             raise TypeError("Callback must be a coroutine")
 
-        callbacks = self.events.setdefault(name, [])
-        callbacks.append(func)
+        callbacks = self.events.setdefault(
+            name, Cache[Callable[..., Coroutine]](maxlen=1 if overwrite else None)
+        )
 
-    def on(self, event_name: Optional[str] = None) -> Callable[..., Callable[..., Coroutine]]:
+        if overwrite is False:
+            callbacks.maxlen = None
+
+        elif overwrite is True:
+            callbacks.maxlen = 1
+
+        callbacks[func.__name__] = func
+
+    def on(
+        self, event_name: Optional[str] = None, overwrite: bool = False
+    ) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
 
         Parameters:
             event_name (Optional[str]): The event to register.
+            overwrite (bool): Whether or not to clear every callback except for the current one being registered.
 
         Note:
             The function being decorated must be a coroutine.
@@ -126,12 +137,14 @@ class Client:
         """
 
         def inner(func: Callable[..., Coroutine]) -> Callable[..., Coroutine]:
-            self.add_listener(func, event_name)
+            self.add_listener(func, event_name, overwrite)
             return func
 
         return inner
 
-    def once(self, event_name: Optional[str] = None) -> Callable[..., Callable[..., Coroutine]]:
+    def once(
+        self, event_name: Optional[str] = None
+    ) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
         Similar to [lefi.Client.on][] but also cuts itself off the event after firing once.
@@ -187,7 +200,9 @@ class Client:
         """
         await asyncio.gather(self.login(), self.connect())
 
-    async def wait_for(self, event: str, *, check: Callable[..., bool] = None, timeout: float = None) -> Any:
+    async def wait_for(
+        self, event: str, *, check: Callable[..., bool] = None, timeout: float = None
+    ) -> Any:
         """
         Waits for an event to be dispatched that passes the check.
 
@@ -251,7 +266,11 @@ class Client:
         """
         return self._state.get_guild(id)
 
-    def get_channel(self, id: int) -> Optional[Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]]:
+    def get_channel(
+        self, id: int
+    ) -> Optional[
+        Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]
+    ]:
         """
         Grabs a [lefi.Channel][] instance if cached.
 
