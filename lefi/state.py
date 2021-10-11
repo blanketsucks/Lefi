@@ -410,7 +410,7 @@ class State:
         for member_data in data["members"]:
             member = Member(self, member_data, guild)
             member._roles = {  # type: ignore
-                int(role): guild.get_role(int(role)) for role in member_data["roles"]
+                int(role): guild.get_role(int(role)) for role in member_data["roles"]  # type: ignore
             }
 
             members[member.id] = member
