@@ -21,7 +21,7 @@ class Bot(lefi.Client):
         self.prefix = prefix
 
     async def execute(self, ctx: Context) -> None:
-        print(ctx)
+        ...
 
     async def get_context(
         self, message: lefi.Message, *, cls: Type[CTX] = Context
@@ -37,8 +37,8 @@ class Bot(lefi.Client):
         return self.prefix
 
     async def parse_commands(self, message: lefi.Message) -> None:
-        ctx = await self.get_context(message)
-        print(ctx.message)
+        ctx = await self.get_context(message)  # type: ignore
+        await self.execute(ctx)
 
     async def handle_command_error(self) -> None:
         ...

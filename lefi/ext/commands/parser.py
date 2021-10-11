@@ -24,6 +24,8 @@ class StringParser:
 
             return self.command
 
+        assert False
+
     def parse_prefix(self) -> Optional[str]:
         if isinstance(self.prefix, tuple):
             find_prefix = [self.content.startswith(prefix) for prefix in self.prefix]
@@ -36,6 +38,8 @@ class StringParser:
 
         elif not isinstance(self.prefix, tuple):
             return self.prefix
+
+        assert False
 
     @property
     def invoker(self) -> Optional[str]:
