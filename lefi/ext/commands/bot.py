@@ -23,8 +23,12 @@ class Bot(lefi.Client):
     async def execute(self, ctx: Context) -> None:
         print(ctx)
 
-    async def get_context(self, message: lefi.Message, *, cls: Type[CTX] = Context) -> CTX:
-        return cls(message, StringParser(message.content, await self.get_prefix(message)), self)
+    async def get_context(
+        self, message: lefi.Message, *, cls: Type[CTX] = Context
+    ) -> CTX:
+        return cls(
+            message, StringParser(message.content, await self.get_prefix(message)), self
+        )
 
     async def get_prefix(self, message: lefi.Message) -> Union[Tuple[str], str]:
         if callable(self.prefix):
