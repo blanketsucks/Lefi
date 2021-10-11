@@ -69,4 +69,6 @@ class Bot(lefi.Client):
 
     async def execute(self, ctx: Context) -> None:
         if ctx.command is not None:
-            await ctx.command(ctx, *ctx.parser.arguments)
+            ctx.parser.command = ctx.command
+            kwargs, args = await ctx.parser.parse_arguments()
+            await ctx.command(ctx, *args, **kwargs)
