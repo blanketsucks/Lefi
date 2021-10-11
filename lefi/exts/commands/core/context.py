@@ -11,7 +11,7 @@ class Context:
     if TYPE_CHECKING:
         from .parser import StringParser
         from lefi import Message
-        from .bot import Bot
+        from ..bot import Bot
 
     def __init__(self, message: Message, parser: StringParser, bot: Bot) -> None:
         self.command: Optional[Command] = None

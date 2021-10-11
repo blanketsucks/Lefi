@@ -14,9 +14,7 @@ from typing import (
 
 import lefi
 
-from .command import Command
-from .context import Context
-from .parser import StringParser
+from .core import Command, Context, StringParser
 
 CTX = TypeVar("CTX", bound=Context)
 CMD = TypeVar("CMD", bound=Command)
@@ -45,9 +43,7 @@ class Bot(lefi.Client):
     def get_command(self, name: str) -> Optional[Command]:
         return self.commands.get(name)
 
-    async def get_context(
-        self, message: lefi.Message, *, cls: Type[CTX] = Context  # type: ignore
-    ) -> CTX:
+    async def get_context(self, message: lefi.Message, *, cls: Type[CTX] = Context) -> CTX:  # type: ignore
         context = cls(
             message, StringParser(message.content, await self.get_prefix(message)), self
         )
