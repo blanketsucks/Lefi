@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import Dict, List, Callable, Union, Tuple
+from typing import Dict, List, Callable, Union, Tuple, TypeVar, Type
 
 import lefi
 
 from .context import Context
 from .parser import StringParser
+
+CTX = TypeVar("CTX", bound=Context)
 
 
 class Bot(lefi.Client):
@@ -18,14 +20,11 @@ class Bot(lefi.Client):
         self.commands: Dict = {}
         self.prefix = prefix
 
-    async def execute(self, ctx) -> None:
-        ...
+    async def execute(self, ctx: Context) -> None:
+        print(ctx)
 
-    async def get_context(self, message: lefi.Message) -> Context:
-        invoker = await self.get_prefix(message)
-        return Context(
-            message, StringParser(message.content, await self.get_prefix(message)), self
-        )
+    async def get_context(self, message: lefi.Message, *, cls: Type[CTX] = Context) -> CTX:
+        return cls(message, StringParser(message.content, await self.get_prefix(message)), self)
 
     async def get_prefix(self, message: lefi.Message) -> Union[Tuple[str], str]:
         if callable(self.prefix):
@@ -35,6 +34,7 @@ class Bot(lefi.Client):
 
     async def parse_commands(self, message: lefi.Message) -> None:
         ctx = await self.get_context(message)
+        print(ctx.message)
 
     async def handle_command_error(self) -> None:
         ...

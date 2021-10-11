@@ -15,12 +15,24 @@ class StringParser:
     def find_command(self) -> Optional[str]:
         tokens = self.content.split(" ")
 
-        if tokens[0].startswith(self.prefix):
-            self.command = tokens[0][len(self.prefix) :]
+        if prefix := self.parse_prefix():
 
-        self.arguments = tokens[1:]
+            if tokens[0].startswith(prefix):
+                self.command = tokens[0][len(prefix) :]
 
-        return self.command
+            self.arguments = tokens[1:]
 
-    def parse_prefix(self) -> str:
-        ...
+            return self.command
+
+    def parse_prefix(self) -> Optional[str]:
+        if isinstance(self.prefix, tuple):
+            find_prefix = [self.content.startswith(prefix) for prefix in self.prefix]
+
+            for index, prefix in enumerate(find_prefix):
+                if prefix is not True:
+                    continue
+
+                return self.prefix[index]
+
+        elif not isinstance(self.prefix, tuple):
+            return self.prefix
