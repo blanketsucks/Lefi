@@ -19,6 +19,9 @@ class Context:
         self.parser = parser
         self.bot = bot
 
+    async def send(self, **kwargs) -> Message:
+        return await self.message.channel.send(**kwargs)
+
     @property
     def valid(self) -> bool:
         return self.command is not None
