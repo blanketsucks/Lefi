@@ -57,7 +57,7 @@ asyncio.run(main())
     ```
     pre-commit install
     ```
-## Flowchart
+## Flowchart for release
 ![vgy.me](https://i.vgy.me/GKyJVX.png)
 
 
