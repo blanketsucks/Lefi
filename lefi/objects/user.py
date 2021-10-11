@@ -28,6 +28,34 @@ class User:
         name = self.__class__.__name__
         return f"<{name} username={self.username!r} discriminator={self.discriminator!r} id={self.id} bot={self.bot}>"
 
+    async def create_dm_channel(self) -> DMChannel:
+        """
+        Creates a DMChannel for the user if one isn't open already.
+        """
+        if self._channel is not None:
+            return self._channel
+
+        data = await self._state.http.create_dm_channel(self.id)
+        self._channel = DMChannel(self._state, data)
+
+        return self._channel
+
+    async def send(self, content: str) -> Message:
+        """
+        Sends a message to the user.
+
+        Parameters:
+            content (str): The content of the message.
+
+        Returns:
+            The [lefi.Message][] instance of the message sent.
+
+        """
+        if self._channel is None:
+            self._channel = await self.create_dm_channel()
+
+        return await self._channel.send(content)
+
     @property
     def username(self) -> str:
         """
@@ -125,31 +153,3 @@ class User:
         The users DMChannel.
         """
         return self._channel
-
-    async def create_dm_channel(self) -> DMChannel:
-        """
-        Creates a DMChannel for the user if one isn't open already.
-        """
-        if self._channel is not None:
-            return self._channel
-
-        data = await self._state.http.create_dm_channel(self.id)
-        self._channel = DMChannel(self._state, data)
-
-        return self._channel
-
-    async def send(self, content: str) -> Message:
-        """
-        Sends a message to the user.
-
-        Parameters:
-            content (str): The content of the message.
-
-        Returns:
-            The [lefi.Message][] instance of the message sent.
-
-        """
-        if self._channel is None:
-            self._channel = await self.create_dm_channel()
-
-        return await self._channel.send(content)
