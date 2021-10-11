@@ -36,3 +36,11 @@ class StringParser:
 
         elif not isinstance(self.prefix, tuple):
             return self.prefix
+
+    @property
+    def invoker(self) -> Optional[str]:
+        return self.command
+
+    @property
+    def invoked_with(self) -> Optional[str]:
+        return self.parse_prefix()
