@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Any, List, Dict
+from typing import TYPE_CHECKING, Optional, Any, List, Dict, Iterable
 
 from .enums import ChannelType
 from .permissions import Overwrite
@@ -87,13 +87,62 @@ class TextChannel(Channel):
     def __init__(self, state: State, data: Dict, guild: Guild):
         super().__init__(state, data, guild)
 
-    async def send(self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None) -> Message:
+    async def fetch_history(self, **kwargs) -> List[Message]:
+        """
+        Makes an API call to grab messages from the channel.
+
+        Parameters:
+            **kwargs (Any): The option to pass to [lefi.HTTPClient.get_channel_messages][].
+
+        Returns:
+            A list of the fetched [lefi.Message][] instances.
+
+        """
+        data = await self._state.http.get_channel_messages(self.id, **kwargs)
+        return [self._state.create_message(payload, self) for payload in data]  # type: ignore
+
+    async def edit(self, **kwargs) -> TextChannel:
+        """
+        Edits the channel.
+
+        Parameters:
+            **kwargs (Any): The options to pass to [lefi.HTTPClient.edit_text_channel][].
+
+        Returns:
+            The [lefi.TextChannel][] instance after editting.
+
+        """
+
+        data = await self._state.http.edit_text_channel(self.id, **kwargs)
+        self._data = data
+        return self
+
+    async def delete_messages(self, messages: Iterable[Message]) -> None:
+        """
+        Bulk deletes messages from the channel.
+
+        Parameters:
+            messages (Iterable[lefi.Message]): The list of messages to delete.
+
+        """
+        await self._state.http.bulk_delete_messages(
+            self.id, message_ids=[msg.id for msg in messages]
+        )
+
+    async def send(
+        self,
+        content: Optional[str] = None,
+        *,
+        embeds: Optional[List[Embed]] = None,
+        **kwargs,
+    ) -> Message:
         """
         Sends a message to the channel.
 
         Parameters:
             content (Optional[str]): The content of the message.
             embeds (Optional[List[lefi.Embed]]): The list of embeds to send with the message.
+            **kwargs (Any): Extra options to pass to [lefi.HTTPClient.send_message][]
 
         Returns:
             The sent [lefi.Message][] instance.
@@ -105,6 +154,7 @@ class TextChannel(Channel):
             channel_id=self.id,
             content=content,
             embeds=[embed.to_dict() for embed in embeds],
+            **kwargs
         )
         return self._state.create_message(data, self)
 
@@ -166,6 +216,21 @@ class VoiceChannel(Channel):
     def __init__(self, state: State, data: Dict, guild: Guild):
         super().__init__(state, data, guild)
 
+    async def edit(self, **kwargs) -> VoiceChannel:
+        """
+        Edits the channel.
+
+        Parameters:
+            **kwargs (Any): The options to pass to [lefi.HTTPClient.edit_voice_channel][].
+
+        Returns:
+            The [lefi.VoiceChannel][] instance after editting.
+
+        """
+        data = await self._state.http.edit_voice_channel(**kwargs)
+        self._data = data
+        return self
+
     @property
     def user_limit(self) -> int:
         """
@@ -212,7 +277,9 @@ class DMChannel:
     def __repr__(self) -> str:
         return f"<DMChannel id={self.id} type={self.type!r}>"
 
-    async def send(self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None) -> Message:
+    async def send(
+        self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None
+    ) -> Message:
         """
         Sends a message to the channel.
 
