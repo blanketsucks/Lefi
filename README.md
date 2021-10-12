@@ -57,8 +57,12 @@ asyncio.run(main())
     ```
     pre-commit install
     ```
+## Flowchart for release
+![vgy.me](https://i.vgy.me/GKyJVX.png)
+
 
 ## Contributors
 
-- [blanketsucks](https://github.com/blanketsucks) - contributor
+- [blanketsucks](https://github.com/blanketsucks) - collaborator
 - [an-dyy](https://github.com/an-dyy) - creator and maintainer
+
