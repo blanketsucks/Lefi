@@ -36,6 +36,8 @@ class Handler:
         if all(check(self.context) for check in self.context.command.checks):
             return await self.context.command(self.context, *args, **kwargs)
 
+        raise TypeError(f"CheckFailure in {self.context.command}")
+
     def __enter__(self) -> Handler:
         with contextlib.suppress():
             self.can_run = self.context.bot._check(self.context)
