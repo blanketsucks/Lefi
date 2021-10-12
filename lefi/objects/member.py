@@ -24,10 +24,11 @@ class Member(User):
     """
 
     def __init__(self, state: State, data: Dict, guild: Guild):
+        super().__init__(state, data["user"])
+        state.add_user(data["user"])
+        self._roles: Dict[int, Role] = {}
         self._member = data
         self.guild = guild
-        state.add_user(data["user"])
-        super().__init__(state, data["user"])
 
     @property
     def nick(self) -> Optional[str]:
@@ -41,7 +42,7 @@ class Member(User):
         """
         The roles of the member.
         """
-        return []
+        return list(self._roles.values())
 
     @property
     def joined_at(self) -> datetime.datetime:

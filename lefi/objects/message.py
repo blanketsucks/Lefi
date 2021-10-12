@@ -47,46 +47,20 @@ class Message:
     def __repr__(self) -> str:
         return f"<Message id={self.id}>"
 
-    @property
-    def id(self) -> int:
+    async def edit(self, **kwargs) -> Message:
         """
-        The ID of the message.
-        """
-        return self._data["id"]
+        Edits the message.
 
-    @property
-    def channel(self) -> Channels:
-        """
-        The [lefi.Channel][] which the message is in.
-        """
-        return self._channel
+        Parameters:
+            **kwargs (Any): The options to pass to [lefi.HTTPClient.edit_message][]
 
-    @property
-    def guild(self) -> Optional[Guild]:
-        """
-        The [lefi.Guild][] which the message is in.
-        """
-        return self._channel.guild
+        Returns:
+            The message after being editted.
 
-    @property
-    def content(self) -> str:
         """
-        The content of the message.
-        """
-        return self._data["content"]
-
-    @property
-    def author(self) -> Union[User, Member]:
-        """
-        The author of the message.
-        """
-        if self.guild is None:
-            return self._state.get_user(int(self._data["author"]["id"]))  # type: ignore
-
-        if author := self.guild.get_member(int(self._data["author"]["id"])):  # type: ignore
-            return author
-        else:
-            return self._state.add_user(self._data["author"])
+        data = await self._state.http.edit_message(**kwargs)
+        self._data = data
+        return self
 
     async def crosspost(self) -> Message:
         """
@@ -131,3 +105,44 @@ class Message:
         """
         await self._state.http.delete_message(self.channel.id, self.id)
         self._state._messages.pop(self.id, None)
+
+    @property
+    def id(self) -> int:
+        """
+        The ID of the message.
+        """
+        return self._data["id"]
+
+    @property
+    def channel(self) -> Channels:
+        """
+        The [lefi.Channel][] which the message is in.
+        """
+        return self._channel
+
+    @property
+    def guild(self) -> Optional[Guild]:
+        """
+        The [lefi.Guild][] which the message is in.
+        """
+        return self._channel.guild
+
+    @property
+    def content(self) -> str:
+        """
+        The content of the message.
+        """
+        return self._data["content"]
+
+    @property
+    def author(self) -> Union[User, Member]:
+        """
+        The author of the message.
+        """
+        if self.guild is None:
+            return self._state.get_user(int(self._data["author"]["id"]))  # type: ignore
+
+        if author := self.guild.get_member(int(self._data["author"]["id"])):  # type: ignore
+            return author
+        else:
+            return self._state.add_user(self._data["author"])
