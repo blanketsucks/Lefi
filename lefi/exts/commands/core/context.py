@@ -7,7 +7,7 @@ from .command import Command
 __all__ = ("Context",)
 
 if TYPE_CHECKING:
-    from lefi import Message, User
+    from lefi import Message, User, Member, Guild
 
     from ..bot import Bot
     from .parser import StringParser
@@ -16,13 +16,23 @@ if TYPE_CHECKING:
 class Context:
     def __init__(self, message: Message, parser: StringParser, bot: Bot) -> None:
         self.command: Optional[Command] = None
-        self.author: User = message.author
-        self.message = message
+        self._message = message
         self.parser = parser
         self.bot = bot
 
+    def __repr__(self) -> str:
+        return f"<Context valid={self.valid!r}>"
+
     async def send(self, **kwargs) -> Message:
-        return await self.message.channel.send(**kwargs)
+        return await self._message.channel.send(**kwargs)
+
+    @property
+    def author(self) -> Union[User, Member]:
+        return self._message.author
+
+    @property
+    def guild(self) -> Optional[Guild]:
+        return self._message.guild
 
     @property
     def valid(self) -> bool:
