@@ -1,20 +1,21 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 from .command import Command
 
 __all__ = ("Context",)
 
+if TYPE_CHECKING:
+    from .parser import StringParser
+    from lefi import Message, User
+    from ..bot import Bot
+
 
 class Context:
-    if TYPE_CHECKING:
-        from .parser import StringParser
-        from lefi import Message
-        from ..bot import Bot
-
     def __init__(self, message: Message, parser: StringParser, bot: Bot) -> None:
         self.command: Optional[Command] = None
+        self.author: User = message.author
         self.message = message
         self.parser = parser
         self.bot = bot
