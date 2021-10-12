@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Dict, Optional
 from .flags import Permissions
 
 if TYPE_CHECKING:
-    from .guild import Guild
     from ..state import State
+    from .guild import Guild
 
 __all__ = ("Role",)
 

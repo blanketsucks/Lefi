@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Any, List, Dict, Iterable
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional
 
+from .embed import Embed
 from .enums import ChannelType
 from .permissions import Overwrite
-from .embed import Embed
 
 if TYPE_CHECKING:
-    from .user import User
     from ..state import State
-    from .message import Message
     from .guild import Guild
+    from .message import Message
+    from .user import User
 
 __all__ = ("TextChannel", "DMChannel", "VoiceChannel", "CategoryChannel", "Channel")
 
@@ -154,7 +154,7 @@ class TextChannel(Channel):
             channel_id=self.id,
             content=content,
             embeds=[embed.to_dict() for embed in embeds],
-            **kwargs
+            **kwargs,
         )
         return self._state.create_message(data, self)
 

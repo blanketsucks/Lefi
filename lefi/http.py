@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import aiohttp
 import asyncio
-import json
-
-from typing import ClassVar, List, Dict, Any, Optional
 import io
+import json
+from typing import Any, ClassVar, Dict, List, Optional
 
-from .utils import update_payload, bytes_to_data_uri
-from .errors import HTTPException, Forbidden, NotFound, BadRequest, Unauthorized
+import aiohttp
+
+from .errors import BadRequest, Forbidden, HTTPException, NotFound, Unauthorized
+from .utils import bytes_to_data_uri, update_payload
 
 __all__ = ("HTTPClient",)
 
@@ -48,7 +48,9 @@ class HTTPClient:
         self.loop: asyncio.AbstractEventLoop = loop
         self.session: aiohttp.ClientSession = None  # type: ignore
 
-    async def _create_session(self, loop: asyncio.AbstractEventLoop = None) -> aiohttp.ClientSession:
+    async def _create_session(
+        self, loop: asyncio.AbstractEventLoop = None
+    ) -> aiohttp.ClientSession:
         """
         Creates the session to use if one wasn't given during construction.
 
@@ -59,7 +61,9 @@ class HTTPClient:
             The created [aiohttp.ClientSession][] instance.
 
         """
-        return aiohttp.ClientSession(loop=self.loop or loop, headers={"Authorization": f"Bot {self.token}"})
+        return aiohttp.ClientSession(
+            loop=self.loop or loop, headers={"Authorization": f"Bot {self.token}"}
+        )
 
     async def request(self, method: str, path: str, **kwargs) -> Any:
         """
@@ -281,9 +285,13 @@ class HTTPClient:
 
         update_payload(params, around=around, before=before, after=after)
 
-        return await self.request("GET", f"/channels/{channel_id}/messages", params=params)
+        return await self.request(
+            "GET", f"/channels/{channel_id}/messages", params=params
+        )
 
-    async def get_channel_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
+    async def get_channel_message(
+        self, channel_id: int, message_id: int
+    ) -> Dict[str, Any]:
         """
         Makes an API call to get a specific message by ID.
 
@@ -295,7 +303,9 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("GET", f"/channels/{channel_id}/messages/{message_id}")
+        return await self.request(
+            "GET", f"/channels/{channel_id}/messages/{message_id}"
+        )
 
     async def send_message(
         self,
@@ -351,9 +361,13 @@ class HTTPClient:
             sticker_ids=sticker_ids,
         )
 
-        return await self.request("POST", f"/channels/{channel_id}/messages", json=payload, form=form)
+        return await self.request(
+            "POST", f"/channels/{channel_id}/messages", json=payload, form=form
+        )
 
-    async def crosspost_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
+    async def crosspost_message(
+        self, channel_id: int, message_id: int
+    ) -> Dict[str, Any]:
         """
         Makes an API call to crosspost a message.
 
@@ -365,7 +379,9 @@ class HTTPClient:
             The data received after making the call.
 
         """
-        return await self.request("POST", f"/channels/{channel_id}/messages/{message_id}/crosspost")
+        return await self.request(
+            "POST", f"/channels/{channel_id}/messages/{message_id}/crosspost"
+        )
 
     async def create_reaction(self, channel_id: int, message_id: int, emoji: str):
         """
@@ -446,7 +462,9 @@ class HTTPClient:
             params=params,
         )
 
-    async def delete_all_reactions(self, channel_id: int, message_id: int, emoji: str) -> Dict[str, Any]:
+    async def delete_all_reactions(
+        self, channel_id: int, message_id: int, emoji: str
+    ) -> Dict[str, Any]:
         """
         Makes an API call to remove all reactions of a message.
 
@@ -459,7 +477,9 @@ class HTTPClient:
             The data received from the API After making the call.
 
         """
-        return await self.request("DELETE", f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}")
+        return await self.request(
+            "DELETE", f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}"
+        )
 
     async def edit_message(
         self,
@@ -517,9 +537,13 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("DELETE", f"/channels/{channel_id}/messages/{message_id}")
+        return await self.request(
+            "DELETE", f"/channels/{channel_id}/messages/{message_id}"
+        )
 
-    async def bulk_delete_messages(self, channel_id: int, message_ids: List[int]) -> Dict[str, Any]:
+    async def bulk_delete_messages(
+        self, channel_id: int, message_ids: List[int]
+    ) -> Dict[str, Any]:
         """
         Makes an API call to delete multiple messages.
 
@@ -532,7 +556,9 @@ class HTTPClient:
 
         """
         payload = {"messages": message_ids}
-        return await self.request("POST", f"/channels/{channel_id}/messages/bulk-delete", json=payload)
+        return await self.request(
+            "POST", f"/channels/{channel_id}/messages/bulk-delete", json=payload
+        )
 
     async def edit_channel_permissions(
         self,
@@ -566,7 +592,9 @@ class HTTPClient:
             json=payload,
         )
 
-    async def delete_channel_permissions(self, channel_id: int, overwrite_id: int) -> Dict[str, Any]:
+    async def delete_channel_permissions(
+        self, channel_id: int, overwrite_id: int
+    ) -> Dict[str, Any]:
         """
         Makes an API call to delete an overwrite from a channel.
 
@@ -578,7 +606,9 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("DELETE", f"/channels/{channel_id}/permissions/{overwrite_id}")
+        return await self.request(
+            "DELETE", f"/channels/{channel_id}/permissions/{overwrite_id}"
+        )
 
     async def get_channel_invites(self, channel_id: int) -> Dict[str, Any]:
         """
@@ -635,9 +665,13 @@ class HTTPClient:
             target_application_id=target_application_id,
         )
 
-        return await self.request("POST", f"/channels/{channel_id}/invites", json=payload)
+        return await self.request(
+            "POST", f"/channels/{channel_id}/invites", json=payload
+        )
 
-    async def follow_news_channel(self, channel_id: int, webhook_channel_id: int) -> Dict[str, Any]:
+    async def follow_news_channel(
+        self, channel_id: int, webhook_channel_id: int
+    ) -> Dict[str, Any]:
         """
         Makes an API call to follow a news channel to send messages to a target channel.
 
@@ -650,7 +684,9 @@ class HTTPClient:
 
         """
         payload = {"webhook_channel_id": webhook_channel_id}
-        return await self.request("PUT", f"/channels/{channel_id}/followers/@me", json=payload)
+        return await self.request(
+            "PUT", f"/channels/{channel_id}/followers/@me", json=payload
+        )
 
     async def trigger_typing(self, channel_id: int) -> Dict[str, Any]:
         """
@@ -755,7 +791,9 @@ class HTTPClient:
         payload = {"name": name, "auto_archive_duration": auto_archive_duration}
         update_payload(payload, type=type, invitable=invitable)
 
-        return await self.request(method="POST", path=f"/channels/{channel_id}/threads", json=payload)
+        return await self.request(
+            method="POST", path=f"/channels/{channel_id}/threads", json=payload
+        )
 
     async def join_thread(self, channel_id: int) -> Dict[str, Any]:
         """
@@ -782,7 +820,9 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("PUT", f"/channels/{channel_id}/thread-members/{user_id}")
+        return await self.request(
+            "PUT", f"/channels/{channel_id}/thread-members/{user_id}"
+        )
 
     async def leave_thread(self, channel_id: int) -> Dict[str, Any]:
         """
@@ -795,9 +835,13 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("DELETE", f"/channels/{channel_id}/thread-members/@me")
+        return await self.request(
+            "DELETE", f"/channels/{channel_id}/thread-members/@me"
+        )
 
-    async def remove_thread_member(self, channel_id: int, user_id: int) -> Dict[str, Any]:
+    async def remove_thread_member(
+        self, channel_id: int, user_id: int
+    ) -> Dict[str, Any]:
         """
         Makes an API call which removes a member from the thread.
 
@@ -809,7 +853,9 @@ class HTTPClient:
             The data received from the API after making the call
 
         """
-        return await self.request("DELETE", f"/channels/{channel_id}/thread-members/{user_id}")
+        return await self.request(
+            "DELETE", f"/channels/{channel_id}/thread-members/{user_id}"
+        )
 
     async def list_thread_members(self, channel_id: int) -> Dict[str, Any]:
         """
@@ -844,7 +890,9 @@ class HTTPClient:
 
         """
         params = update_payload({}, before=before, limit=limit)
-        return await self.request("GET", f"/channels/{channel_id}/threads/archived/public", params=params)
+        return await self.request(
+            "GET", f"/channels/{channel_id}/threads/archived/public", params=params
+        )
 
     async def list_private_archived_threads(
         self,
@@ -866,7 +914,9 @@ class HTTPClient:
 
         """
         params = update_payload({}, before=before, limit=limit)
-        return await self.request("GET", f"/channels/{channel_id}/threads/archived/private", params=params)
+        return await self.request(
+            "GET", f"/channels/{channel_id}/threads/archived/private", params=params
+        )
 
     async def list_joined_private_archived_threads(
         self,
@@ -948,7 +998,9 @@ class HTTPClient:
             "roles": [] if roles is None else roles,
         }
 
-        return await self.request(method="POST", path=f"/guilds/{guild_id}/emojis", json=payload)
+        return await self.request(
+            method="POST", path=f"/guilds/{guild_id}/emojis", json=payload
+        )
 
     async def modify_guild_emoji(
         self,
@@ -976,7 +1028,9 @@ class HTTPClient:
         }
         update_payload(payload, roles=roles)
 
-        return await self.request(method="PATCH", path=f"/guilds/{guild_id}/emojis/{emoji_id}", json=payload)
+        return await self.request(
+            method="PATCH", path=f"/guilds/{guild_id}/emojis/{emoji_id}", json=payload
+        )
 
     async def delete_guild_emoji(self, guild_id: int, emoji_id: int) -> Dict[str, Any]:
         """
@@ -1050,7 +1104,9 @@ class HTTPClient:
 
         return await self.request("POST", "/guilds", json=payload)
 
-    async def get_guild(self, guild_id: int, *, with_counts: bool = False) -> Dict[str, Any]:
+    async def get_guild(
+        self, guild_id: int, *, with_counts: bool = False
+    ) -> Dict[str, Any]:
         """
         Makes an API call to get a guild.
 
@@ -1262,7 +1318,9 @@ class HTTPClient:
         """
         return await self.request("GET", f"/guilds/{guild_id}/members/{member_id}")
 
-    async def list_guild_members(self, guild_id: int, *, limit: int = 1, after: int = 0) -> Dict[str, Any]:
+    async def list_guild_members(
+        self, guild_id: int, *, limit: int = 1, after: int = 0
+    ) -> Dict[str, Any]:
         """
         Makes an API call to get a guild's members.
 
@@ -1276,7 +1334,9 @@ class HTTPClient:
         params = {"limit": limit, "after": after}
         return await self.request("GET", f"/guilds/{guild_id}/members", params=params)
 
-    async def search_guild_members(self, guild_id: int, *, query: str, limit: int = 1) -> Dict[str, Any]:
+    async def search_guild_members(
+        self, guild_id: int, *, query: str, limit: int = 1
+    ) -> Dict[str, Any]:
         """
         Makes an API call to search a guild's members.
 
@@ -1290,7 +1350,9 @@ class HTTPClient:
 
         """
         params = {"limit": limit, "query": query}
-        return await self.request("GET", f"/guilds/{guild_id}/members/search", params=params)
+        return await self.request(
+            "GET", f"/guilds/{guild_id}/members/search", params=params
+        )
 
     async def add_guild_member(
         self,
@@ -1319,8 +1381,12 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        payload = update_payload({}, access_token=access_token, nick=nick, roles=roles, mute=mute, deaf=deaf)
-        return await self.request("PUT", f"/guilds/{guild_id}/members/{member_id}", json=payload)
+        payload = update_payload(
+            {}, access_token=access_token, nick=nick, roles=roles, mute=mute, deaf=deaf
+        )
+        return await self.request(
+            "PUT", f"/guilds/{guild_id}/members/{member_id}", json=payload
+        )
 
     async def edit_guild_member(
         self,
@@ -1348,8 +1414,12 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        payload = update_payload({}, nick=nick, roles=roles, mute=mute, deaf=deaf, channel_id=channel_id)
-        return await self.request("PATCH", f"/guilds/{guild_id}/members/{member_id}", json=payload)
+        payload = update_payload(
+            {}, nick=nick, roles=roles, mute=mute, deaf=deaf, channel_id=channel_id
+        )
+        return await self.request(
+            "PATCH", f"/guilds/{guild_id}/members/{member_id}", json=payload
+        )
 
     async def edit_current_member(self, guild_id: int, *, nick: Optional[str] = None):
         """
@@ -1364,7 +1434,9 @@ class HTTPClient:
 
         """
         payload = update_payload({}, nick=nick)
-        return await self.request("PATCH", f"/users/@me/guilds/{guild_id}", json=payload)
+        return await self.request(
+            "PATCH", f"/users/@me/guilds/{guild_id}", json=payload
+        )
 
     async def add_guild_member_role(self, guild_id: int, member_id: int, role_id: int):
         """
@@ -1379,9 +1451,13 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("PUT", f"/guilds/{guild_id}/members/{member_id}/roles/{role_id}")
+        return await self.request(
+            "PUT", f"/guilds/{guild_id}/members/{member_id}/roles/{role_id}"
+        )
 
-    async def remove_guild_member_role(self, guild_id: int, member_id: int, role_id: int):
+    async def remove_guild_member_role(
+        self, guild_id: int, member_id: int, role_id: int
+    ):
         """
         Makes an API call to remove a role from a member in a guild.
 
@@ -1394,7 +1470,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("DELETE", f"/guilds/{guild_id}/members/{member_id}/roles/{role_id}")
+        return await self.request(
+            "DELETE", f"/guilds/{guild_id}/members/{member_id}/roles/{role_id}"
+        )
 
     async def remove_guild_member(self, guild_id: int, member_id: int):
         """
@@ -1437,7 +1515,9 @@ class HTTPClient:
         """
         return await self.request("GET", f"/guilds/{guild_id}/bans/{user_id}")
 
-    async def create_guild_ban(self, guild_id: int, user_id: int, *, delete_message_days: int = 0):
+    async def create_guild_ban(
+        self, guild_id: int, user_id: int, *, delete_message_days: int = 0
+    ):
         """
         Makes an API call to ban a user in a guild.
 
@@ -1451,7 +1531,9 @@ class HTTPClient:
 
         """
         payload = {"delete_message_days": delete_message_days}
-        return await self.request("PUT", f"/guilds/{guild_id}/bans/{user_id}", json=payload)
+        return await self.request(
+            "PUT", f"/guilds/{guild_id}/bans/{user_id}", json=payload
+        )
 
     async def remove_guild_ban(self, guild_id: int, user_id: int):
         """
@@ -1570,7 +1652,9 @@ class HTTPClient:
         if "icon" in payload:
             payload["icon"] = bytes_to_data_uri(payload["icon"])
 
-        return await self.request("PATCH", f"/guilds/{guild_id}/roles/{role_id}", json=payload)
+        return await self.request(
+            "PATCH", f"/guilds/{guild_id}/roles/{role_id}", json=payload
+        )
 
     async def delete_guild_role(self, guild_id: int, role_id: int):
         """
@@ -1683,7 +1767,9 @@ class HTTPClient:
             integration_id (int): The ID of the integration.
 
         """
-        return await self.request("DELETE", f"/guilds/{guild_id}/integrations/{integration_id}")
+        return await self.request(
+            "DELETE", f"/guilds/{guild_id}/integrations/{integration_id}"
+        )
 
     async def get_guild_widget_settings(self, guild_id: int) -> Dict[str, Any]:
         """
@@ -1724,7 +1810,9 @@ class HTTPClient:
         """
         return await self.request("GET", f"/guilds/{guild_id}/vanity-url")
 
-    async def get_guild_widget_image(self, guild_id: int, *, style: Optional[str] = None) -> Dict[str, Any]:
+    async def get_guild_widget_image(
+        self, guild_id: int, *, style: Optional[str] = None
+    ) -> Dict[str, Any]:
         """
         Makes an API call to get the widget image in a guild.
 
@@ -1774,9 +1862,16 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        payload = update_payload({}, enabled=enabled, description=description, welcome_channels=welcome_channels)
+        payload = update_payload(
+            {},
+            enabled=enabled,
+            description=description,
+            welcome_channels=welcome_channels,
+        )
 
-        return await self.request("PATCH", f"/guilds/{guild_id}/welcome-screen", json=payload)
+        return await self.request(
+            "PATCH", f"/guilds/{guild_id}/welcome-screen", json=payload
+        )
 
     async def get_guild_template(self, code: str) -> Dict[str, Any]:
         """
@@ -1890,7 +1985,9 @@ class HTTPClient:
         """
         payload = update_payload({}, name=name, description=description)
 
-        return await self.request("PATCH", f"/guilds/{guild_id}/templates/{code}", json=payload)
+        return await self.request(
+            "PATCH", f"/guilds/{guild_id}/templates/{code}", json=payload
+        )
 
     async def delete_guild_template(self, guild_id: int, code: str) -> Dict[str, Any]:
         """
@@ -1953,7 +2050,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        payload = update_payload({}, channel_id=channel_id, topic=topic, privacy_level=privacy_level)
+        payload = update_payload(
+            {}, channel_id=channel_id, topic=topic, privacy_level=privacy_level
+        )
 
         return await self.request("POST", "/stage-instances", json=payload)
 
@@ -1971,7 +2070,11 @@ class HTTPClient:
         return await self.request("GET", f"/stage-instances/{channel_id}")
 
     async def modify_stage_instance(
-        self, channel_id: int, *, topic: Optional[str] = None, privacy_level: Optional[int] = None
+        self,
+        channel_id: int,
+        *,
+        topic: Optional[str] = None,
+        privacy_level: Optional[int] = None,
     ) -> Dict[str, Any]:
         """
         Makes an API call to modify a stage instance.
@@ -1987,7 +2090,9 @@ class HTTPClient:
         """
         payload = update_payload({}, topic=topic, privacy_level=privacy_level)
 
-        return await self.request("PATCH", f"/stage-instances/{channel_id}", json=payload)
+        return await self.request(
+            "PATCH", f"/stage-instances/{channel_id}", json=payload
+        )
 
     async def delete_stage_instance(self, channel_id: int) -> Dict[str, Any]:
         """
@@ -2077,9 +2182,13 @@ class HTTPClient:
         """
         payload = update_payload({}, name=name, description=description, tags=tags)
 
-        return await self.request("PATCH", f"/guilds/{guild_id}/stickers/{sticker_id}", json=payload)
+        return await self.request(
+            "PATCH", f"/guilds/{guild_id}/stickers/{sticker_id}", json=payload
+        )
 
-    async def delete_guild_sticker(self, guild_id: int, sticker_id: int) -> Dict[str, Any]:
+    async def delete_guild_sticker(
+        self, guild_id: int, sticker_id: int
+    ) -> Dict[str, Any]:
         """
         Makes an API call to delete a sticker for a guild.
 
@@ -2187,9 +2296,14 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        payload = {"name": name, "avatar": bytes_to_data_uri(avatar) if avatar else None}
+        payload = {
+            "name": name,
+            "avatar": bytes_to_data_uri(avatar) if avatar else None,
+        }
 
-        return await self.request("POST", f"/channels/{channel_id}/webhooks", json=payload)
+        return await self.request(
+            "POST", f"/channels/{channel_id}/webhooks", json=payload
+        )
 
     async def get_channel_webhooks(self, channel_id: int) -> List[Dict[str, Any]]:
         """
@@ -2230,7 +2344,9 @@ class HTTPClient:
         """
         return await self.request("GET", f"/webhooks/{webhook_id}")
 
-    async def get_webhook_with_token(self, webhook_id: int, webhook_token: str) -> Dict[str, Any]:
+    async def get_webhook_with_token(
+        self, webhook_id: int, webhook_token: str
+    ) -> Dict[str, Any]:
         """
         Makes an API call to get a webhook with a token.
 
@@ -2299,7 +2415,9 @@ class HTTPClient:
         if "avatar" in payload:
             payload["avatar"] = bytes_to_data_uri(payload["avatar"])
 
-        await self.request("PATCH", f"/webhooks/{webhook_id}/{webhook_token}", json=payload)
+        await self.request(
+            "PATCH", f"/webhooks/{webhook_id}/{webhook_token}", json=payload
+        )
 
     async def delete_webhook(self, webhook_id: int) -> None:
         """
@@ -2311,7 +2429,9 @@ class HTTPClient:
         """
         await self.request("DELETE", f"/webhooks/{webhook_id}")
 
-    async def delete_webhook_with_token(self, webhook_id: int, webhook_token: str) -> None:
+    async def delete_webhook_with_token(
+        self, webhook_id: int, webhook_token: str
+    ) -> None:
         """
         Makes an API call to delete a webhook with a token.
 
@@ -2384,10 +2504,16 @@ class HTTPClient:
             )
 
         return await self.request(
-            "POST", f"/webhooks/{webhook_id}/{webhook_token}", json=payload, form=form, params=params
+            "POST",
+            f"/webhooks/{webhook_id}/{webhook_token}",
+            json=payload,
+            form=form,
+            params=params,
         )
 
-    async def get_webhook_message(self, webhook_id: int, webhook_token: str, message_id: int) -> Dict[str, Any]:
+    async def get_webhook_message(
+        self, webhook_id: int, webhook_token: str, message_id: int
+    ) -> Dict[str, Any]:
         """
         Makes an API call to get a webhook message.
 
@@ -2400,7 +2526,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}")
+        return await self.request(
+            "GET", f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}"
+        )
 
     async def edit_webhook_message(
         self,
@@ -2454,10 +2582,15 @@ class HTTPClient:
             )
 
         return await self.request(
-            "PATCH", f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}", json=payload, form=form
+            "PATCH",
+            f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}",
+            json=payload,
+            form=form,
         )
 
-    async def delete_webhook_message(self, webhook_id: int, webhook_token: str, message_id: int):
+    async def delete_webhook_message(
+        self, webhook_id: int, webhook_token: str, message_id: int
+    ):
         """
         Makes an API call to delete a webhook message.
 
@@ -2470,4 +2603,6 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("DELETE", f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}")
+        return await self.request(
+            "DELETE", f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}"
+        )

@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import inspect
-
-from typing import Optional, List, Tuple, Union, Dict, Any
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from .command import Command
 

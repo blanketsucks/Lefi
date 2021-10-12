@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional, List
-
 import datetime
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 from .user import User
 

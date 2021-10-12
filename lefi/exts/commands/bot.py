@@ -1,22 +1,21 @@
 from __future__ import annotations
 
+import contextlib
+import traceback
 from typing import (
-    Dict,
-    List,
-    Union,
-    Tuple,
-    TypeVar,
-    Type,
+    Any,
     Callable,
     Coroutine,
+    Dict,
+    List,
     Optional,
-    Any,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
 )
 
 import lefi
-
-import traceback
-import contextlib
 
 from .core import Command, Context, StringParser
 

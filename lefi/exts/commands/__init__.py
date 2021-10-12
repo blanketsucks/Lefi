@@ -1,2 +1,2 @@
-from .core import *
 from .bot import *
+from .core import *

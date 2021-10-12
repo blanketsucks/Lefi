@@ -2,34 +2,33 @@ from __future__ import annotations
 
 import asyncio
 import inspect
-
 from typing import (
-    Optional,
+    TYPE_CHECKING,
     Any,
-    Tuple,
-    Union,
     Callable,
+    Coroutine,
     Dict,
     List,
-    TYPE_CHECKING,
-    Coroutine,
+    Optional,
+    Tuple,
+    Union,
 )
 
 from .http import HTTPClient
-from .state import State, Cache
-from .ws import WebSocketClient
 from .objects import Intents
+from .state import Cache, State
+from .ws import WebSocketClient
 
 if TYPE_CHECKING:
     from .objects import (
-        Message,
-        Guild,
-        Channel,
-        TextChannel,
-        VoiceChannel,
         CategoryChannel,
+        Channel,
         DMChannel,
+        Guild,
+        Message,
+        TextChannel,
         User,
+        VoiceChannel,
     )
 
 __all__ = ("Client",)

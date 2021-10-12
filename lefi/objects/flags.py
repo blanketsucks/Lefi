@@ -1,8 +1,16 @@
 from __future__ import annotations
 
-from typing import Tuple, Any, Dict, Type
+from typing import Any, Dict, Tuple, Type
 
-__all__ = ("Flag", "ApplicationFlags", "MessageFlags", "SystemChannelFlags", "UserFlags", "Intents", "Permissions")
+__all__ = (
+    "Flag",
+    "ApplicationFlags",
+    "MessageFlags",
+    "SystemChannelFlags",
+    "UserFlags",
+    "Intents",
+    "Permissions",
+)
 
 
 class FlagValue(int):
@@ -36,7 +44,9 @@ class FlagMeta(type):
         members: Dict[str, FlagValue] = {}
 
         for attr, value in attrs.copy().items():
-            is_method = callable(value) or isinstance(value, (staticmethod, classmethod))
+            is_method = callable(value) or isinstance(
+                value, (staticmethod, classmethod)
+            )
             if not attr.startswith(("__", "_")) and not is_method:
                 members[attr] = FlagValue(attr, value)  # type: ignore
                 del attrs[attr]

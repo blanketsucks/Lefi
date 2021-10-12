@@ -7,9 +7,10 @@ from .command import Command
 __all__ = ("Context",)
 
 if TYPE_CHECKING:
-    from .parser import StringParser
     from lefi import Message, User
+
     from ..bot import Bot
+    from .parser import StringParser
 
 
 class Context:

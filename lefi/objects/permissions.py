@@ -5,7 +5,6 @@ from typing import Dict
 from .enums import OverwriteType
 from .flags import Permissions
 
-
 __all__ = ("Overwrite",)
 
 
