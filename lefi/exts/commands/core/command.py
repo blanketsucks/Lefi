@@ -15,7 +15,7 @@ class Command:
         self.name = name
 
         if hasattr(self.callback, "check"):
-            self.checks.append(self.callback.check)
+            self.checks.append(self.callback.check)  # type: ignore
 
     def __repr__(self) -> str:
         return f"<Command name{self.name!r}>"
@@ -32,7 +32,7 @@ def check(check: Callable[..., bool]) -> Callable[..., Union[Command, Coroutine]
         if isinstance(func, Command):
             func.checks.append(check)
 
-        elif isinstance(func, Callable):
+        elif isinstance(func, Callable):  # type: ignore
             func.check = check  # type: ignore
 
         return func
