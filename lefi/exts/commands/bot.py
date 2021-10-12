@@ -109,4 +109,5 @@ class Bot(lefi.Client):
             if handler.can_run and ctx.command:
                 return await handler.invoke()
 
-            self._state.dispatch("command_error", ctx, TypeError("Err"))
+            elif not handler.can_run:
+                self._state.dispatch("command_error", ctx, TypeError("Check Failed"))
