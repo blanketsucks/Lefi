@@ -7,7 +7,7 @@ from .command import Command
 __all__ = ("Context",)
 
 if TYPE_CHECKING:
-    from lefi import Message, User, Member, Guild
+    from lefi import Message, User, Member, Guild, Channel, DMChannel
 
     from ..bot import Bot
     from .parser import StringParser
@@ -29,6 +29,14 @@ class Context:
     @property
     def author(self) -> Union[User, Member]:
         return self._message.author
+
+    @property
+    def channel(self) -> Union[Channel, DMChannel]:
+        return self._message.channel
+
+    @property
+    def message(self) -> Message:
+        return self._message
 
     @property
     def guild(self) -> Optional[Guild]:
