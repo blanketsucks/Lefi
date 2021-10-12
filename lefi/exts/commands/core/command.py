@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Coroutine, Union
+from typing import Any, Callable, Coroutine, Union, List
 
 __all__ = (
     "Command",
@@ -10,9 +10,12 @@ __all__ = (
 
 class Command:
     def __init__(self, name: str, callback: Callable[..., Coroutine]) -> None:
-        self.check: Callable = callback._check or (lambda _: True)
+        self.checks: List[Callable[..., bool]] = []
         self.callback = callback
         self.name = name
+
+        if hasattr(self.callback, "check"):
+            self.checks.append(self.callback.check)
 
     def __repr__(self) -> str:
         return f"<Command name{self.name!r}>"
@@ -27,9 +30,9 @@ class Command:
 def check(check: Callable[..., bool]) -> Callable[..., Union[Command, Coroutine]]:
     def inner(func: Union[Command, Coroutine]) -> Union[Command, Coroutine]:
         if isinstance(func, Command):
-            func.check = check
+            func.checks.append(check)
 
-        elif isinstance(func, Coroutine):
+        elif isinstance(func, Callable):
             func.check = check  # type: ignore
 
         return func

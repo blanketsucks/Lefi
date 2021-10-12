@@ -33,7 +33,7 @@ class Handler:
         self.context.parser.command = self.context.command
         kwargs, args = await self.context.parser.parse_arguments()
 
-        if self.context.command.check(self.context):
+        if all(check(self.context) for check in self.context.command.checks):
             return await self.context.command(self.context, *args, **kwargs)
 
     def __enter__(self) -> Handler:
@@ -66,7 +66,6 @@ class Bot(lefi.Client):
         self, name: Optional[str] = None, *, cls: Type[CMD] = Command  # type: ignore
     ) -> Callable[..., CMD]:
         def inner(func: Callable[..., Coroutine]) -> CMD:
-            func._check = None  # type: ignore
             command = cls(name or func.__name__, func)
             self.commands[command.name] = command
 
