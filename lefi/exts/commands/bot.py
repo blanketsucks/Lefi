@@ -30,10 +30,23 @@ class Handler:
     async def invoke(self) -> Any:
         assert self.context.command is not None
 
+        cooldown = self.context.command.cooldown
         self.context.parser.command = self.context.command
         kwargs, args = await self.context.parser.parse_arguments()
 
         if all(check(self.context) for check in self.context.command.checks):
+            if cooldown is not None:
+                if cooldown.get_cooldown_reset(self.context.message) is None:
+                    cooldown.set_cooldown_time(self.context.message)
+
+                if cooldown._check_cooldown(self.context.message):
+                    cooldown._update_cooldown(self.context.message)
+                    return await self.context.command(self.context, *args, **kwargs)
+                else:
+                    return self.context.bot._state.dispatch(
+                        "command_error", self.context, TypeError("Command on cooldown")
+                    )
+
             return await self.context.command(self.context, *args, **kwargs)
 
         raise TypeError(f"CheckFailure in {self.context.command}")

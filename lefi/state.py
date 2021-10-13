@@ -59,7 +59,7 @@ class Cache(collections.OrderedDict[Union[str, int], T]):
         self._max: int = 0
 
     def __repr__(self) -> str:
-        return f"<Cache maxlen={self.maxlen}"
+        return f"<Cache maxlen={self.maxlen}>"
 
     def __setitem__(self, key: Union[str, int], value: T) -> None:
         super().__setitem__(key, value)
