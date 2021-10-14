@@ -134,7 +134,10 @@ class Flag(metaclass=FlagMeta):
         return bool(self.value)
 
     def __eq__(self: FlagT, other: FlagT) -> bool:
-        return self.__values__ == self.__values__
+        if not isinstance(other, Flag):
+            return NotImplemented
+
+        return self.__values__ == other.__values__
 
     @property
     def __values__(self) -> Dict[FlagValue, bool]:
