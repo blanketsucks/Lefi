@@ -485,7 +485,7 @@ class State:
         overwrites = [
             Overwrite(data) for data in channel._data["permission_overwrites"]
         ]
-        ows = {}
+        ows: Dict[Union[Member, Role], Overwrite] = {}
 
         for overwrite in overwrites:
             if overwrite.type is OverwriteType.MEMBER:
@@ -494,6 +494,6 @@ class State:
             else:
                 target = channel.guild.get_role(overwrite.id)
 
-            ows[target] = overwrite
+            ows[target] = overwrite  # type: ignore
 
         channel._overwrites = ows
