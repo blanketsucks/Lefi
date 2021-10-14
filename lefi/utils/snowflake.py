@@ -7,4 +7,3 @@ __all__ = ("Snowflake",)
 
 class Snowflake(Protocol):
     id: int
-
