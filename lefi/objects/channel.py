@@ -104,8 +104,8 @@ class Channel:
             base &= ~everyone.deny
 
         overwrites = self.overwrites
-        allow = 0
-        deny = 0
+        allow = Permissions(0)
+        deny = Permissions(0)
 
         if isinstance(target, Member):
             for role in target.roles:
