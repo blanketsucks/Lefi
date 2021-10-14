@@ -16,6 +16,9 @@ from .objects import (
     Member,
     Role,
     DeletedMessage,
+    Overwrite,
+    OverwriteType,
+    Emoji,
 )
 from .objects.channel import Channel
 
@@ -30,7 +33,7 @@ __all__ = (
 T = TypeVar("T")
 
 
-class Cache(collections.OrderedDict[Union[str, int], T]):
+class Cache(collections.OrderedDict[int, T]):
     """
     A class which acts as a cache for objects.
 
@@ -52,7 +55,7 @@ class Cache(collections.OrderedDict[Union[str, int], T]):
     def __repr__(self) -> str:
         return f"<Cache maxlen={self.maxlen}"
 
-    def __setitem__(self, key: Union[str, int], value: T) -> None:
+    def __setitem__(self, key: int, value: T) -> None:
         super().__setitem__(key, value)
         self._max += 1
 
@@ -107,6 +110,7 @@ class State:
         self._channels = Cache[
             Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
         ]()
+        self._emojis = Cache[Emoji]()
 
     def dispatch(self, event: str, *payload: Any) -> None:
         """
@@ -340,6 +344,19 @@ class State:
         """
         return self._channels.get(channel_id)
 
+    def get_emoji(self, emoji_id: int) -> Optional[Emoji]:
+        """
+        Grabs an emoji from the cache.
+
+        Parameters:
+            emoji_id (int): The ID of the emoji.
+
+        Returns:
+            The [lefi.Emoji][] instance corresponding to the ID if found.
+
+        """
+        return self._emojis.get(emoji_id)
+
     def create_message(self, data: Dict, channel: Any) -> Message:
         """
         Creates a Message instance.
@@ -369,7 +386,10 @@ class State:
 
         """
         cls = self.CHANNEL_MAPPING.get(int(data["type"]), Channel)
-        return cls(self, data, *args)  # type: ignore
+        channel = cls(self, data, *args)
+
+        self.create_overwrites(channel)
+        return channel  # type: ignore
 
     def create_guild_channels(self, guild: Guild, data: Dict) -> Guild:
         """
@@ -387,9 +407,7 @@ class State:
             int(payload["id"]): self.create_channel(payload, guild)
             for payload in data["channels"]
         }
-
-        for channel in channels.values():
-            self._channels[channel.id] = channel
+        self._channels.update(channels)
 
         guild._channels = channels
         return guild
@@ -435,3 +453,47 @@ class State:
         }
         guild._roles = roles
         return guild
+
+    def create_guild_emojis(self, guild: Guild, data: Dict) -> Guild:
+        """
+        Creates the emojis of a guild.
+
+        Parameters:
+            guild (lefi.Guild): The guild which to create the emojis for.
+            data (Dict): The data of the emojis.
+
+        Returns:
+            The [lefi.Guild][] instance passed in.
+
+        """
+        emojis = {
+            int(payload["id"]): Emoji(self, payload, guild)
+            for payload in data["emojis"]
+        }
+        guild._emojis = emojis
+        self._emojis.update(emojis)
+
+        return guild
+
+    def create_overwrites(
+        self,
+        channel: Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel],
+    ):
+        if isinstance(channel, DMChannel):
+            return
+
+        overwrites = [
+            Overwrite(data) for data in channel._data["permission_overwrites"]
+        ]
+        ows = {}
+
+        for overwrite in overwrites:
+            if overwrite.type is OverwriteType.MEMBER:
+                target = channel.guild.get_member(overwrite.id)
+
+            else:
+                target = channel.guild.get_role(overwrite.id)
+
+            ows[target] = overwrite
+
+        channel._overwrites = ows

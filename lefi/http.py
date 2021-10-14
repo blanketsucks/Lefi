@@ -118,6 +118,7 @@ class HTTPClient:
 
                 return await self.request(method=method, path=path, **kwargs)
 
+            print(data)
             error = self.ERRORS.get(resp.status, HTTPException)
             raise error(data)
 
@@ -264,7 +265,7 @@ class HTTPClient:
         before: Optional[int] = None,
         after: Optional[int] = None,
         limit: int = 50,
-    ) -> Dict[str, Any]:
+    ) -> List[Dict[str, Any]]:
         """
         Makes an API call to get a list of messages in a channel.
         Only returns messages within the range of the parameters passed.
@@ -1335,7 +1336,7 @@ class HTTPClient:
 
     async def search_guild_members(
         self, guild_id: int, *, query: str, limit: int = 1
-    ) -> Dict[str, Any]:
+    ) -> List[Dict[str, Any]]:
         """
         Makes an API call to search a guild's members.
 
@@ -1487,7 +1488,7 @@ class HTTPClient:
         """
         return await self.request("DELETE", f"/guilds/{guild_id}/members/{member_id}")
 
-    async def get_guild_bans(self, guild_id: int) -> Dict[str, Any]:
+    async def get_guild_bans(self, guild_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the bans of a guild.
 
@@ -1731,7 +1732,7 @@ class HTTPClient:
         """
         return await self.request("GET", f"/guilds/{guild_id}/regions")
 
-    async def get_guild_invites(self, guild_id: int) -> Dict[str, Any]:
+    async def get_guild_invites(self, guild_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the invites in a guild.
 
@@ -1744,7 +1745,7 @@ class HTTPClient:
         """
         return await self.request("GET", f"/guilds/{guild_id}/invites")
 
-    async def get_guild_integrations(self, guild_id: int) -> Dict[str, Any]:
+    async def get_guild_integrations(self, guild_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the integrations in a guild.
 
@@ -1911,7 +1912,7 @@ class HTTPClient:
 
         return await self.request("POST", f"/guilds/templates/{code}", json=payload)
 
-    async def get_guild_templates(self, guild_id: int) -> Dict[str, Any]:
+    async def get_guild_templates(self, guild_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the templates in a guild.
 

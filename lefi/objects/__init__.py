@@ -8,3 +8,7 @@ from .member import *
 from .permissions import *
 from .role import *
 from .embed import *
+from .integration import *
+from .invite import *
+from .emoji import *
+from .template import *

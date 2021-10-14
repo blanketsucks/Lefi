@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Tuple, Any, Dict, Type
+from typing import Tuple, Any, Dict, Type, TypeVar, Union
 
 __all__ = (
     "Flag",
@@ -11,6 +11,8 @@ __all__ = (
     "Intents",
     "Permissions",
 )
+
+FlagT = TypeVar("FlagT", bound="Flag")
 
 
 class FlagValue(int):
@@ -74,6 +76,9 @@ class Flag(metaclass=FlagMeta):
         cls = type(self)
 
         for flag in cls:
+            if value & flag:
+                continue
+
             ret = kwargs.get(flag.name, False)
 
             if ret:
@@ -109,6 +114,27 @@ class Flag(metaclass=FlagMeta):
     def __repr__(self) -> str:
         name = self.__class__.__name__
         return f"<{name} value={self.value}>"
+
+    def __or__(self: FlagT, other: Union[int, FlagT]) -> FlagT:
+        if isinstance(other, int):
+            return self.__class__(self.value | other)
+
+        return self.__class__(self.value | other.value)
+
+    def __and__(self: FlagT, other: Union[int, FlagT]) -> FlagT:
+        if isinstance(other, int):
+            return self.__class__(self.value & other)
+
+        return self.__class__(self.value & other.value)
+
+    def __invert__(self: FlagT) -> FlagT:
+        return self.__class__(~self.value)
+
+    def __bool__(self) -> bool:
+        return bool(self.value)
+
+    def __eq__(self: FlagT, other: FlagT) -> bool:
+        return self.__values__ == self.__values__
 
     @property
     def __values__(self) -> Dict[FlagValue, bool]:
@@ -297,3 +323,7 @@ class Permissions(Flag):
             | cls.send_messages_in_threads
             | cls.start_embedded_activities
         )
+
+    @classmethod
+    def none(cls):
+        return cls(0)

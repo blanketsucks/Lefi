@@ -18,19 +18,20 @@ from typing import (
 from .http import HTTPClient
 from .state import State
 from .ws import WebSocketClient
-from .objects import Intents
-
-if TYPE_CHECKING:
-    from .objects import (
-        Message,
-        Guild,
-        Channel,
-        TextChannel,
-        VoiceChannel,
-        CategoryChannel,
-        DMChannel,
-        User,
-    )
+from .objects import (
+    Message,
+    Guild,
+    Channel,
+    TextChannel,
+    VoiceChannel,
+    CategoryChannel,
+    DMChannel,
+    User,
+    Emoji,
+    Intents,
+    Invite,
+    GuildTemplate,
+)
 
 __all__ = ("Client",)
 
@@ -90,7 +91,9 @@ class Client:
         callbacks = self.events.setdefault(name, [])
         callbacks.append(func)
 
-    def on(self, event_name: Optional[str] = None) -> Callable[..., Callable[..., Coroutine]]:
+    def on(
+        self, event_name: Optional[str] = None
+    ) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
 
@@ -131,7 +134,9 @@ class Client:
 
         return inner
 
-    def once(self, event_name: Optional[str] = None) -> Callable[..., Callable[..., Coroutine]]:
+    def once(
+        self, event_name: Optional[str] = None
+    ) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
         Similar to [lefi.Client.on][] but also cuts itself off the event after firing once.
@@ -187,7 +192,9 @@ class Client:
         """
         await asyncio.gather(self.login(), self.connect())
 
-    async def wait_for(self, event: str, *, check: Callable[..., bool] = None, timeout: float = None) -> Any:
+    async def wait_for(
+        self, event: str, *, check: Callable[..., bool] = None, timeout: float = None
+    ) -> Any:
         """
         Waits for an event to be dispatched that passes the check.
 
@@ -251,7 +258,11 @@ class Client:
         """
         return self._state.get_guild(id)
 
-    def get_channel(self, id: int) -> Optional[Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]]:
+    def get_channel(
+        self, id: int
+    ) -> Optional[
+        Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]
+    ]:
         """
         Grabs a [lefi.Channel][] instance if cached.
 
@@ -276,3 +287,58 @@ class Client:
 
         """
         return self._state.get_user(id)
+
+    def get_emoji(self, id: int) -> Optional[Emoji]:
+        """
+        Grabs a [lefi.Emoji][] instance if cached.
+
+        Parameters:
+            id (int): The emoji's ID.
+
+        Returns:
+            The [lefi.Emoji][] instance related to the ID. Else None if not found
+
+        """
+        return self._state.get_emoji(id)
+
+    async def fetch_invite(self, code: str, **kwargs):
+        """
+        Fetches an invite from the API.
+
+        Parameters:
+            code (str): The invite code.
+
+        Returns:
+            The [lefi.Invite][] instance related to the code.
+
+        """
+        data = await self.http.get_invite(code, **kwargs)
+        return Invite(data=data, state=self._state)
+
+    async def fetch_guild(self, guild_id: int):
+        """
+        Fetches a guild from the API.
+
+        Parameters:
+            guild_id (int): The guild's ID.
+
+        Returns:
+            The [lefi.Guild][] instance related to the ID.
+
+        """
+        data = await self.http.get_guild(guild_id)
+        return Guild(data=data, state=self._state)
+
+    async def fetch_template(self, code: str) -> GuildTemplate:
+        """
+        Fetches a template from the API.
+
+        Parameters:
+            code (str): The template code.
+
+        Returns:
+            The [lefi.GuildTemplate][] instance related to the code.
+
+        """
+        data = await self.http.get_guild_template(code)
+        return GuildTemplate(data=data, state=self._state)
