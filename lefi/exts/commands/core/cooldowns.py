@@ -34,6 +34,7 @@ class CooldownData:
         self.reset_seconds = reset_seconds
         self.reset_time = reset_time
         self.uses_left = uses_left
+        self.retry_after: float
 
 
 class Cooldown:
@@ -61,6 +62,9 @@ class Cooldown:
                 self.delete_cooldown(message)
                 return True
             else:
+                cooldown.retry_after = (
+                    cooldown.reset_time - datetime.datetime.now()
+                ).total_seconds()
                 return False
 
         return True
@@ -90,8 +94,6 @@ class Cooldown:
         guild_id, member_id = cooldown_id
         if guild := self.members_cooldowns_cache.get(guild_id):
             return guild.get(member_id)
-
-        assert False
 
     def get_cooldown_id(self, message: Message) -> Union[int, Tuple[int, int]]:
         cooldown_id = self.type.value.format(message)

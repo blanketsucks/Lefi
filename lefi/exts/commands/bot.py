@@ -44,10 +44,11 @@ class Handler:
                     cooldown._update_cooldown(self.context.message)
                     return await self.context.command(self.context, *args, **kwargs)
                 else:
+                    cooldown_data = cooldown.get_cooldown_reset(self.context.message)
                     return self.context.bot._state.dispatch(
                         "command_error",
                         self.context,
-                        CommandOnCooldown(1, "Command on cooldown"),
+                        CommandOnCooldown(cooldown_data.retry_after, "Command on cooldown"),  # type: ignore
                     )
 
             return await self.context.command(self.context, *args, **kwargs)
