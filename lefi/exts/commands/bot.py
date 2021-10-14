@@ -18,6 +18,7 @@ from typing import (
 import lefi
 
 from .core import Command, Context, StringParser
+from .errors import CommandOnCooldown, CheckFailed
 
 CTX = TypeVar("CTX", bound=Context)
 CMD = TypeVar("CMD", bound=Command)
@@ -44,12 +45,14 @@ class Handler:
                     return await self.context.command(self.context, *args, **kwargs)
                 else:
                     return self.context.bot._state.dispatch(
-                        "command_error", self.context, TypeError("Command on cooldown")
+                        "command_error",
+                        self.context,
+                        CommandOnCooldown(1, "Command on cooldown"),
                     )
 
             return await self.context.command(self.context, *args, **kwargs)
 
-        raise TypeError(f"CheckFailure in {self.context.command}")
+        self.context.bot._state.dispatch("command_error", self.context, CheckFailed())
 
     def __enter__(self) -> Handler:
         with contextlib.suppress():
