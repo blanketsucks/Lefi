@@ -18,7 +18,7 @@ class Emoji:
         self._guild = guild
 
     @property
-    def guild(self):
+    def guild(self) -> Guild:
         return self._guild
 
     @property
@@ -53,7 +53,7 @@ class Emoji:
     def available(self) -> bool:
         return self._data.get("available", False)
 
-    async def delete(self):
+    async def delete(self) -> Emoji:
         await self._state.http.delete_guild_emoji(self.guild.id, self.id)
         return self
 

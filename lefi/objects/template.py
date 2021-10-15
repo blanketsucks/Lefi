@@ -42,11 +42,11 @@ class GuildTemplate:
         return self._state.get_user(self.creator_id)
 
     @property
-    def created_at(self):
+    def created_at(self) -> datetime.datetime:
         return datetime.datetime.fromisoformat(self._data["created_at"])
 
     @property
-    def updated_at(self):
+    def updated_at(self) -> datetime.datetime:
         return datetime.datetime.fromisoformat(self._data["updated_at"])
 
     @property

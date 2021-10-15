@@ -33,7 +33,7 @@ class Member(User):
         self._member = data
         self.guild = guild
 
-    async def add_role(self, role: Role):
+    async def add_role(self, role: Role) -> Member:
         """
         Adds a role to the member.
 
@@ -46,7 +46,7 @@ class Member(User):
 
         return self
 
-    async def remove_role(self, role: Role):
+    async def remove_role(self, role: Role) -> Member:
         """
         Removes a role from the member.
 
@@ -67,7 +67,7 @@ class Member(User):
         mute: Optional[bool] = None,
         deaf: Optional[bool] = None,
         channel: Optional[VoiceChannel] = None
-    ):
+    ) -> Member:
         """
         Edits the member.
 

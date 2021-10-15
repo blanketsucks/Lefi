@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 import datetime
 
 from .enums import InviteTargetType
@@ -8,6 +8,7 @@ from .user import User
 
 if TYPE_CHECKING:
     from .guild import Guild
+    from .channel import Channel, TextChannel, VoiceChannel
     from ..state import State
 
 __all__ = ("Invite", "PartialInvite")
@@ -48,11 +49,11 @@ class Invite(InviteMixin):
         return self._state.get_guild(self._data.get("guild", {}).get("id", 0))
 
     @property
-    def channel(self):
-        return self._state.get_channel(int(self._data["channel"]["id"]))
+    def channel(self) -> Optional[Union[TextChannel, VoiceChannel]]:
+        return self._state.get_channel(int(self._data["channel"]["id"]))  # type: ignore
 
     @property
-    def inviter(self):
+    def inviter(self) -> Optional[User]:
         return self._state.get_user(self._data.get("inviter", {}).get("id", 0))
 
     @property
@@ -103,6 +104,6 @@ class Invite(InviteMixin):
     def approximate_member_count(self) -> Optional[int]:
         return self._data.get("approximate_member_count")
 
-    async def delete(self):
+    async def delete(self) -> Invite:
         await self._state.http.delete_invite(self.code)
         return self

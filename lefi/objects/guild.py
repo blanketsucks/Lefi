@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Union, Dict, Optional, List, NamedTuple
+from typing import TYPE_CHECKING, Union, Dict, Optional, List, NamedTuple, AsyncIterator
 
 from ..utils import Snowflake
 from .enums import (
@@ -185,7 +185,7 @@ class Guild:
         data = await self._state.http.get_guild_templates(self.id)
         return [GuildTemplate(self._state, payload) for payload in data]
 
-    async def query(self, q: str, *, limit: int = 1):
+    async def query(self, q: str, *, limit: int = 1) -> AsyncIterator[Member]:
         """
         Queries the guild for a specific string.
 
@@ -375,15 +375,15 @@ class Guild:
         return int(self._data["afk_timeout"])
 
     @property
-    def verification_level(self):
+    def verification_level(self) -> VerificationLevel:
         return VerificationLevel(self._data["verification_level"])
 
     @property
-    def default_message_notifications(self):
+    def default_message_notifications(self) -> MessageNotificationLevel:
         return MessageNotificationLevel(self._data["default_message_notifications"])
 
     @property
-    def explicit_content_filter(self):
+    def explicit_content_filter(self) -> ExplicitContentFilterLevel:
         return ExplicitContentFilterLevel(self._data["explicit_content_filter"])
 
     @property
@@ -394,7 +394,7 @@ class Guild:
         return self._data["features"]
 
     @property
-    def mfa_level(self):
+    def mfa_level(self) -> MFALevel:
         """
         The guild's MFA level.
         """

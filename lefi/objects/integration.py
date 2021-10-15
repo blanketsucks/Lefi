@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Any, Optional
+import datetime
 
 from .user import User
-import datetime
+from .role import Role
 
 if TYPE_CHECKING:
     from ..state import State
@@ -94,7 +95,7 @@ class Integration:
         return self._data.get("role_id")
 
     @property
-    def role(self):
+    def role(self) -> Optional[Role]:
         return self._guild.get_role(self.role_id) if self.role_id else None
 
     @property

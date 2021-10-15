@@ -1,6 +1,16 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Optional, Any, List, Dict, Iterable, Union
+from typing import (
+    TYPE_CHECKING,
+    AsyncIterator,
+    Callable,
+    Optional,
+    Any,
+    List,
+    Dict,
+    Iterable,
+    Union,
+)
 
 from lefi.objects.flags import Permissions
 
@@ -135,7 +145,7 @@ class TextChannel(Channel):
     def __init__(self, state: State, data: Dict, guild: Guild):
         super().__init__(state, data, guild)
 
-    async def fetch_history(self, **kwargs):
+    async def fetch_history(self, **kwargs) -> AsyncIterator[Message]:
         """
         Makes an API call to grab messages from the channel.
 

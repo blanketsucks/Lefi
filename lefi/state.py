@@ -33,7 +33,7 @@ __all__ = (
 T = TypeVar("T")
 
 
-class Cache(collections.OrderedDict[int, T]):
+class Cache(collections.OrderedDict[Union[int, str], T]):
     """
     A class which acts as a cache for objects.
 
@@ -55,7 +55,7 @@ class Cache(collections.OrderedDict[int, T]):
     def __repr__(self) -> str:
         return f"<Cache maxlen={self.maxlen}"
 
-    def __setitem__(self, key: int, value: T) -> None:
+    def __setitem__(self, key: Union[int, str], value: T) -> None:
         super().__setitem__(key, value)
         self._max += 1
 
@@ -407,7 +407,9 @@ class State:
             int(payload["id"]): self.create_channel(payload, guild)
             for payload in data["channels"]
         }
-        self._channels.update(channels)
+
+        for id, channel in channels.items():
+            self._channels[id] = channel
 
         guild._channels = channels
         return guild
@@ -470,15 +472,17 @@ class State:
             int(payload["id"]): Emoji(self, payload, guild)
             for payload in data["emojis"]
         }
-        guild._emojis = emojis
-        self._emojis.update(emojis)
 
+        for id, emoji in emojis.items():
+            self._emojis[id] = emoji
+
+        guild._emojis = emojis
         return guild
 
     def create_overwrites(
         self,
         channel: Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel],
-    ):
+    ) -> None:
         if isinstance(channel, DMChannel):
             return
 
