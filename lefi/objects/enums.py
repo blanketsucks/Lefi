@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from enum import IntEnum
+from enum import Enum, IntEnum
 
 __all__ = (
     "AuditLogsEvent",
@@ -11,10 +11,10 @@ __all__ = (
     "VerificationLevel",
     "NSFWLevel",
     "GuildPremiumTier",
-    "InviteTargetTypes",
+    "InviteTargetType",
     "PrivacyLevel",
-    "StickerTypes",
-    "StickerFormatTypes",
+    "StickerType",
+    "StickerFormatType",
     "PremiumType",
     "ChannelType",
     "OverwriteType",
@@ -145,7 +145,7 @@ class GuildPremiumTier(IntEnum):
     TIER_3 = 3
 
 
-class InviteTargetTypes(IntEnum):
+class InviteTargetType(IntEnum):
     STREAM = 1
     EMBEDDED_APPLICATION = 2
 
@@ -155,12 +155,12 @@ class PrivacyLevel(IntEnum):
     GUILD_ONLY = 2
 
 
-class StickerTypes(IntEnum):
+class StickerType(IntEnum):
     STANDARD = 1
     GUILD = 2
 
 
-class StickerFormatTypes(IntEnum):
+class StickerFormatType(IntEnum):
     PNG = 1
     APNG = 2
     LOTTIE = 3
@@ -172,6 +172,6 @@ class PremiumType(IntEnum):
     NITRO = 2
 
 
-class OverwriteType(IntEnum):
-    ROLE = 0
-    MEMBER = 1
+class OverwriteType(Enum):
+    ROLE = "role"
+    MEMBER = "member"

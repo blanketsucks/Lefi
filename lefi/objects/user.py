@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Dict, Optional
 from .flags import UserFlags
 from .enums import PremiumType
 from .channel import DMChannel
+from ..utils import Snowflake
 
 if TYPE_CHECKING:
     from .message import Message
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
 __all__ = ("User",)
 
 
-class User:
+class User(Snowflake):
     """
     Represents a user.
     """
