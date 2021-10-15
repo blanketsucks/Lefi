@@ -118,7 +118,6 @@ class HTTPClient:
 
                 return await self.request(method=method, path=path, **kwargs)
 
-            print(data)
             error = self.ERRORS.get(resp.status, HTTPException)
             raise error(data)
 
