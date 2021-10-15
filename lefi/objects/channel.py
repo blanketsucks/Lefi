@@ -1,6 +1,22 @@
 from __future__ import annotations
 
+<<<<<<< HEAD
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional
+=======
+from typing import (
+    TYPE_CHECKING,
+    AsyncIterator,
+    Callable,
+    Optional,
+    Any,
+    List,
+    Dict,
+    Iterable,
+    Union,
+)
+
+from lefi.objects.flags import Permissions
+>>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
 from .embed import Embed
 from .enums import ChannelType
@@ -9,8 +25,13 @@ from .permissions import Overwrite
 if TYPE_CHECKING:
     from ..state import State
     from .guild import Guild
+<<<<<<< HEAD
     from .message import Message
     from .user import User
+=======
+    from .member import Member
+    from .role import Role
+>>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
 __all__ = ("TextChannel", "DMChannel", "VoiceChannel", "CategoryChannel", "Channel")
 
@@ -24,6 +45,7 @@ class Channel:
         self._state = state
         self._data = data
         self._guild = guild
+        self._overwrites: Dict[Union[Member, Role], Overwrite] = {}
 
     def __repr__(self) -> str:
         name = self.__class__.__name__
@@ -72,11 +94,54 @@ class Channel:
         return self._data["position"]
 
     @property
-    def overwrites(self) -> List[Overwrite]:
+    def overwrites(self) -> Dict[Union[Member, Role], Overwrite]:
         """
         A list of [lefi.Overwrite][]s for the channel.
         """
-        return [Overwrite(data) for data in self._data["permission_overwrites"]]
+        return self._overwrites
+
+    def overwrites_for(self, target: Union[Member, Role]) -> Optional[Overwrite]:
+        """
+        Returns the [lefi.Overwrite][] for the given target.
+        """
+        return self._overwrites.get(target)
+
+    def permissions_for(self, target: Union[Member, Role]) -> Permissions:
+        """
+        Returns the permissions for the given target.
+        """
+        base = target.permissions
+
+        if base & Permissions.administrator:
+            return Permissions.all()
+
+        everyone = self.overwrites_for(self.guild.default_role)
+        if everyone is not None:
+            base |= everyone.allow
+            base &= ~everyone.deny
+
+        overwrites = self.overwrites
+        allow = Permissions(0)
+        deny = Permissions(0)
+
+        if isinstance(target, Member):
+            for role in target.roles:
+                overwrite = overwrites.get(role)
+                if overwrite is not None:
+                    allow |= overwrite.allow
+                    deny |= overwrite.deny
+
+            base |= allow
+            base &= ~deny
+
+            member_overwrite = overwrites.get(target)
+            if member_overwrite:
+                base |= member_overwrite.allow
+                base &= ~member_overwrite.deny
+
+            return base
+
+        return base
 
 
 class TextChannel(Channel):
@@ -87,7 +152,7 @@ class TextChannel(Channel):
     def __init__(self, state: State, data: Dict, guild: Guild):
         super().__init__(state, data, guild)
 
-    async def fetch_history(self, **kwargs) -> List[Message]:
+    async def fetch_history(self, **kwargs) -> AsyncIterator[Message]:
         """
         Makes an API call to grab messages from the channel.
 
@@ -99,7 +164,8 @@ class TextChannel(Channel):
 
         """
         data = await self._state.http.get_channel_messages(self.id, **kwargs)
-        return [self._state.create_message(payload, self) for payload in data]  # type: ignore
+        for payload in data:
+            yield self._state.create_message(payload, self)
 
     async def edit(self, **kwargs) -> TextChannel:
         """
@@ -128,6 +194,29 @@ class TextChannel(Channel):
         await self._state.http.bulk_delete_messages(
             self.id, message_ids=[msg.id for msg in messages]
         )
+
+    async def purge(
+        self,
+        *,
+        limit: int = 100,
+        check: Optional[Callable[[Message], bool]] = None,
+        around: Optional[int] = None,
+        before: Optional[int] = None,
+        after: Optional[int] = None,
+    ) -> List[Message]:
+        to_delete = []
+        if not check:
+            check = lambda message: True
+
+        iterator = self.fetch_history(
+            limit=limit, around=around, before=before, after=after
+        )
+        async for message in iterator:
+            if check(message):
+                to_delete.append(message)
+
+        await self.delete_messages(to_delete)
+        return to_delete
 
     async def send(
         self,

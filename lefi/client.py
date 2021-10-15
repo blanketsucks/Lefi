@@ -15,6 +15,7 @@ from typing import (
 )
 
 from .http import HTTPClient
+<<<<<<< HEAD
 from .objects import Intents
 from .state import Cache, State
 from .ws import WebSocketClient
@@ -30,6 +31,24 @@ if TYPE_CHECKING:
         User,
         VoiceChannel,
     )
+=======
+from .state import State
+from .ws import WebSocketClient
+from .objects import (
+    Message,
+    Guild,
+    Channel,
+    TextChannel,
+    VoiceChannel,
+    CategoryChannel,
+    DMChannel,
+    User,
+    Emoji,
+    Intents,
+    Invite,
+    GuildTemplate,
+)
+>>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
 __all__ = ("Client",)
 
@@ -98,7 +117,11 @@ class Client:
         callbacks[func.__name__] = func
 
     def on(
+<<<<<<< HEAD
         self, event_name: Optional[str] = None, overwrite: bool = False
+=======
+        self, event_name: Optional[str] = None
+>>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
     ) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
@@ -294,3 +317,58 @@ class Client:
 
         """
         return self._state.get_user(id)
+
+    def get_emoji(self, id: int) -> Optional[Emoji]:
+        """
+        Grabs a [lefi.Emoji][] instance if cached.
+
+        Parameters:
+            id (int): The emoji's ID.
+
+        Returns:
+            The [lefi.Emoji][] instance related to the ID. Else None if not found
+
+        """
+        return self._state.get_emoji(id)
+
+    async def fetch_invite(self, code: str, **kwargs):
+        """
+        Fetches an invite from the API.
+
+        Parameters:
+            code (str): The invite code.
+
+        Returns:
+            The [lefi.Invite][] instance related to the code.
+
+        """
+        data = await self.http.get_invite(code, **kwargs)
+        return Invite(data=data, state=self._state)
+
+    async def fetch_guild(self, guild_id: int):
+        """
+        Fetches a guild from the API.
+
+        Parameters:
+            guild_id (int): The guild's ID.
+
+        Returns:
+            The [lefi.Guild][] instance related to the ID.
+
+        """
+        data = await self.http.get_guild(guild_id)
+        return Guild(data=data, state=self._state)
+
+    async def fetch_template(self, code: str) -> GuildTemplate:
+        """
+        Fetches a template from the API.
+
+        Parameters:
+            code (str): The template code.
+
+        Returns:
+            The [lefi.GuildTemplate][] instance related to the code.
+
+        """
+        data = await self.http.get_guild_template(code)
+        return GuildTemplate(data=data, state=self._state)

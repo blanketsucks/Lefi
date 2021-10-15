@@ -3,8 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Optional
 
 from .channel import DMChannel
+<<<<<<< HEAD
 from .enums import PremiumType
 from .flags import UserFlags
+=======
+from ..utils import Snowflake
+>>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
 if TYPE_CHECKING:
     from ..state import State
@@ -13,7 +17,7 @@ if TYPE_CHECKING:
 __all__ = ("User",)
 
 
-class User:
+class User(Snowflake):
     """
     Represents a user.
     """

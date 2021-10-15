@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Optional
 
 from .flags import Permissions
+from ..utils import Snowflake
 
 if TYPE_CHECKING:
     from ..state import State
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
 __all__ = ("Role",)
 
 
-class Role:
+class Role(Snowflake):
     """
     Represents a role.
     """

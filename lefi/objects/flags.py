@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+<<<<<<< HEAD
 from typing import Any, Dict, Tuple, Type
+=======
+from typing import Tuple, Any, Dict, Type, TypeVar, Union
+>>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
 __all__ = (
     "Flag",
@@ -11,6 +15,11 @@ __all__ = (
     "Intents",
     "Permissions",
 )
+<<<<<<< HEAD
+=======
+
+FlagT = TypeVar("FlagT", bound="Flag")
+>>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
 
 class FlagValue(int):
@@ -67,27 +76,22 @@ class FlagMeta(type):
 
 class Flag(metaclass=FlagMeta):
     __members__: Dict[str, FlagValue]
-    __values__: Dict[FlagValue, bool]
     value: int
 
     def __init__(self, value: int = 0, **kwargs: bool) -> None:
         self.value = value
-        self.__values__ = {}
-
         cls = type(self)
 
         for flag in cls:
-            if flag & value:
-                self.__values__[flag] = True
+            if value & flag:
+                continue
+
+            ret = kwargs.get(flag.name, False)
+
+            if ret:
+                self.value |= flag
             else:
-                ret = kwargs.get(flag.name, False)
-
-                if ret:
-                    self.value |= flag
-                else:
-                    self.value &= ~flag
-
-                self.__values__[flag] = ret
+                self.value &= ~flag
 
     def __getattr__(self, name: str) -> bool:
         flag = self.__members__.get(name)
@@ -117,6 +121,34 @@ class Flag(metaclass=FlagMeta):
     def __repr__(self) -> str:
         name = self.__class__.__name__
         return f"<{name} value={self.value}>"
+
+    def __or__(self: FlagT, other: Union[int, FlagT]) -> FlagT:
+        if isinstance(other, int):
+            return self.__class__(self.value | other)
+
+        return self.__class__(self.value | other.value)
+
+    def __and__(self: FlagT, other: Union[int, FlagT]) -> FlagT:
+        if isinstance(other, int):
+            return self.__class__(self.value & other)
+
+        return self.__class__(self.value & other.value)
+
+    def __invert__(self: FlagT) -> FlagT:
+        return self.__class__(~self.value)
+
+    def __bool__(self) -> bool:
+        return bool(self.value)
+
+    def __eq__(self: FlagT, other: FlagT) -> bool:
+        if not isinstance(other, Flag):
+            return NotImplemented
+
+        return self.__values__ == other.__values__
+
+    @property
+    def __values__(self) -> Dict[FlagValue, bool]:
+        return {flag: bool(self.value & flag.value) for flag in self.__class__}
 
 
 class ApplicationFlags(Flag):
@@ -258,3 +290,50 @@ class Permissions(Flag):
     use_external_stickers = 1 << 37
     send_messages_in_threads = 1 << 38
     start_embedded_activities = 1 << 39
+
+    @classmethod
+    def all(cls):
+        return cls(
+            cls.create_instant_invite
+            | cls.kick_members
+            | cls.ban_members
+            | cls.administrator
+            | cls.manage_channels
+            | cls.manage_guild
+            | cls.add_reactions
+            | cls.view_audit_log
+            | cls.priority_speaker
+            | cls.stream
+            | cls.view_channel
+            | cls.send_messages
+            | cls.send_tts_messages
+            | cls.manage_messages
+            | cls.embed_links
+            | cls.attach_files
+            | cls.read_message_history
+            | cls.mention_everyone
+            | cls.use_external_emojis
+            | cls.connect
+            | cls.speak
+            | cls.mute_members
+            | cls.deafen_members
+            | cls.move_members
+            | cls.use_vad
+            | cls.change_nickname
+            | cls.manage_nicknames
+            | cls.manage_roles
+            | cls.manage_webhooks
+            | cls.manage_emojis_and_stickers
+            | cls.use_application_commands
+            | cls.request_to_speak
+            | cls.manage_threads
+            | cls.create_public_threads
+            | cls.create_private_threads
+            | cls.use_external_stickers
+            | cls.send_messages_in_threads
+            | cls.start_embedded_activities
+        )
+
+    @classmethod
+    def none(cls):
+        return cls(0)

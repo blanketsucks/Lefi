@@ -2,29 +2,23 @@ from __future__ import annotations
 
 import asyncio
 import collections
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Coroutine,
-    Dict,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-)
+
+from typing import TYPE_CHECKING, Optional, TypeVar, Union, Dict, Any, Type
 
 from .objects import (
-    CategoryChannel,
-    DeletedMessage,
-    DMChannel,
-    Guild,
-    Member,
     Message,
-    Role,
+    Guild,
     TextChannel,
-    User,
     VoiceChannel,
+    User,
+    DMChannel,
+    CategoryChannel,
+    Member,
+    Role,
+    DeletedMessage,
+    Overwrite,
+    OverwriteType,
+    Emoji,
 )
 from .objects.channel import Channel
 
@@ -39,7 +33,7 @@ __all__ = (
 T = TypeVar("T")
 
 
-class Cache(collections.OrderedDict[Union[str, int], T]):
+class Cache(collections.OrderedDict[Union[int, str], T]):
     """
     A class which acts as a cache for objects.
 
@@ -61,7 +55,7 @@ class Cache(collections.OrderedDict[Union[str, int], T]):
     def __repr__(self) -> str:
         return f"<Cache maxlen={self.maxlen}>"
 
-    def __setitem__(self, key: Union[str, int], value: T) -> None:
+    def __setitem__(self, key: Union[int, str], value: T) -> None:
         super().__setitem__(key, value)
         self._max += 1
 
@@ -116,6 +110,7 @@ class State:
         self._channels = Cache[
             Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
         ]()
+        self._emojis = Cache[Emoji]()
 
     def dispatch(self, event: str, *payload: Any) -> None:
         """
@@ -223,7 +218,7 @@ class State:
         after = self.create_message(data, channel)
 
         if not (before := self.get_message(after.id)):
-            msg = await self.http.get_channel_message(channel.id, after.id)
+            msg = await self.http.get_channel_message(channel.id, after.id)  # type: ignore
             before = self.create_message(msg, channel)
         else:
             self._messages.pop(before.id)
@@ -349,6 +344,19 @@ class State:
         """
         return self._channels.get(channel_id)
 
+    def get_emoji(self, emoji_id: int) -> Optional[Emoji]:
+        """
+        Grabs an emoji from the cache.
+
+        Parameters:
+            emoji_id (int): The ID of the emoji.
+
+        Returns:
+            The [lefi.Emoji][] instance corresponding to the ID if found.
+
+        """
+        return self._emojis.get(emoji_id)
+
     def create_message(self, data: Dict, channel: Any) -> Message:
         """
         Creates a Message instance.
@@ -378,7 +386,10 @@ class State:
 
         """
         cls = self.CHANNEL_MAPPING.get(int(data["type"]), Channel)
-        return cls(self, data, *args)  # type: ignore
+        channel = cls(self, data, *args)
+
+        self.create_overwrites(channel)
+        return channel  # type: ignore
 
     def create_guild_channels(self, guild: Guild, data: Dict) -> Guild:
         """
@@ -397,8 +408,8 @@ class State:
             for payload in data["channels"]
         }
 
-        for channel in channels.values():
-            self._channels[channel.id] = channel
+        for id, channel in channels.items():
+            self._channels[id] = channel
 
         guild._channels = channels
         return guild
@@ -444,3 +455,49 @@ class State:
         }
         guild._roles = roles
         return guild
+
+    def create_guild_emojis(self, guild: Guild, data: Dict) -> Guild:
+        """
+        Creates the emojis of a guild.
+
+        Parameters:
+            guild (lefi.Guild): The guild which to create the emojis for.
+            data (Dict): The data of the emojis.
+
+        Returns:
+            The [lefi.Guild][] instance passed in.
+
+        """
+        emojis = {
+            int(payload["id"]): Emoji(self, payload, guild)
+            for payload in data["emojis"]
+        }
+
+        for id, emoji in emojis.items():
+            self._emojis[id] = emoji
+
+        guild._emojis = emojis
+        return guild
+
+    def create_overwrites(
+        self,
+        channel: Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel],
+    ) -> None:
+        if isinstance(channel, DMChannel):
+            return
+
+        overwrites = [
+            Overwrite(data) for data in channel._data["permission_overwrites"]
+        ]
+        ows: Dict[Union[Member, Role], Overwrite] = {}
+
+        for overwrite in overwrites:
+            if overwrite.type is OverwriteType.MEMBER:
+                target = channel.guild.get_member(overwrite.id)
+
+            else:
+                target = channel.guild.get_role(overwrite.id)
+
+            ows[target] = overwrite  # type: ignore
+
+        channel._overwrites = ows

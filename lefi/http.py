@@ -61,9 +61,13 @@ class HTTPClient:
             The created [aiohttp.ClientSession][] instance.
 
         """
+<<<<<<< HEAD
         return aiohttp.ClientSession(
             loop=self.loop or loop, headers={"Authorization": f"Bot {self.token}"}
         )
+=======
+        return aiohttp.ClientSession(loop=self.loop or loop)
+>>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
     async def request(self, method: str, path: str, **kwargs) -> Any:
         """
@@ -87,7 +91,7 @@ class HTTPClient:
 
         url = BASE + path
 
-        headers = self.session.headers.copy()
+        headers = {"Authorization": f"Bot {self.token}"}
 
         if reason := kwargs.get("reason"):
             headers["X-Audit-Log-Reason"] = reason
@@ -104,6 +108,7 @@ class HTTPClient:
 
             kwargs["data"] = formdata
 
+        kwargs["headers"] = headers
         async with self.session.request(method, url, **kwargs) as resp:
             try:
                 data = await resp.json()
@@ -265,7 +270,7 @@ class HTTPClient:
         before: Optional[int] = None,
         after: Optional[int] = None,
         limit: int = 50,
-    ) -> Dict[str, Any]:
+    ) -> List[Dict[str, Any]]:
         """
         Makes an API call to get a list of messages in a channel.
         Only returns messages within the range of the parameters passed.
@@ -1336,7 +1341,11 @@ class HTTPClient:
 
     async def search_guild_members(
         self, guild_id: int, *, query: str, limit: int = 1
+<<<<<<< HEAD
     ) -> Dict[str, Any]:
+=======
+    ) -> List[Dict[str, Any]]:
+>>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
         """
         Makes an API call to search a guild's members.
 
@@ -1488,7 +1497,7 @@ class HTTPClient:
         """
         return await self.request("DELETE", f"/guilds/{guild_id}/members/{member_id}")
 
-    async def get_guild_bans(self, guild_id: int) -> Dict[str, Any]:
+    async def get_guild_bans(self, guild_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the bans of a guild.
 
@@ -1732,7 +1741,7 @@ class HTTPClient:
         """
         return await self.request("GET", f"/guilds/{guild_id}/regions")
 
-    async def get_guild_invites(self, guild_id: int) -> Dict[str, Any]:
+    async def get_guild_invites(self, guild_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the invites in a guild.
 
@@ -1745,7 +1754,7 @@ class HTTPClient:
         """
         return await self.request("GET", f"/guilds/{guild_id}/invites")
 
-    async def get_guild_integrations(self, guild_id: int) -> Dict[str, Any]:
+    async def get_guild_integrations(self, guild_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the integrations in a guild.
 
@@ -1912,7 +1921,7 @@ class HTTPClient:
 
         return await self.request("POST", f"/guilds/templates/{code}", json=payload)
 
-    async def get_guild_templates(self, guild_id: int) -> Dict[str, Any]:
+    async def get_guild_templates(self, guild_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the templates in a guild.
 
@@ -2606,3 +2615,672 @@ class HTTPClient:
         return await self.request(
             "DELETE", f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}"
         )
+<<<<<<< HEAD
+=======
+
+    async def get_global_application_commands(
+        self, application_id: int
+    ) -> List[Dict[str, Any]]:
+        """
+        Makes an API call to get global application commands.
+
+        Parameters:
+            application_id (int): The ID of the application.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        return await self.request("GET", f"/applications/{application_id}/commands")
+
+    async def create_global_application_command(
+        self,
+        application_id: int,
+        *,
+        name: str,
+        description: str,
+        options: Optional[List[Dict[str, Any]]] = None,
+        default_permission: bool = True,
+        type: int = 1,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to create a global application command.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            name (str): The name of the command.
+            description (str): The description of the command.
+            options (Optional[List[Dict[str, Any]]]): The options of the command.
+            default_permission (bool): Whether the command is enabled by default.
+            type (int): The type of the command.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        payload = update_payload(
+            {},
+            name=name,
+            description=description,
+            options=options,
+            default_permission=default_permission,
+            type=type,
+        )
+
+        return await self.request(
+            "POST", f"/applications/{application_id}/commands", json=payload
+        )
+
+    async def get_global_application_command(
+        self, application_id: int, command_id: int
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to get a global application command.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            command_id (int): The ID of the command.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        return await self.request(
+            "GET", f"/applications/{application_id}/commands/{command_id}"
+        )
+
+    async def edit_global_application_command(
+        self,
+        application_id: int,
+        command_id: int,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        options: Optional[List[Dict[str, Any]]] = None,
+        default_permission: Optional[bool] = None,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to edit a global application command.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            command_id (int): The ID of the command.
+            name (Optional[str]): The name of the command.
+            description (Optional[str]): The description of the command.
+            options (Optional[List[Dict[str, Any]]]): The options of the command.
+            default_permission (Optional[bool]): Whether the command is enabled by default.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        payload = update_payload(
+            {},
+            name=name,
+            description=description,
+            options=options,
+            default_permission=default_permission,
+        )
+
+        return await self.request(
+            "PATCH",
+            f"/applications/{application_id}/commands/{command_id}",
+            json=payload,
+        )
+
+    async def delete_global_application_command(
+        self, application_id: int, command_id: int
+    ) -> None:
+        """
+        Makes an API call to delete a global application command.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            command_id (int): The ID of the command.
+
+        """
+        await self.request(
+            "DELETE", f"/applications/{application_id}/commands/{command_id}"
+        )
+
+    async def bulk_overwrite_global_application_commands(
+        self, application_id: int, *, commands: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to bulk overwrite global application commands.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            commands (List[Dict[str, Any]]): The commands to overwrite.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        return await self.request(
+            "PUT", f"/applications/{application_id}/commands", json=commands
+        )
+
+    async def get_guild_application_commands(
+        self, application_id: int, guild_id: int
+    ) -> List[Dict[str, Any]]:
+        """
+        Makes an API call to get guild application commands.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            guild_id (int): The ID of the guild.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        return await self.request(
+            "GET", f"/applications/{application_id}/guilds/{guild_id}/commands"
+        )
+
+    async def create_guild_application_command(
+        self,
+        application_id: int,
+        guild_id: int,
+        *,
+        name: str,
+        description: str,
+        options: Optional[List[Dict[str, Any]]] = None,
+        default_permission: bool = True,
+        type: int = 1,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to create a guild application command.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            name (str): The name of the command.
+            description (str): The description of the command.
+            options (Optional[List[Dict[str, Any]]]): The options of the command.
+            default_permission (bool): Whether the command is enabled by default.
+            type (int): The type of the command.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        payload = update_payload(
+            {},
+            name=name,
+            description=description,
+            options=options,
+            default_permission=default_permission,
+            type=type,
+        )
+
+        return await self.request(
+            "POST",
+            f"/applications/{application_id}/guilds/{guild_id}/commands",
+            json=payload,
+        )
+
+    async def get_guild_application_command(
+        self, application_id: int, guild_id: int, command_id: int
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to get a guild application command.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            guild_id (int): The ID of the guild.
+            command_id (int): The ID of the command.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        return await self.request(
+            "GET",
+            f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}",
+        )
+
+    async def edit_guild_application_command(
+        self,
+        application_id: int,
+        guild_id: int,
+        command_id: int,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        options: Optional[List[Dict[str, Any]]] = None,
+        default_permission: Optional[bool] = None,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to edit a guild application command.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            guild_id (int): The ID of the guild.
+            command_id (int): The ID of the command.
+            name (Optional[str]): The name of the command.
+            description (Optional[str]): The description of the command.
+            options (Optional[List[Dict[str, Any]]]): The options of the command.
+            default_permission (Optional[bool]): Whether the command is enabled by default.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        payload = update_payload(
+            {},
+            name=name,
+            description=description,
+            options=options,
+            default_permission=default_permission,
+        )
+
+        return await self.request(
+            "PATCH",
+            f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}",
+            json=payload,
+        )
+
+    async def delete_guild_application_command(
+        self, application_id: int, guild_id: int, command_id: int
+    ):
+        """
+        Makes an API call to delete a guild application command.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            guild_id (int): The ID of the guild.
+            command_id (int): The ID of the command.
+
+        """
+        await self.request(
+            "DELETE",
+            f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}",
+        )
+
+    async def bulk_overwrite_guild_application_commands(
+        self, application_id: int, guild_id: int, *, commands: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
+        """
+        Makes an API call to bulk overwrite guild application commands.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            guild_id (int): The ID of the guild.
+            commands (List[Dict[str, Any]]): The commands to overwrite.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        return await self.request(
+            "PUT",
+            f"/applications/{application_id}/guilds/{guild_id}/commands",
+            json=commands,
+        )
+
+    async def get_guild_application_command_permissions(
+        self, application_id: int, guild_id: int
+    ) -> List[Dict[str, Any]]:
+        """
+        Makes an API call to get guild application command permissions.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            guild_id (int): The ID of the guild.
+            command_id (int): The ID of the command.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        return await self.request(
+            "GET",
+            f"/applications/{application_id}/guilds/{guild_id}/commands/permissions",
+        )
+
+    async def get_application_command_permissions(
+        self, application_id: int, guild_id: int, command_id: int
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to get application command permissions.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            guild_id (int): The ID of the guild.
+            command_id (int): The ID of the command.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        return await self.request(
+            "GET",
+            f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions",
+        )
+
+    async def edit_application_command_permissions(
+        self,
+        application_id: int,
+        guild_id: int,
+        command_id: int,
+        *,
+        permissions: List[Dict[str, Any]],
+    ):
+        """
+        Makes an API call to edit application command permissions.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            guild_id (int): The ID of the guild.
+            command_id (int): The ID of the command.
+            permissions (List[Dict[str, Any]]): The permissions to edit.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        payload = {"permissions": permissions}
+        return await self.request(
+            "PATCH",
+            f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions",
+            json=payload,
+        )
+
+    async def batch_edit_application_command_permissions(
+        self, application_id: int, guild_id: int, *, permissions: List[Dict[str, Any]]
+    ):
+        """
+        Makes an API call to batch edit application command permissions.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            guild_id (int): The ID of the guild.
+            permissions (List[Dict[str, Any]]): The permissions to edit.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        return await self.request(
+            "PATCH",
+            f"/applications/{application_id}/guilds/{guild_id}/commands/permissions",
+            json=permissions,
+        )
+
+    async def create_interaction_response(
+        self,
+        interaction_id: int,
+        interaction_token: str,
+        *,
+        type: int,
+        data: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to create an interaction response.
+
+        Parameters:
+            interaction_id (int): The ID of the interaction.
+            interaction_token (str): The token of the interaction.
+            type (int): The type of the response.
+            data (Optional[Dict[str, Any]]): The data of the response.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        payload = update_payload({}, type=type, data=data)
+        return await self.request(
+            "POST",
+            f"/interactions/{interaction_id}/{interaction_token}/callback",
+            json=payload,
+        )
+
+    async def get_original_interaction_response(
+        self, application_id: int, interaction_token: str
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to get the original interaction response.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            interaction_token (str): The token of the interaction.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        return await self.request(
+            "GET",
+            f"/webhooks/{application_id}/{interaction_token}/messages/@original",
+        )
+
+    async def edit_original_interaction_response(
+        self,
+        application_id: int,
+        interaction_token: str,
+        *,
+        content: Optional[str] = None,
+        embeds: Optional[List[Dict[str, Any]]] = None,
+        file: Optional[io.BufferedIOBase] = None,
+        allowed_mentions: Optional[Dict[str, Any]] = None,
+        componenets: Optional[List[Dict[str, Any]]] = None,
+        attachments: Optional[List[Dict[str, Any]]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to edit the original interaction response.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            interaction_token (str): The token of the interaction.
+            content (Optional[str]): The content of the response.
+            embeds (Optional[List[Dict[str, Any]]]): The embeds of the response.
+            file (Optional[io.BufferedIOBase]): The file of the response.
+            allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions of the response.
+            componenets (Optional[List[Dict[str, Any]]]): The components of the response.
+            attachments (Optional[List[Dict[str, Any]]]): The attachments of the response.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        form = []
+        payload = update_payload(
+            {},
+            content=content,
+            embeds=embeds,
+            allowed_mentions=allowed_mentions,
+            componenets=componenets,
+            attachments=attachments,
+        )
+
+        if file:
+            form.append(
+                {
+                    "name": "file",
+                    "value": file,
+                    "filename": getattr(file, "name", None),
+                    "content_type": "application/octect-stream",
+                }
+            )
+
+        return await self.request(
+            "PATCH",
+            f"/webhooks/{application_id}/{interaction_token}/messages/@original",
+            json=payload,
+            form=form,
+        )
+
+    async def delete_original_interaction_response(
+        self, application_id: int, interaction_token: str
+    ):
+        """
+        Makes an API call to delete the original interaction response.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            interaction_token (str): The token of the interaction.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        await self.request(
+            "DELETE",
+            f"/webhooks/{application_id}/{interaction_token}/messages/@original",
+        )
+
+    async def create_followup_message(
+        self,
+        application_id: int,
+        interaction_token: str,
+        *,
+        content: Optional[str] = None,
+        embeds: Optional[List[Dict[str, Any]]] = None,
+        file: Optional[io.BufferedIOBase] = None,
+        allowed_mentions: Optional[Dict[str, Any]] = None,
+        componenets: Optional[List[Dict[str, Any]]] = None,
+        attachments: Optional[List[Dict[str, Any]]] = None,
+        flags: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to create a followup message.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            interaction_token (str): The token of the interaction.
+            content (Optional[str]): The content of the response.
+            embeds (Optional[List[Dict[str, Any]]]): The embeds of the response.
+            file (Optional[io.BufferedIOBase]): The file of the response.
+            allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions of the response.
+            componenets (Optional[List[Dict[str, Any]]]): The components of the response.
+            attachments (Optional[List[Dict[str, Any]]]): The attachments of the response.
+            flags (Optional[int]): The flags of the response.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        form = []
+        payload = update_payload(
+            {},
+            content=content,
+            embeds=embeds,
+            allowed_mentions=allowed_mentions,
+            componenets=componenets,
+            attachments=attachments,
+            flags=flags,
+        )
+
+        if file:
+            form.append(
+                {
+                    "name": "file",
+                    "value": file,
+                    "filename": getattr(file, "name", None),
+                    "content_type": "application/octect-stream",
+                }
+            )
+
+        return await self.request(
+            "POST",
+            f"/webhooks/{application_id}/{interaction_token}/messages",
+            json=payload,
+            form=form,
+        )
+
+    async def get_followup_message(
+        self, application_id: int, interaction_token: str, message_id: int
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to get a followup message.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            interaction_token (str): The token of the interaction.
+            message_id (int): The ID of the message.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        return await self.request(
+            "GET",
+            f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}",
+        )
+
+    async def edit_followup_message(
+        self,
+        application_id: int,
+        interaction_token: str,
+        message_id: int,
+        *,
+        content: Optional[str] = None,
+        embeds: Optional[List[Dict[str, Any]]] = None,
+        file: Optional[io.BufferedIOBase] = None,
+        allowed_mentions: Optional[Dict[str, Any]] = None,
+        componenets: Optional[List[Dict[str, Any]]] = None,
+        attachments: Optional[List[Dict[str, Any]]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Makes an API call to edit a followup message.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            interaction_token (str): The token of the interaction.
+            message_id (int): The ID of the message.
+            content (Optional[str]): The content of the response.
+            embeds (Optional[List[Dict[str, Any]]]): The embeds of the response.
+            file (Optional[io.BufferedIOBase]): The file of the response.
+            allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions of the response.
+            componenets (Optional[List[Dict[str, Any]]]): The components of the response.
+            attachments (Optional[List[Dict[str, Any]]]): The attachments of the response.
+
+        Returns:
+            The data returned from the API.
+
+        """
+        form = []
+        payload = update_payload(
+            {},
+            content=content,
+            embeds=embeds,
+            allowed_mentions=allowed_mentions,
+            componenets=componenets,
+            attachments=attachments,
+        )
+
+        if file:
+            form.append(
+                {
+                    "name": "file",
+                    "value": file,
+                    "filename": getattr(file, "name", None),
+                    "content_type": "application/octect-stream",
+                }
+            )
+
+        return await self.request(
+            "PATCH",
+            f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}",
+            json=payload,
+            form=form,
+        )
+
+    async def delete_followup_message(
+        self, application_id: int, interaction_token: str, message_id: int
+    ):
+        """
+        Makes an API call to delete a followup message.
+
+        Parameters:
+            application_id (int): The ID of the application.
+            interaction_token (str): The token of the interaction.
+            message_id (int): The ID of the message.
+
+        """
+        await self.request(
+            "DELETE",
+            f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}",
+        )
+>>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
