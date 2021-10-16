@@ -31,37 +31,33 @@ class Handler:
     async def invoke(self) -> Any:
         assert self.context.command is not None
 
-        command: Command = self.context.command
-        cooldown = command.cooldown if hasattr(command, "cooldown") else None
-        ctx = self.context
-        parser = ctx.parser
-        parser.command = command
+        cooldown = (
+            self.context.command.cooldown
+            if hasattr(self.context.command, "cooldown")
+            else None
+        )
+        self.context.parser.command = self.context.command
+        kwargs, args = await self.context.parser.parse_arguments()
 
-        kwargs, args = await parser.parse_arguments()
-        if all(check(ctx) for check in command.checks):
-
-            async def run_command(ctx: Context) -> Any:
-                if command.parent is not None:
-                    return await command(command.parent, ctx, *args, **kwargs)
-
-                return await command(ctx, *args, **kwargs)
-
+        if all(check(self.context) for check in self.context.command.checks):
             if cooldown is not None:
-                if cooldown.get_cooldown_reset(ctx.message) is None:
-                    cooldown.set_cooldown_time(ctx.message)
+                if cooldown.get_cooldown_reset(self.context.message) is None:
+                    cooldown.set_cooldown_time(self.context.message)
 
-                if cooldown._check_cooldown(ctx.message):
-                    cooldown._update_cooldown(ctx.message)
-                    return await run_command(ctx)
+                if cooldown._check_cooldown(self.context.message):
+                    cooldown._update_cooldown(self.context.message)
+                    return await self.context.command(self.context, *args, **kwargs)
+                else:
+                    cooldown_data = cooldown.get_cooldown_reset(self.context.message)
+                    return self.context.bot._state.dispatch(
+                        "command_error",
+                        self.context,
+                        CommandOnCooldown(cooldown_data.retry_after, "Command on cooldown"),  # type: ignore
+                    )
 
-                cooldown_data = cooldown.get_cooldown_reset(ctx.message)
-                return ctx.bot._state.dispatch(
-                    "command_error", ctx, CommandOnCooldown(cooldown_data.retry_after)  # type: ignore
-                )
+            return await self.context.command(self.context, *args, **kwargs)
 
-            return await run_command(ctx)
-
-        return ctx.bot._state.dispatch("command_error", ctx, CheckFailed)
+        self.context.bot._state.dispatch("command_error", self.context, CheckFailed())
 
     def __enter__(self) -> Handler:
         with contextlib.suppress():
