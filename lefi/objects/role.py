@@ -72,7 +72,7 @@ class Role(Snowflake):
         return self._guild
 
     @property
-    def id(self) -> int:
+    def id(self) -> int:  # type: ignore
         """
         The ID of the role.
         """

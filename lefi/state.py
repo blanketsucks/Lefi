@@ -121,7 +121,7 @@ class State:
             *payload (Any): The data after parsing is finished.
 
         """
-        events = self.client.events.get(event, {})  # type: ignore
+        events: dict = self.client.events.get(event, {})
         futures = self.client.futures.get(event, [])
 
         if callbacks := self.client.once_events.get(event):
@@ -496,7 +496,7 @@ class State:
                 target = channel.guild.get_member(overwrite.id)
 
             else:
-                target = channel.guild.get_role(overwrite.id)
+                target = channel.guild.get_role(overwrite.id)  # type: ignore
 
             ows[target] = overwrite  # type: ignore
 

@@ -11,12 +11,11 @@ from typing import (
     Callable,
     Dict,
     List,
-    TYPE_CHECKING,
     Coroutine,
 )
 
 from .http import HTTPClient
-from .state import State
+from .state import State, Cache
 from .ws import WebSocketClient
 from .objects import (
     Message,
@@ -67,14 +66,14 @@ class Client:
         self._state: State = State(self, self.loop)
         self.ws: WebSocketClient = WebSocketClient(self, intents)
 
-        self.events: Dict[str, List[Callable[..., Any]]] = {}
+        self.events: Dict[str, Cache[Callable[..., Any]]] = {}
         self.once_events: Dict[str, List[Callable[..., Any]]] = {}
         self.futures: Dict[str, List[Tuple[asyncio.Future, Callable[..., bool]]]] = {}
 
     def add_listener(
         self,
         func: Callable[..., Coroutine],
-        event_name: Optional[str],
+        event_name: Optional[str], overwrite: bool = False
     ) -> None:
         """
         Registers listener, basically connecting an event to a callback.
@@ -88,17 +87,28 @@ class Client:
         if not inspect.iscoroutinefunction(func):
             raise TypeError("Callback must be a coroutine")
 
-        callbacks = self.events.setdefault(name, [])
-        callbacks.append(func)
+        callbacks = self.events.setdefault(
+            name, Cache[Callable[..., Coroutine]](maxlen=1 if overwrite else None)
+        )
+
+        if overwrite is False:
+            callbacks.maxlen = None
+
+        elif overwrite is True:
+            callbacks.maxlen = 1
+
+        callbacks[func.__name__] = func
+
 
     def on(
-        self, event_name: Optional[str] = None
+            self, event_name: Optional[str] = None, overwrite: bool = False
     ) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
 
         Parameters:
             event_name (Optional[str]): The event to register.
+            overwrite (bool): Whether or not to clear every callback except for the current one being registered.
 
         Note:
             The function being decorated must be a coroutine.
@@ -129,7 +139,7 @@ class Client:
         """
 
         def inner(func: Callable[..., Coroutine]) -> Callable[..., Coroutine]:
-            self.add_listener(func, event_name)
+            self.add_listener(func, event_name, overwrite)
             return func
 
         return inner

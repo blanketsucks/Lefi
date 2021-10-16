@@ -133,7 +133,7 @@ class Flag(metaclass=FlagMeta):
     def __bool__(self) -> bool:
         return bool(self.value)
 
-    def __eq__(self: FlagT, other: FlagT) -> bool:
+    def __eq__(self: FlagT, other: FlagT) -> bool:  # type: ignore
         if not isinstance(other, Flag):
             return NotImplemented
 

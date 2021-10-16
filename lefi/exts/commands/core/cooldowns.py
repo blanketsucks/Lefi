@@ -95,6 +95,8 @@ class Cooldown:
         if guild := self.members_cooldowns_cache.get(guild_id):
             return guild.get(member_id)
 
+        return None
+
     def get_cooldown_id(self, message: Message) -> Union[int, Tuple[int, int]]:
         cooldown_id = self.type.value.format(message)
 
