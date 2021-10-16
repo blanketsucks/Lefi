@@ -73,7 +73,8 @@ class Client:
     def add_listener(
         self,
         func: Callable[..., Coroutine],
-        event_name: Optional[str], overwrite: bool = False
+        event_name: Optional[str],
+        overwrite: bool = False,
     ) -> None:
         """
         Registers listener, basically connecting an event to a callback.
@@ -99,9 +100,8 @@ class Client:
 
         callbacks[func.__name__] = func
 
-
     def on(
-            self, event_name: Optional[str] = None, overwrite: bool = False
+        self, event_name: Optional[str] = None, overwrite: bool = False
     ) -> Callable[..., Callable[..., Coroutine]]:
         """
         A decorator that registers the decorated function to an event.
