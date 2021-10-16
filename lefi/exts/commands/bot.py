@@ -99,6 +99,9 @@ class Bot(lefi.Client):
     def get_command(self, name: str) -> Optional[Command]:
         return self.commands.get(name)
 
+    def remove_command(self, name: str) -> Command:
+        return self.commands.pop(name)
+
     async def get_context(self, message: lefi.Message, *, cls: Type[CTX] = Context) -> CTX:  # type: ignore
         prefix = await self.get_prefix(message)
         parser = StringParser(message.content, prefix)
