@@ -1,19 +1,24 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Coroutine, Union, List
+from typing import Any, Callable, Coroutine, Union, List, Optional, TYPE_CHECKING
 
 from .cooldowns import Cooldown, CooldownType
+
+if TYPE_CHECKING:
+    from .plugin import Plugin
 
 __all__ = (
     "Command",
     "check",
     "cooldown",
+    "command",
 )
 
 
 class Command:
     def __init__(self, name: str, callback: Callable[..., Coroutine]) -> None:
         self.checks: List[Callable[..., bool]] = []
+        self.parent: Optional[Plugin] = None
         self.cooldown: Cooldown
         self.callback = callback
         self.name = name
@@ -59,5 +64,12 @@ def cooldown(
             func.cooldown = cooldown  # type: ignore
 
         return func
+
+    return inner
+
+
+def command(name: Optional[str] = None) -> Callable[..., Command]:
+    def inner(func: Coroutine) -> Command:
+        return Command(name or func.__name__, func)  # type: ignore
 
     return inner

@@ -56,6 +56,9 @@ class StringParser:
                 if index == 0:
                     continue
 
+                if index == 1 and self.command.parent is not None:
+                    continue
+
                 if parameter.kind is parameter.POSITIONAL_OR_KEYWORD:
                     arguments.append(
                         await self.convert(parameter, self.arguments[index - 1])
@@ -66,6 +69,11 @@ class StringParser:
                         parameter, " ".join(self.arguments[index - 1 :])
                     )
 
+            if self.command.parent is not None:
+                arguments = arguments[2:]
+            else:
+                arguments = arguments[1:]
+
         return keyword_arguments, arguments
 
     async def convert(
@@ -74,7 +82,10 @@ class StringParser:
         if parameter.annotation is not parameter.empty and callable(
             parameter.annotation
         ):
-            return parameter.annotation(data)
+            try:
+                return parameter.annotation(data)
+            except Exception as e:
+                pass
 
         return str(data)
 

@@ -17,7 +17,7 @@ from typing import (
 
 import lefi
 
-from .core import Command, Context, StringParser
+from .core import Command, Context, StringParser, Plugin
 from .errors import CommandOnCooldown, CheckFailed
 
 CTX = TypeVar("CTX", bound=Context)
@@ -31,29 +31,37 @@ class Handler:
     async def invoke(self) -> Any:
         assert self.context.command is not None
 
-        cooldown = self.context.command.cooldown if hasattr(self.context.command, "cooldown") else None
-        self.context.parser.command = self.context.command
-        kwargs, args = await self.context.parser.parse_arguments()
+        command: Command = self.context.command
+        cooldown = command.cooldown if hasattr(command, "cooldown") else None
+        ctx = self.context
+        parser = ctx.parser
+        parser.command = command
 
-        if all(check(self.context) for check in self.context.command.checks):
+        kwargs, args = await parser.parse_arguments()
+        if all(check(ctx) for check in command.checks):
+
+            async def run_command(ctx: Context) -> Any:
+                if command.parent is not None:
+                    return await command(command.parent, ctx, *args, **kwargs)
+
+                return await command(ctx, *args, **kwargs)
+
             if cooldown is not None:
-                if cooldown.get_cooldown_reset(self.context.message) is None:
-                    cooldown.set_cooldown_time(self.context.message)
+                if cooldown.get_cooldown_reset(ctx.message) is None:
+                    cooldown.set_cooldown_time(ctx.message)
 
-                if cooldown._check_cooldown(self.context.message):
-                    cooldown._update_cooldown(self.context.message)
-                    return await self.context.command(self.context, *args, **kwargs)
-                else:
-                    cooldown_data = cooldown.get_cooldown_reset(self.context.message)
-                    return self.context.bot._state.dispatch(
-                        "command_error",
-                        self.context,
-                        CommandOnCooldown(cooldown_data.retry_after, "Command on cooldown"),  # type: ignore
-                    )
+                if cooldown._check_cooldown(ctx.message):
+                    cooldown._update_cooldown(ctx.message)
+                    return await run_command(ctx)
 
-            return await self.context.command(self.context, *args, **kwargs)
+                cooldown_data = cooldown.get_cooldown_reset(ctx.message)
+                return ctx.bot._state.dispatch(
+                    "command_error", ctx, CommandOnCooldown(cooldown_data.retry_after)  # type: ignore
+                )
 
-        self.context.bot._state.dispatch("command_error", self.context, CheckFailed())
+            return await run_command(ctx)
+
+        return ctx.bot._state.dispatch("command_error", ctx, CheckFailed)
 
     def __enter__(self) -> Handler:
         with contextlib.suppress():
@@ -79,6 +87,7 @@ class Bot(lefi.Client):
         self._check: Callable[..., bool] = lambda _: True
         self.checks: List[Callable[..., bool]] = []
         self.commands: Dict[str, Command] = {}
+        self.plugins: Dict[str, Plugin] = {}
         self.prefix = prefix
 
     def command(
@@ -102,6 +111,17 @@ class Bot(lefi.Client):
 
     def remove_command(self, name: str) -> Command:
         return self.commands.pop(name)
+
+    def add_plugin(self, plugin: Type[Plugin]):
+        plugin_ = plugin(self)
+        self.plugins[plugin.__name__] = plugin_
+        plugin_._attach_commands(self)
+
+    def remove_plugin(self, name: str) -> Optional[Plugin]:
+        self.plugins.pop(name)
+
+    def get_plugin(self, name: str) -> Optional[Plugin]:
+        return self.plugins.get(name)
 
     async def get_context(self, message: lefi.Message, *, cls: Type[CTX] = Context) -> CTX:  # type: ignore
         prefix = await self.get_prefix(message)
