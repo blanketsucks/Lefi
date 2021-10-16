@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-<<<<<<< HEAD
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional
-=======
 from typing import (
     TYPE_CHECKING,
     AsyncIterator,
@@ -16,22 +13,18 @@ from typing import (
 )
 
 from lefi.objects.flags import Permissions
->>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
-from .embed import Embed
 from .enums import ChannelType
 from .permissions import Overwrite
+from .embed import Embed
 
 if TYPE_CHECKING:
-    from ..state import State
-    from .guild import Guild
-<<<<<<< HEAD
-    from .message import Message
     from .user import User
-=======
+    from ..state import State
+    from .message import Message
+    from .guild import Guild
     from .member import Member
     from .role import Role
->>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
 __all__ = ("TextChannel", "DMChannel", "VoiceChannel", "CategoryChannel", "Channel")
 

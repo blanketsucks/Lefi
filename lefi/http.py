@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import asyncio
-import io
-import json
-from typing import Any, ClassVar, Dict, List, Optional
-
 import aiohttp
+import asyncio
+import json
 
-from .errors import BadRequest, Forbidden, HTTPException, NotFound, Unauthorized
-from .utils import bytes_to_data_uri, update_payload
+from typing import ClassVar, List, Dict, Any, Optional
+import io
+
+from .utils import update_payload, bytes_to_data_uri
+from .errors import HTTPException, Forbidden, NotFound, BadRequest, Unauthorized
 
 __all__ = ("HTTPClient",)
 
@@ -61,13 +61,7 @@ class HTTPClient:
             The created [aiohttp.ClientSession][] instance.
 
         """
-<<<<<<< HEAD
-        return aiohttp.ClientSession(
-            loop=self.loop or loop, headers={"Authorization": f"Bot {self.token}"}
-        )
-=======
         return aiohttp.ClientSession(loop=self.loop or loop)
->>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
     async def request(self, method: str, path: str, **kwargs) -> Any:
         """
@@ -1341,11 +1335,7 @@ class HTTPClient:
 
     async def search_guild_members(
         self, guild_id: int, *, query: str, limit: int = 1
-<<<<<<< HEAD
-    ) -> Dict[str, Any]:
-=======
     ) -> List[Dict[str, Any]]:
->>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
         """
         Makes an API call to search a guild's members.
 
@@ -2615,8 +2605,6 @@ class HTTPClient:
         return await self.request(
             "DELETE", f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}"
         )
-<<<<<<< HEAD
-=======
 
     async def get_global_application_commands(
         self, application_id: int
@@ -3283,4 +3271,3 @@ class HTTPClient:
             "DELETE",
             f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}",
         )
->>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa

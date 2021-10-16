@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-<<<<<<< HEAD
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
-=======
 from typing import TYPE_CHECKING, Union, Dict, Optional, List, NamedTuple, AsyncIterator
 
 from ..utils import Snowflake
@@ -18,14 +15,13 @@ from .invite import Invite, PartialInvite
 from .emoji import Emoji
 from .integration import Integration
 from .template import GuildTemplate
->>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
 if TYPE_CHECKING:
-    from ..state import State
-    from .channel import CategoryChannel, Channel, TextChannel, VoiceChannel
+    from .channel import TextChannel, VoiceChannel, CategoryChannel, Channel
     from .member import Member
     from .role import Role
     from .user import User
+    from ..state import State
 
     GuildChannels = Union[TextChannel, VoiceChannel, CategoryChannel, Channel]
 

@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-<<<<<<< HEAD
-from typing import Any, Dict, Tuple, Type
-=======
 from typing import Tuple, Any, Dict, Type, TypeVar, Union
->>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
 __all__ = (
     "Flag",
@@ -15,11 +11,8 @@ __all__ = (
     "Intents",
     "Permissions",
 )
-<<<<<<< HEAD
-=======
 
 FlagT = TypeVar("FlagT", bound="Flag")
->>>>>>> 9916004278b0bfa3027505bb7be063413ef107aa
 
 
 class FlagValue(int):
@@ -162,7 +155,7 @@ class ApplicationFlags(Flag):
 
 class MessageFlags(Flag):
     crossposted = 1 << 0
-    is_crossposted = 1 << 1
+    is_crssposted = 1 << 1
     suppress_embeds = 1 << 2
     source_message_deleted = 1 << 3
     urgent = 1 << 4
