@@ -31,7 +31,7 @@ class Handler:
     async def invoke(self) -> Any:
         assert self.context.command is not None
 
-        cooldown = self.context.command.cooldown
+        cooldown = self.context.command.cooldown if hasattr(self.context.command, "cooldown") else None
         self.context.parser.command = self.context.command
         kwargs, args = await self.context.parser.parse_arguments()
 
@@ -85,6 +85,7 @@ class Bot(lefi.Client):
         self, name: Optional[str] = None, *, cls: Type[CMD] = Command  # type: ignore
     ) -> Callable[..., CMD]:
         def inner(func: Callable[..., Coroutine]) -> CMD:
+            func.checks: List[Callable[..., bool]] = []
             command = cls(name or func.__name__, func)
             self.commands[command.name] = command
 
