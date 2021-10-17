@@ -32,7 +32,7 @@ class Handler:
         assert self.context.command is not None
 
         command: Command = self.context.command
-        cooldown = command.cooldown if hasattr(command, "cooldown") else None
+        cooldown = getattr(command, "cooldown", None)
         ctx = self.context
         parser = ctx.parser
         parser.command = command
