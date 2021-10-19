@@ -82,10 +82,7 @@ class StringParser:
         if parameter.annotation is not parameter.empty and callable(
             parameter.annotation
         ):
-            try:
-                return parameter.annotation(data)
-            except Exception as e:
-                pass
+            return parameter.annotation(data)
 
         return str(data)
 
