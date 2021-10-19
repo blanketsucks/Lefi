@@ -94,7 +94,7 @@ class Bot(lefi.Client):
         self, name: Optional[str] = None, *, cls: Type[CMD] = Command  # type: ignore
     ) -> Callable[..., CMD]:
         def inner(func: Callable[..., Coroutine]) -> CMD:
-            func.checks: List[Callable[..., bool]] = []
+            func.checks: List[Callable[..., bool]] = []  # type: ignore
             command = cls(name or func.__name__, func)
             self.commands[command.name] = command
 
@@ -118,7 +118,7 @@ class Bot(lefi.Client):
         plugin_._attach_commands(self)
 
     def remove_plugin(self, name: str) -> Optional[Plugin]:
-        self.plugins.pop(name)
+        return self.plugins.pop(name)
 
     def get_plugin(self, name: str) -> Optional[Plugin]:
         return self.plugins.get(name)
