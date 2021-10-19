@@ -14,6 +14,7 @@ from typing import (
     Any,
 )
 
+import functools
 import inspect
 
 from .command import Command
@@ -39,14 +40,21 @@ class PluginMeta(type):
                 commands[attr] = value
 
             elif inspect.iscoroutinefunction(value):
-                if data := getattr(value, "__listeners_data__", None):
-                    name, callback, overwrite = data
+                if data := getattr(value, "__listener_data__", None):
+                    name, func, overwrite = data
                     callbacks = listeners.setdefault(name, [])
-                    callbacks.append((callback, overwrite))
+                    callbacks.append((func, overwrite))
 
         attrs["__commands__"] = commands
         attrs["__listeners__"] = listeners
         return super().__new__(cls, name, bases, attrs)
+
+    @staticmethod
+    def on(name: Optional[str] = None, overwrite: bool = False) -> Callable[..., Coroutine]:
+        def inner(func: Coroutine) -> Coroutine:
+            func.__listener_data__ = (name or func.__name__, func, overwrite)  # type: ignore
+            return func
+        return inner
 
 
 class Plugin(metaclass=PluginMeta):
@@ -56,11 +64,6 @@ class Plugin(metaclass=PluginMeta):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    def add_listener(
-        self, func: Callable[..., Coroutine], name: str, overwrite: bool = False
-    ) -> None:
-        self.bot.add_listener(func, name, overwrite)
-
     def _attach_commands(self, bot: Bot) -> None:
         for name, command in self.__commands__.items():
             command.parent = self
@@ -69,6 +72,4 @@ class Plugin(metaclass=PluginMeta):
         for event, callback in self.__listeners__.items():
             for listener_data in callback:
                 func, overwrite = listener_data
-                func.__self__ = self  # type: ignore
-
-                self.bot.add_listener(func, event, overwrite)  # type: ignore
+                self.bot.add_listener(functools.partial(func, self), event, overwrite)  # type: ignore

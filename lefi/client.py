@@ -98,7 +98,7 @@ class Client:
         elif overwrite is True:
             callbacks.maxlen = 1
 
-        callbacks[func.__name__] = func
+        callbacks[func] = func  # type: ignore
 
     def on(
         self, event_name: Optional[str] = None, overwrite: bool = False
