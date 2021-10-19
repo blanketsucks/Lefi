@@ -30,7 +30,7 @@ class PluginMeta(type):
     __listeners__: Dict[str, List[Tuple[Coroutine, bool]]]
 
     def __new__(
-        cls: Type[PluginMeta], name: str, bases: Tuple[Type], attrs: Dict
+        cls: Type[PluginMeta], name: str, bases: Tuple[Type], attrs: Dict, **kwargs
     ) -> PluginMeta:
         commands: Dict[str, Command] = {}
         listeners: Dict[str, List[Tuple[Coroutine, bool]]] = {}
@@ -45,24 +45,41 @@ class PluginMeta(type):
                     callbacks = listeners.setdefault(name, [])
                     callbacks.append((func, overwrite))
 
+        attrs["__name__"] = kwargs.pop("name", attrs["__qualname__"])
         attrs["__commands__"] = commands
         attrs["__listeners__"] = listeners
         return super().__new__(cls, name, bases, attrs)
 
     @staticmethod
-    def on(name: Optional[str] = None, overwrite: bool = False) -> Callable[..., Coroutine]:
+    def on(
+        name: Optional[str] = None, overwrite: bool = False
+    ) -> Callable[..., Coroutine]:
         def inner(func: Coroutine) -> Coroutine:
             func.__listener_data__ = (name or func.__name__, func, overwrite)  # type: ignore
             return func
+
         return inner
 
 
 class Plugin(metaclass=PluginMeta):
     __listeners__: ClassVar[Dict[str, List[Tuple[Coroutine, bool]]]]
     __commands__: ClassVar[Dict[str, Command]]
+    __name__: str
 
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
+
+    @property
+    def commands(self) -> List[Command]:
+        return list(self.__commands__.values())
+
+    @property
+    def listeners(self) -> Dict[str, List[Tuple[Coroutine, bool]]]:
+        return self.__listeners__
+
+    @property
+    def name(self) -> str:
+        return self.__name__
 
     def _attach_commands(self, bot: Bot) -> None:
         for name, command in self.__commands__.items():

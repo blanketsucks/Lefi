@@ -114,7 +114,7 @@ class Bot(lefi.Client):
 
     def add_plugin(self, plugin: Type[Plugin]):
         plugin_ = plugin(self)
-        self.plugins[plugin.__name__] = plugin_
+        self.plugins[plugin_.name] = plugin_
         plugin_._attach_commands(self)
 
     def remove_plugin(self, name: str) -> Optional[Plugin]:
