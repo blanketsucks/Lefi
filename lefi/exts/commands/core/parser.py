@@ -69,11 +69,6 @@ class StringParser:
                         parameter, " ".join(self.arguments[index - 1 :])
                     )
 
-            if self.command.parent is not None:
-                arguments = arguments[2:]
-            else:
-                arguments = arguments[1:]
-
         return keyword_arguments, arguments
 
     async def convert(
