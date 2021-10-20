@@ -53,7 +53,7 @@ class Cache(collections.OrderedDict[Union[int, str], T]):
         self._max: int = 0
 
     def __repr__(self) -> str:
-        return f"<Cache maxlen={self.maxlen}"
+        return f"<Cache maxlen={self.maxlen}>"
 
     def __setitem__(self, key: Union[int, str], value: T) -> None:
         super().__setitem__(key, value)
@@ -121,7 +121,7 @@ class State:
             *payload (Any): The data after parsing is finished.
 
         """
-        events = self.client.events.get(event, [])
+        events: dict = self.client.events.get(event, {})
         futures = self.client.futures.get(event, [])
 
         if callbacks := self.client.once_events.get(event):
@@ -138,7 +138,7 @@ class State:
 
                 break
 
-        for callback in events:
+        for callback in events.values():
             self.loop.create_task(callback(*payload))
 
     async def parse_ready(self, data: Dict) -> None:
@@ -218,7 +218,7 @@ class State:
         after = self.create_message(data, channel)
 
         if not (before := self.get_message(after.id)):
-            msg = await self.http.get_channel_message(channel.id, after.id)
+            msg = await self.http.get_channel_message(channel.id, after.id)  # type: ignore
             before = self.create_message(msg, channel)
         else:
             self._messages.pop(before.id)
@@ -496,7 +496,7 @@ class State:
                 target = channel.guild.get_member(overwrite.id)
 
             else:
-                target = channel.guild.get_role(overwrite.id)
+                target = channel.guild.get_role(overwrite.id)  # type: ignore
 
             ows[target] = overwrite  # type: ignore
 

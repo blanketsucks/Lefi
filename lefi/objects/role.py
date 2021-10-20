@@ -6,8 +6,8 @@ from .flags import Permissions
 from ..utils import Snowflake
 
 if TYPE_CHECKING:
-    from .guild import Guild
     from ..state import State
+    from .guild import Guild
 
 __all__ = ("Role",)
 
@@ -72,7 +72,7 @@ class Role(Snowflake):
         return self._guild
 
     @property
-    def id(self) -> int:
+    def id(self) -> int:  # type: ignore
         """
         The ID of the role.
         """

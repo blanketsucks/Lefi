@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Union, Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional, Union
 
 from ..utils import Snowflake
 
 if TYPE_CHECKING:
-    from .channel import TextChannel, DMChannel
-    from .guild import Guild
     from ..state import State
-
-    from .user import User
+    from .channel import DMChannel, TextChannel
+    from .guild import Guild
     from .member import Member
+    from .user import User
 
     Channels = Union[TextChannel, DMChannel]
 
@@ -31,7 +30,9 @@ class DeletedMessage:
     def __init__(self, data: Dict) -> None:
         self.id: int = int(data["id"])
         self.channel_id: int = int(data["channel_id"])
-        self.guild_id: Optional[int] = int(data["guild_id"]) if "guild_id" in data else None
+        self.guild_id: Optional[int] = (
+            int(data["guild_id"]) if "guild_id" in data else None
+        )
 
 
 class Message:
@@ -81,9 +82,13 @@ class Message:
             reaction (str): The reaction to add.
 
         """
-        await self._state.http.create_reaction(channel_id=self.channel.id, message_id=self.id, emoji=reaction)
+        await self._state.http.create_reaction(
+            channel_id=self.channel.id, message_id=self.id, emoji=reaction
+        )
 
-    async def remove_reaction(self, reaction: str, user: Optional[Snowflake] = None) -> None:
+    async def remove_reaction(
+        self, reaction: str, user: Optional[Snowflake] = None
+    ) -> None:
         """
         Removes a reaction from the message.
 

@@ -1,6 +1,8 @@
-import lefi
-import pytest
 import asyncio
+
+import pytest
+
+import lefi
 
 
 class FakeMessage:

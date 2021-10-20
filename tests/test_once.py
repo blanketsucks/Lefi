@@ -1,5 +1,6 @@
-import lefi
 import pytest
+
+import lefi
 
 
 @pytest.mark.asyncio
