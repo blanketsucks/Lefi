@@ -72,7 +72,7 @@ class User(Snowflake):
         return self._data["discriminator"]
 
     @property
-    def id(self) -> int:
+    def id(self) -> int:  # type: ignore
         """
         The ID of the user.
         """

@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-import aiohttp
-
-from typing import TYPE_CHECKING, Optional, Dict, Callable
-
-import sys
-import logging
 import enum
+import logging
+import sys
+from typing import TYPE_CHECKING, Callable, Dict, Optional
+
+import aiohttp
 
 from ..objects import Intents
 
