@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-import aiohttp
 import asyncio
-import json
-
-from typing import ClassVar, List, Dict, Any, Optional
 import contextlib
 import io
+import json
+from typing import Any, ClassVar, Dict, List, Optional
 
-from .utils import update_payload, bytes_to_data_uri
-from .errors import HTTPException, Forbidden, NotFound, BadRequest, Unauthorized
+import aiohttp
+
+from .errors import BadRequest, Forbidden, HTTPException, NotFound, Unauthorized
+from .utils import bytes_to_data_uri, update_payload
 
 __all__ = ("HTTPClient", "Route", "RatelimitHandler")
 

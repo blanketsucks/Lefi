@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 import datetime
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from .enums import InviteTargetType
 from .user import User
 
 if TYPE_CHECKING:
-    from .guild import Guild
-    from .channel import Channel, TextChannel, VoiceChannel
     from ..state import State
+    from .channel import Channel, TextChannel, VoiceChannel
+    from .guild import Guild
 
 __all__ = ("Invite", "PartialInvite")
 

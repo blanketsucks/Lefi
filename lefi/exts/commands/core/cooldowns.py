@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import ast
 import datetime
-
-from typing import TYPE_CHECKING, Tuple, Union, Optional, Dict
+from enum import Enum
+from typing import TYPE_CHECKING, Dict, Optional, Tuple, Union
 
 from lefi import Cache
-from enum import Enum
 
 if TYPE_CHECKING:
     from lefi import Message

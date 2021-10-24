@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Any, Optional
 import datetime
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from .user import User
 from .role import Role
+from .user import User
 
 if TYPE_CHECKING:
     from ..state import State

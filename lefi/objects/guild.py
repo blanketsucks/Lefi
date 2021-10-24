@@ -1,27 +1,27 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Union, Dict, Optional, List, NamedTuple, AsyncIterator
+from typing import TYPE_CHECKING, AsyncIterator, Dict, List, NamedTuple, Optional, Union
 
 from ..utils import Snowflake
+from .emoji import Emoji
 from .enums import (
-    VerificationLevel,
-    NSFWLevel,
-    GuildPremiumTier,
     ExplicitContentFilterLevel,
+    GuildPremiumTier,
     MessageNotificationLevel,
     MFALevel,
+    NSFWLevel,
+    VerificationLevel,
 )
-from .invite import Invite, PartialInvite
-from .emoji import Emoji
 from .integration import Integration
+from .invite import Invite, PartialInvite
 from .template import GuildTemplate
 
 if TYPE_CHECKING:
-    from .channel import TextChannel, VoiceChannel, CategoryChannel, Channel
+    from ..state import State
+    from .channel import CategoryChannel, Channel, TextChannel, VoiceChannel
     from .member import Member
     from .role import Role
     from .user import User
-    from ..state import State
 
     GuildChannels = Union[TextChannel, VoiceChannel, CategoryChannel, Channel]
 

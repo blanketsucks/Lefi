@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import contextlib
+import inspect
+import traceback
 from typing import (
     Any,
     Callable,
@@ -13,14 +16,10 @@ from typing import (
     Union,
 )
 
-import contextlib
-import traceback
-import inspect
-
 import lefi
 
-from .core import Command, Context, StringParser, Plugin
-from .errors import CommandOnCooldown, CheckFailed
+from .core import Command, Context, Plugin, StringParser
+from .errors import CheckFailed, CommandOnCooldown
 
 CTX = TypeVar("CTX", bound=Context)
 CMD = TypeVar("CMD", bound=Command)

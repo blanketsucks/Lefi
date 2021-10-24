@@ -1,21 +1,20 @@
 from __future__ import annotations
 
-from typing import (
-    Dict,
-    Type,
-    Tuple,
-    TYPE_CHECKING,
-    ClassVar,
-    Coroutine,
-    Callable,
-    Optional,
-    Protocol,
-    List,
-    Any,
-)
-
 import functools
 import inspect
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Coroutine,
+    Dict,
+    List,
+    Optional,
+    Protocol,
+    Tuple,
+    Type,
+)
 
 from .command import Command
 

@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Optional
 
-from .flags import UserFlags
-from .enums import PremiumType
-from .channel import DMChannel
 from ..utils import Snowflake
+from .channel import DMChannel
+from .enums import PremiumType
+from .flags import UserFlags
 
 if TYPE_CHECKING:
-    from .message import Message
     from ..state import State
+    from .message import Message
 
 __all__ = ("User",)
 
