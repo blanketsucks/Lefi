@@ -154,7 +154,9 @@ class HTTPClient:
 
         async with self._lock:
             await semaphore.acquire()
-            resp = await self.session.request(method, route.url, **kwargs, headers=headers)
+            resp = await self.session.request(
+                method, route.url, **kwargs, headers=headers
+            )
 
             reset_after: float = float(resp.headers.get("X-Ratelimit-Reset-After", 0))
             remaining: int = int(resp.headers.get("X-Ratelimit-Remaining", 1))
@@ -174,7 +176,9 @@ class HTTPClient:
 
                 if data.get("global", False):
                     self.ratelimiter.global_.clear()
-                    self.loop.call_later(data["retry_after"], self.ratelimiter.global_.set)
+                    self.loop.call_later(
+                        data["retry_after"], self.ratelimiter.global_.set
+                    )
 
                 await asyncio.sleep(data["retry_after"])
 
@@ -545,7 +549,8 @@ class HTTPClient:
             Route(
                 f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}",
                 channel_id=channel_id,
-            ), params=params
+            ),
+            params=params,
         )
 
     async def delete_all_reactions(
@@ -564,7 +569,11 @@ class HTTPClient:
 
         """
         return await self.request(
-            "DELETE", Route(f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}", channel_id=channel_id)
+            "DELETE",
+            Route(
+                f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}",
+                channel_id=channel_id,
+            ),
         )
 
     async def edit_message(
@@ -608,7 +617,9 @@ class HTTPClient:
         )
         return await self.request(
             "PATCH",
-            Route(f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id),
+            Route(
+                f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id
+            ),
             json=payload,
         )
 
@@ -626,7 +637,9 @@ class HTTPClient:
         """
         return await self.request(
             "DELETE",
-            Route(f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id)
+            Route(
+                f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id
+            ),
         )
 
     async def bulk_delete_messages(
@@ -646,7 +659,9 @@ class HTTPClient:
         payload = {"messages": message_ids}
         return await self.request(
             "POST",
-            Route(f"/channels/{channel_id}/messages/bulk-delete", channel_id=channel_id),
+            Route(
+                f"/channels/{channel_id}/messages/bulk-delete", channel_id=channel_id
+            ),
             json=payload,
         )
 
@@ -678,7 +693,10 @@ class HTTPClient:
 
         return await self.request(
             "PUT",
-            Route(f"/channels/{channel_id}/permissions/{overwrite_id}", channel_id=channel_id),
+            Route(
+                f"/channels/{channel_id}/permissions/{overwrite_id}",
+                channel_id=channel_id,
+            ),
             json=payload,
         )
 
@@ -698,7 +716,10 @@ class HTTPClient:
         """
         return await self.request(
             "DELETE",
-            Route(f"/channels/{channel_id}/permissions/{overwrite_id}", channel_id=channel_id)
+            Route(
+                f"/channels/{channel_id}/permissions/{overwrite_id}",
+                channel_id=channel_id,
+            ),
         )
 
     async def get_channel_invites(self, channel_id: int) -> Dict[str, Any]:
@@ -712,7 +733,9 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("GET", Route(f"/channels/{channel_id}/invites", channel_id=channel_id))
+        return await self.request(
+            "GET", Route(f"/channels/{channel_id}/invites", channel_id=channel_id)
+        )
 
     async def create_channel_invite(
         self,
@@ -757,7 +780,7 @@ class HTTPClient:
         )
 
         return await self.request(
-            "POST", 
+            "POST",
             Route(f"/channels/{channel_id}/invites", channel_id=channel_id),
             json=payload,
         )
@@ -780,7 +803,7 @@ class HTTPClient:
         return await self.request(
             "PUT",
             Route(f"/channels/{channel_id}/followers/@me", channel_id=channel_id),
-            json=payload
+            json=payload,
         )
 
     async def trigger_typing(self, channel_id: int) -> Dict[str, Any]:
@@ -794,7 +817,9 @@ class HTTPClient:
             The data received from the API After making the call.
 
         """
-        return await self.request("POST", Route(f"/channels/{channel_id}/typing", channel_id=channel_id))
+        return await self.request(
+            "POST", Route(f"/channels/{channel_id}/typing", channel_id=channel_id)
+        )
 
     async def get_pinned_messages(self, channel_id: int) -> Dict[str, Any]:
         """
@@ -807,7 +832,9 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("GET", Route(f"/channels/{channel_id}/pins", channel_id=channel_id))
+        return await self.request(
+            "GET", Route(f"/channels/{channel_id}/pins", channel_id=channel_id)
+        )
 
     async def pin_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
         """
@@ -821,7 +848,10 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("PUT", Route(f"/channels/{channel_id}/pins/{message_id}", channel_id=channel_id))
+        return await self.request(
+            "PUT",
+            Route(f"/channels/{channel_id}/pins/{message_id}", channel_id=channel_id),
+        )
 
     async def unpin_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
         """
@@ -835,7 +865,10 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("DELETE", Route(f"/channels/{channel_id}/pins/{message_id}", channel_id=channel_id))
+        return await self.request(
+            "DELETE",
+            Route(f"/channels/{channel_id}/pins/{message_id}", channel_id=channel_id),
+        )
 
     async def start_thread_with_message(
         self, channel_id: int, message_id: int, *, name: str, auto_archive_duration: int
@@ -856,7 +889,10 @@ class HTTPClient:
         payload = {"name": name, "auto_archive_duration": auto_archive_duration}
         return await self.request(
             "POST",
-            Route(f"/channels/{channel_id}/messages/{message_id}/threads", channel_id=channel_id),
+            Route(
+                f"/channels/{channel_id}/messages/{message_id}/threads",
+                channel_id=channel_id,
+            ),
             json=payload,
         )
 
@@ -903,7 +939,10 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("PUT", Route(f"/channels/{channel_id}/thread-members/@me", channel_id=channel_id))
+        return await self.request(
+            "PUT",
+            Route(f"/channels/{channel_id}/thread-members/@me", channel_id=channel_id),
+        )
 
     async def add_thread_member(self, channel_id: int, user_id: int) -> Dict[str, Any]:
         """
@@ -919,7 +958,10 @@ class HTTPClient:
         """
         return await self.request(
             "PUT",
-            Route(f"/channels/{channel_id}/thread-members/{user_id}", channel_id=channel_id)
+            Route(
+                f"/channels/{channel_id}/thread-members/{user_id}",
+                channel_id=channel_id,
+            ),
         )
 
     async def leave_thread(self, channel_id: int) -> Dict[str, Any]:
@@ -934,8 +976,8 @@ class HTTPClient:
 
         """
         return await self.request(
-            "DELETE", 
-            Route(f"/channels/{channel_id}/thread-members/@me", channel_id=channel_id)
+            "DELETE",
+            Route(f"/channels/{channel_id}/thread-members/@me", channel_id=channel_id),
         )
 
     async def remove_thread_member(
@@ -954,7 +996,10 @@ class HTTPClient:
         """
         return await self.request(
             "DELETE",
-            Route(f"/channels/{channel_id}/thread-members/{user_id}", channel_id=channel_id)
+            Route(
+                f"/channels/{channel_id}/thread-members/{user_id}",
+                channel_id=channel_id,
+            ),
         )
 
     async def list_thread_members(self, channel_id: int) -> Dict[str, Any]:
@@ -968,7 +1013,10 @@ class HTTPClient:
             The data received from the API after making the call
 
         """
-        return await self.request("GET", Route(f"/channels/{channel_id}/thread-members", channel_id=channel_id))
+        return await self.request(
+            "GET",
+            Route(f"/channels/{channel_id}/thread-members", channel_id=channel_id),
+        )
 
     async def list_public_archived_threads(
         self,
@@ -992,7 +1040,9 @@ class HTTPClient:
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
             "GET",
-            Route(f"/channels/{channel_id}/threads/archived/public", channel_id=channel_id),
+            Route(
+                f"/channels/{channel_id}/threads/archived/public", channel_id=channel_id
+            ),
             params=params,
         )
 
@@ -1018,7 +1068,10 @@ class HTTPClient:
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
             "GET",
-            Route(f"/channels/{channel_id}/threads/archived/private", channel_id=channel_id),
+            Route(
+                f"/channels/{channel_id}/threads/archived/private",
+                channel_id=channel_id,
+            ),
             params=params,
         )
 
@@ -1044,7 +1097,10 @@ class HTTPClient:
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
             "GET",
-            Route(f"/channels/{channel_id}/users/@me/threads/archived/private", channel_id=channel_id),
+            Route(
+                f"/channels/{channel_id}/users/@me/threads/archived/private",
+                channel_id=channel_id,
+            ),
             params=params,
         )
 
@@ -1059,7 +1115,9 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("GET", Route(f"/guilds/{guild_id}/emojis", guild_id=guild_id))
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/emojis", guild_id=guild_id)
+        )
 
     async def get_guild_emoji(self, guild_id: int, emoji_id: int) -> Dict[str, Any]:
         """
@@ -1073,7 +1131,9 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("GET", Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id))
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id)
+        )
 
     async def create_guild_emoji(
         self,
@@ -1150,7 +1210,9 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("DELETE", Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id))
+        return await self.request(
+            "DELETE", Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id)
+        )
 
     async def create_guild(
         self,
@@ -1224,7 +1286,9 @@ class HTTPClient:
 
         """
         params = {"with_counts": with_counts}
-        return await self.request("GET", Route(f"/guilds/{guild_id}", guild_id=guild_id), params=params)
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}", guild_id=guild_id), params=params
+        )
 
     async def get_guild_preview(self, guild_id: int) -> Dict[str, Any]:
         """
@@ -1237,7 +1301,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", Route(f"/guilds/{guild_id}/preview", guild_id=guild_id))
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/preview", guild_id=guild_id)
+        )
 
     async def modify_guild(
         self,
@@ -1324,7 +1390,9 @@ class HTTPClient:
         if "banner" in payload:
             payload["banner"] = bytes_to_data_uri(payload["banner"])
 
-        return await self.request("PATCH", Route(f"/guilds/{guild_id}", guild_id=guild_id), json=payload)
+        return await self.request(
+            "PATCH", Route(f"/guilds/{guild_id}", guild_id=guild_id), json=payload
+        )
 
     async def delete_guild(self, guild_id: int):
         """
@@ -1347,7 +1415,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", Route(f"/guilds/{guild_id}/channels", guild_id=guild_id))
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/channels", guild_id=guild_id)
+        )
 
     async def create_guild_channel(
         self,
@@ -1395,7 +1465,11 @@ class HTTPClient:
             nsfw=nsfw,
         )
 
-        return await self.request("POST", Route(f"/guilds/{guild_id}/channels", guild_id=guild_id), json=payload)
+        return await self.request(
+            "POST",
+            Route(f"/guilds/{guild_id}/channels", guild_id=guild_id),
+            json=payload,
+        )
 
     async def list_active_threads(self, guild_id: int) -> Dict[str, Any]:
         """
@@ -1408,7 +1482,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", Route(f"/guilds/{guild_id}/threads/active", guild_id=guild_id))
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/threads/active", guild_id=guild_id)
+        )
 
     async def get_guild_member(self, guild_id: int, member_id: int) -> Dict[str, Any]:
         """
@@ -1422,7 +1498,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", Route(f"/guilds/{guild_id}/members/{member_id}", guild_id=guild_id))
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/members/{member_id}", guild_id=guild_id)
+        )
 
     async def list_guild_members(
         self, guild_id: int, *, limit: int = 1, after: int = 0
@@ -1438,7 +1516,11 @@ class HTTPClient:
 
         """
         params = {"limit": limit, "after": after}
-        return await self.request("GET", Route(f"/guilds/{guild_id}/members", guild_id=guild_id), params=params)
+        return await self.request(
+            "GET",
+            Route(f"/guilds/{guild_id}/members", guild_id=guild_id),
+            params=params,
+        )
 
     async def search_guild_members(
         self, guild_id: int, *, query: str, limit: int = 1
@@ -1459,7 +1541,7 @@ class HTTPClient:
         return await self.request(
             "GET",
             Route(f"/guilds/{guild_id}/members/search", guild_id=guild_id),
-            params=params
+            params=params,
         )
 
     async def add_guild_member(
@@ -1528,7 +1610,9 @@ class HTTPClient:
             {}, nick=nick, roles=roles, mute=mute, deaf=deaf, channel_id=channel_id
         )
         return await self.request(
-            "PATCH", f"/guilds/{guild_id}/members/{member_id}", json=payload
+            "PATCH",
+            Route(f"/guilds/{guild_id}/members/{member_id}", guild_id=guild_id),
+            json=payload,
         )
 
     async def edit_current_member(self, guild_id: int, *, nick: Optional[str] = None):
@@ -1545,7 +1629,9 @@ class HTTPClient:
         """
         payload = update_payload({}, nick=nick)
         return await self.request(
-            "PATCH", f"/users/@me/guilds/{guild_id}", json=payload
+            "PATCH",
+            Route(f"/users/@me/guilds/{guild_id}", guild_id=guild_id),
+            json=payload,
         )
 
     async def add_guild_member_role(self, guild_id: int, member_id: int, role_id: int):
@@ -1562,7 +1648,11 @@ class HTTPClient:
 
         """
         return await self.request(
-            "PUT", f"/guilds/{guild_id}/members/{member_id}/roles/{role_id}"
+            "PUT",
+            Route(
+                f"/guilds/{guild_id}/members/{member_id}/roles/{role_id}",
+                guild_id=guild_id,
+            ),
         )
 
     async def remove_guild_member_role(
@@ -1581,7 +1671,11 @@ class HTTPClient:
 
         """
         return await self.request(
-            "DELETE", f"/guilds/{guild_id}/members/{member_id}/roles/{role_id}"
+            "DELETE",
+            Route(
+                f"/guilds/{guild_id}/members/{member_id}/roles/{role_id}",
+                guild_id=guild_id,
+            ),
         )
 
     async def remove_guild_member(self, guild_id: int, member_id: int):
@@ -1596,7 +1690,11 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("DELETE", f"/guilds/{guild_id}/members/{member_id}")
+        return await self.request(
+            "DELETE",
+            Route(f"/guilds/{guild_id}/members/{member_id}"),
+            guild_id=guild_id,
+        )
 
     async def get_guild_bans(self, guild_id: int) -> List[Dict[str, Any]]:
         """
@@ -1609,7 +1707,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/bans")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/bans"), guild_id=guild_id
+        )
 
     async def get_guild_ban(self, guild_id: int, user_id: int) -> Dict[str, Any]:
         """
@@ -1623,7 +1723,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/bans/{user_id}")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/bans/{user_id}"), guild_id=guild_id
+        )
 
     async def create_guild_ban(
         self, guild_id: int, user_id: int, *, delete_message_days: int = 0
@@ -1642,7 +1744,9 @@ class HTTPClient:
         """
         payload = {"delete_message_days": delete_message_days}
         return await self.request(
-            "PUT", f"/guilds/{guild_id}/bans/{user_id}", json=payload
+            "PUT",
+            Route(f"/guilds/{guild_id}/bans/{user_id}", guild_id=guild_id),
+            json=payload,
         )
 
     async def remove_guild_ban(self, guild_id: int, user_id: int):
@@ -1657,7 +1761,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("DELETE", f"/guilds/{guild_id}/bans/{user_id}")
+        return await self.request(
+            "DELETE", Route(f"/guilds/{guild_id}/bans/{user_id}"), guild_id=guild_id
+        )
 
     async def get_guild_roles(self, guild_id: int) -> Dict[str, Any]:
         """
@@ -1670,7 +1776,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/roles")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/roles"), guild_id=guild_id
+        )
 
     async def create_guild_role(
         self,
@@ -1715,7 +1823,9 @@ class HTTPClient:
         if "icon" in payload:
             payload["icon"] = bytes_to_data_uri(payload["icon"])
 
-        return await self.request("POST", f"/guilds/{guild_id}/roles", json=payload)
+        return await self.request(
+            "POST", Route(f"/guilds/{guild_id}/roles", guild_id=guild_id), json=payload
+        )
 
     async def modify_guild_role(
         self,
@@ -1763,7 +1873,9 @@ class HTTPClient:
             payload["icon"] = bytes_to_data_uri(payload["icon"])
 
         return await self.request(
-            "PATCH", f"/guilds/{guild_id}/roles/{role_id}", json=payload
+            "PATCH",
+            Route(f"/guilds/{guild_id}/roles/{role_id}", guild_id=guild_id),
+            json=payload,
         )
 
     async def delete_guild_role(self, guild_id: int, role_id: int):
@@ -1778,7 +1890,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("DELETE", f"/guilds/{guild_id}/roles/{role_id}")
+        return await self.request(
+            "DELETE", Route(f"/guilds/{guild_id}/roles/{role_id}"), guild_id=guild_id
+        )
 
     async def get_guild_prune_count(
         self, guild_id: int, *, days: int = 7, include_roles: Optional[List[int]] = None
@@ -1799,7 +1913,9 @@ class HTTPClient:
         if include_roles is not None:
             payload["include_roles"] = ",".join(map(str, include_roles))
 
-        return await self.request("GET", f"/guilds/{guild_id}/prune", json=payload)
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/prune", guild_id=guild_id), json=payload
+        )
 
     async def begin_guild_prune(
         self,
@@ -1827,7 +1943,9 @@ class HTTPClient:
         if include_roles is not None:
             payload["include_roles"] = ",".join(map(str, include_roles))
 
-        await self.request("POST", f"/guilds/{guild_id}/prune", json=payload)
+        await self.request(
+            "POST", Route(f"/guilds/{guild_id}/prune", guild_id=guild_id), json=payload
+        )
 
     async def get_guild_voice_regions(self, guild_id: int) -> Dict[str, Any]:
         """
@@ -1840,7 +1958,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/regions")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/regions"), guild_id=guild_id
+        )
 
     async def get_guild_invites(self, guild_id: int) -> List[Dict[str, Any]]:
         """
@@ -1853,7 +1973,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/invites")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/invites"), guild_id=guild_id
+        )
 
     async def get_guild_integrations(self, guild_id: int) -> List[Dict[str, Any]]:
         """
@@ -1866,7 +1988,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/integrations")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/integrations"), guild_id=guild_id
+        )
 
     async def delete_guild_integration(self, guild_id: int, integration_id: int):
         """
@@ -1878,7 +2002,10 @@ class HTTPClient:
 
         """
         return await self.request(
-            "DELETE", f"/guilds/{guild_id}/integrations/{integration_id}"
+            "DELETE",
+            Route(
+                f"/guilds/{guild_id}/integrations/{integration_id}", guild_id=guild_id
+            ),
         )
 
     async def get_guild_widget_settings(self, guild_id: int) -> Dict[str, Any]:
@@ -1892,7 +2019,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/widget")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/widget"), guild_id=guild_id
+        )
 
     async def get_guild_widget(self, guild_id: int) -> Dict[str, Any]:
         """
@@ -1905,7 +2034,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/widget.json")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/widget.json"), guild_id=guild_id
+        )
 
     async def get_guild_vanity_url(self, guild_id: int) -> Dict[str, Any]:
         """
@@ -1918,7 +2049,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/vanity-url")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/vanity-url"), guild_id=guild_id
+        )
 
     async def get_guild_widget_image(
         self, guild_id: int, *, style: Optional[str] = None
@@ -1936,7 +2069,11 @@ class HTTPClient:
         """
         payload = {"style": style or "shield"}
 
-        return await self.request("GET", f"/guilds/{guild_id}/widget.png", json=payload)
+        return await self.request(
+            "GET",
+            Route(f"/guilds/{guild_id}/widget.png", guild_id=guild_id),
+            json=payload,
+        )
 
     async def get_guild_welcome_screen(self, guild_id: int) -> Dict[str, Any]:
         """
@@ -1949,7 +2086,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/welcome-screen")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/welcome-screen"), guild_id=guild_id
+        )
 
     async def modify_guild_welcome_screen(
         self,
@@ -1980,7 +2119,9 @@ class HTTPClient:
         )
 
         return await self.request(
-            "PATCH", f"/guilds/{guild_id}/welcome-screen", json=payload
+            "PATCH",
+            Route(f"/guilds/{guild_id}/welcome-screen", guild_id=guild_id),
+            json=payload,
         )
 
     async def get_guild_template(self, code: str) -> Dict[str, Any]:
@@ -1994,7 +2135,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/templates/{code}")
+        return await self.request("GET", Route(f"/guilds/templates/{code}"))
 
     async def create_guild_from_template(
         self,
@@ -2020,7 +2161,9 @@ class HTTPClient:
         if "icon" in payload:
             payload["icon"] = bytes_to_data_uri(payload["icon"])
 
-        return await self.request("POST", f"/guilds/templates/{code}", json=payload)
+        return await self.request(
+            "POST", Route(f"/guilds/templates/{code}"), json=payload
+        )
 
     async def get_guild_templates(self, guild_id: int) -> List[Dict[str, Any]]:
         """
@@ -2033,7 +2176,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/templates")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/templates", guild_id=guild_id)
+        )
 
     async def create_guild_template(
         self,
@@ -2056,7 +2201,11 @@ class HTTPClient:
         """
         payload = update_payload({}, name=name, description=description)
 
-        return await self.request("POST", f"/guilds/{guild_id}/templates", json=payload)
+        return await self.request(
+            "POST",
+            Route(f"/guilds/{guild_id}/templates", guild_id=guild_id),
+            json=payload,
+        )
 
     async def sync_guild_template(self, guild_id: int, code: str) -> Dict[str, Any]:
         """
@@ -2070,7 +2219,10 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("POST", f"/guilds/{guild_id}/templates/{code}/sync")
+        return await self.request(
+            "POST",
+            Route(f"/guilds/{guild_id}/templates/{code}/sync", guild_id=guild_id),
+        )
 
     async def modify_guild_template(
         self,
@@ -2096,7 +2248,9 @@ class HTTPClient:
         payload = update_payload({}, name=name, description=description)
 
         return await self.request(
-            "PATCH", f"/guilds/{guild_id}/templates/{code}", json=payload
+            "PATCH",
+            Route(f"/guilds/{guild_id}/templates/{code}", guild_id=guild_id),
+            json=payload,
         )
 
     async def delete_guild_template(self, guild_id: int, code: str) -> Dict[str, Any]:
@@ -2111,7 +2265,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("DELETE", f"/guilds/{guild_id}/templates/{code}")
+        return await self.request(
+            "DELETE", Route(f"/guilds/{guild_id}/templates/{code}", guild_id=guild_id)
+        )
 
     async def get_invite(
         self, code: str, *, with_counts: bool = False, with_expiration: bool = False
@@ -2130,7 +2286,7 @@ class HTTPClient:
         """
         params = {"with_counts": with_counts, "with_expiration": with_expiration}
 
-        return await self.request("GET", f"/invites/{code}", params=params)
+        return await self.request("GET", Route(f"/invites/{code}"), params=params)
 
     async def delete_invite(self, code: str) -> Dict[str, Any]:
         """
@@ -2143,7 +2299,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("DELETE", f"/invites/{code}")
+        return await self.request("DELETE", Route(f"/invites/{code}"))
 
     async def create_stage_instance(
         self, *, channel_id: int, topic: str, privacy_level: Optional[int] = None
@@ -2164,7 +2320,9 @@ class HTTPClient:
             {}, channel_id=channel_id, topic=topic, privacy_level=privacy_level
         )
 
-        return await self.request("POST", "/stage-instances", json=payload)
+        return await self.request(
+            "POST", Route("/stage-instances", channel_id=channel_id), json=payload
+        )
 
     async def get_stage_instance(self, channel_id: int) -> Dict[str, Any]:
         """
@@ -2177,7 +2335,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/stage-instances/{channel_id}")
+        return await self.request(
+            "GET", Route(f"/stage-instances/{channel_id}", channel_id=channel_id)
+        )
 
     async def modify_stage_instance(
         self,
@@ -2201,7 +2361,9 @@ class HTTPClient:
         payload = update_payload({}, topic=topic, privacy_level=privacy_level)
 
         return await self.request(
-            "PATCH", f"/stage-instances/{channel_id}", json=payload
+            "PATCH",
+            Route(f"/stage-instances/{channel_id}", channel_id=channel_id),
+            json=payload,
         )
 
     async def delete_stage_instance(self, channel_id: int) -> Dict[str, Any]:
@@ -2215,7 +2377,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("DELETE", f"/stage-instances/{channel_id}")
+        return await self.request(
+            "DELETE", Route(f"/stage-instances/{channel_id}"), channel_id=channel_id
+        )
 
     async def get_sticker(self, sticker_id: int) -> Dict[str, Any]:
         """
@@ -2228,7 +2392,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/stickers/{sticker_id}")
+        return await self.request("GET", Route(f"/stickers/{sticker_id}"))
 
     async def list_nitro_sticker_packs(self) -> Dict[str, Any]:
         """
@@ -2238,7 +2402,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", "/sticker-packs")
+        return await self.request("GET", Route("/sticker-packs"))
 
     async def list_guild_stickers(self, guild_id: int) -> Dict[str, Any]:
         """
@@ -2251,7 +2415,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/stickers")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/stickers", guild_id=guild_id)
+        )
 
     async def get_guild_sticker(self, guild_id: int, sticker_id: int) -> Dict[str, Any]:
         """
@@ -2265,7 +2431,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/stickers/{sticker_id}")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/stickers/{sticker_id}", guild_id=guild_id)
+        )
 
     async def modify_guild_sticker(
         self,
@@ -2293,7 +2461,9 @@ class HTTPClient:
         payload = update_payload({}, name=name, description=description, tags=tags)
 
         return await self.request(
-            "PATCH", f"/guilds/{guild_id}/stickers/{sticker_id}", json=payload
+            "PATCH",
+            Route(f"/guilds/{guild_id}/stickers/{sticker_id}", guild_id=guild_id),
+            json=payload,
         )
 
     async def delete_guild_sticker(
@@ -2310,7 +2480,10 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("DELETE", f"/guilds/{guild_id}/stickers/{sticker_id}")
+        return await self.request(
+            "DELETE",
+            Route(f"/guilds/{guild_id}/stickers/{sticker_id}", guild_id=guild_id),
+        )
 
     async def get_current_user(self) -> Dict[str, Any]:
         """
@@ -2341,7 +2514,7 @@ class HTTPClient:
         if "avatar" in payload:
             payload["avatar"] = bytes_to_data_uri(payload["avatar"])
 
-        return await self.request("PATCH", "/users/@me", json=payload)
+        return await self.request("PATCH", Route("/users/@me"), json=payload)
 
     async def get_current_user_guilds(self) -> List[Dict[str, Any]]:
         """
@@ -2351,7 +2524,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", "/users/@me/guilds")
+        return await self.request("GET", Route("/users/@me/guilds"))
 
     async def leave_guild(self, guild_id: int):
         """
@@ -2361,7 +2534,9 @@ class HTTPClient:
             guild_id (int): The ID of the guild.
 
         """
-        await self.request("DELETE", f"/users/@me/guilds/{guild_id}")
+        await self.request(
+            "DELETE", Route(f"/users/@me/guilds/{guild_id}", guild_id=guild_id)
+        )
 
     async def create_dm_channel(self, recipient_id: int) -> Dict[str, Any]:
         """
@@ -2375,7 +2550,7 @@ class HTTPClient:
 
         """
         payload = {"recipient_id": recipient_id}
-        return await self.request("POST", "/users/@me/channels", json=payload)
+        return await self.request("POST", Route("/users/@me/channels"), json=payload)
 
     async def list_voice_regions(self) -> List[Dict[str, Any]]:
         """
@@ -2385,7 +2560,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", "/voice/regions")
+        return await self.request("GET", Route("/voice/regions"))
 
     async def create_webhook(
         self,
@@ -2412,7 +2587,9 @@ class HTTPClient:
         }
 
         return await self.request(
-            "POST", f"/channels/{channel_id}/webhooks", json=payload
+            "POST",
+            Route(f"/channels/{channel_id}/webhooks", channel_id=channel_id),
+            json=payload,
         )
 
     async def get_channel_webhooks(self, channel_id: int) -> List[Dict[str, Any]]:
@@ -2426,7 +2603,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/channels/{channel_id}/webhooks")
+        return await self.request(
+            "GET", Route(f"/channels/{channel_id}/webhooks", channel_id=channel_id)
+        )
 
     async def get_guild_webhooks(self, guild_id: int) -> List[Dict[str, Any]]:
         """
@@ -2439,7 +2618,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/webhooks")
+        return await self.request(
+            "GET", Route(f"/guilds/{guild_id}/webhooks", guild_id=guild_id)
+        )
 
     async def get_webhook(self, webhook_id: int) -> Dict[str, Any]:
         """
@@ -2452,7 +2633,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/webhooks/{webhook_id}")
+        return await self.request(
+            "GET", Route(f"/webhooks/{webhook_id}", webhook_id=webhook_id)
+        )
 
     async def get_webhook_with_token(
         self, webhook_id: int, webhook_token: str
@@ -2468,7 +2651,14 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/webhooks/{webhook_id}/{webhook_token}")
+        return await self.request(
+            "GET",
+            Route(
+                f"/webhooks/{webhook_id}/{webhook_token}",
+                webhook_id=webhook_id,
+                webhookd_token=webhook_token,
+            ),
+        )
 
     async def modify_webhook(
         self,
@@ -2496,7 +2686,11 @@ class HTTPClient:
         if "avatar" in payload:
             payload["avatar"] = bytes_to_data_uri(payload["avatar"])
 
-        return await self.request("PATCH", f"/webhooks/{webhook_id}", json=payload)
+        return await self.request(
+            "PATCH",
+            Route(f"/webhooks/{webhook_id}", webhook_id=webhook_id),
+            json=payload,
+        )
 
     async def modify_webhook_with_token(
         self,
@@ -2526,7 +2720,13 @@ class HTTPClient:
             payload["avatar"] = bytes_to_data_uri(payload["avatar"])
 
         await self.request(
-            "PATCH", f"/webhooks/{webhook_id}/{webhook_token}", json=payload
+            "PATCH",
+            Route(
+                f"/webhooks/{webhook_id}/{webhook_token}",
+                webhook_id=webhook_id,
+                webhook_token=webhook_token,
+            ),
+            json=payload,
         )
 
     async def delete_webhook(self, webhook_id: int) -> None:
@@ -2537,7 +2737,9 @@ class HTTPClient:
             webhook_id (int): The ID of the webhook.
 
         """
-        await self.request("DELETE", f"/webhooks/{webhook_id}")
+        await self.request(
+            "DELETE", Route(f"/webhooks/{webhook_id}", webhook_id=webhook_id)
+        )
 
     async def delete_webhook_with_token(
         self, webhook_id: int, webhook_token: str
@@ -2550,7 +2752,14 @@ class HTTPClient:
             webhook_token (str): The token of the webhook.
 
         """
-        await self.request("DELETE", f"/webhooks/{webhook_id}/{webhook_token}")
+        await self.request(
+            "DELETE",
+            Route(
+                f"/webhooks/{webhook_id}/{webhook_token}",
+                webhook_id=webhook_id,
+                webhook_token=webhook_token,
+            ),
+        )
 
     async def execute_webhook(
         self,
@@ -2615,7 +2824,11 @@ class HTTPClient:
 
         return await self.request(
             "POST",
-            f"/webhooks/{webhook_id}/{webhook_token}",
+            Route(
+                f"/webhooks/{webhook_id}/{webhook_token}",
+                webhook_id=webhook_id,
+                webhook_token=webhook_token,
+            ),
             json=payload,
             form=form,
             params=params,
@@ -2637,7 +2850,12 @@ class HTTPClient:
 
         """
         return await self.request(
-            "GET", f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}"
+            "GET",
+            Route(
+                f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}",
+                webhook_id=webhook_id,
+                webhook_token=webhook_token,
+            ),
         )
 
     async def edit_webhook_message(
@@ -2693,7 +2911,11 @@ class HTTPClient:
 
         return await self.request(
             "PATCH",
-            f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}",
+            Route(
+                f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}",
+                webhook_id=webhook_id,
+                webhook_token=webhook_token,
+            ),
             json=payload,
             form=form,
         )
@@ -2714,7 +2936,12 @@ class HTTPClient:
 
         """
         return await self.request(
-            "DELETE", f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}"
+            "DELETE",
+            Route(
+                f"/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}",
+                webhook_id=webhook_id,
+                webhook_token=webhook_token,
+            ),
         )
 
     async def get_global_application_commands(
@@ -2730,7 +2957,9 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/applications/{application_id}/commands")
+        return await self.request(
+            "GET", Route(f"/applications/{application_id}/commands")
+        )
 
     async def create_global_application_command(
         self,
@@ -2767,7 +2996,7 @@ class HTTPClient:
         )
 
         return await self.request(
-            "POST", f"/applications/{application_id}/commands", json=payload
+            "POST", Route(f"/applications/{application_id}/commands"), json=payload
         )
 
     async def get_global_application_command(
@@ -2785,7 +3014,7 @@ class HTTPClient:
 
         """
         return await self.request(
-            "GET", f"/applications/{application_id}/commands/{command_id}"
+            "GET", Route(f"/applications/{application_id}/commands/{command_id}")
         )
 
     async def edit_global_application_command(
@@ -2823,7 +3052,7 @@ class HTTPClient:
 
         return await self.request(
             "PATCH",
-            f"/applications/{application_id}/commands/{command_id}",
+            Route(f"/applications/{application_id}/commands/{command_id}"),
             json=payload,
         )
 
@@ -2839,7 +3068,7 @@ class HTTPClient:
 
         """
         await self.request(
-            "DELETE", f"/applications/{application_id}/commands/{command_id}"
+            "DELETE", Route(f"/applications/{application_id}/commands/{command_id}")
         )
 
     async def bulk_overwrite_global_application_commands(
@@ -2857,7 +3086,7 @@ class HTTPClient:
 
         """
         return await self.request(
-            "PUT", f"/applications/{application_id}/commands", json=commands
+            "PUT", Route(f"/applications/{application_id}/commands"), json=commands
         )
 
     async def get_guild_application_commands(
@@ -2875,7 +3104,11 @@ class HTTPClient:
 
         """
         return await self.request(
-            "GET", f"/applications/{application_id}/guilds/{guild_id}/commands"
+            "GET",
+            Route(
+                f"/applications/{application_id}/guilds/{guild_id}/commands",
+                guild_id=guild_id,
+            ),
         )
 
     async def create_guild_application_command(
@@ -2915,7 +3148,10 @@ class HTTPClient:
 
         return await self.request(
             "POST",
-            f"/applications/{application_id}/guilds/{guild_id}/commands",
+            Route(
+                f"/applications/{application_id}/guilds/{guild_id}/commands",
+                guild_id=guild_id,
+            ),
             json=payload,
         )
 
@@ -2936,7 +3172,10 @@ class HTTPClient:
         """
         return await self.request(
             "GET",
-            f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}",
+            Route(
+                f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}",
+                guild_id=guild_id,
+            ),
         )
 
     async def edit_guild_application_command(
@@ -2976,7 +3215,10 @@ class HTTPClient:
 
         return await self.request(
             "PATCH",
-            f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}",
+            Route(
+                f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}",
+                guild_id=guild_id,
+            ),
             json=payload,
         )
 
@@ -2994,7 +3236,10 @@ class HTTPClient:
         """
         await self.request(
             "DELETE",
-            f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}",
+            Route(
+                f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}",
+                guild_id=guild_id,
+            ),
         )
 
     async def bulk_overwrite_guild_application_commands(
@@ -3014,7 +3259,10 @@ class HTTPClient:
         """
         return await self.request(
             "PUT",
-            f"/applications/{application_id}/guilds/{guild_id}/commands",
+            Route(
+                f"/applications/{application_id}/guilds/{guild_id}/commands",
+                guild_id=guild_id,
+            ),
             json=commands,
         )
 
@@ -3035,7 +3283,10 @@ class HTTPClient:
         """
         return await self.request(
             "GET",
-            f"/applications/{application_id}/guilds/{guild_id}/commands/permissions",
+            Route(
+                f"/applications/{application_id}/guilds/{guild_id}/commands/permissions",
+                guild_id=guild_id,
+            ),
         )
 
     async def get_application_command_permissions(
@@ -3055,7 +3306,10 @@ class HTTPClient:
         """
         return await self.request(
             "GET",
-            f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions",
+            Route(
+                f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions",
+                guild_id=guild_id,
+            ),
         )
 
     async def edit_application_command_permissions(
@@ -3082,7 +3336,10 @@ class HTTPClient:
         payload = {"permissions": permissions}
         return await self.request(
             "PATCH",
-            f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions",
+            Route(
+                f"/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/permissions",
+                guild_id=guild_id,
+            ),
             json=payload,
         )
 
@@ -3103,7 +3360,10 @@ class HTTPClient:
         """
         return await self.request(
             "PATCH",
-            f"/applications/{application_id}/guilds/{guild_id}/commands/permissions",
+            Route(
+                f"/applications/{application_id}/guilds/{guild_id}/commands/permissions",
+                guild_id=guild_id,
+            ),
             json=permissions,
         )
 
@@ -3131,7 +3391,7 @@ class HTTPClient:
         payload = update_payload({}, type=type, data=data)
         return await self.request(
             "POST",
-            f"/interactions/{interaction_id}/{interaction_token}/callback",
+            Route(f"/interactions/{interaction_id}/{interaction_token}/callback"),
             json=payload,
         )
 
@@ -3151,7 +3411,7 @@ class HTTPClient:
         """
         return await self.request(
             "GET",
-            f"/webhooks/{application_id}/{interaction_token}/messages/@original",
+            Route(f"/webhooks/{application_id}/{interaction_token}/messages/@original"),
         )
 
     async def edit_original_interaction_response(
@@ -3205,7 +3465,7 @@ class HTTPClient:
 
         return await self.request(
             "PATCH",
-            f"/webhooks/{application_id}/{interaction_token}/messages/@original",
+            Route(f"/webhooks/{application_id}/{interaction_token}/messages/@original"),
             json=payload,
             form=form,
         )
@@ -3226,7 +3486,7 @@ class HTTPClient:
         """
         await self.request(
             "DELETE",
-            f"/webhooks/{application_id}/{interaction_token}/messages/@original",
+            Route(f"/webhooks/{application_id}/{interaction_token}/messages/@original"),
         )
 
     async def create_followup_message(
@@ -3283,7 +3543,7 @@ class HTTPClient:
 
         return await self.request(
             "POST",
-            f"/webhooks/{application_id}/{interaction_token}/messages",
+            Route(f"/webhooks/{application_id}/{interaction_token}/messages"),
             json=payload,
             form=form,
         )
@@ -3305,7 +3565,9 @@ class HTTPClient:
         """
         return await self.request(
             "GET",
-            f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}",
+            Route(
+                f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}"
+            ),
         )
 
     async def edit_followup_message(
@@ -3361,7 +3623,9 @@ class HTTPClient:
 
         return await self.request(
             "PATCH",
-            f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}",
+            Route(
+                f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}"
+            ),
             json=payload,
             form=form,
         )
@@ -3380,5 +3644,7 @@ class HTTPClient:
         """
         await self.request(
             "DELETE",
-            f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}",
+            Route(
+                f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}"
+            ),
         )
