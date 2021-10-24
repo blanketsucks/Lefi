@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import contextlib
-import traceback
 from typing import (
     Any,
     Callable,
@@ -14,6 +12,10 @@ from typing import (
     TypeVar,
     Union,
 )
+
+import contextlib
+import traceback
+import inspect
 
 import lefi
 
@@ -134,8 +136,11 @@ class Bot(lefi.Client):
         return ctx
 
     async def get_prefix(self, message: lefi.Message) -> Union[Tuple[str], str]:
-        if callable(self.prefix):
+        if callable(self.prefix) and inspect.iscoroutinefunction(self.prefix):
             return await self.prefix(message)
+
+        elif callable(self.prefix):
+            return self.prefix(message)
 
         return self.prefix
 
