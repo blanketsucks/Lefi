@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lefi"
-version = "0.1.0"
+version = "0.2.0"
 description = "A discord API wrapper focused on clean code, and usability"
 authors = ["an-dyy <yrisxl@gmail.com>"]
 license = "MIT"
