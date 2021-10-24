@@ -5,14 +5,59 @@ import asyncio
 import json
 
 from typing import ClassVar, List, Dict, Any, Optional
+import contextlib
 import io
 
 from .utils import update_payload, bytes_to_data_uri
 from .errors import HTTPException, Forbidden, NotFound, BadRequest, Unauthorized
 
-__all__ = ("HTTPClient",)
+__all__ = ("HTTPClient", "Route", "RatelimitHandler")
 
 BASE: str = "https://discord.com/api/v9"
+
+
+class Route:
+    def __init__(self, path: str, **kwargs) -> None:
+        self.params: Dict = kwargs
+        self.path: str = path
+
+        self.channel_id: Optional[int] = kwargs.get("channel_id")
+        self.guild_id: Optional[int] = kwargs.get("guild_id")
+        self.webhook_id: Optional[int] = kwargs.get("webhook_id")
+        self.webhook_token: Optional[str] = kwargs.get("webhookd_token")
+
+    @property
+    def url(self) -> str:
+        return f"{BASE+self.path}"
+
+    @property
+    def bucket(self) -> str:
+        return f"{self.channel_id}:{self.guild_id}:{self.webhook_id}:{self.path}"
+
+
+class RatelimitHandler:
+    def __init__(self, http: HTTPClient) -> None:
+        self.http = http
+
+        self.semaphores: Dict[str, asyncio.Semaphore] = {}
+        self.global_: asyncio.Event = asyncio.Event()
+        self.global_.set()
+
+    def get(self, bucket: str) -> Optional[asyncio.Semaphore]:
+        return self.semaphores.get(bucket)
+
+    def set(self, bucket: str, amount: int) -> asyncio.Semaphore:
+        if semaphore := self.semaphores.get(bucket):
+            return semaphore
+
+        semaphore = asyncio.Semaphore(amount)
+        self.semaphores[bucket] = semaphore
+
+        return semaphore
+
+    def release(self, bucket: str, delay: float) -> None:
+        if semaphore := self.semaphores.get(bucket):
+            self.http.loop.call_later(delay, semaphore.release)
 
 
 class HTTPClient:
@@ -47,6 +92,8 @@ class HTTPClient:
         self.token: str = token
         self.loop: asyncio.AbstractEventLoop = loop
         self.session: aiohttp.ClientSession = None  # type: ignore
+        self.ratelimiter = RatelimitHandler(self)
+        self._lock = asyncio.Lock()
 
     async def _create_session(
         self, loop: asyncio.AbstractEventLoop = None
@@ -63,13 +110,13 @@ class HTTPClient:
         """
         return aiohttp.ClientSession(loop=self.loop or loop)
 
-    async def request(self, method: str, path: str, **kwargs) -> Any:
+    async def request(self, method: str, route: Route, **kwargs) -> Any:
         """
         Makes a request to the discord API.
 
         Parameters:
             method (str): The method for the request.
-            path (str): The endpoint which to send the request to.
+            route (lefi.Route): The endpoint which to send the request to.
             **kwargs (Any): Any extra options to pass to [aiohttp.ClientSession.request][]
 
         Returns:
@@ -83,10 +130,7 @@ class HTTPClient:
         if self.session is None or self.session.closed:
             self.session = await self._create_session()
 
-        url = BASE + path
-
-        headers = {"Authorization": f"Bot {self.token}"}
-
+        headers: Dict = {"Authorization": f"Bot {self.token}"}
         if reason := kwargs.get("reason"):
             headers["X-Audit-Log-Reason"] = reason
 
@@ -102,24 +146,40 @@ class HTTPClient:
 
             kwargs["data"] = formdata
 
-        kwargs["headers"] = headers
-        async with self.session.request(method, url, **kwargs) as resp:
-            try:
-                data = await resp.json()
-            except aiohttp.ContentTypeError:
-                data = await resp.text()
+        await self.ratelimiter.global_.wait()
+        head = await self.session.request("HEAD", route.url, headers=headers)
+        semaphore = self.ratelimiter.set(
+            route.bucket, int(head.headers.get("X-Ratelimit-Limit", 1))
+        )
+
+        async with self._lock:
+            await semaphore.acquire()
+            resp = await self.session.request(method, route.url, **kwargs, headers=headers)
+
+            reset_after: float = float(resp.headers.get("X-Ratelimit-Reset-After", 0))
+            remaining: int = int(resp.headers.get("X-Ratelimit-Remaining", 1))
 
             if resp.status in (200, 201, 204, 304):
-                return data
+                self.ratelimiter.release(route.bucket, reset_after)
+                try:
+                    return await resp.json()
+                except aiohttp.ContentTypeError:
+                    return await resp.text()
 
-            if resp.status == 429:
-                retry_after = float(data["retry_after"])  # type: ignore
-                await asyncio.sleep(retry_after)
+            if remaining == 0 and resp.status != 429:
+                self.ratelimiter.release(route.bucket, reset_after)
 
-                return await self.request(method=method, path=path, **kwargs)
+            elif resp.status == 429:
+                data = await resp.json()
+
+                if data.get("global", False):
+                    self.ratelimiter.global_.clear()
+                    self.loop.call_later(data["retry_after"], self.ratelimiter.global_.set)
+
+                await asyncio.sleep(data["retry_after"])
 
             error = self.ERRORS.get(resp.status, HTTPException)
-            raise error(data)
+            raise error(await resp.json())
 
     async def get_bot_gateway(self) -> Dict:
         """
@@ -129,7 +189,7 @@ class HTTPClient:
             A dict which should contain the url.
 
         """
-        return await self.request("GET", "/gateway/bot")
+        return await self.request("GET", Route("/gateway/bot"))
 
     async def ws_connect(self, url: str) -> aiohttp.ClientWebSocketResponse:
         """
@@ -165,7 +225,9 @@ class HTTPClient:
             A dict representing the channel.
 
         """
-        return await self.request("GET", f"/channels/{channel_id}")
+        return await self.request(
+            "GET", Route(f"/channels/{channel_id}"), channel_id=channel_id
+        )
 
     async def edit_text_channel(
         self,
@@ -209,7 +271,11 @@ class HTTPClient:
             permission_overwrites=permission_overwrites,
             default_auto_archive_duration=default_auto_archive_duration,
         )
-        return await self.request("PATCH", f"/channels/{channel_id}", json=payload)
+        return await self.request(
+            "PATCH",
+            Route(f"/channels/{channel_id}", channel_id=channel_id),
+            json=payload,
+        )
 
     async def edit_voice_channel(
         self,
@@ -254,7 +320,11 @@ class HTTPClient:
             permissions_overwrites=permissions_overwrites,
         )
 
-        return await self.request("PATCH", f"/channels/{channel_id}", json=payload)
+        return await self.request(
+            "PATCH",
+            Route(f"/channels/{channel_id}", channel_id=channel_id),
+            json=payload,
+        )
 
     async def get_channel_messages(
         self,
@@ -285,7 +355,9 @@ class HTTPClient:
         update_payload(params, around=around, before=before, after=after)
 
         return await self.request(
-            "GET", f"/channels/{channel_id}/messages", params=params
+            "GET",
+            Route(f"/channels/{channel_id}/messages", channel_id=channel_id),
+            params=params,
         )
 
     async def get_channel_message(
@@ -303,7 +375,10 @@ class HTTPClient:
 
         """
         return await self.request(
-            "GET", f"/channels/{channel_id}/messages/{message_id}"
+            "GET",
+            Route(
+                f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id
+            ),
         )
 
     async def send_message(
@@ -361,7 +436,10 @@ class HTTPClient:
         )
 
         return await self.request(
-            "POST", f"/channels/{channel_id}/messages", json=payload, form=form
+            "POST",
+            Route(f"/channels/{channel_id}/messages", channel_id=channel_id),
+            json=payload,
+            form=form,
         )
 
     async def crosspost_message(
@@ -379,7 +457,11 @@ class HTTPClient:
 
         """
         return await self.request(
-            "POST", f"/channels/{channel_id}/messages/{message_id}/crosspost"
+            "POST",
+            Route(
+                f"/channels/{channel_id}/messages/{message_id}/crosspost",
+                channel_id=channel_id,
+            ),
         )
 
     async def create_reaction(self, channel_id: int, message_id: int, emoji: str):
@@ -396,8 +478,11 @@ class HTTPClient:
 
         """
         return await self.request(
-            method="PUT",
-            path=f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me",
+            "PUT",
+            Route(
+                f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me",
+                channel_id=channel_id,
+            ),
         )
 
     async def delete_reaction(
@@ -428,7 +513,7 @@ class HTTPClient:
         else:
             path = f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me"
 
-        await self.request("DELETE", path)
+        await self.request("DELETE", Route(path, channel_id=channel_id))
 
     async def get_reactions(
         self,
@@ -456,9 +541,11 @@ class HTTPClient:
         params = {"limit": limit}
         update_payload(params, after=after)
         return await self.request(
-            method="GET",
-            path=f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}",
-            params=params,
+            "GET",
+            Route(
+                f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}",
+                channel_id=channel_id,
+            ), params=params
         )
 
     async def delete_all_reactions(
@@ -477,7 +564,7 @@ class HTTPClient:
 
         """
         return await self.request(
-            "DELETE", f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}"
+            "DELETE", Route(f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}", channel_id=channel_id)
         )
 
     async def edit_message(
@@ -520,8 +607,9 @@ class HTTPClient:
             components=components,
         )
         return await self.request(
-            method="PATCH",
-            path=f"/channels/{channel_id}/messages/{message_id}",
+            "PATCH",
+            Route(f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id),
+            json=payload,
         )
 
     async def delete_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
@@ -537,7 +625,8 @@ class HTTPClient:
 
         """
         return await self.request(
-            "DELETE", f"/channels/{channel_id}/messages/{message_id}"
+            "DELETE",
+            Route(f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id)
         )
 
     async def bulk_delete_messages(
@@ -556,7 +645,9 @@ class HTTPClient:
         """
         payload = {"messages": message_ids}
         return await self.request(
-            "POST", f"/channels/{channel_id}/messages/bulk-delete", json=payload
+            "POST",
+            Route(f"/channels/{channel_id}/messages/bulk-delete", channel_id=channel_id),
+            json=payload,
         )
 
     async def edit_channel_permissions(
@@ -586,8 +677,8 @@ class HTTPClient:
         update_payload(payload, allow=allow, deny=deny, type=type)
 
         return await self.request(
-            method="PUT",
-            path=f"/channels/{channel_id}/permissions/{overwrite_id}",
+            "PUT",
+            Route(f"/channels/{channel_id}/permissions/{overwrite_id}", channel_id=channel_id),
             json=payload,
         )
 
@@ -606,7 +697,8 @@ class HTTPClient:
 
         """
         return await self.request(
-            "DELETE", f"/channels/{channel_id}/permissions/{overwrite_id}"
+            "DELETE",
+            Route(f"/channels/{channel_id}/permissions/{overwrite_id}", channel_id=channel_id)
         )
 
     async def get_channel_invites(self, channel_id: int) -> Dict[str, Any]:
@@ -620,7 +712,7 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("GET", f"/channels/{channel_id}/invites")
+        return await self.request("GET", Route(f"/channels/{channel_id}/invites", channel_id=channel_id))
 
     async def create_channel_invite(
         self,
@@ -665,7 +757,9 @@ class HTTPClient:
         )
 
         return await self.request(
-            "POST", f"/channels/{channel_id}/invites", json=payload
+            "POST", 
+            Route(f"/channels/{channel_id}/invites", channel_id=channel_id),
+            json=payload,
         )
 
     async def follow_news_channel(
@@ -684,7 +778,9 @@ class HTTPClient:
         """
         payload = {"webhook_channel_id": webhook_channel_id}
         return await self.request(
-            "PUT", f"/channels/{channel_id}/followers/@me", json=payload
+            "PUT",
+            Route(f"/channels/{channel_id}/followers/@me", channel_id=channel_id),
+            json=payload
         )
 
     async def trigger_typing(self, channel_id: int) -> Dict[str, Any]:
@@ -698,7 +794,7 @@ class HTTPClient:
             The data received from the API After making the call.
 
         """
-        return await self.request("POST", f"/channels/{channel_id}/typing")
+        return await self.request("POST", Route(f"/channels/{channel_id}/typing", channel_id=channel_id))
 
     async def get_pinned_messages(self, channel_id: int) -> Dict[str, Any]:
         """
@@ -711,7 +807,7 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("GET", f"/channels/{channel_id}/pins")
+        return await self.request("GET", Route(f"/channels/{channel_id}/pins", channel_id=channel_id))
 
     async def pin_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
         """
@@ -725,7 +821,7 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("PUT", f"/channels/{channel_id}/pins/{message_id}")
+        return await self.request("PUT", Route(f"/channels/{channel_id}/pins/{message_id}", channel_id=channel_id))
 
     async def unpin_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
         """
@@ -739,7 +835,7 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("DELETE", f"/channels/{channel_id}/pins/{message_id}")
+        return await self.request("DELETE", Route(f"/channels/{channel_id}/pins/{message_id}", channel_id=channel_id))
 
     async def start_thread_with_message(
         self, channel_id: int, message_id: int, *, name: str, auto_archive_duration: int
@@ -759,8 +855,8 @@ class HTTPClient:
         """
         payload = {"name": name, "auto_archive_duration": auto_archive_duration}
         return await self.request(
-            method="POST",
-            path=f"/channels/{channel_id}/messages/{message_id}/threads",
+            "POST",
+            Route(f"/channels/{channel_id}/messages/{message_id}/threads", channel_id=channel_id),
             json=payload,
         )
 
@@ -791,7 +887,9 @@ class HTTPClient:
         update_payload(payload, type=type, invitable=invitable)
 
         return await self.request(
-            method="POST", path=f"/channels/{channel_id}/threads", json=payload
+            "POST",
+            Route(f"/channels/{channel_id}/threads", channel_id=channel_id),
+            json=payload,
         )
 
     async def join_thread(self, channel_id: int) -> Dict[str, Any]:
@@ -805,7 +903,7 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("PUT", f"/channels/{channel_id}/thread-members/@me")
+        return await self.request("PUT", Route(f"/channels/{channel_id}/thread-members/@me", channel_id=channel_id))
 
     async def add_thread_member(self, channel_id: int, user_id: int) -> Dict[str, Any]:
         """
@@ -820,7 +918,8 @@ class HTTPClient:
 
         """
         return await self.request(
-            "PUT", f"/channels/{channel_id}/thread-members/{user_id}"
+            "PUT",
+            Route(f"/channels/{channel_id}/thread-members/{user_id}", channel_id=channel_id)
         )
 
     async def leave_thread(self, channel_id: int) -> Dict[str, Any]:
@@ -835,7 +934,8 @@ class HTTPClient:
 
         """
         return await self.request(
-            "DELETE", f"/channels/{channel_id}/thread-members/@me"
+            "DELETE", 
+            Route(f"/channels/{channel_id}/thread-members/@me", channel_id=channel_id)
         )
 
     async def remove_thread_member(
@@ -853,7 +953,8 @@ class HTTPClient:
 
         """
         return await self.request(
-            "DELETE", f"/channels/{channel_id}/thread-members/{user_id}"
+            "DELETE",
+            Route(f"/channels/{channel_id}/thread-members/{user_id}", channel_id=channel_id)
         )
 
     async def list_thread_members(self, channel_id: int) -> Dict[str, Any]:
@@ -867,7 +968,7 @@ class HTTPClient:
             The data received from the API after making the call
 
         """
-        return await self.request("GET", f"/channels/{channel_id}/thread-members")
+        return await self.request("GET", Route(f"/channels/{channel_id}/thread-members", channel_id=channel_id))
 
     async def list_public_archived_threads(
         self,
@@ -890,7 +991,9 @@ class HTTPClient:
         """
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
-            "GET", f"/channels/{channel_id}/threads/archived/public", params=params
+            "GET",
+            Route(f"/channels/{channel_id}/threads/archived/public", channel_id=channel_id),
+            params=params,
         )
 
     async def list_private_archived_threads(
@@ -914,7 +1017,9 @@ class HTTPClient:
         """
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
-            "GET", f"/channels/{channel_id}/threads/archived/private", params=params
+            "GET",
+            Route(f"/channels/{channel_id}/threads/archived/private", channel_id=channel_id),
+            params=params,
         )
 
     async def list_joined_private_archived_threads(
@@ -939,7 +1044,7 @@ class HTTPClient:
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
             "GET",
-            f"/channels/{channel_id}/users/@me/threads/archived/private",
+            Route(f"/channels/{channel_id}/users/@me/threads/archived/private", channel_id=channel_id),
             params=params,
         )
 
@@ -954,7 +1059,7 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/emojis")
+        return await self.request("GET", Route(f"/guilds/{guild_id}/emojis", guild_id=guild_id))
 
     async def get_guild_emoji(self, guild_id: int, emoji_id: int) -> Dict[str, Any]:
         """
@@ -968,7 +1073,7 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/emojis/{emoji_id}")
+        return await self.request("GET", Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id))
 
     async def create_guild_emoji(
         self,
@@ -998,7 +1103,9 @@ class HTTPClient:
         }
 
         return await self.request(
-            method="POST", path=f"/guilds/{guild_id}/emojis", json=payload
+            "POST",
+            Route(f"/guilds/{guild_id}/emojis", guild_id=guild_id),
+            json=payload,
         )
 
     async def modify_guild_emoji(
@@ -1022,13 +1129,13 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        payload = {
-            "name": name,
-        }
+        payload = {"name": name}
         update_payload(payload, roles=roles)
 
         return await self.request(
-            method="PATCH", path=f"/guilds/{guild_id}/emojis/{emoji_id}", json=payload
+            "PATCH",
+            Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id),
+            json=payload,
         )
 
     async def delete_guild_emoji(self, guild_id: int, emoji_id: int) -> Dict[str, Any]:
@@ -1043,7 +1150,7 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        return await self.request("DELETE", f"/guilds/{guild_id}/emojis/{emoji_id}")
+        return await self.request("DELETE", Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id))
 
     async def create_guild(
         self,
@@ -1101,7 +1208,7 @@ class HTTPClient:
         if "icon" in payload:
             payload["icon"] = bytes_to_data_uri(payload["icon"])
 
-        return await self.request("POST", "/guilds", json=payload)
+        return await self.request("POST", Route("/guilds"), json=payload)
 
     async def get_guild(
         self, guild_id: int, *, with_counts: bool = False
@@ -1117,7 +1224,7 @@ class HTTPClient:
 
         """
         params = {"with_counts": with_counts}
-        return await self.request("GET", f"/guilds/{guild_id}", params=params)
+        return await self.request("GET", Route(f"/guilds/{guild_id}", guild_id=guild_id), params=params)
 
     async def get_guild_preview(self, guild_id: int) -> Dict[str, Any]:
         """
@@ -1130,7 +1237,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/preview")
+        return await self.request("GET", Route(f"/guilds/{guild_id}/preview", guild_id=guild_id))
 
     async def modify_guild(
         self,
@@ -1217,7 +1324,7 @@ class HTTPClient:
         if "banner" in payload:
             payload["banner"] = bytes_to_data_uri(payload["banner"])
 
-        return await self.request("PATCH", f"/guilds/{guild_id}", json=payload)
+        return await self.request("PATCH", Route(f"/guilds/{guild_id}", guild_id=guild_id), json=payload)
 
     async def delete_guild(self, guild_id: int):
         """
@@ -1227,7 +1334,7 @@ class HTTPClient:
             guild_id (int): The ID of the guild to delete.
 
         """
-        await self.request("DELETE", f"/guilds/{guild_id}")
+        await self.request("DELETE", Route(f"/guilds/{guild_id}", guild_id=guild_id))
 
     async def get_guild_channels(self, guild_id: int) -> Dict[str, Any]:
         """
@@ -1240,7 +1347,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/channels")
+        return await self.request("GET", Route(f"/guilds/{guild_id}/channels", guild_id=guild_id))
 
     async def create_guild_channel(
         self,
@@ -1288,7 +1395,7 @@ class HTTPClient:
             nsfw=nsfw,
         )
 
-        return await self.request("POST", f"/guilds/{guild_id}/channels", json=payload)
+        return await self.request("POST", Route(f"/guilds/{guild_id}/channels", guild_id=guild_id), json=payload)
 
     async def list_active_threads(self, guild_id: int) -> Dict[str, Any]:
         """
@@ -1301,7 +1408,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/threads/active")
+        return await self.request("GET", Route(f"/guilds/{guild_id}/threads/active", guild_id=guild_id))
 
     async def get_guild_member(self, guild_id: int, member_id: int) -> Dict[str, Any]:
         """
@@ -1315,7 +1422,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", f"/guilds/{guild_id}/members/{member_id}")
+        return await self.request("GET", Route(f"/guilds/{guild_id}/members/{member_id}", guild_id=guild_id))
 
     async def list_guild_members(
         self, guild_id: int, *, limit: int = 1, after: int = 0
@@ -1331,7 +1438,7 @@ class HTTPClient:
 
         """
         params = {"limit": limit, "after": after}
-        return await self.request("GET", f"/guilds/{guild_id}/members", params=params)
+        return await self.request("GET", Route(f"/guilds/{guild_id}/members", guild_id=guild_id), params=params)
 
     async def search_guild_members(
         self, guild_id: int, *, query: str, limit: int = 1
@@ -1350,7 +1457,9 @@ class HTTPClient:
         """
         params = {"limit": limit, "query": query}
         return await self.request(
-            "GET", f"/guilds/{guild_id}/members/search", params=params
+            "GET",
+            Route(f"/guilds/{guild_id}/members/search", guild_id=guild_id),
+            params=params
         )
 
     async def add_guild_member(
@@ -1384,7 +1493,9 @@ class HTTPClient:
             {}, access_token=access_token, nick=nick, roles=roles, mute=mute, deaf=deaf
         )
         return await self.request(
-            "PUT", f"/guilds/{guild_id}/members/{member_id}", json=payload
+            "PUT",
+            Route(f"/guilds/{guild_id}/members/{member_id}", guild_id=guild_id),
+            json=payload,
         )
 
     async def edit_guild_member(
@@ -2209,7 +2320,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        return await self.request("GET", "/users/@me")
+        return await self.request("GET", Route("/users/@me"))
 
     async def modify_current_user(
         self, *, username: Optional[str] = None, avatar: Optional[bytes] = None
