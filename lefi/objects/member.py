@@ -3,15 +3,15 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, Dict, List, Optional
 
-from .user import User
 from ..utils import Snowflake
 from .flags import Permissions
+from .user import User
 
 if TYPE_CHECKING:
     from ..state import State
+    from .channel import VoiceChannel
     from .guild import Guild
     from .role import Role
-    from .channel import VoiceChannel
 
 __all__ = ("Member",)
 

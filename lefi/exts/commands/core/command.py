@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Coroutine, Union, List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Callable, Coroutine, List, Optional, Union
 
 from .cooldowns import Cooldown, CooldownType
 

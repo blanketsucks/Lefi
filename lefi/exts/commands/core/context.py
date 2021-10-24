@@ -7,7 +7,7 @@ from .command import Command
 __all__ = ("Context",)
 
 if TYPE_CHECKING:
-    from lefi import Message, User, Member, Guild, Channel, DMChannel
+    from lefi import Channel, DMChannel, Guild, Member, Message, User
 
     from ..bot import Bot
     from .parser import StringParser

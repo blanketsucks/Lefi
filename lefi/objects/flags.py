@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Tuple, Any, Dict, Type, TypeVar, Union
+from typing import Any, Dict, Tuple, Type, TypeVar, Union
 
 __all__ = (
     "Flag",

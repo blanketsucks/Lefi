@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import inspect
 import traceback
 from typing import (
     Any,
@@ -17,8 +18,8 @@ from typing import (
 
 import lefi
 
-from .core import Command, Context, StringParser, Plugin
-from .errors import CommandOnCooldown, CheckFailed
+from .core import Command, Context, Plugin, StringParser
+from .errors import CheckFailed, CommandOnCooldown
 
 CTX = TypeVar("CTX", bound=Context)
 CMD = TypeVar("CMD", bound=Command)
@@ -134,8 +135,11 @@ class Bot(lefi.Client):
         return ctx
 
     async def get_prefix(self, message: lefi.Message) -> Union[Tuple[str], str]:
-        if callable(self.prefix):
+        if callable(self.prefix) and inspect.iscoroutinefunction(self.prefix):
             return await self.prefix(message)
+
+        elif callable(self.prefix):
+            return self.prefix(message)
 
         return self.prefix
 

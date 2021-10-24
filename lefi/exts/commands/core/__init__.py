@@ -1,5 +1,5 @@
 from .command import *
-from .cooldowns import *
 from .context import *
+from .cooldowns import *
 from .parser import *
 from .plugin import *
