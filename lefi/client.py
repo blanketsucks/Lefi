@@ -53,12 +53,19 @@ class Client:
         """
         self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_running_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
-        self._state: State = State(self, self.loop)
         self.ws: WebSocketClient = WebSocketClient(self, intents)
+        self._state: State = State(self, self.loop)
 
         self.events: Dict[str, Cache[Callable[..., Any]]] = {}
         self.once_events: Dict[str, List[Callable[..., Any]]] = {}
         self.futures: Dict[str, List[Tuple[asyncio.Future, Callable[..., bool]]]] = {}
+
+    @property
+    def user(self) -> Optional[User]:
+        """
+        The [lefi.User][] of the client.
+        """
+        return self._state.user
 
     def add_listener(
         self,

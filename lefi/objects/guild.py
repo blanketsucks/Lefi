@@ -15,6 +15,7 @@ from .enums import (
 from .integration import Integration
 from .invite import Invite, PartialInvite
 from .template import GuildTemplate
+from ..voice import VoiceState, VoiceClient
 
 if TYPE_CHECKING:
     from ..state import State
@@ -43,6 +44,7 @@ class Guild:
         self._members: Dict[int, Member] = {}
         self._roles: Dict[int, Role] = {}
         self._emojis: Dict[int, Emoji] = {}
+        self._voice_states: Dict[int, VoiceState] = {}
 
         self._state = state
         self._data = data
@@ -206,6 +208,26 @@ class Guild:
             member = Member(self._state, payload, self)
             yield member
 
+    async def change_voice_state(
+        self,
+        *,
+        channel: Optional[VoiceChannel] = None,
+        self_mute: bool = False,
+        self_deaf: bool = False,
+    ):
+        """
+        Changes the guild's voice state.
+
+        Parameters:
+            channel (lefi.VoiceChannel): The voice channel to move to.
+            self_mute (bool): Whether to mute the bot.
+            self_deaf (bool): Whether to deafen the bot.
+
+        """
+        await self._state.ws.change_guild_voice_state(
+            self.id, channel.id if channel else None, self_mute, self_deaf
+        )
+
     def get_member(self, member_id: int) -> Optional[Member]:
         """
         Gets a member from the guilds member cache.
@@ -257,6 +279,26 @@ class Guild:
 
         """
         return self._emojis.get(emoji_id)
+
+    def get_voice_state(self, member_id: int) -> Optional[VoiceState]:
+        """
+        Gets a voice state from the guilds voice state cache.
+
+        Parameters:
+            member_id (int): The ID of the member.
+
+        Returns:
+            The [lefi.VoiceState][] instance corresponding to the ID if found.
+
+        """
+        return self._voice_states.get(member_id)
+
+    @property
+    def voice_client(self) -> Optional[VoiceClient]:
+        """
+        The guild's voice client if it exists.
+        """
+        return self._state.get_voice_client(self.id)
 
     @property
     def id(self) -> int:

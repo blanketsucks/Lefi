@@ -189,3 +189,31 @@ class WebSocketClient:
             await self.ws.send_json({"op": 1, "d": self.seq})
             logger.info("HEARTBEAT SENT")
             await asyncio.sleep(self.heartbeat_delay / 1000)
+
+    async def change_guild_voice_state(
+        self,
+        guild_id: int,
+        channel_id: Optional[int] = None,
+        self_mute: bool = False,
+        self_deaf: bool = False,
+    ) -> None:
+        """
+        Changes the voice state of the client.
+
+        Parameters:
+            guild_id (int): The id of the guild.
+            channel_id (int): The id of the channel.
+            self_mute (bool): Whether or not the client is muted.
+            self_deaf (bool): Whether or not the client is deafened.
+
+        """
+        payload = {
+            "op": OpCodes.VOICE_STATE_UPDATE,
+            "d": {
+                "guild_id": guild_id,
+                "channel_id": channel_id,
+                "self_mute": self_mute,
+                "self_deaf": self_deaf,
+            },
+        }
+        await self.ws.send_json(payload)

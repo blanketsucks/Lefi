@@ -20,6 +20,7 @@ from .objects import (
     VoiceChannel,
 )
 from .objects.channel import Channel
+from .voice import VoiceClient, VoiceState
 
 if TYPE_CHECKING:
     from .client import Client
@@ -102,7 +103,8 @@ class State:
         self.client = client
         self.loop = loop
         self.http = client.http
-
+        self.ws = client.ws
+        self.user: Optional[User] = None
         self._messages = Cache[Message](1000)
         self._users = Cache[User]()
         self._guilds = Cache[Guild]()
@@ -110,6 +112,7 @@ class State:
             Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
         ]()
         self._emojis = Cache[Emoji]()
+        self._voice_clients = Cache[VoiceClient]()
 
     def dispatch(self, event: str, *payload: Any) -> None:
         """
@@ -149,6 +152,8 @@ class State:
 
         """
         user = User(self, data["user"])
+
+        self.user = user
         self.dispatch("ready", user)
 
     async def parse_guild_create(self, data: Dict) -> None:
@@ -164,6 +169,7 @@ class State:
         self.create_guild_channels(guild, data)
         self.create_guild_roles(guild, data)
         self.create_guild_members(guild, data)
+        self.create_guild_voice_states(guild, data)
 
         self._guilds[guild.id] = guild
         self.dispatch("guild_create", guild)
@@ -270,6 +276,40 @@ class State:
         self._channels.pop(channel.id)  # type: ignore
 
         self.dispatch("channel_delete", channel)
+
+    async def parse_voice_state_update(self, data: Dict) -> None:
+        """
+        Parses `VOICE_STATE_UPDATE` event. Creates a VoiceState then caches it, as well as dispatching it afterwards.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        after = VoiceState(self, data)
+
+        if after.guild:
+            if after.user_id == self.user.id:  # type: ignore
+                voice = self.get_voice_client(after.guild.id)
+                if voice:
+                    await voice.voice_state_update(data)
+
+            before = after.guild.get_voice_state(after.user_id)
+            if not before:
+                after.guild._voice_states[after.user_id] = after
+            else:
+                if not after.channel:
+                    after.guild._voice_states.pop(after.user_id)
+                else:
+                    before._data = after._data
+
+            self.dispatch("voice_state_update", before, after)
+
+    async def parse_voice_server_update(self, data: Dict):
+        guild_id = int(data["guild_id"])
+        voice = self.get_voice_client(guild_id)
+
+        if voice:
+            await voice.voice_server_update(data)
 
     def get_message(self, message_id: int) -> Optional[Message]:
         """
@@ -478,6 +518,26 @@ class State:
         guild._emojis = emojis
         return guild
 
+    def create_guild_voice_states(self, guild: Guild, data: Dict) -> Guild:
+        """
+        Creates the voice states of a guild.
+
+        Parameters:
+            guild (lefi.Guild): The guild which to create the voice states for.
+            data (Dict): The data of the voice states.
+
+        Returns:
+            The [lefi.Guild][] instance passed in.
+
+        """
+        voice_states = {
+            int(payload["user_id"]): VoiceState(self, payload)
+            for payload in data["voice_states"]
+        }
+
+        guild._voice_states = voice_states
+        return guild
+
     def create_overwrites(
         self,
         channel: Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel],
@@ -500,3 +560,37 @@ class State:
             ows[target] = overwrite  # type: ignore
 
         channel._overwrites = ows
+
+    def add_voice_client(self, guild_id: int, voice_client: VoiceClient) -> None:
+        """
+        Adds a voice client to the cache.
+
+        Parameters:
+            guild_id (int): The ID of the guild.
+            voice_client (lefi.VoiceClient): The voice client to add.
+
+        """
+        self._voice_clients[guild_id] = voice_client
+
+    def get_voice_client(self, guild_id: int) -> Optional[VoiceClient]:
+        """
+        Grabs a voice client from the cache.
+
+        Parameters:
+            guild_id (int): The ID of the guild.
+
+        Returns:
+            The [lefi.VoiceClient][] instance corresponding to the ID if found.
+
+        """
+        return self._voice_clients.get(guild_id)
+
+    def remove_voice_client(self, guild_id: int) -> None:
+        """
+        Removes a voice client from the cache.
+
+        Parameters:
+            guild_id (int): The ID of the guild.
+
+        """
+        self._voice_clients.pop(guild_id, None)

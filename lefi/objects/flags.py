@@ -106,8 +106,6 @@ class Flag(metaclass=FlagMeta):
         else:
             self.value &= ~flag
 
-        self.__values__[flag] = value
-
     def __iter__(self):
         return iter(self.__values__.items())
 
@@ -188,7 +186,6 @@ class UserFlags(Flag):
 
 
 class Intents(Flag):
-    none = 0
     guilds = 1 << 0
     guild_members = 1 << 1
     guild_bans = 1 << 2
@@ -242,6 +239,10 @@ class Intents(Flag):
             | cls.direct_message_reactions
             | cls.direct_message_typing
         )
+
+    @classmethod
+    def none(cls):
+        return cls(0)
 
 
 class Permissions(Flag):
