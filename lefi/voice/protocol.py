@@ -172,6 +172,9 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
 
 class VoiceClient:
     def __init__(self, state: State, channel: VoiceChannel) -> None:
+        if not has_nacl:
+            raise RuntimeError("PyNaCl is required for voice")
+
         self._state = state
         self._received_state_update = asyncio.Event()
         self._received_server_update = asyncio.Event()
