@@ -140,7 +140,7 @@ def find_opus():
     return ctypes.cdll.LoadLibrary("opus")
 
 
-def load_opus(lib: ctypes.CDLL):
+def load_opus_from_dll(lib: ctypes.CDLL) -> None:
     for name, wrapped in exports.items():
         cfunc = getattr(lib, name)
 
@@ -148,25 +148,25 @@ def load_opus(lib: ctypes.CDLL):
         cfunc.restype = wrapped.returntype
 
 
-def load_default_opus():
+def load_opus():
     global libopus
 
     lib = find_opus()
-    load_opus(lib)
+    load_opus_from_dll(lib)
 
     libopus = lib
 
 
 def get_version_string() -> str:
     if not libopus:
-        load_default_opus()
+        load_opus()
 
     return libopus.opus_get_version_string().decode("utf-8")
 
 
 def get_error_string(code: int) -> str:
     if not libopus:
-        load_default_opus()
+        load_opus()
 
     return libopus.opus_strerror(code).decode("utf-8")
 
@@ -178,7 +178,7 @@ class OpusEncoder:
 
     def _create_encoder_struct(self) -> OpusEncoderStruct:
         if not libopus:
-            load_default_opus()
+            load_opus()
 
         ref = ctypes.byref(ctypes.c_int())
         encoder = libopus.opus_encoder_create(SAMPLE_RATE, CHANNELS, 2049, ref)
