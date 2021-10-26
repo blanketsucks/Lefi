@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union, Any
 
 from .errors import HTTPException
 
@@ -49,7 +49,7 @@ class Ratelimiter:
     def global_ratelimit_set(self, delay: float) -> None:
         self.loop.call_later(delay, self.global_.set)
 
-    async def __aenter__(self) -> Ratelimiter:
+    async def request(self) -> Any:
         semaphore = self.http.semaphores.get(self.bucket, await self.set_semaphore())
         session = self.http.session
 
@@ -66,12 +66,13 @@ class Ratelimiter:
             logger.info(f"BUCKET DEPLETED: {self.bucket} RETRY: {reset_after}s")
             self.loop.call_later(reset_after, self.route.lock.release)
             await self.release(semaphore, reset_after)
+            await self.request()
 
         if 300 > resp.status >= 200:
             logger.info(
                 f"SUCCESS: {self.method} ROUTE: {self.route.url} STATUS: {resp.status}"
             )
-            self.return_data = data
+            return data
 
         if resp.status == 429:
             retry_after: float = data["retry_after"]  # type: ignore
@@ -83,13 +84,15 @@ class Ratelimiter:
 
             self.global_ratelimit_set(retry_after)
             await asyncio.sleep(retry_after)
+            await self.request()
 
         if not 300 > resp.status >= 200:
             logger.info(
                 f"FAILED: {self.method} : ROUTE: {self.route.url} STATUS: {resp.status}"
             )
-            self.error_return = self.http.ERRORS.get(resp.status, HTTPException)(data)
+            raise self.http.ERRORS.get(resp.status, HTTPException)(data)
 
+    async def __aenter__(self) -> Ratelimiter:
         return self
 
     async def __aexit__(self, *_) -> None:

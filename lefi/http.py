@@ -140,10 +140,7 @@ class HTTPClient:
         async with Ratelimiter(
             self, route, method, **kwargs, headers=headers
         ) as handler:
-            if handler.error_return:
-                raise handler.error_return
-
-            return handler.return_data
+            return await handler.request()
 
     async def get_bot_gateway(self) -> Dict:
         """
