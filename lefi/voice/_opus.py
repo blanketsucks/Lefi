@@ -125,10 +125,7 @@ exports: Dict[str, CFuncWrapper] = {
 
 def get_cpu_architecture():
     size = struct.calcsize("P") * 8
-    if size > 32:
-        return "x64"
-
-    return "x86"
+    return "x64" if size > 32 else "x86"
 
 
 def find_opus():
