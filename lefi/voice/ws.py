@@ -126,6 +126,8 @@ class VoiceWebSocketClient:
         self.remote_ip = payload["ip"]
         self.remote_port = payload["port"]
 
+        await self.udp_connect()
+
         mode = self.select_mode(payload["modes"])
         await self._perform_ip_discovery(mode)
 
@@ -139,7 +141,6 @@ class VoiceWebSocketClient:
         )
 
     async def _perform_ip_discovery(self, mode: str):
-        await self.udp_connect()
         packet = bytearray(70)
 
         struct.pack_into(">H", packet, 0, 0x1)
