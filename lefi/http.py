@@ -2,16 +2,24 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import datetime
 import io
 import json
-from typing import Any, ClassVar, Dict, List, Optional
+import logging
+from typing import Any, ClassVar, Dict, List, Optional, Union
 
 import aiohttp
 
 from .errors import BadRequest, Forbidden, HTTPException, NotFound, Unauthorized
+from .ratelimiter import Ratelimiter
 from .utils import bytes_to_data_uri, update_payload
 
-__all__ = ("HTTPClient", "Route", "RatelimitHandler")
+__all__ = (
+    "HTTPClient",
+    "Route",
+)
+
+logger = logging.getLogger(__name__)
 
 BASE: str = "https://discord.com/api/v9"
 
@@ -26,6 +34,8 @@ class Route:
         self.webhook_id: Optional[int] = kwargs.get("webhook_id")
         self.webhook_token: Optional[str] = kwargs.get("webhookd_token")
 
+        self.lock: asyncio.Lock = asyncio.Lock()
+
     @property
     def url(self) -> str:
         return f"{BASE+self.path}"
@@ -33,31 +43,6 @@ class Route:
     @property
     def bucket(self) -> str:
         return f"{self.channel_id}:{self.guild_id}:{self.webhook_id}:{self.path}"
-
-
-class RatelimitHandler:
-    def __init__(self, http: HTTPClient) -> None:
-        self.http = http
-
-        self.semaphores: Dict[str, asyncio.Semaphore] = {}
-        self.global_: asyncio.Event = asyncio.Event()
-        self.global_.set()
-
-    def get(self, bucket: str) -> Optional[asyncio.Semaphore]:
-        return self.semaphores.get(bucket)
-
-    def set(self, bucket: str, amount: int) -> asyncio.Semaphore:
-        if semaphore := self.semaphores.get(bucket):
-            return semaphore
-
-        semaphore = asyncio.Semaphore(amount)
-        self.semaphores[bucket] = semaphore
-
-        return semaphore
-
-    def release(self, bucket: str, delay: float) -> None:
-        if semaphore := self.semaphores.get(bucket):
-            self.http.loop.call_later(delay, semaphore.release)
 
 
 class HTTPClient:
@@ -92,8 +77,14 @@ class HTTPClient:
         self.token: str = token
         self.loop: asyncio.AbstractEventLoop = loop
         self.session: aiohttp.ClientSession = None  # type: ignore
-        self.ratelimiter = RatelimitHandler(self)
-        self._lock = asyncio.Lock()
+        self.semaphores: Dict[str, asyncio.Semaphore] = {}
+
+    @staticmethod
+    async def json_or_text(resp: aiohttp.ClientResponse) -> Union[dict, str]:
+        try:
+            return await resp.json()
+        except aiohttp.ContentTypeError:
+            return await resp.text()
 
     async def _create_session(
         self, loop: asyncio.AbstractEventLoop = None
@@ -146,44 +137,10 @@ class HTTPClient:
 
             kwargs["data"] = formdata
 
-        await self.ratelimiter.global_.wait()
-        head = await self.session.request("HEAD", route.url, headers=headers)
-        semaphore = self.ratelimiter.set(
-            route.bucket, int(head.headers.get("X-Ratelimit-Limit", 1))
-        )
-
-        async with self._lock:
-            await semaphore.acquire()
-            resp = await self.session.request(
-                method, route.url, **kwargs, headers=headers
-            )
-
-            reset_after: float = float(resp.headers.get("X-Ratelimit-Reset-After", 0))
-            remaining: int = int(resp.headers.get("X-Ratelimit-Remaining", 1))
-
-            if resp.status in (200, 201, 204, 304):
-                self.ratelimiter.release(route.bucket, reset_after)
-                try:
-                    return await resp.json()
-                except aiohttp.ContentTypeError:
-                    return await resp.text()
-
-            if remaining == 0 and resp.status != 429:
-                self.ratelimiter.release(route.bucket, reset_after)
-
-            elif resp.status == 429:
-                data = await resp.json()
-
-                if data.get("global", False):
-                    self.ratelimiter.global_.clear()
-                    self.loop.call_later(
-                        data["retry_after"], self.ratelimiter.global_.set
-                    )
-
-                await asyncio.sleep(data["retry_after"])
-
-            error = self.ERRORS.get(resp.status, HTTPException)
-            raise error(await resp.json())
+        async with Ratelimiter(
+            self, route, method, **kwargs, headers=headers
+        ) as handler:
+            return await handler.request()
 
     async def get_bot_gateway(self) -> Dict:
         """
