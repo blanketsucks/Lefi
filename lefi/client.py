@@ -60,6 +60,8 @@ class Client:
         self.once_events: Dict[str, List[Callable[..., Any]]] = {}
         self.futures: Dict[str, List[Tuple[asyncio.Future, Callable[..., bool]]]] = {}
 
+        self.user: User = None  # type: ignore
+
     def add_listener(
         self,
         func: Callable[..., Coroutine],
