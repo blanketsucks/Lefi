@@ -301,7 +301,7 @@ class Client:
         """
         return self._state.get_emoji(id)
 
-    async def fetch_invite(self, code: str, **kwargs):
+    async def fetch_invite(self, code: str, **kwargs) -> Invite:
         """
         Fetches an invite from the API.
 
@@ -315,7 +315,7 @@ class Client:
         data = await self.http.get_invite(code, **kwargs)
         return Invite(data=data, state=self._state)
 
-    async def fetch_guild(self, guild_id: int):
+    async def fetch_guild(self, guild_id: int) -> Guild:
         """
         Fetches a guild from the API.
 
