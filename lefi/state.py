@@ -151,9 +151,9 @@ class State:
             data (Dict): The raw data.
 
         """
-        user = User(self, data["user"])
+        user = self.add_user(data["user"])
+        self.client.user = user
 
-        self.user = user
         self.dispatch("ready", user)
 
     async def parse_guild_create(self, data: Dict) -> None:
