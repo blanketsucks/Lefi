@@ -3,3 +3,4 @@ test.py
 poetry.lock
 .mypy_cache/
 .pytest_cache/
+site/
