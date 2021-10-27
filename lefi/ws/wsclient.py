@@ -78,8 +78,13 @@ class WebSocketClient:
         """
         Starts the connection to the websocket and begins parsing messages received from the websocket.
         """
-        data = await self.client.http.get_bot_gateway()
-        self.ws = await self.client.http.ws_connect(data["url"])
+        headers = {"Authorization": f"Bot {self.client.http.token}"}
+        session = self.client.http.session or await self.client.http._create_session()
+        data = await session.request(
+            "GET", "https://discord.com/api/v9/gateway/bot", headers=headers
+        )
+
+        self.ws = await self.client.http.ws_connect((await data.json())["url"])
 
         await self.identify()
         await asyncio.gather(self.start_heartbeat(), self.read_messages())
