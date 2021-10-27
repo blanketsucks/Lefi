@@ -17,4 +17,4 @@ def get(iterable: Iterable[T], **attrs) -> Optional[T]:
         if all([getattr(item, name) == value for name, value in attrs.items()]):
             return item
 
-    assert False
+    return None
