@@ -35,8 +35,8 @@ async def main() -> None:
     client = lefi.Client(token)  # type: ignore
 
     @client.once("ready")
-    async def on_ready(client_user: lefi.User) -> None:
-        print(f"LOGGED IN AS {client_user.id}")
+    async def on_ready(user: lefi.User) -> None:
+        print(f"LOGGED IN AS {client_user.id}") # You can also access `client.user`
 
     @client.on("message_create")
     async def on_message_create(message: lefi.Message) -> None:
