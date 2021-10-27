@@ -263,7 +263,7 @@ class Guild:
         """
         The ID of the guild.
         """
-        return self._data["id"]
+        return int(self._data["id"])
 
     @property
     def name(self) -> str:
