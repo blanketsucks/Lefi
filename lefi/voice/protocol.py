@@ -21,7 +21,7 @@ else:
     has_nacl = True
 
 from . import _opus
-from .ws import VoiceWebSocketClient
+from .wsclient import VoiceWebSocketClient
 
 if TYPE_CHECKING:
     from .client import VoiceClient
@@ -36,7 +36,7 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         _loop: asyncio.AbstractEventLoop
         _paused: bool
 
-        async def _drain_helper(self):
+        async def _drain_helper(self) -> None:
             ...
 
     def __init__(self, client: VoiceClient):
@@ -45,12 +45,12 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         self.timestamp = 0
         self.sequence = 0
         self.lite_nonce = 0
+        self.encoder = _opus.OpusEncoder()
         self.supported_modes: Dict[str, Encrypter] = {
             "xsalsa20_poly1305": self.encrypt_xsalsa20_poly1305,
             "xsalsa20_poly1305_suffix": self.encrypt_xsalsa20_poly1305_suffix,
             "xsalsa20_poly1305_lite": self.encrypt_xsalsa20_poly1305_lite,
         }
-        self.encoder = _opus.OpusEncoder()
 
         self._secret_box: Optional[nacl.secret.SecretBox] = None
         super().__init__()
@@ -65,7 +65,7 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
 
     # Protocol related functions
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> VoiceProtocol:
         return self
 
     def connection_made(
@@ -87,7 +87,7 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
 
     async def drain(
         self,
-    ):  # From asyncio.StreamWriter.drain but without the reader stuff
+    ) -> None:  # From asyncio.StreamWriter.drain but without the reader stuff
         if self.transport.is_closing():
             await asyncio.sleep(0)
 

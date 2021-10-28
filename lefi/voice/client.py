@@ -4,7 +4,7 @@ import asyncio
 from typing import TYPE_CHECKING, Optional, Dict
 
 from ..errors import PyNaClNotFound, VoiceException
-from .ws import VoiceWebSocketClient
+from .wsclient import VoiceWebSocketClient
 from .protocol import VoiceProtocol, has_nacl
 from .player import AudioPlayer, AudioStream
 
@@ -41,11 +41,11 @@ class VoiceClient:
     def player(self) -> Optional[AudioPlayer]:
         return self._player
 
-    async def voice_state_update(self, data: Dict):
+    async def voice_state_update(self, data: Dict) -> None:
         self.session_id = data["session_id"]
         self._received_state_update.set()
 
-    async def voice_server_update(self, data: Dict):
+    async def voice_server_update(self, data: Dict) -> None:
         self.endpoint = data["endpoint"]
         self.token = data["token"]
 

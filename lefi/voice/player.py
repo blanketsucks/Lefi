@@ -4,7 +4,7 @@ import asyncio
 from typing import IO, TYPE_CHECKING, Optional, Protocol
 
 from . import _opus
-from .ws import SpeakingState
+from .wsclient import SpeakingState
 
 __all__ = (
     "AudioStream",

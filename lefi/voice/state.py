@@ -10,7 +10,7 @@ __all__ = ("VoiceState",)
 
 
 class VoiceState:
-    def __init__(self, state: State, data: Dict):
+    def __init__(self, state: State, data: Dict) -> None:
         self._state = state
         self._data = data
 

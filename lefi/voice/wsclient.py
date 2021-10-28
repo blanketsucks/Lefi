@@ -56,14 +56,14 @@ class VoiceWebSocketClient:
     def remote_addr(self) -> Tuple[str, int]:
         return self.remote_ip, self.remote_port
 
-    async def start_heartbeat(self, interval: float):
+    async def start_heartbeat(self, interval: float) -> None:
         while not self.closed:
             payload = {"op": OpCodes.HEARTBEAT, "d": (time.time() * 1000)}
 
             await self.ws.send_json(payload)
             await asyncio.sleep(interval)
 
-    async def connect(self):
+    async def connect(self) -> None:
         state = self.client._state
         url = f"wss://{self.client.endpoint}/?v=4"
 
@@ -75,7 +75,7 @@ class VoiceWebSocketClient:
 
         self._reader_handler = self.client.loop.create_task(self.read_messages())
 
-    async def close(self):
+    async def close(self) -> None:
         if self._reader_handler:
             self._reader_handler.cancel()
 
@@ -85,20 +85,7 @@ class VoiceWebSocketClient:
         await self.ws.close()
         self.closed = True
 
-    async def identify(self):
-        payload = {
-            "op": OpCodes.IDENTIFY,
-            "d": {
-                "server_id": str(self.guild_id),
-                "user_id": str(self.user_id),
-                "session_id": self.client.session_id,
-                "token": self.client.token,
-            },
-        }
-
-        await self.ws.send_json(payload)
-
-    async def receive(self):
+    async def receive(self) -> None:
         message = await self.ws.receive()
         if message.type in (
             aiohttp.WSMsgType.CLOSED,
@@ -124,11 +111,11 @@ class VoiceWebSocketClient:
                 self.start_heartbeat(interval)
             )
 
-    async def read_messages(self):
+    async def read_messages(self) -> None:
         while not self.closed:
             await self.receive()
 
-    async def ready(self, data: Dict):
+    async def ready(self, data: Dict) -> None:
         payload = data["d"]
 
         self.ssrc = payload["ssrc"]
@@ -140,16 +127,16 @@ class VoiceWebSocketClient:
         mode = self.select_mode(payload["modes"])
         await self._perform_ip_discovery(mode)
 
-    def select_mode(self, modes: List[str]):
+    def select_mode(self, modes: List[str]) -> str:
         supported = self.client.protocol.supported_modes.keys()
         return [mode for mode in modes if mode in supported][0]
 
-    async def udp_connect(self):
+    async def udp_connect(self) -> None:
         await self.client.loop.create_datagram_endpoint(
             self.client.protocol, remote_addr=self.remote_addr
         )
 
-    async def _perform_ip_discovery(self, mode: str):
+    async def _perform_ip_discovery(self, mode: str) -> None:
         packet = bytearray(70)
 
         struct.pack_into(">H", packet, 0, 0x1)
@@ -167,7 +154,20 @@ class VoiceWebSocketClient:
 
         await self.select_protocol(ip, port, mode)
 
-    async def select_protocol(self, ip: str, port: int, mode: str):
+    async def identify(self) -> None:
+        payload = {
+            "op": OpCodes.IDENTIFY,
+            "d": {
+                "server_id": str(self.guild_id),
+                "user_id": str(self.user_id),
+                "session_id": self.client.session_id,
+                "token": self.client.token,
+            },
+        }
+
+        await self.ws.send_json(payload)
+
+    async def select_protocol(self, ip: str, port: int, mode: str) -> None:
         payload = {
             "op": OpCodes.SELECT_PROTOCOL,
             "d": {
@@ -178,7 +178,7 @@ class VoiceWebSocketClient:
 
         await self.ws.send_json(payload)
 
-    async def speak(self, state: SpeakingState):
+    async def speak(self, state: SpeakingState) -> None:
         payload = {
             "op": OpCodes.SPEAKING,
             "d": {
