@@ -156,7 +156,7 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         box = self.create_secret_box()
         nonce = self.generate_xsalsa20_poly1305_lite_nonce()
 
-        return header + box.encrypt(bytes(data), bytes(nonce)).ciphertext + nonce[:4]
+        return header + box.encrypt(data, nonce) + nonce[:4]
 
     def create_voice_packet(self, data: bytes) -> bytes:
         header = self.create_rtp_header()
