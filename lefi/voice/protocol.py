@@ -137,7 +137,7 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         nonce = bytearray(24)
         nonce[:4] = struct.pack(">I", self.lite_nonce)
 
-        self.increment("lite_nonce", 1, 4294967294)
+        self.increment("lite_nonce", 1, 0xFFFFFFFF)
         return nonce
 
     def encrypt_xsalsa20_poly1305(self, header: bytes, data: bytes) -> bytes:
