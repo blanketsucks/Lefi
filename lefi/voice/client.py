@@ -30,7 +30,7 @@ class VoiceClient:
         self.token: Optional[str] = None
         self.ws: VoiceWebSocketClient = VoiceWebSocketClient(
             self, self.channel.guild.id, self._state.client.user.id
-        )  # type: ignore
+        )
         self.protocol: VoiceProtocol = VoiceProtocol(self)
 
     @property
