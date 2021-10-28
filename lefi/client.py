@@ -20,6 +20,7 @@ from .objects import (
     VoiceChannel,
 )
 from .state import Cache, State
+from .voice import VoiceClient
 from .ws import WebSocketClient
 
 __all__ = ("Client",)
@@ -53,8 +54,8 @@ class Client:
         """
         self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_running_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
-        self.ws: WebSocketClient = WebSocketClient(self, intents)
         self._state: State = State(self, self.loop)
+        self.ws: WebSocketClient = WebSocketClient(self, intents)
 
         self.events: Dict[str, Cache[Callable[..., Any]]] = {}
         self.once_events: Dict[str, List[Callable[..., Any]]] = {}
@@ -233,6 +234,36 @@ class Client:
 
         futures.append((future, check))
         return await asyncio.wait_for(future, timeout=timeout)
+
+    @property
+    def guilds(self) -> List[Guild]:
+        """
+        The list of guilds the client is in.
+        """
+        return list(self._state._guilds.values())
+
+    @property
+    def channels(
+        self,
+    ) -> List[Union[TextChannel, VoiceChannel, CategoryChannel, DMChannel, Channel]]:
+        """
+        The list of channels the client can see.
+        """
+        return list(self._state._channels.values())
+
+    @property
+    def users(self) -> List[User]:
+        """
+        The list of users that the client can see.
+        """
+        return list(self._state._users.values())
+
+    @property
+    def voice_clients(self) -> List[VoiceClient]:
+        """
+        The list of voice clients the client has.
+        """
+        return list(self._state._voice_clients.values())
 
     def get_message(self, id: int) -> Optional[Message]:
         """

@@ -23,8 +23,8 @@ class Context:
     def __repr__(self) -> str:
         return f"<Context valid={self.valid!r}>"
 
-    async def send(self, **kwargs) -> Message:
-        return await self._message.channel.send(**kwargs)
+    async def send(self, *args, **kwargs) -> Message:
+        return await self._message.channel.send(*args, **kwargs)
 
     @property
     def author(self) -> Union[User, Member]:

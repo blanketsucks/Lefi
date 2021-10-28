@@ -28,6 +28,13 @@ class OpCodes(IntEnum):
     CLIENT_DISCONNECT = 13
 
 
+class SpeakingState(IntEnum):
+    NONE = 0
+    VOICE = 1
+    SOUNDSHARE = 2
+    PRIORITY = 4
+
+
 class VoiceWebSocketClient:
     def __init__(self, client: VoiceClient, guild_id: int, user_id: int) -> None:
         self.client = client
@@ -36,7 +43,7 @@ class VoiceWebSocketClient:
 
         self.ws: aiohttp.ClientWebSocketResponse = None  # type: ignore
         self.secret_key: List[int] = []
-        self.ssrc: Optional[str] = None
+        self.ssrc: Optional[int] = None
         self.mode: Optional[str] = None
         self.remote_ip: str = ""
         self.remote_port: int = 0
@@ -50,7 +57,7 @@ class VoiceWebSocketClient:
         return self.remote_ip, self.remote_port
 
     async def start_heartbeat(self, interval: float):
-        while True:
+        while not self.closed:
             payload = {"op": OpCodes.HEARTBEAT, "d": (time.time() * 1000)}
 
             await self.ws.send_json(payload)
@@ -106,9 +113,11 @@ class VoiceWebSocketClient:
 
         if data["op"] == OpCodes.READY:
             await self.ready(data)
+
         elif data["op"] == OpCodes.SESSION_DESCRIPTION:
             self.mode = payload["mode"]
             self.secret_key = payload["secret_key"]
+
         elif data["op"] == OpCodes.HELLO:
             interval = payload["heartbeat_interval"] / 1000
             self._heartbeat_handler = self.client.loop.create_task(
@@ -150,11 +159,11 @@ class VoiceWebSocketClient:
         await self.client.protocol.sendto(packet, self.remote_addr)
         data = await self.client.protocol.read()
 
-        start = 0
+        start = 4
         end = data.index(b"\x00", start)
 
         ip = data[start:end].decode("ascii")
-        port = struct.unpack_from(">H", data, end + 1)[0]
+        port = struct.unpack_from(">H", data, len(data) - 2)[0]
 
         await self.select_protocol(ip, port, mode)
 
@@ -164,6 +173,17 @@ class VoiceWebSocketClient:
             "d": {
                 "protocol": "udp",
                 "data": {"address": ip, "port": port, "mode": mode},
+            },
+        }
+
+        await self.ws.send_json(payload)
+
+    async def speak(self, state: SpeakingState):
+        payload = {
+            "op": OpCodes.SPEAKING,
+            "d": {
+                "speaking": state.value,
+                "delay": 0,
             },
         }
 
