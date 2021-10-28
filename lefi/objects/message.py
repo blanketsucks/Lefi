@@ -116,7 +116,7 @@ class Message:
         """
         The ID of the message.
         """
-        return self._data["id"]
+        return int(self._data["id"])
 
     @property
     def channel(self) -> Channels:

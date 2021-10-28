@@ -10,15 +10,13 @@ A discord API wrapper focused on clean code, and usability
 1. Poetry
 
    ```
-   poetry add git+https://github.com/an-dyy/Lefi.git --no-dev
+   poetry add lefi
    ```
-    *Note: if you plan on contributing, omit the `--no-dev` flag.*
 
 2. Pip
    ```
-   pip install git+https://github.com/an-dyy/Lefi.git
+   pip install lefi
    ```
-   *Note: After stable the wrapper will get a pip package rather then requiring to install from git*
 
 ## Example(s)
 ```py
@@ -53,13 +51,11 @@ asyncio.run(main())
 
 ## Contributing
 1. If you plan on contributing please open an issue beforehand
-2. Install pre-commit hooks (*makes it a lot easier for me*)
+2. Fork the repo, and setup the poetry env (with dev dependencies)
+3. Install pre-commit hooks (*makes it a lot easier for me*)
     ```
     pre-commit install
     ```
-## Flowchart for release
-![vgy.me](https://i.vgy.me/GKyJVX.png)
-
 
 ## Contributors
 

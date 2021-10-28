@@ -187,7 +187,7 @@ class HTTPClient:
 
         """
         return await self.request(
-            "GET", Route(f"/channels/{channel_id}"), channel_id=channel_id
+            "GET", Route(f"/channels/{channel_id}", channel_id=channel_id)
         )
 
     async def edit_text_channel(
