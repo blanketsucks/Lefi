@@ -51,7 +51,7 @@ class Client:
             loop (Optional[asyncio.AbstractEventLoop]): The loop to use.
 
         """
-        self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_running_loop()
+        self.loop: asyncio.AbstractEventLoop = loop or self._create_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
         self._state: State = State(self, self.loop)
         self.ws: WebSocketClient = WebSocketClient(self, intents)
@@ -61,6 +61,15 @@ class Client:
         self.futures: Dict[str, List[Tuple[asyncio.Future, Callable[..., bool]]]] = {}
 
         self.user: User = None  # type: ignore
+
+    def _create_loop(self) -> asyncio.AbstractEventLoop:
+        try:
+            return asyncio.get_running_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+            return loop
 
     def add_listener(
         self,
@@ -180,6 +189,22 @@ class Client:
         A method which starts the connection to the gateway.
         """
         await self.ws.start()
+
+    async def close(self) -> None:
+        """
+        Closes the ClientSession and the websocket connection. Essentially closing the client.
+        """
+        await self.http.session.close()
+        await self.ws.ws.close()
+
+    def run(self) -> None:
+        """
+        A blocking version of `lefi.Client.run`
+        """
+        try:
+            self.loop.run_until_complete(self.start())
+        except KeyboardInterrupt:
+            self.loop.run_until_complete(self.close())
 
     async def login(self) -> None:
         """
