@@ -40,17 +40,18 @@ class Context:
     def __repr__(self) -> str:
         return f"<Context valid={self.valid!r}>"
 
-    async def send(self, **kwargs) -> Message:
+    async def send(self, *args, **kwargs) -> Message:
         """
         Send a message to the channel.
 
         Parameters:
-            kwargs (dict): The keyword arguments to pass to the message.
+            args: The arguments to pass when sending the message
+            kwargs: The keyword arguments to pass to the message.
 
         Returns:
             Message: The [Message](../../message.md) that was sent.
         """
-        return await self._message.channel.send(**kwargs)
+        return await self._message.channel.send(*args, **kwargs)
 
     @property
     def author(self) -> Union[User, Member]:
