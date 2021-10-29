@@ -39,7 +39,14 @@ class Guild:
     Represents a Guild.
     """
 
-    def __init__(self, state: State, data: Dict):
+    def __init__(self, state: State, data: Dict) -> None:
+        """
+        Creates a new Guild instance.
+
+        Parameters:
+            state (lefi.State): The state instance.
+            data (Dict): The guild data.
+        """
         self._channels: Dict[int, GuildChannels] = {}
         self._members: Dict[int, Member] = {}
         self._roles: Dict[int, Role] = {}
@@ -60,8 +67,7 @@ class Guild:
             **kwargs (Any): Options to pass to [lefi.HTTPClient.modify_guild][]
 
         Returns:
-            The guild after editting
-
+            The [Guild](./guild.md) after editing
         """
         data = await self._state.http.modify_guild(self.id, **kwargs)
         self._data = data
@@ -76,7 +82,7 @@ class Guild:
             **kwargs (Any): Extra options to pass to [lefi.HTTPClient.create_guild_role][].
 
         Returns:
-            The newly created [lefi.Role][] instance.
+            The newly created [lefi.Role](./role.md) instance.
 
         """
         data = await self._state.http.create_guild_role(self.id, name=name, **kwargs)
@@ -123,7 +129,7 @@ class Guild:
         Fetches the bans from the guild.
 
         Returns:
-            A list of [lefi.BanEntry][] instances.
+            A list of [lefi.BanEntry](./banentry.md) instances.
 
         """
         data = await self._state.http.get_guild_bans(self.id)
@@ -137,7 +143,7 @@ class Guild:
             user (lefi.User): The user to fetch the ban for.
 
         Returns:
-            The [lefi.BanEntry][] instance.
+            The [lefi.BanEntry](./banentry.md) instance.
 
         """
         data = await self._state.http.get_guild_ban(self.id, user.id)
@@ -148,7 +154,7 @@ class Guild:
         Fetches the guild's invites.
 
         Returns:
-            A list of [lefi.Invite][] instances.
+            A list of [lefi.Invite](./invite.md) instances.
 
         """
         data = await self._state.http.get_guild_invites(self.id)
@@ -159,7 +165,7 @@ class Guild:
         Fetches the guild's integrations.
 
         Returns:
-            A list of [lefi.Integration][] instances.
+            A list of [lefi.Integration](./integration.md) instances.
 
         """
         data = await self._state.http.get_guild_integrations(self.id)
@@ -181,7 +187,7 @@ class Guild:
         Fetches the guild's templates.
 
         Returns:
-            A list of [lefi.GuildTemplate][] instances.
+            A list of [lefi.GuildTemplate](./template.md) instances.
 
         """
         data = await self._state.http.get_guild_templates(self.id)
@@ -196,7 +202,7 @@ class Guild:
             limit (int): The maximum number of results to return.
 
         Returns:
-            A list of [lefi.Member][] instances.
+            A list of [lefi.Member](./member.md) instances.
 
         """
         from .member import Member
@@ -236,7 +242,7 @@ class Guild:
             member_id (int): The ID of the member.
 
         Returns:
-            The [lefi.Member][] instance corresponding to the ID if found.
+            The [lefi.Member](./member.md) instance corresponding to the ID if found.
 
         """
         return self._members.get(member_id)
@@ -249,7 +255,7 @@ class Guild:
             channel_id (int): The ID of the channel.
 
         Returns:
-            The [lefi.Channel][] instance corresponding to the ID if found.
+            The [lefi.Channel](./channel.md) instance corresponding to the ID if found.
 
         """
         return self._channels.get(channel_id)
@@ -262,7 +268,7 @@ class Guild:
             role_id (int): The ID of the role.
 
         Returns:
-            The [lefi.Role][] instance corresponding to the ID if found.
+            The [lefi.Role](./role.md) instance corresponding to the ID if found.
 
         """
         return self._roles.get(role_id)
@@ -275,7 +281,7 @@ class Guild:
             emoji_id (int): The ID of the emoji.
 
         Returns:
-            The [lefi.Emoji][] instance corresponding to the ID if found.
+            The [lefi.Emoji](./emoji.md) instance corresponding to the ID if found.
 
         """
         return self._emojis.get(emoji_id)
@@ -344,6 +350,9 @@ class Guild:
 
     @property
     def owner(self) -> Optional[Union[User, Member]]:
+        """
+        The owner of the guild.
+        """
         if owner := self.get_member(self.owner_id):
             return owner
         else:
@@ -359,28 +368,28 @@ class Guild:
     @property
     def channels(self) -> List[GuildChannels]:
         """
-        The list of [lefi.Channel][] instances belonging to the guild.
+        The list of [lefi.Channel](./channel.md) instances belonging to the guild.
         """
         return list(self._channels.values())
 
     @property
     def members(self) -> List[Member]:
         """
-        The list of [lefi.Member][] instances belonging to the guild.
+        The list of [lefi.Member](./member.md) instances belonging to the guild.
         """
         return list(self._members.values())
 
     @property
     def roles(self) -> List[Role]:
         """
-        The list of [lefi.Role][] instances belonging to the guild.
+        The list of [lefi.Role](./role.md) instances belonging to the guild.
         """
         return list(self._roles.values())
 
     @property
     def emojis(self) -> List[Emoji]:
         """
-        The list of [lefi.Emoji][] instances belonging to the guild.
+        The list of [lefi.Emoji](./emoji.md) instances belonging to the guild.
         """
         return list(self._emojis.values())
 
@@ -394,7 +403,7 @@ class Guild:
     @property
     def member_count(self) -> int:
         """
-        The guild's member count
+        The guild's member count.
         """
         return len(self._members)
 
@@ -414,18 +423,30 @@ class Guild:
 
     @property
     def afk_timeout(self) -> int:
+        """
+        The guild's AFK timeout.
+        """
         return int(self._data["afk_timeout"])
 
     @property
     def verification_level(self) -> VerificationLevel:
+        """
+        The guild's verification level.
+        """
         return VerificationLevel(self._data["verification_level"])
 
     @property
     def default_message_notifications(self) -> MessageNotificationLevel:
+        """
+        The guild's default message notification level.
+        """
         return MessageNotificationLevel(self._data["default_message_notifications"])
 
     @property
     def explicit_content_filter(self) -> ExplicitContentFilterLevel:
+        """
+        The guild's explicit content filter level.
+        """
         return ExplicitContentFilterLevel(self._data["explicit_content_filter"])
 
     @property

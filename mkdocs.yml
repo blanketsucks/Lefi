@@ -47,6 +47,20 @@ nav:
     - Embed: API-Reference/embed.md
     - Cache: API-Reference/cache.md
     - Errors: API-Reference/errors.md
+    - Emoji: API-Reference/emoji.md
+    - Integration: API-Reference/integration.md
+    - Invite: API-Reference/invite.md
+    - Template: API-Reference/template.md
+    - BanEntry: API-Reference/banentry.md
+    - commands:
+      - API-Reference/commands/bot.md
+      - core:
+        - API-Reference/commands/core/parser.md
+        - API-Reference/commands/core/command.md
+        - API-Reference/commands/core/context.md
+        - API-Reference/commands/core/cooldown.md
+        - API-Reference/commands/core/handler.md
+        - API-Reference/commands/core/plugin.md
 
 plugins:
   - search

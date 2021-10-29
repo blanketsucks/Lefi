@@ -9,7 +9,25 @@ __all__ = ("StringParser",)
 
 
 class StringParser:
+    """
+    A class representing a StringParser.
+
+    Attributes:
+        command_name (Optional[str]): The name of the command.
+        command (Optional[Command]): The [Command](./command.md) object.
+        arguments (List[str]): The arguments of the command.
+        content (str): The content of the command.
+        prefix (Union[Tuple[str], str]): The prefix of the command.
+    """
+
     def __init__(self, content: str, prefix: Union[Tuple[str], str]) -> None:
+        """
+        Initialize a StringParser.
+
+        Parameters:
+            content (str): The content of the command.
+            prefix (Union[Tuple[str], str]): The prefix of the command.
+        """
         self.command_name: Optional[str] = None
         self.command: Optional[Command] = None
         self.arguments: List[str] = []
@@ -17,6 +35,12 @@ class StringParser:
         self.prefix = prefix
 
     def find_command(self) -> Optional[str]:
+        """
+        Find the command.
+
+        Returns:
+            The command name.
+        """
         tokens = self.content.split(" ")
 
         if prefix := self.parse_prefix():
@@ -31,6 +55,12 @@ class StringParser:
         assert False
 
     def parse_prefix(self) -> Optional[str]:
+        """
+        Parse the prefix.
+
+        Returns:
+            The prefix.
+        """
         if isinstance(self.prefix, tuple):
             find_prefix = [self.content.startswith(prefix) for prefix in self.prefix]
 
@@ -46,6 +76,12 @@ class StringParser:
         assert False
 
     async def parse_arguments(self) -> Tuple[Dict, List]:
+        """
+        Parse the arguments.
+
+        Returns:
+            The arguments and the keyword-arguments.
+        """
         keyword_arguments: Dict = {}
         arguments: List = []
 
@@ -83,8 +119,20 @@ class StringParser:
 
     @property
     def invoker(self) -> Optional[Command]:
+        """
+        Get the invoker.
+
+        Returns:
+            The invoker [Command](./command.md).
+        """
         return self.command
 
     @property
     def invoked_with(self) -> Optional[str]:
+        """
+        The prefix the command was invoked with.
+
+        Returns:
+            The prefix.
+        """
         return self.parse_prefix()

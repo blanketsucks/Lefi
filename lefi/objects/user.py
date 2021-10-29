@@ -20,6 +20,13 @@ class User(Snowflake):
     """
 
     def __init__(self, state: State, data: Dict) -> None:
+        """
+        Creates a User object.
+
+        Parameters:
+            state (lefi.State): The [State](./state.md) of the client.
+            data (dict): The data of the user.
+        """
         self._state = state
         self._data = data
 
@@ -32,6 +39,9 @@ class User(Snowflake):
     async def create_dm_channel(self) -> DMChannel:
         """
         Creates a DMChannel for the user if one isn't open already.
+
+        Returns:
+            The [lefi.DMChannel](./channel.md#lefi.DMChannel) instance of the DMChannel.
         """
         if self._channel is not None:
             return self._channel
@@ -49,7 +59,7 @@ class User(Snowflake):
             content (str): The content of the message.
 
         Returns:
-            The [lefi.Message][] instance of the message sent.
+            The [lefi.Message](./message.md) instance of the message sent.
 
         """
         if self._channel is None:
@@ -151,6 +161,6 @@ class User(Snowflake):
     @property
     def channel(self) -> Optional[DMChannel]:
         """
-        The users DMChannel.
+        The users [DMChannel](./channel.md#lefi.DMChannel).
         """
         return self._channel

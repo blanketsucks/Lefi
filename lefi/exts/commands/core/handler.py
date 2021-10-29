@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import contextlib
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from .command import Command
 from .context import Context
@@ -11,10 +11,26 @@ __all__ = ("Handler",)
 
 
 class Handler:
-    def __init__(self, ctx: Context):
+    """
+    A class representing a Handler.
+    """
+
+    def __init__(self, ctx: Context) -> None:
+        """
+        Initialize a new Handler.
+
+        Parameters:
+            ctx: The [Context](./context.md) to handle.
+        """
         self.context = ctx
 
     async def invoke(self) -> Any:
+        """
+        Invoke the command.
+
+        Returns:
+            The return value of the command.
+        """
         assert self.context.command is not None
 
         command: Command = self.context.command
@@ -42,7 +58,9 @@ class Handler:
 
                 cooldown_data = cooldown.get_cooldown_reset(ctx.message)
                 return ctx.bot._state.dispatch(
-                    "command_error", ctx, CommandOnCooldown(cooldown_data.retry_after)  # type: ignore
+                    "command_error",
+                    ctx,
+                    CommandOnCooldown(cooldown_data.retry_after),  # type: ignore
                 )
 
             return await run_command(ctx)
@@ -51,7 +69,7 @@ class Handler:
 
     def __enter__(self) -> Handler:
         with contextlib.suppress():
-            self.can_run = self.context.bot._check(self.context)
+            self.can_run: bool = self.context.bot._check(self.context)
 
         return self
 

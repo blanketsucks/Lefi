@@ -32,7 +32,7 @@ class Client:
 
     Attributes:
         pub_key (Optional[str]): The client's public key. Used when handling interactions over HTTP.
-        loop (asyncio.AbstractEventLoop): The [asyncio.AbstractEventLoop][] which is being used.
+        loop (asyncio.AbstractEventLoop): The event loop which is being used.
         http (lefi.HTTPClient): The [HTTPClient](./http.md) to use for handling requests to the API.
         ws (lefi.WebSocketClient): The [WebSocketClient](./wsclient.md) which handles the gateway.
 
@@ -44,7 +44,7 @@ class Client:
         *,
         intents: Intents = None,
         loop: Optional[asyncio.AbstractEventLoop] = None,
-    ):
+    ) -> None:
         """
         Parameters:
             token (str): The clients token, used for authorization (logging in, etc...) This is required.
@@ -52,7 +52,7 @@ class Client:
             loop (Optional[asyncio.AbstractEventLoop]): The loop to use.
 
         """
-        self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_running_loop()
+        self.loop: asyncio.AbstractEventLoop = loop or self._create_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
         self._state: State = State(self, self.loop)
         self.ws: WebSocketClient = WebSocketClient(self, intents)
@@ -62,6 +62,15 @@ class Client:
         self.futures: Dict[str, List[Tuple[asyncio.Future, Callable[..., bool]]]] = {}
 
         self.user: User = None  # type: ignore
+
+    def _create_loop(self) -> asyncio.AbstractEventLoop:
+        try:
+            return asyncio.get_running_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+            return loop
 
     def add_listener(
         self,
@@ -182,6 +191,22 @@ class Client:
         """
         await self.ws.start()
 
+    async def close(self) -> None:
+        """
+        Closes the ClientSession and the websocket connection. Essentially closing the client.
+        """
+        await self.http.session.close()
+        await self.ws.ws.close()
+
+    def run(self) -> None:
+        """
+        A blocking version of `lefi.Client.run`
+        """
+        try:
+            self.loop.run_until_complete(self.start())
+        except KeyboardInterrupt:
+            self.loop.run_until_complete(self.close())
+
     async def login(self) -> None:
         """
         A method which "logs" in with the token to make sure it is valid.
@@ -267,26 +292,26 @@ class Client:
 
     def get_message(self, id: int) -> Optional[Message]:
         """
-        Grabs a [lefi.Message][] instance if cached.
+        Grabs a [lefi.Message](./message.md) instance if cached.
 
         Parameters:
             id (int): The message's ID.
 
         Returns:
-            The [lefi.Message][] instance related to the ID. Else None if not found.
+            The [lefi.Message](./message.md) instance related to the ID. Else None if not found.
 
         """
         return self._state.get_message(id)
 
     def get_guild(self, id: int) -> Optional[Guild]:
         """
-        Grabs a [lefi.Guild][] instance if cached.
+        Grabs a [lefi.Guild](./guild.md) instance if cached.
 
         Parameters:
             id (int): The guild's ID.
 
         Returns:
-            The [lefi.Guild][] instance related to the ID. Else None if not found
+            The [lefi.Guild](./guild.md) instance related to the ID. Else None if not found
 
         """
         return self._state.get_guild(id)
@@ -297,39 +322,39 @@ class Client:
         Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]
     ]:
         """
-        Grabs a [lefi.Channel][] instance if cached.
+        Grabs a [lefi.Channel](./channel.md) instance if cached.
 
         Parameters:
             id (int): The channel's ID.
 
         Returns:
-            The [lefi.Channel][] instance related to the ID. Else None if not found
+            The [lefi.Channel](./channel.md) instance related to the ID. Else None if not found
 
         """
         return self._state.get_channel(id)
 
     def get_user(self, id: int) -> Optional[User]:
         """
-        Grabs a [lefi.User][] instance if cached.
+        Grabs a [lefi.User](./user.md) instance if cached.
 
         Parameters:
             id (int): The user's ID.
 
         Returns:
-            The [lefi.User][] instance related to the ID. Else None if not found
+            The [lefi.User](./user.md) instance related to the ID. Else None if not found
 
         """
         return self._state.get_user(id)
 
     def get_emoji(self, id: int) -> Optional[Emoji]:
         """
-        Grabs a [lefi.Emoji][] instance if cached.
+        Grabs a [lefi.Emoji](./emoji.md) instance if cached.
 
         Parameters:
             id (int): The emoji's ID.
 
         Returns:
-            The [lefi.Emoji][] instance related to the ID. Else None if not found
+            The [lefi.Emoji](./emoji.md) instance related to the ID. Else None if not found
 
         """
         return self._state.get_emoji(id)
@@ -342,7 +367,7 @@ class Client:
             code (str): The invite code.
 
         Returns:
-            The [lefi.Invite][] instance related to the code.
+            The [lefi.Invite](./invite.md) instance related to the code.
 
         """
         data = await self.http.get_invite(code, **kwargs)
@@ -356,7 +381,7 @@ class Client:
             guild_id (int): The guild's ID.
 
         Returns:
-            The [lefi.Guild][] instance related to the ID.
+            The [lefi.Guild](./guild.md) instance related to the ID.
 
         """
         data = await self.http.get_guild(guild_id)
@@ -370,7 +395,7 @@ class Client:
             code (str): The template code.
 
         Returns:
-            The [lefi.GuildTemplate][] instance related to the code.
+            The [lefi.GuildTemplate](./template.md) instance related to the code.
 
         """
         data = await self.http.get_guild_template(code)

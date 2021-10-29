@@ -24,12 +24,30 @@ class CooldownType(Enum):
 
 
 class CooldownData:
+    """
+    A class that represents a CooldownData.
+
+    Attributes:
+        reset_seconds (datetime.timedelta): The amount of time until the cooldown resets.
+        reset_time (datetime.datetime): The time the cooldown resets.
+        uses_left (int): The amount of uses left.
+        retry_after (float): The amount of seconds to wait before retrying the command.
+    """
+
     def __init__(
         self,
         reset_seconds: datetime.timedelta,
         reset_time: Optional[datetime.datetime],
         uses_left: int,
     ) -> None:
+        """
+        Creates a new CooldownData object.
+
+        Parameters:
+            reset_seconds (datetime.timedelta): The amount of time until the cooldown resets.
+            reset_time (datetime.datetime): The time the cooldown resets.
+            uses_left (int): The amount of uses left.
+        """
         self.reset_seconds = reset_seconds
         self.reset_time = reset_time
         self.uses_left = uses_left
@@ -37,7 +55,26 @@ class CooldownData:
 
 
 class Cooldown:
+    """
+    A class that represents a Cooldown.
+
+    Attributes:
+        amount (int): The amount of uses.
+        time (float): The amount of time until the cooldown resets.
+        type (CooldownType): The type of cooldown.
+        members_cooldowns_cache (Cache[Dict[int, CooldownData]]): The cache for member cooldowns.
+        cooldowns_cache (Cache[CooldownData]): The cache for cooldowns.
+    """
+
     def __init__(self, amount: int, time: float, type: CooldownType) -> None:
+        """
+        Creates a new Cooldown object.
+
+        Parameters:
+            amount (int): The amount of uses.
+            time (float): The amount of time until the cooldown resets.
+            type (CooldownType): The type of cooldown.
+        """
         self.members_cooldowns_cache = Cache[Dict[int, CooldownData]]()
         self.cooldowns_cache = Cache[CooldownData]()
         self.amount = amount
@@ -69,6 +106,12 @@ class Cooldown:
         return True
 
     def set_cooldown_time(self, message: Message) -> None:
+        """
+        Sets the cooldown time for the command.
+
+        Parameters:
+            message (Message): The [Message]() that triggered the command.
+        """
         cooldown_id = self.get_cooldown_id(message)
 
         if not isinstance(cooldown_id, tuple):
@@ -85,6 +128,15 @@ class Cooldown:
         }
 
     def get_cooldown_reset(self, message: Message) -> Optional[CooldownData]:
+        """
+        Gets the cooldown reset for the command.
+
+        Parameters:
+            message (Message): The [Message]() that triggered the command.
+
+        Returns:
+            The [CooldownData]() for the command.
+        """
         cooldown_id = self.get_cooldown_id(message)
 
         if not isinstance(cooldown_id, tuple):
@@ -97,6 +149,15 @@ class Cooldown:
         return None
 
     def get_cooldown_id(self, message: Message) -> Union[int, Tuple[int, int]]:
+        """
+        Gets the cooldown id for the command.
+
+        Parameters:
+            message (Message): The [Message]() that triggered the command.
+
+        Returns:
+            The cooldown id for the command.
+        """
         cooldown_id = self.type.value.format(message)
 
         if self.type is CooldownType.member:
@@ -105,6 +166,12 @@ class Cooldown:
         return int(cooldown_id)
 
     def delete_cooldown(self, message) -> None:
+        """
+        Deletes the cooldown for the command.
+
+        Parameters:
+            message (Message): The [Message](../../message.md) that triggered the command.
+        """
         cooldown_id = self.get_cooldown_id(message)
 
         if not isinstance(cooldown_id, tuple):

@@ -39,14 +39,12 @@ class Cache(collections.OrderedDict[Union[int, str], T]):
 
     Attributes:
         maxlen (Optional[int]): The max amount the cache can hold.
-
     """
 
     def __init__(self, maxlen: Optional[int] = None, *args, **kwargs):
         """
         Parameters:
             maxlen (Optional[int]): The max amount the cache can hold.
-
         """
         super().__init__(*args, **kwargs)
         self.maxlen: Optional[int] = maxlen
@@ -68,9 +66,9 @@ class State:
     A class which represents the connection state between the client and discord.
 
     Attributes:
-        client (lefi.Client): The [lefi.Client][] instance being used.
-        loop (asyncio.AbstractEventLoop): The [asyncio.AbstractEventLoop][] being used.
-        http (lefi.HTTPClient): The [lefi.HTTPClient][] handling requests
+        client (lefi.Client): The [lefi.Client](./client.md) instance being used.
+        loop (asyncio.AbstractEventLoop): The asyncio.AbstractEventLoop being used.
+        http (lefi.HTTPClient): The [lefi.HTTPClient](./http.md) handling requests
 
     Danger:
         This class is used internally. **It is not meant to called directly**
@@ -93,11 +91,11 @@ class State:
         3: CategoryChannel,
     }
 
-    def __init__(self, client: Client, loop: asyncio.AbstractEventLoop):
+    def __init__(self, client: Client, loop: asyncio.AbstractEventLoop) -> None:
         """
         Parameters:
-            client (lefi.Client): The client being used.
-            loop (asyncio.AbstractEventLoop): The [asyncio.AbstractEventLoop][] being used.
+            client (lefi.Client): The [Client](./client.md) being used.
+            loop (asyncio.AbstractEventLoop): The asyncio.AbstractEventLoop being used.
 
         """
         self.client = client
@@ -320,7 +318,7 @@ class State:
             message_id (int): The ID of the message.
 
         Returns:
-            The [lefi.Message][] insance corresponding to the ID if found.
+            The [lefi.Message](./message.md) insance corresponding to the ID if found.
 
         """
         return self._messages.get(message_id)
@@ -333,7 +331,7 @@ class State:
             user_id (int): The ID of the user.
 
         Returns:
-            The [lefi.User][] instance corresponding to the ID if found.
+            The [lefi.User](./user.md) instance corresponding to the ID if found.
 
         """
         return self._users.get(user_id)
@@ -346,7 +344,7 @@ class State:
             data (Dict): The data of the user.
 
         Returns:
-            The created [lefi.User][] instance.
+            The created [lefi.User](./user.md) instance.
 
         """
         user = User(self, data)
@@ -362,7 +360,7 @@ class State:
             guild_id (int): The ID of the guild.
 
         Returns:
-            The [lefi.Guild][] instance corresponding to the ID if found.
+            The [lefi.Guild](./guild.md) instance corresponding to the ID if found.
 
         """
         return self._guilds.get(guild_id)
@@ -392,7 +390,7 @@ class State:
             emoji_id (int): The ID of the emoji.
 
         Returns:
-            The [lefi.Emoji][] instance corresponding to the ID if found.
+            The [lefi.Emoji](./emoji.md) instance corresponding to the ID if found.
 
         """
         return self._emojis.get(emoji_id)
@@ -403,10 +401,10 @@ class State:
 
         Parameters:
             data (Dict): The data of the message.
-            channel (Any): The channel of the message.
+            channel (Any): The [Channel](./channel.md) of the message.
 
         Returns:
-            The created [lefi.Message][] instance.
+            The created [lefi.Message](./message.md) instance.
 
         """
         return Message(self, data, channel)
@@ -422,7 +420,7 @@ class State:
             *args (Any): Extra arguments to pass to the channels constructor.
 
         Returns:
-            The created [lefi.Channel][] instance.
+            The created [lefi.Channel](./channel.md) instance.
 
         """
         cls = self.CHANNEL_MAPPING.get(int(data["type"]), Channel)
@@ -436,11 +434,11 @@ class State:
         Creates the channels of a guild.
 
         Parameters:
-            guild (lefi.Guild): The guild which to create the channels for.
+            guild (lefi.Guild): The [Guild](./guild.md) which to create the channels for.
             data (Dict): The data of the channels.
 
         Returns:
-            The [lefi.Guild][] instance passed in.
+            The [lefi.Guild](./guild.md) instance passed in.
 
         """
         channels = {
@@ -459,11 +457,11 @@ class State:
         Creates the members of a guild.
 
         Parameters:
-            guild (lefi.Guild): The guild which to create the channels for.
+            guild (lefi.Guild): The [Guild](./guild.md) which to create the channels for.
             data (Dict): The data of the members.
 
         Returns:
-            The [lefi.Guild][] instance passed in.
+            The [lefi.Guild](./guild.md) instance passed in.
 
         """
         members: Dict[int, Member] = {}
@@ -483,7 +481,7 @@ class State:
         Creates the roles of a guild.
 
         Parameters:
-            guild (lefi.Guild): The guild which to create the channels for.
+            guild (lefi.Guild): The [Guild](./guild.md) which to create the channels for.
             data (Dict): The data of the roles.
 
         Returns:
@@ -501,7 +499,7 @@ class State:
         Creates the emojis of a guild.
 
         Parameters:
-            guild (lefi.Guild): The guild which to create the emojis for.
+            guild (lefi.Guild): The [Guild](./guild.md) which to create the emojis for.
             data (Dict): The data of the emojis.
 
         Returns:
@@ -543,6 +541,12 @@ class State:
         self,
         channel: Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel],
     ) -> None:
+        """
+        Creates the overwrites of a channel.
+
+        Parameters:
+            channel (lefi.Channel): The [Channel](./channel.md) which to create the overwrites for.
+        """
         if isinstance(channel, DMChannel):
             return
 

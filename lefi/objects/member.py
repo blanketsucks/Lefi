@@ -22,11 +22,19 @@ class Member(User):
     Represents a member of a guild.
 
     Attributes:
-        guild (lefi.Guild): The [lefi.Guild][] instance which the member belongs to.
+        guild (lefi.Guild): The [lefi.Guild](./guild.md) instance which the member belongs to.
 
     """
 
-    def __init__(self, state: State, data: Dict, guild: Guild):
+    def __init__(self, state: State, data: Dict, guild: Guild) -> None:
+        """
+        Creates a Member instance.
+
+        Parameters:
+            state (lefi.State): The [State](./state.md) instance.
+            data (dict): The data of the [Member](./member.md).
+            guild (lefi.Guild): The [Guild](./guild.md) instance.
+        """
         super().__init__(state, data["user"])
         state.add_user(data["user"])
         self._roles: Dict[int, Role] = {}
@@ -38,8 +46,10 @@ class Member(User):
         Adds a role to the member.
 
         Parameters:
-            role (lefi.Role): The role to add.
+            role (lefi.Role): The [Role](./role.md) to add.
 
+        Returns:
+            The Member instance.
         """
         await self._state.http.add_guild_member_role(self.guild.id, self.id, role.id)
         self._roles[role.id] = role
@@ -51,8 +61,10 @@ class Member(User):
         Removes a role from the member.
 
         Parameters:
-            role (lefi.Role): The role to remove.
+            role (lefi.Role): The [Role](./role.md) to remove.
 
+        Returns:
+            The Member instance.
         """
         await self._state.http.remove_guild_member_role(self.guild.id, self.id, role.id)
         self._roles.pop(role.id, None)
@@ -72,7 +84,11 @@ class Member(User):
         Edits the member.
 
         Parameters:
-            a (dict): The attributes to edit.
+            nick (str): The new nickname.
+            roles (list): The new list of roles.
+            mute (bool): Whether the member is muted or not.
+            deaf (bool): Whether the member is deafened or not.
+            channel (lefi.VoiceChannel): The new [VoiceChannel](./channel.md#lefi.VoiceChannel).
 
         """
         channel_id = channel.id if channel else None
@@ -136,14 +152,15 @@ class Member(User):
     @property
     def roles(self) -> List[Role]:
         """
-        The roles of the member.
+        The [Role](./role.md)s of the member.
         """
         return list(self._roles.values())
 
     @property
     def joined_at(self) -> datetime.datetime:
         """
-        A [datetime.datetime][] instance representing when the member joined the guild.
+        A [datetime.datetime](https://docs.python.org/3/library/datetime.html#datetime.datetime) instance
+        representing when the member joined the guild.
         """
         return datetime.datetime.fromisoformat(self._member["joined_at"])
 

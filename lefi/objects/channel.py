@@ -36,6 +36,13 @@ class Channel:
     """
 
     def __init__(self, state: State, data: Dict, guild: Guild) -> None:
+        """
+        Creates a new Channel from the given data.
+
+        Parameters:
+            state (lefi.State): The [State](./state.md) of the client.
+            data (dict): The data to create the channel from.
+        """
         self._state = state
         self._data = data
         self._guild = guild
@@ -54,7 +61,7 @@ class Channel:
     @property
     def guild(self) -> Guild:
         """
-        A [lefi.Guild][] instance which the channel belongs to.
+        A [lefi.Guild](./guild.md) instance which the channel belongs to.
         """
         return self._guild
 
@@ -96,19 +103,25 @@ class Channel:
     @property
     def overwrites(self) -> Dict[Union[Member, Role], Overwrite]:
         """
-        A list of [lefi.Overwrite][]s for the channel.
+        A list of [lefi.Overwrite](./overwrite.md)s for the channel.
         """
         return self._overwrites
 
     def overwrites_for(self, target: Union[Member, Role]) -> Optional[Overwrite]:
         """
-        Returns the [lefi.Overwrite][] for the given target.
+        Returns the [lefi.Overwrite](./overwrite.md) for the given target.
         """
         return self._overwrites.get(target)
 
     def permissions_for(self, target: Union[Member, Role]) -> Permissions:
         """
         Returns the permissions for the given target.
+
+        Parameters:
+            target (lefi.Member or lefi.Role): The target to get the permissions for.
+
+        Returns:
+            The [Permission]()s for the target.
         """
         base = target.permissions
 
@@ -149,7 +162,14 @@ class TextChannel(Channel):
     A class that represents a TextChannel.
     """
 
-    def __init__(self, state: State, data: Dict, guild: Guild):
+    def __init__(self, state: State, data: Dict, guild: Guild) -> None:
+        """
+        Creates a new TextChannel from the given data.
+
+        Parameters:
+            state (lefi.State): The [State](./state.md) of the client.
+            data (dict): The data to create the channel from.
+        """
         super().__init__(state, data, guild)
 
     async def fetch_history(self, **kwargs) -> AsyncIterator[Message]:
@@ -157,10 +177,11 @@ class TextChannel(Channel):
         Makes an API call to grab messages from the channel.
 
         Parameters:
-            **kwargs (Any): The option to pass to [lefi.HTTPClient.get_channel_messages][].
+            **kwargs (Any): The option to pass to
+            [lefi.HTTPClient.get_channel_messages](./http.md#lefi.http.HTTPClient.get_channel_messages).
 
         Returns:
-            A list of the fetched [lefi.Message][] instances.
+            A list of the fetched [lefi.Message](./message.md) instances.
 
         """
         data = await self._state.http.get_channel_messages(self.id, **kwargs)
@@ -172,10 +193,11 @@ class TextChannel(Channel):
         Edits the channel.
 
         Parameters:
-            **kwargs (Any): The options to pass to [lefi.HTTPClient.edit_text_channel][].
+            **kwargs (Any): The options to pass to
+            [lefi.HTTPClient.edit_text_channel](./http.md#lefi.http.HTTPClient.edit_text_channel).
 
         Returns:
-            The [lefi.TextChannel][] instance after editting.
+            The lefi.TextChannel instance after editting.
 
         """
 
@@ -204,6 +226,19 @@ class TextChannel(Channel):
         before: Optional[int] = None,
         after: Optional[int] = None,
     ) -> List[Message]:
+        """
+        Purges messages from the channel.
+
+        Parameters:
+            limit (int): The maximum number of messages to delete.
+            check (Callable[[lefi.Message], bool]): A function to filter messages.
+            around (int): The time around which to search for messages to delete.
+            before (int): The time before which to search for messages to delete.
+            after (int): The time after which to search for messages to delete.
+
+        Returns:
+            A list of the deleted [lefi.Message](./message.md) instances.
+        """
         to_delete = []
         if not check:
             check = lambda message: True
@@ -231,11 +266,11 @@ class TextChannel(Channel):
         Parameters:
             content (Optional[str]): The content of the message.
             embeds (Optional[List[lefi.Embed]]): The list of embeds to send with the message.
-            **kwargs (Any): Extra options to pass to [lefi.HTTPClient.send_message][]
+            **kwargs (Any): Extra options to pass to
+            [lefi.HTTPClient.send_message](./http.md#lefi.http.HTTPClient.send_message).
 
         Returns:
-            The sent [lefi.Message][] instance.
-
+            The sent [lefi.Message](./message.md) instance.
         """
         embeds = [] if embeds is None else embeds
 
@@ -255,8 +290,7 @@ class TextChannel(Channel):
             message_id (int): The ID of the message.
 
         Returns:
-            The [lefi.Message][] instance corresponding to the ID if found.
-
+            The [lefi.Message](./message.md) instance corresponding to the ID if found.
         """
         data = await self._state.http.get_channel_message(self.id, message_id)
         return self._state.create_message(data, self)
@@ -271,7 +305,7 @@ class TextChannel(Channel):
     @property
     def last_message(self) -> Optional[Message]:
         """
-        The last [lefi.Message][] instance sent in the channel.
+        The last [lefi.Message](./message.md) instance sent in the channel.
         """
         return self._state.get_message(self._data["last_message_id"])
 
@@ -302,7 +336,15 @@ class VoiceChannel(Channel):
     Represents a VoiceChannel.
     """
 
-    def __init__(self, state: State, data: Dict, guild: Guild):
+    def __init__(self, state: State, data: Dict, guild: Guild) -> None:
+        """
+        Creates a new VoiceChannel from the given data.
+
+        Parameters:
+            state (lefi.State): The [State](./state.md) of the client.
+            data (dict): The data to create the channel from.
+            guild (lefi.Guild): The [Guild](./guild.md) the channel belongs to.
+        """
         super().__init__(state, data, guild)
 
     async def edit(self, **kwargs) -> VoiceChannel:
@@ -310,10 +352,11 @@ class VoiceChannel(Channel):
         Edits the channel.
 
         Parameters:
-            **kwargs (Any): The options to pass to [lefi.HTTPClient.edit_voice_channel][].
+            **kwargs (Any): The options to pass to
+            [lefi.HTTPClient.edit_voice_channel](./http.md#lefi.http.HTTPClient.edit_voice_channel).
 
         Returns:
-            The [lefi.VoiceChannel][] instance after editting.
+            The lefi.VoiceChannel instance after editting.
 
         """
         data = await self._state.http.edit_voice_channel(**kwargs)
@@ -386,9 +429,19 @@ class CategoryChannel(Channel):
 class DMChannel:
     """
     A class that represents a Users DMChannel.
+
+    Attributes:
+        guild (lefi.Guild): The [Guild](./guild.md) the channel is in.
     """
 
     def __init__(self, state: State, data: Dict[str, Any]) -> None:
+        """
+        Creates a new DMChannel from the given data.
+
+        Parameters:
+            state (lefi.State): The [State](./state.md) of the client.
+            data (dict): The data to create the channel from.
+        """
         self._state = state
         self._data = data
         self.guild = None
@@ -404,10 +457,10 @@ class DMChannel:
 
         Parameters:
             content (Optional[str]): The content of the message.
-            embeds (Optional[List[lefi.Embed]]): The list of embeds to send with the message.
+            embeds (Optional[List[lefi.Embed]]): The list of [Embed](./embed.md)s to send with the message.
 
         Returns:
-            The sent [lefi.Message][] instance.
+            The sent [lefi.Message](./message.md) instance.
 
         """
         embeds = [] if embeds is None else embeds
@@ -428,6 +481,9 @@ class DMChannel:
 
     @property
     def last_message(self) -> Optional[Message]:
+        """
+        The last [lefi.Message](./message.md) instance sent in the channel.
+        """
         return self._state.get_message(self._data["last_message_id"])
 
     @property
@@ -440,6 +496,6 @@ class DMChannel:
     @property
     def receipients(self) -> List[User]:
         """
-        A list of [lefi.User][] instances which are the recipients.
+        A list of [lefi.User](./user.md) instances which are the recipients.
         """
         return [self._state.get_user(int(data["id"])) for data in self._data["recipients"]]  # type: ignore
