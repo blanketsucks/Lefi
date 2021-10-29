@@ -120,6 +120,26 @@ exports: Dict[str, CFuncWrapper] = {
         ],
         ctypes.c_int32,
     ),
+    "opus_packet_get_nb_frames": CFuncWrapper(
+        "opus_packet_get_nb_frames",
+        [ctypes.c_char_p, ctypes.c_int],
+        ctypes.c_int,
+    ),
+    "opus_packet_get_samples_per_frame": CFuncWrapper(
+        "opus_packet_get_samples_per_frame",
+        [ctypes.c_char_p, ctypes.c_int],
+        ctypes.c_int,
+    ),
+    "opus_packet_get_nb_channels": CFuncWrapper(
+        "opus_packet_get_nb_channels",
+        [ctypes.c_char_p],
+        ctypes.c_int,
+    ),
+    "opus_packet_get_bandwidth": CFuncWrapper(
+        "opus_packet_get_bandwidth",
+        [ctypes.c_char_p],
+        ctypes.c_int,
+    ),
 }
 
 
@@ -162,16 +182,38 @@ def get_version_string() -> str:
 
 
 def get_error_string(code: int) -> str:
-    if not libopus:
-        load_opus()
-
     return libopus.opus_strerror(code).decode("utf-8")
+
+
+def get_packet_nb_frames(data: bytes) -> int:
+    return libopus.opus_packet_get_nb_frames(data, len(data))
+
+
+def get_packet_samples_per_frame(data: bytes) -> int:
+    return libopus.opus_packet_get_nb_samples(data, len(data))
+
+
+def get_packet_nb_channels(data: bytes) -> int:
+    return libopus.opus_packet_get_nb_channels(data)
+
+
+def get_packet_bandwidth(data: bytes) -> int:
+    return libopus.opus_packet_get_bandwidth(data)
+
+
+def create_int16_buffer(size: int) -> ctypes.Array[ctypes.c_int16]:
+    return (ctypes.c_int16 * size)()
 
 
 class OpusEncoder:
     def __init__(self) -> None:
         self._struct = self._create_encoder_struct()
+
         self.set_bitrate(BITRATE)
+        self.set_fec(True)
+        self.set_bandwidth(1105)
+        self.set_signal(-1000)
+        self.set_packet_loss_percentage(150)
 
     def _create_encoder_struct(self) -> OpusEncoderStruct:
         if not libopus:
@@ -202,13 +244,32 @@ class OpusEncoder:
         return plp
 
     def encode(self, pcm: bytes, frames: int) -> bytes:
-        size = len(pcm)
-
-        buffer = ctypes.create_string_buffer(size)
         pointer = ctypes.cast(pcm, c_int16_ptr)  # type: ignore
+
+        size = len(pcm)
+        buffer = ctypes.create_string_buffer(size)
 
         ret = libopus.opus_encode(self._struct, pointer, frames, buffer, size)
         return buffer.raw[:ret]
 
     def destroy(self) -> None:
         libopus.opus_encoder_destroy(self._struct)
+
+
+class OpusDecoder:
+    def __init__(self) -> None:
+        self._struct = self._create_decoder_struct()
+
+    def _create_decoder_struct(self) -> OpusDecoderStruct:
+        if not libopus:
+            load_opus()
+
+        ref = ctypes.byref(ctypes.c_int())
+        decoder = libopus.opus_decoder_create(SAMPLE_RATE, CHANNELS, ref)
+        return decoder
+
+    def decode(self, data: bytes) -> bytes:
+        ...
+
+    def destroy(self) -> None:
+        libopus.opus_decoder_destroy(self._struct)

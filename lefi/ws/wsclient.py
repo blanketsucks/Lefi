@@ -72,6 +72,8 @@ class WebSocketClient:
             "channel_create": self.client._state.parse_channel_create,
             "channel_update": self.client._state.parse_channel_update,
             "channel_delete": self.client._state.parse_channel_delete,
+            "voice_state_update": self.client._state.parse_voice_state_update,
+            "voice_server_update": self.client._state.parse_voice_server_update,
         }
 
     async def start(self) -> None:

@@ -13,10 +13,11 @@ from typing import (
 )
 
 from lefi.objects.flags import Permissions
-
+from ..voice import VoiceClient
 from .embed import Embed
 from .enums import ChannelType
 from .permissions import Overwrite
+from ..errors import VoiceException
 
 if TYPE_CHECKING:
     from ..state import State
@@ -43,6 +44,12 @@ class Channel:
     def __repr__(self) -> str:
         name = self.__class__.__name__
         return f"<{name} name={self.name!r} id={self.id} position={self.position} type={self.type!r}>"
+
+    def __eq__(self, o: object) -> bool:
+        if not isinstance(o, Channel):
+            return NotImplemented
+
+        return self.id == o.id
 
     @property
     def guild(self) -> Guild:
@@ -312,6 +319,36 @@ class VoiceChannel(Channel):
         data = await self._state.http.edit_voice_channel(**kwargs)
         self._data = data
         return self
+
+    async def connect(self) -> VoiceClient:
+        """
+        Connects to this voice channel and returns the created voice client.
+
+        Returns:
+            The [lefi.VoiceClient][] instance.
+        """
+        if self.guild.voice_client:
+            raise VoiceException("Client Already connected to a voice channel.")
+
+        voice = VoiceClient(self._state, self)
+        self._state.add_voice_client(self.guild.id, voice)
+
+        await voice.connect()
+        return voice
+
+    async def disconnect(self) -> None:
+        """
+        Disconnects the voice client from the channel.
+        """
+        voice = self._state.get_voice_client(self.guild.id)
+        if not voice:
+            raise VoiceException("Client not connected to a voice channel")
+
+        if voice.channel != self:
+            raise VoiceException("Client not connected to the voice channel")
+
+        await voice.disconnect()
+        self._state.remove_voice_client(self.guild.id)
 
     @property
     def user_limit(self) -> int:

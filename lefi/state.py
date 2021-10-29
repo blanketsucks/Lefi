@@ -103,8 +103,6 @@ class State:
         self.client = client
         self.loop = loop
         self.http = client.http
-        self.ws = client.ws
-        self.user: Optional[User] = None
         self._messages = Cache[Message](1000)
         self._users = Cache[User]()
         self._guilds = Cache[Guild]()
@@ -113,6 +111,10 @@ class State:
         ]()
         self._emojis = Cache[Emoji]()
         self._voice_clients = Cache[VoiceClient]()
+
+    @property
+    def ws(self):
+        return self.client.ws
 
     def dispatch(self, event: str, *payload: Any) -> None:
         """
@@ -286,9 +288,8 @@ class State:
 
         """
         after = VoiceState(self, data)
-
         if after.guild:
-            if after.user_id == self.user.id:  # type: ignore
+            if after.user_id == self.client.user.id:
                 voice = self.get_voice_client(after.guild.id)
                 if voice:
                     await voice.voice_state_update(data)

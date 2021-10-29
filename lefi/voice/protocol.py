@@ -7,10 +7,8 @@ from typing import (
     Any,
     Callable,
     Dict,
-    List,
     Optional,
     Tuple,
-    Union,
     cast,
 )
 import struct
@@ -22,18 +20,15 @@ except ImportError:
 else:
     has_nacl = True
 
-from .ws import VoiceWebSocketClient
+from . import _opus
+from .wsclient import VoiceWebSocketClient
 
 if TYPE_CHECKING:
-    from ..state import State
-    from ..objects import VoiceChannel
+    from .client import VoiceClient
 
     Encrypter = Callable[[bytes, bytes], bytes]
 
-__all__ = (
-    "VoiceProtocol",
-    "VoiceClient",
-)
+__all__ = ("VoiceProtocol",)
 
 
 class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
@@ -41,17 +36,16 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         _loop: asyncio.AbstractEventLoop
         _paused: bool
 
-        async def _drain_helper(self):
+        async def _drain_helper(self) -> None:
             ...
 
     def __init__(self, client: VoiceClient):
         self.client = client
         self.queue = asyncio.Queue[bytes]()
-
         self.timestamp = 0
         self.sequence = 0
         self.lite_nonce = 0
-
+        self.encoder = _opus.OpusEncoder()
         self.supported_modes: Dict[str, Encrypter] = {
             "xsalsa20_poly1305": self.encrypt_xsalsa20_poly1305,
             "xsalsa20_poly1305_suffix": self.encrypt_xsalsa20_poly1305_suffix,
@@ -62,12 +56,16 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         super().__init__()
 
     @property
-    def ssrc(self) -> Optional[str]:
-        return self.client.ws.ssrc
+    def websocket(self) -> VoiceWebSocketClient:
+        return self.client.ws
+
+    @property
+    def ssrc(self) -> Optional[int]:
+        return self.websocket.ssrc
 
     # Protocol related functions
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> VoiceProtocol:
         return self
 
     def connection_made(
@@ -89,7 +87,7 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
 
     async def drain(
         self,
-    ):  # From asyncio.StreamWriter.drain but without the reader stuff
+    ) -> None:  # From asyncio.StreamWriter.drain but without the reader stuff
         if self.transport.is_closing():
             await asyncio.sleep(0)
 
@@ -104,15 +102,15 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         if self._secret_box:
             return self._secret_box
 
-        self._secret_box = nacl.secret.SecretBox(bytes(self.client.ws.secret_key))
+        self._secret_box = nacl.secret.SecretBox(bytes(self.websocket.secret_key))
         return self._secret_box
 
     def increment(self, attr: str, value: int, max_value: int) -> None:
         val = getattr(self, attr)
-        val += value
-
-        if val >= max_value:
+        if val + value >= max_value:
             setattr(self, attr, 0)
+        else:
+            setattr(self, attr, val + value)
 
     def create_rtp_header(self) -> bytearray:
         packet = bytearray(12)
@@ -139,7 +137,7 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         nonce = bytearray(24)
         nonce[:4] = struct.pack(">I", self.lite_nonce)
 
-        self.increment("lite_nonce", 1, 4294967294)
+        self.increment("lite_nonce", 1, 0xFFFFFFFF)
         return nonce
 
     def encrypt_xsalsa20_poly1305(self, header: bytes, data: bytes) -> bytes:
@@ -162,54 +160,16 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
 
     def create_voice_packet(self, data: bytes) -> bytes:
         header = self.create_rtp_header()
-        encrypt = self.supported_modes[self.client.ws.mode]  # type: ignore
+        encoded = self.encoder.encode(data, 960)
 
-        return encrypt(header, data)
+        encrypt = self.supported_modes[self.websocket.mode]  # type: ignore
+        return encrypt(header, encoded)
 
-    async def send_voice_packet(self) -> None:
-        pass
+    async def send_voice_packet(self, data: bytes) -> None:
+        addr = self.websocket.remote_addr
+        self.increment("sequence", 1, 0xFFFF)
 
+        packet = self.create_voice_packet(data)
+        await self.sendto(packet, addr)
 
-class VoiceClient:
-    def __init__(self, state: State, channel: VoiceChannel) -> None:
-        if not has_nacl:
-            raise RuntimeError("PyNaCl is required for voice")
-
-        self._state = state
-        self._received_state_update = asyncio.Event()
-        self._received_server_update = asyncio.Event()
-
-        self.channel = channel
-        self.session_id: Optional[str] = None
-        self.endpoint: Optional[str] = None
-        self.token: Optional[str] = None
-        self.ws = VoiceWebSocketClient(self, self.channel.guild.id, self._state.user.id)  # type: ignore
-        self.protocol = VoiceProtocol(self)
-
-    @property
-    def loop(self) -> asyncio.AbstractEventLoop:
-        return self._state.loop
-
-    async def voice_state_update(self, data: Dict):
-        payload = data["d"]
-        self.session_id = payload["session_id"]
-
-        self._received_state_update.set()
-
-    async def voice_server_update(self, data: Dict):
-        payload = data["d"]
-        self.endpoint = payload["endpoint"]
-        self.token = payload["token"]
-
-        self._received_server_update.set()
-
-    async def connect(self) -> None:
-        await self.channel.guild.change_voice_state(channel=self.channel)
-
-        futures = [
-            self._received_server_update.wait(),
-            self._received_state_update.wait(),
-        ]
-        await asyncio.wait(futures, return_when=asyncio.ALL_COMPLETED)
-
-        await self.ws.connect()
+        self.increment("timestamp", 960, 0xFFFFFFFF)

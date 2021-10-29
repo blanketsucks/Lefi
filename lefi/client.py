@@ -20,6 +20,7 @@ from .objects import (
     VoiceChannel,
 )
 from .state import Cache, State
+from .voice import VoiceClient
 from .ws import WebSocketClient
 
 __all__ = ("Client",)
@@ -53,8 +54,8 @@ class Client:
         """
         self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_running_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
-        self.ws: WebSocketClient = WebSocketClient(self, intents)
         self._state: State = State(self, self.loop)
+        self.ws: WebSocketClient = WebSocketClient(self, intents)
 
         self.events: Dict[str, Cache[Callable[..., Any]]] = {}
         self.once_events: Dict[str, List[Callable[..., Any]]] = {}
@@ -234,6 +235,36 @@ class Client:
         futures.append((future, check))
         return await asyncio.wait_for(future, timeout=timeout)
 
+    @property
+    def guilds(self) -> List[Guild]:
+        """
+        The list of guilds the client is in.
+        """
+        return list(self._state._guilds.values())
+
+    @property
+    def channels(
+        self,
+    ) -> List[Union[TextChannel, VoiceChannel, CategoryChannel, DMChannel, Channel]]:
+        """
+        The list of channels the client can see.
+        """
+        return list(self._state._channels.values())
+
+    @property
+    def users(self) -> List[User]:
+        """
+        The list of users that the client can see.
+        """
+        return list(self._state._users.values())
+
+    @property
+    def voice_clients(self) -> List[VoiceClient]:
+        """
+        The list of voice clients the client has.
+        """
+        return list(self._state._voice_clients.values())
+
     def get_message(self, id: int) -> Optional[Message]:
         """
         Grabs a [lefi.Message][] instance if cached.
@@ -303,7 +334,7 @@ class Client:
         """
         return self._state.get_emoji(id)
 
-    async def fetch_invite(self, code: str, **kwargs):
+    async def fetch_invite(self, code: str, **kwargs) -> Invite:
         """
         Fetches an invite from the API.
 
@@ -317,7 +348,7 @@ class Client:
         data = await self.http.get_invite(code, **kwargs)
         return Invite(data=data, state=self._state)
 
-    async def fetch_guild(self, guild_id: int):
+    async def fetch_guild(self, guild_id: int) -> Guild:
         """
         Fetches a guild from the API.
 
