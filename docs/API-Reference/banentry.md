@@ -1,0 +1,1 @@
+::: lefi.guild.BanEntry

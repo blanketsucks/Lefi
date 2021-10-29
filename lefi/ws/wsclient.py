@@ -40,7 +40,7 @@ class WebSocketClient:
         intents (lefi.Intents): The intents to use when connecting.
         ws (aiohttp.ClientWebSocketResponse): The websocket which we are connected to.
         heartbeat_deylay (float): The delay inbetween sending each heartbeat.
-        client (lefi.Client): The [lefi.Client][] currently connected.
+        client (lefi.Client): The [lefi.Client](./client.md) currently connected.
         closed (bool): Whether or not the websocket is closed.
         seq (int): The sequence received from `READY`.
 
@@ -52,7 +52,7 @@ class WebSocketClient:
     def __init__(self, client: Client, intents: Optional[Intents] = None) -> None:
         """
         Parameters:
-            client (lefi.Client): The [lefi.Client][] instance connected.
+            client (lefi.Client): The [lefi.Client](./client.md) instance connected.
             intents (lefi.Intents): The [lefi.Intents][] to pass when connecting.
 
         """

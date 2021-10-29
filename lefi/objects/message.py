@@ -40,7 +40,15 @@ class Message:
     Represents a message.
     """
 
-    def __init__(self, state: State, data: Dict, channel: Channels):
+    def __init__(self, state: State, data: Dict, channel: Channels) -> None:
+        """
+        Creates a Message object.
+
+        Parameters:
+            state (State): The [State](./state.md) of the client.
+            data (Dict): The data of the message.
+            channel (Channels): The [Channel](./channel.md) the message was sent in.
+        """
         self._channel = channel
         self._state = state
         self._data = data
@@ -53,7 +61,7 @@ class Message:
         Edits the message.
 
         Parameters:
-            **kwargs (Any): The options to pass to [lefi.HTTPClient.edit_message][]
+            kwargs (Any): The options to pass to [lefi.HTTPClient.edit_message](./http.md#lefi.HTTPClient.edit_message).
 
         Returns:
             The message after being editted.
@@ -94,7 +102,7 @@ class Message:
 
         Parameters:
             reaction (str): The reaction to remove.
-            user (Optional[Snowflake]): The user to remove the reaction from.
+            user (Optional[Snowflake]): The message to remove the reaction from.
 
         """
         await self._state.http.delete_reaction(
@@ -121,14 +129,14 @@ class Message:
     @property
     def channel(self) -> Channels:
         """
-        The [lefi.Channel][] which the message is in.
+        The [lefi.Channel](./channel.md) which the message is in.
         """
         return self._channel
 
     @property
     def guild(self) -> Optional[Guild]:
         """
-        The [lefi.Guild][] which the message is in.
+        The [lefi.Guild](./guild.md) which the message is in.
         """
         return self._channel.guild
 

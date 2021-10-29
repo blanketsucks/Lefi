@@ -15,7 +15,31 @@ logger = logging.getLogger(__name__)
 
 
 class Ratelimiter:
+    """
+    A class representing a Ratelimiter.
+
+    Attributes:
+        http (HTTPClient): The [HTTPClient](./http.md) instance.
+        route (Route): The Route instance.
+        method (str): The method to use.
+        kwargs (dict): The kwargs to use.
+        loop (asyncio.AbstractEventLoop): The event loop.
+        global_ (asyncio.Event): The global event.
+        return_data (Union[dict, str]): The return data.
+        error_return (Optional[HTTPException]): The error return.
+
+    """
+
     def __init__(self, http: HTTPClient, route: Route, method: str, **kwargs) -> None:
+        """
+        Initializes the Ratelimiter.
+
+        Parameters:
+            http (HTTPClient): The [HTTPClient](./http.md) instance.
+            route (Route): The Route instance.
+            method (str): The method to use.
+            kwargs (dict): The kwargs to use.
+        """
         self.loop: asyncio.AbstractEventLoop = http.loop
         self.global_: asyncio.Event = asyncio.Event()
         self.http: HTTPClient = http
@@ -29,6 +53,12 @@ class Ratelimiter:
         self.global_.set()
 
     async def set_semaphore(self) -> asyncio.Semaphore:
+        """
+        Sets the semaphore for the bucket.
+
+        Returns:
+            The asyncio.Semaphore for the bucket.
+        """
         if semaphore := self.http.semaphores.get(self.bucket):
             return semaphore
 
@@ -43,13 +73,32 @@ class Ratelimiter:
         return semaphore
 
     async def release(self, semaphore: asyncio.Semaphore, delay: float) -> None:
+        """
+        Releases the semaphore after a delay.
+
+        Parameters:
+            semaphore: The semaphore to release.
+            delay: The delay after which semaphore is to be released.
+        """
         await asyncio.sleep(delay)
         semaphore.release()
 
     def global_ratelimit_set(self, delay: float) -> None:
+        """
+        Sets the global ratelimit.
+
+        Parameters:
+            delay: The delay to set for the global ratelimit.
+        """
         self.loop.call_later(delay, self.global_.set)
 
     async def request(self) -> Any:
+        """
+        Makes a request to the route.
+
+        Returns:
+            The response from the route.
+        """
         semaphore = self.http.semaphores.get(self.bucket, await self.set_semaphore())
         session = self.http.session
 

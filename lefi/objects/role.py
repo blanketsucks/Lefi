@@ -15,9 +15,20 @@ __all__ = ("Role",)
 class Role(Snowflake):
     """
     Represents a role.
+
+    Attributes:
+        id (int): The ID of the role.
     """
 
     def __init__(self, state: State, data: Dict, guild: Guild) -> None:
+        """
+        Creates a Role object.
+
+        Parameters:
+            state (State): The [State](./state.md) of the client.
+            data (Dict): The data of the role.
+            guild (Guild): The [Guild](./guild.md) the role is in.
+        """
         self._state = state
         self._data = data
         self._guild = guild
@@ -67,7 +78,7 @@ class Role(Snowflake):
     @property
     def guild(self) -> Guild:
         """
-        The [lefi.Guild][] instance which the role belongs to.
+        The [lefi.Guild](./guild.md) instance which the role belongs to.
         """
         return self._guild
 
@@ -109,7 +120,7 @@ class Role(Snowflake):
     @property
     def permissions(self) -> Permissions:
         """
-        The permissions of the role.
+        The [Permission](./permission.md)s of the role.
         """
         return Permissions(int(self._data["permissions"]))
 

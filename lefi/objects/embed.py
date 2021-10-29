@@ -239,7 +239,7 @@ class Embed:
 
     Note:
         You shouldn't be creating all the classes to pass in.
-        Rather use the `set_` methods of [lefi.Embed][]
+        Rather use the `set_` methods of lefi.Embed.
 
     """
 

@@ -17,6 +17,12 @@ class HTTPException(Exception):
     """
 
     def __init__(self, data: Union[Dict[str, Any], str]) -> None:
+        """
+        Initialize the HTTPException.
+
+        Parameters:
+            data (Union[Dict[str, Any], str]): data received from the API.
+        """
         self.data = data
         self.message: str = ""
         self.code: int = 0
