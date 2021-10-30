@@ -1,6 +1,11 @@
 site_name: Lefi
 site_author: an-dyy
 site_description: A discord API wrapper focused on clean code, and usability
+repo_name: an-dyy/Lefi
+repo_url: https://github.com/an-dyy/Lefi
+
+extra_css:
+  - stylesheets/extra.css
 
 theme:
   features:
@@ -72,9 +77,6 @@ plugins:
           import:
             - https://docs.python.org/3.9/objects.inv
             - https://docs.aiohttp.org/en/stable/objects.inv
-
-repo_name: an-dyy/Lefi
-repo_url: https://github.com/an-dyy/Lefi
 
 markdown_extensions:
   - pymdownx.highlight
