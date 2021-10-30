@@ -14,8 +14,11 @@ class Ratelimiter:
     def release(self) -> None:
         self.loop.call_later(self.delay, self.semaphore.release)
 
-    async def __aenter__(self) -> Ratelimiter:
+    async def acquire(self) -> None:
         await self.semaphore.acquire()
+
+    async def __aenter__(self) -> Ratelimiter:
+        await self.acquire()
         return self
 
     async def __aexit__(self, *_) -> None:

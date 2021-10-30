@@ -168,7 +168,6 @@ class HTTPClient:
 
         Raises:
             ValueError if an invalid token was passed.
-
         """
         try:
             await self.get_current_user()

@@ -21,6 +21,7 @@ from .objects import (
 )
 from .objects.channel import Channel
 from .voice import VoiceClient, VoiceState
+from .ws.basews import BaseWebsocketClient
 
 if TYPE_CHECKING:
     from .client import Client
@@ -110,9 +111,12 @@ class State:
         self._emojis = Cache[Emoji]()
         self._voice_clients = Cache[VoiceClient]()
 
-    @property
-    def ws(self):
-        return self.client.ws
+    def get_websocket(self, guild_id: int) -> BaseWebsocketClient:
+        if not self.client.shards:
+            return self.client.ws
+
+        shard_id = (guild_id >> 22) % len(self.client.shards)
+        return self.client.shards[shard_id]
 
     def dispatch(self, event: str, *payload: Any) -> None:
         """
@@ -123,6 +127,7 @@ class State:
             *payload (Any): The data after parsing is finished.
 
         """
+        print(self.client.shards)
         events: dict = self.client.events.get(event, {})
         futures = self.client.futures.get(event, [])
 

@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-import aiohttp
+import asyncio
 import sys
 
 from typing import TYPE_CHECKING, Dict
 
 from .basews import BaseWebsocketClient
 from .opcodes import OpCodes
+from .ratelimiter import Ratelimiter
 
 if TYPE_CHECKING:
     from .wsclient import WebSocketClient
-    from ..client import Client
 
 __all__ = ("Shard",)
 
@@ -27,6 +27,17 @@ class Shard(BaseWebsocketClient):
 
     def __int__(self) -> int:
         return self.id
+
+    async def start(self, data: Dict) -> None:  # type: ignore
+        max_concurrency: int = data["session_start_limit"]["max_concurrency"]
+
+        self.ratelimiter = Ratelimiter(max_concurrency, 1)
+        await self.ratelimiter.acquire()
+
+        self.websocket = await self.client.http.ws_connect(data["url"])
+
+        await self.identify()
+        asyncio.gather(self.start_heartbeat(), self.read_messages())
 
     async def identify(self) -> None:
         """

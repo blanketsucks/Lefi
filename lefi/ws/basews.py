@@ -42,16 +42,15 @@ class BaseWebsocketClient:
             "channel_create": self.client._state.parse_channel_create,
             "channel_update": self.client._state.parse_channel_update,
             "channel_delete": self.client._state.parse_channel_delete,
+            "voice_state_update": self.client._state.parse_voice_state_update,
+            "voice_server_update": self.client._state.parse_voice_server_update,
         }
 
-    async def _get_gateway(self) -> Dict:
-        headers = {"Authorization": f"Bot {self.client.http.token}"}
-        session = self.client.http.session or await self.client.http._create_session()
+        self.ratelimiter: Optional[Ratelimiter] = None
 
-        resp = await session.request(
-            "GET", "https://discord.com/api/v9/gateway/bot", headers=headers
-        )
-        return await resp.json()
+    async def _get_gateway(self) -> Dict:
+        http = self.client.http
+        return await http.get_bot_gateway()
 
     async def start(self) -> None:
         """
@@ -60,13 +59,20 @@ class BaseWebsocketClient:
         data = await self._get_gateway()
         max_concurrency: int = data["session_start_limit"]["max_concurrency"]
 
-        async with Ratelimiter(max_concurrency, 1) as handler:
-            self.websocket = await self.client.http.ws_connect(data["url"])
+        self.ratelimiter = Ratelimiter(max_concurrency, 1)
+        await self.ratelimiter.acquire()
 
-            await self.identify()
-            await asyncio.gather(self.start_heartbeat(), self.read_messages())
+        self.websocket = await self.client.http.ws_connect(data["url"])
 
-            handler.release()
+        await self.identify()
+        asyncio.gather(self.start_heartbeat(), self.read_messages())
+
+    async def close(self):
+        if self.ratelimiter is not None:
+            self.ratelimiter.release()
+
+        if self.websocket is not None:
+            await self.websocket.close()
 
     async def read_messages(self) -> None:
         """
@@ -146,6 +152,33 @@ class BaseWebsocketClient:
                     "$browser": "Lefi",
                     "$device": "Lefi",
                 },
+            },
+        }
+        await self.websocket.send_json(payload)
+
+    async def change_guild_voice_state(
+        self,
+        guild_id: int,
+        channel_id: Optional[int] = None,
+        self_mute: bool = False,
+        self_deaf: bool = False,
+    ):
+        """
+        Changes the voice state of the client.
+
+        Parameters:
+            channel_id (int): The channel to move the client to.
+            guild_id (int): The guild to move the client to.
+            self_mute (bool): Whether the client is muted.
+            self_deaf (bool): Whether the client is deafened.
+        """
+        payload = {
+            "op": OpCodes.VOICE_STATE_UPDATE,
+            "d": {
+                "guild_id": guild_id,
+                "channel_id": channel_id,
+                "self_mute": self_mute,
+                "self_deaf": self_deaf,
             },
         }
         await self.websocket.send_json(payload)
