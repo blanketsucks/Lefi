@@ -40,7 +40,6 @@ nav:
   - API-Reference:
     - Client: API-Reference/client.md
     - HTTPClient: API-Reference/http.md
-    - WebSocketClient: API-Reference/wsclient.md
     - State: API-Reference/state.md
     - Channel: API-Reference/channel.md
     - Guild: API-Reference/guild.md
