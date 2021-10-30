@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import aiohttp
+import logging
 import sys
 
 from typing import TYPE_CHECKING, Dict
@@ -13,6 +14,8 @@ if TYPE_CHECKING:
     from ..client import Client
 
 __all__ = ("Shard",)
+
+logger = logging.getLogger(__name__)
 
 
 class Shard(BaseWebsocketClient):
@@ -49,3 +52,4 @@ class Shard(BaseWebsocketClient):
             },
         }
         await self.websocket.send_json(payload)
+        logger.info(f"SHARD CONNECTED: {self.id}")

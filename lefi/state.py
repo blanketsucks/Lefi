@@ -23,6 +23,7 @@ from .objects.channel import Channel
 
 if TYPE_CHECKING:
     from .client import Client
+    from .ws import BaseWebsocketClient
 
 __all__ = (
     "State",
@@ -104,10 +105,27 @@ class State:
         self._messages = Cache[Message](1000)
         self._users = Cache[User]()
         self._guilds = Cache[Guild]()
+        self._emojis = Cache[Emoji]()
         self._channels = Cache[
             Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
         ]()
-        self._emojis = Cache[Emoji]()
+
+    def get_websocket(self, guild_id: int) -> BaseWebsocketClient:
+        """
+        Gets the websocket connected to the specified guild.
+
+        Parameters:
+            guild_id (int): The guild's ID.
+
+        Returns:
+            The `BaseWebsocketClient` connected to the guild.
+
+        """
+        if not self.client.shards:
+            return self.client.ws
+
+        shard_id = (guild_id >> 22) % len(self.client.shards)
+        return self.client.shards[shard_id]
 
     def dispatch(self, event: str, *payload: Any) -> None:
         """

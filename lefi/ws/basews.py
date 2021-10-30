@@ -64,7 +64,7 @@ class BaseWebsocketClient:
             self.websocket = await self.client.http.ws_connect(data["url"])
 
             await self.identify()
-            await asyncio.gather(self.start_heartbeat(), self.read_messages())
+            asyncio.gather(self.start_heartbeat(), self.read_messages())
 
             handler.release()
 

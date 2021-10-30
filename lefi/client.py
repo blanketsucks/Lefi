@@ -55,6 +55,7 @@ class Client:
         *,
         intents: Intents = None,
         shard_ids: Optional[List[int]] = None,
+        sharded: bool = False,
         loop: Optional[asyncio.AbstractEventLoop] = None,
     ) -> None:
         """
@@ -67,7 +68,7 @@ class Client:
         self.loop: asyncio.AbstractEventLoop = loop or self._create_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
         self._state: State = State(self, self.loop)
-        self.ws: WebSocketClient = WebSocketClient(self, intents, shard_ids)
+        self.ws: WebSocketClient = WebSocketClient(self, intents, shard_ids, sharded)
 
         self.events: Dict[str, Cache[Callable[..., Any]]] = {}
         self.once_events: Dict[str, List[Callable[..., Any]]] = {}
@@ -217,6 +218,7 @@ class Client:
         """
         try:
             self.loop.run_until_complete(self.start())
+            self.loop.run_forever()
         except KeyboardInterrupt:
             self.loop.run_until_complete(self.close())
 
