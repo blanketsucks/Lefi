@@ -100,8 +100,9 @@ class BaseWebsocketClient:
             event (str): The event being dispatched.
             data (Dict): The raw data of the event.
         """
-        logger.debug(f"DISPATCHED EVENT: {event}")
+        logger.info(f"DISPATCHED EVENT: {event}")
         if event == "READY":
+            logger.info(f"CONNECTED {self}")
             self.session_id = data["session_id"]
 
         if event_parser := self._event_mapping.get(event.lower()):

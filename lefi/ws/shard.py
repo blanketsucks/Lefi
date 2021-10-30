@@ -52,4 +52,3 @@ class Shard(BaseWebsocketClient):
             },
         }
         await self.websocket.send_json(payload)
-        logger.info(f"SHARD CONNECTED: {self.id}")
