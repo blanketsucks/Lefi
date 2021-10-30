@@ -141,22 +141,20 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         return nonce
 
     def encrypt_xsalsa20_poly1305(self, header: bytes, data: bytes) -> bytes:
-        box = self.create_secret_box()
         nonce = self.generate_xsalsa20_poly1305_nonce(header)
-
-        return header + box.encrypt(data, nonce)
+        return header + self.encrypt(data, nonce)
 
     def encrypt_xsalsa20_poly1305_suffix(self, header: bytes, data: bytes) -> bytes:
-        box = self.create_secret_box()
         nonce = self.generate_xsalsa20_poly1305_suffix_nonce()
-
-        return header + box.encrypt(data, nonce) + nonce
+        return header + self.encrypt(data, nonce) + nonce
 
     def encrypt_xsalsa20_poly1305_lite(self, header: bytes, data: bytes) -> bytes:
-        box = self.create_secret_box()
         nonce = self.generate_xsalsa20_poly1305_lite_nonce()
+        return header + self.encrypt(data, nonce) + nonce[:4]
 
-        return header + box.encrypt(data, nonce) + nonce[:4]
+    def encrypt(self, data: bytes, nonce: bytes) -> bytes:
+        box = self.create_secret_box()
+        return box.encrypt(bytes(data), bytes(nonce))
 
     def create_voice_packet(self, data: bytes) -> bytes:
         header = self.create_rtp_header()

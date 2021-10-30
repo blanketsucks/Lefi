@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import asyncio
-from typing import IO, TYPE_CHECKING, Optional, Protocol
+from typing import IO, TYPE_CHECKING, Optional, Protocol, Union
+import audioop
 
 from . import _opus
 from .wsclient import SpeakingState
@@ -10,6 +11,7 @@ __all__ = (
     "AudioStream",
     "BaseAudioStream",
     "PCMAudioStream",
+    "FFmpegAudioStream",
     "AudioPlayer",
 )
 
@@ -79,6 +81,53 @@ class PCMAudioStream(BaseAudioStream):
         self.source.close()
 
 
+class FFmpegAudioStream(BaseAudioStream):
+    def __init__(self, source: Union[str, IO[bytes]]):
+        self.source = source
+        self.process: Optional[asyncio.subprocess.Process] = None
+
+    async def create_process(self):
+        kwargs = {
+            "-i": self.source,
+            "-f": "s16le",
+            "-ar": "48000",
+            "-ac": "2",
+            "-loglevel": "warning",
+        }
+
+        args = []
+        for k, v in kwargs.items():
+            args.extend([k, v])
+
+        args.append("pipe:1")
+        process = await asyncio.create_subprocess_exec(
+            "ffmpeg",
+            *args,
+            stdout=asyncio.subprocess.PIPE,
+            stdin=asyncio.subprocess.DEVNULL,
+        )
+
+        return process
+
+    async def read(self) -> bytes:
+        if self.process is None:
+            self.process = await self.create_process()
+
+        if self.process.stdout is None:
+            return b""
+
+        data = await self.process.stdout.read(_opus.PACKET_SIZE)
+        if len(data) != _opus.PACKET_SIZE:
+            return b""
+
+        return data
+
+    async def close(self) -> None:
+        if self.process:
+            self.process.terminate()
+            await self.process.wait()
+
+
 class AudioPlayer:
     def __init__(self, protocol: VoiceProtocol, stream: AudioStream) -> None:
         self.stream = stream
@@ -86,6 +135,7 @@ class AudioPlayer:
         self.loop = protocol._loop
         self.delay = _opus.FRAME_DURATION / 1000
 
+        self._volume = 1.0
         self._resumed = asyncio.Event()
         self._resumed.set()
         self._waiter: Optional[asyncio.Task] = None
@@ -130,3 +180,11 @@ class AudioPlayer:
 
     def is_paused(self) -> bool:
         return not self._resumed.is_set()
+
+    def set_volume(self, volume: float) -> AudioPlayer:
+        self._volume = min(max(0.0, volume), 5.0)
+        return self
+
+    @property
+    def volume(self) -> float:
+        return self._volume

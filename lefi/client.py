@@ -2,7 +2,17 @@ from __future__ import annotations
 
 import asyncio
 import inspect
-from typing import Any, Callable, Coroutine, Dict, List, Optional, Tuple, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Coroutine,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    Union,
+)
 
 from .http import HTTPClient
 from .objects import (
@@ -12,7 +22,6 @@ from .objects import (
     Emoji,
     Guild,
     GuildTemplate,
-    Intents,
     Invite,
     Message,
     TextChannel,
@@ -20,8 +29,11 @@ from .objects import (
     VoiceChannel,
 )
 from .state import Cache, State
+from .ws import WebSocketClient, Shard
 from .voice import VoiceClient
-from .ws import WebSocketClient
+
+if TYPE_CHECKING:
+    from .objects import Intents
 
 __all__ = ("Client",)
 
@@ -43,6 +55,7 @@ class Client:
         token: str,
         *,
         intents: Intents = None,
+        shard_ids: Optional[List[int]] = None,
         loop: Optional[asyncio.AbstractEventLoop] = None,
     ) -> None:
         """
@@ -55,13 +68,14 @@ class Client:
         self.loop: asyncio.AbstractEventLoop = loop or self._create_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
         self._state: State = State(self, self.loop)
-        self.ws: WebSocketClient = WebSocketClient(self, intents)
+        self.ws: WebSocketClient = WebSocketClient(self, intents, shard_ids)
 
         self.events: Dict[str, Cache[Callable[..., Any]]] = {}
         self.once_events: Dict[str, List[Callable[..., Any]]] = {}
         self.futures: Dict[str, List[Tuple[asyncio.Future, Callable[..., bool]]]] = {}
 
         self.user: User = None  # type: ignore
+        self.shards: Optional[List[Shard]] = None
 
     def _create_loop(self) -> asyncio.AbstractEventLoop:
         try:
@@ -196,7 +210,7 @@ class Client:
         Closes the ClientSession and the websocket connection. Essentially closing the client.
         """
         await self.http.session.close()
-        await self.ws.ws.close()
+        await self.ws.websocket.close()
 
     def run(self) -> None:
         """
