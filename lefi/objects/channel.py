@@ -12,6 +12,7 @@ from typing import (
     Union,
 )
 
+from lefi.objects.components import MessageActionRow
 from lefi.objects.flags import Permissions
 
 from .embed import Embed
@@ -251,6 +252,7 @@ class TextChannel(Channel):
         content: Optional[str] = None,
         *,
         embeds: Optional[List[Embed]] = None,
+        row: Optional[MessageActionRow] = None,
         **kwargs,
     ) -> Message:
         """
@@ -271,6 +273,7 @@ class TextChannel(Channel):
             channel_id=self.id,
             content=content,
             embeds=[embed.to_dict() for embed in embeds],
+            components=[row._to_dict()] if row is not None else None,
             **kwargs,
         )
         return self._state.create_message(data, self)

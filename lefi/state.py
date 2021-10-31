@@ -4,7 +4,7 @@ import asyncio
 import collections
 import logging
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union, Callable
 
 from .objects import (
     CategoryChannel,
@@ -20,8 +20,8 @@ from .objects import (
     TextChannel,
     User,
     VoiceChannel,
+    Channel,
 )
-from .objects.channel import Channel
 
 if TYPE_CHECKING:
     from .client import Client
@@ -114,6 +114,18 @@ class State:
             Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
         ]()
 
+        self._event_mapping: Dict[str, Callable] = {
+            "ready": self.parse_ready,
+            "message_create": self.parse_message_create,
+            "message_update": self.parse_message_update,
+            "message_delete": self.parse_message_delete,
+            "guild_create": self.parse_guild_create,
+            "channel_create": self.parse_channel_create,
+            "channel_update": self.parse_channel_update,
+            "channel_delete": self.parse_channel_delete,
+            "interaction_create": self.parse_interaction_create,
+        }
+
     def get_websocket(self, guild_id: int) -> BaseWebsocketClient:
         """
         Gets the websocket connected to the specified guild.
@@ -159,6 +171,9 @@ class State:
 
         for callback in events.values():
             self.loop.create_task(callback(*payload))
+
+    async def parse_interaction_create(self, data: Dict) -> None:
+        raise NotImplementedError
 
     async def parse_ready(self, data: Dict) -> None:
         """
