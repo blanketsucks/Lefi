@@ -210,6 +210,13 @@ class Client:
         Closes the ClientSession and the websocket connection. Essentially closing the client.
         """
         await self.http.session.close()
+
+        if self.shards:
+            for shard in self.shards:
+                await shard.websocket.close()
+
+            return None
+
         await self.ws.websocket.close()
 
     def run(self) -> None:
