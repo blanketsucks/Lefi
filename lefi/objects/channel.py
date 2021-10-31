@@ -12,12 +12,12 @@ from typing import (
     Union,
 )
 
-from lefi.objects.components import MessageActionRow
-from lefi.objects.flags import Permissions
-
 from .embed import Embed
 from .enums import ChannelType
 from .permissions import Overwrite
+from .components import MessageActionRow
+from .flags import Permissions
+
 
 if TYPE_CHECKING:
     from ..state import State
