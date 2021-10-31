@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 
 from typing import TYPE_CHECKING, Optional, List
 
@@ -14,17 +15,20 @@ if TYPE_CHECKING:
 
 __all__ = ("WebSocketClient",)
 
+logger = logging.getLogger(__name__)
+
 
 class WebSocketClient(BaseWebsocketClient):
     def __init__(
         self,
         client: Client,
         intents: Optional[Intents],
-        sharded: bool,
         shard_ids: Optional[List[int]] = None,
+        sharded: bool = False,
     ) -> None:
         super().__init__(client, intents)
         self.shard_count = len(shard_ids) if shard_ids is not None else 0
+        self.sharded: bool = sharded
         self.shard_ids = shard_ids
         self.sharded = sharded
 
@@ -37,6 +41,10 @@ class WebSocketClient(BaseWebsocketClient):
 
         max_concurrency: int = data["session_start_limit"]["max_concurrency"]
         url = data["url"]
+
+        if self.sharded and not self.shard_count:
+            self.shard_ids = list(range(data["shards"]))
+            self.shard_count = len(self.shard_ids)
 
         async with Ratelimiter(max_concurrency, 1) as handler:
             if self.shard_ids is not None:

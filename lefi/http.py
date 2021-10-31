@@ -101,6 +101,13 @@ class HTTPClient:
         """
         return aiohttp.ClientSession(loop=self.loop or loop)
 
+    async def close(self) -> None:
+        """
+        Closes the [aiohttp.ClientSession][] instance.
+
+        """
+        await self.session.close()
+
     async def request(self, method: str, route: Route, **kwargs) -> Any:
         """
         Makes a request to the discord API.

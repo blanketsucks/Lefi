@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import asyncio
 import collections
+import logging
+
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union
 
 from .objects import (
@@ -25,6 +27,7 @@ from .ws.basews import BaseWebsocketClient
 
 if TYPE_CHECKING:
     from .client import Client
+    from .ws import BaseWebsocketClient
 
 __all__ = (
     "State",
@@ -32,6 +35,8 @@ __all__ = (
 )
 
 T = TypeVar("T")
+
+logger = logging.getLogger(__name__)
 
 
 class Cache(collections.OrderedDict[Union[int, str], T]):
@@ -105,6 +110,7 @@ class State:
         self._messages = Cache[Message](1000)
         self._users = Cache[User]()
         self._guilds = Cache[Guild]()
+        self._emojis = Cache[Emoji]()
         self._channels = Cache[
             Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
         ]()
@@ -157,6 +163,11 @@ class State:
         """
         user = self.add_user(data["user"])
         self.client.user = user
+
+        if shard := data.get("shard"):
+            logger.info(f"CONNECTED: SHARD ID: {shard[0]}")
+        else:
+            logger.info(f"CONNECTED: CLIENT ID: {user.id}")
 
         self.dispatch("ready", user)
 

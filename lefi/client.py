@@ -69,7 +69,7 @@ class Client:
         self.loop: asyncio.AbstractEventLoop = loop or self._create_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
         self._state: State = State(self, self.loop)
-        self.ws: WebSocketClient = WebSocketClient(self, intents, sharded, shard_ids)
+        self.ws: WebSocketClient = WebSocketClient(self, intents, shard_ids, sharded)
 
         self.events: Dict[str, Cache[Callable[..., Any]]] = {}
         self.once_events: Dict[str, List[Callable[..., Any]]] = {}
@@ -210,8 +210,16 @@ class Client:
         """
         Closes the ClientSession and the websocket connection. Essentially closing the client.
         """
-        await self.http.session.close()
-        await self.ws.close()
+        await self.http.close()
+
+        for voice in self.voice_clients:
+            await voice.disconnect()
+
+        if self.shards:
+            for shard in self.shards.values():
+                await shard.close()
+        else:
+            await self.ws.close()
 
     def run(self) -> None:
         """
