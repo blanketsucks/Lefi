@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import asyncio
 import aiohttp
+import datetime
+
 import logging
 import sys
 
@@ -28,6 +30,8 @@ class BaseWebsocketClient:
     ) -> None:
         self.intents: Intents = Intents.default() if intents is None else intents
         self.websocket: aiohttp.ClientWebSocketResponse = None  # type: ignore
+        self.last_heartbeat: Optional[datetime.datetime] = None
+        self.latency: float = float("inf")
         self.heartbeat_delay: float = 0
         self.client: Client = client
         self.closed: bool = False
@@ -80,6 +84,11 @@ class BaseWebsocketClient:
                     await self.dispatch(recieved_data["t"], recieved_data["d"])
 
                 if recieved_data["op"] == OpCodes.HEARTBEAT_ACK:
+                    if self.last_heartbeat is not None:
+                        self.latency = (
+                            datetime.datetime.now() - self.last_heartbeat
+                        ).total_seconds() * 1000
+
                     logger.info("HEARTBEAT ACKNOWLEDGED")
 
                 if recieved_data["op"] == OpCodes.RESUME:
@@ -160,4 +169,5 @@ class BaseWebsocketClient:
             self.seq += 1
 
             await self.websocket.send_json({"op": OpCodes.HEARTBEAT, "d": self.seq})
+            self.last_heartbeat = datetime.datetime.now()
             await asyncio.sleep(self.heartbeat_delay / 1000)
