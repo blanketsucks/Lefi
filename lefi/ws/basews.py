@@ -102,7 +102,6 @@ class BaseWebsocketClient:
         """
         logger.info(f"DISPATCHED EVENT: {event}")
         if event == "READY":
-            logger.info(f"CONNECTED {self}")
             self.session_id = data["session_id"]
 
         if event_parser := self._event_mapping.get(event.lower()):

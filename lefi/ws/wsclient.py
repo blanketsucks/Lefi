@@ -46,7 +46,6 @@ class WebSocketClient(BaseWebsocketClient):
 
                 for shard in shards:
                     await shard.start()
-                    logger.info(f"SHARD CONNECTING: {shard.id}")
 
                 return None
 

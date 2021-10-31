@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import asyncio
 import collections
+import logging
+
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union
 
 from .objects import (
@@ -31,6 +33,8 @@ __all__ = (
 )
 
 T = TypeVar("T")
+
+logger = logging.getLogger(__name__)
 
 
 class Cache(collections.OrderedDict[Union[int, str], T]):
@@ -166,6 +170,11 @@ class State:
         """
         user = self.add_user(data["user"])
         self.client.user = user
+
+        if shard := data.get("shard"):
+            logger.info(f"CONNECTED: SHARD ID: {shard[0]}")
+        else:
+            logger.info(f"CONNECTED: CLIENT ID: {user.id}")
 
         self.dispatch("ready", user)
 
