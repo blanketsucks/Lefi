@@ -230,7 +230,8 @@ class Guild:
             self_deaf (bool): Whether to deafen the bot.
 
         """
-        await self._state.ws.change_guild_voice_state(
+        ws = self._state.get_websocket(self.id)
+        await ws.change_guild_voice_state(
             self.id, channel.id if channel else None, self_mute, self_deaf
         )
 
