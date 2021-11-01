@@ -25,7 +25,7 @@ class Embed:
             **kwargs: The attributes of the embed
 
         """
-        self.data = kwargs
+        self._data = kwargs
 
     @classmethod
     def from_dict(cls: Type[Embed], data: Dict) -> Embed:
@@ -49,9 +49,9 @@ class Embed:
             The created dictionary.
 
         """
-        payload = self.data.copy()
+        payload = self._data.copy()
 
-        for name, item in self.data.items():
+        for name, item in payload.items():
             if isinstance(item, EmbedItem):
                 payload[name] = update_payload({}, **item.data)
 
@@ -69,7 +69,7 @@ class Embed:
         """
         The embed's title.
         """
-        return self.data.get("title")
+        return self._data.get("title")
 
     @title.setter
     def title(self, title: str) -> None:
@@ -83,14 +83,14 @@ class Embed:
         if len(title) > 256:
             raise ValueError("Title cannot have more than 256 characters")
 
-        self.data["title"] = title
+        self._data["title"] = title
 
     @property
     def description(self) -> Optional[str]:
         """
         The the embed's description.
         """
-        return self.data.get("description")
+        return self._data.get("description")
 
     @description.setter
     def description(self, description: str) -> None:
@@ -104,14 +104,14 @@ class Embed:
         if len(description) > 4096:
             raise ValueError("Description cannot have more than 4096 characters")
 
-        self.data["description"] = description
+        self._data["description"] = description
 
     @property
     def url(self) -> Optional[str]:
         """
         The embed's url.
         """
-        return self.data.get("url")
+        return self._data.get("url")
 
     @url.setter
     def url(self, url: str) -> None:
@@ -122,14 +122,14 @@ class Embed:
             url (str): The new url to use.
 
         """
-        self.data["url"] = url
+        self._data["url"] = url
 
     @property
     def timestamp(self) -> Optional[datetime.datetime]:
         """
         The embed's timestamp.
         """
-        if timestamp := self.data.get("timestamp"):
+        if timestamp := self._data.get("timestamp"):
             return timestamp.isoformat()
 
         return None
@@ -143,14 +143,14 @@ class Embed:
             timestamp (datetime.datetime): The datetime.datetime object to use.
 
         """
-        self.data["timestamp"] = timestamp.isoformat()
+        self._data["timestamp"] = timestamp.isoformat()
 
     @property
     def color(self) -> Optional[int]:
         """
         The embed's color.
         """
-        return self.data.get("color")
+        return self._data.get("color")
 
     @color.setter
     def color(self, color: int) -> None:
@@ -161,14 +161,14 @@ class Embed:
             color (int): The new color to use.
 
         """
-        self.data["color"] = color
+        self._data["color"] = color
 
     @property
     def footer(self) -> Optional[EmbedItem]:
         """
         The embed's footer.
         """
-        return self.data.get("footer")
+        return self._data.get("footer")
 
     def set_footer(self, text: str, icon_url: Optional[str] = None) -> None:
         """
@@ -179,14 +179,14 @@ class Embed:
             icon_url (Optional[str]): The icon url of the footer.
 
         """
-        self.data["footer"] = EmbedItem(text=text, icon_url=icon_url)
+        self._data["footer"] = EmbedItem(text=text, icon_url=icon_url)
 
     @property
     def image(self) -> Optional[EmbedItem]:
         """
         The embed's image.
         """
-        return self.data.get("image")
+        return self._data.get("image")
 
     def set_image(
         self, url: str, height: Optional[int] = None, width: Optional[int] = None
@@ -200,14 +200,14 @@ class Embed:
             width (Optional[int]): The width of the image.
 
         """
-        self.data["image"] = EmbedItem(url=url, height=height, width=width)
+        self._data["image"] = EmbedItem(url=url, height=height, width=width)
 
     @property
     def thumbnail(self) -> Optional[EmbedItem]:
         """
         The embed's thumbnail.
         """
-        return self.data.get("thumbnail")
+        return self._data.get("thumbnail")
 
     def set_thumbnail(
         self, url: str, height: Optional[int] = None, width: Optional[int] = None
@@ -221,14 +221,14 @@ class Embed:
             width (Optional[int]): The width of the thumbnail.
 
         """
-        self.data["thumbnail"] = EmbedItem(url=url, height=height, width=width)
+        self._data["thumbnail"] = EmbedItem(url=url, height=height, width=width)
 
     @property
     def video(self) -> Optional[EmbedItem]:
         """
         The embed's video.
         """
-        return self.data.get("video")
+        return self._data.get("video")
 
     def set_video(
         self, url: str, height: Optional[int] = None, width: Optional[int] = None
@@ -242,14 +242,14 @@ class Embed:
             width (Optional[int]): The width of the video.
 
         """
-        self.data["thumbnail"] = EmbedItem(url=url, height=height, width=width)
+        self._data["thumbnail"] = EmbedItem(url=url, height=height, width=width)
 
     @property
     def provider(self) -> Optional[EmbedItem]:
         """
         The embed's provider.
         """
-        return self.data.get("provider")
+        return self._data.get("provider")
 
     def set_provider(
         self, name: Optional[str] = None, url: Optional[str] = None
@@ -262,14 +262,14 @@ class Embed:
             url (Optional[str]): The url of the provider.
 
         """
-        self.data["thumbnail"] = EmbedItem(name=name, url=url)
+        self._data["thumbnail"] = EmbedItem(name=name, url=url)
 
     @property
     def author(self) -> Optional[EmbedItem]:
         """
         The embed's author.
         """
-        return self.data.get("author")
+        return self._data.get("author")
 
     def set_author(
         self, name: str, url: Optional[str] = None, icon_url: Optional[str] = None
@@ -283,14 +283,14 @@ class Embed:
             icon_url (Optional[str]): The icon url of the author.
 
         """
-        self.data["author"] = EmbedItem(name=name, url=url, icon_url=icon_url)
+        self._data["author"] = EmbedItem(name=name, url=url, icon_url=icon_url)
 
     @property
     def fields(self) -> Optional[List[EmbedItem]]:
         """
         The embed's fields.
         """
-        return self.data.get("fields")
+        return self._data.get("fields")
 
     def add_field(self, name: str, value: str, inline: bool = False) -> None:
         """
@@ -302,6 +302,6 @@ class Embed:
             inline (bool): Whether or not the field is inline.
 
         """
-        self.data.setdefault("fields", []).append(
+        self._data.setdefault("fields", []).append(
             EmbedItem(name=name, value=value, inline=inline)
         )
