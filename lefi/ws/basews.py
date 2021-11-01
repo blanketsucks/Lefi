@@ -162,4 +162,6 @@ class BaseWebsocketClient:
 
             await self.websocket.send_json({"op": OpCodes.HEARTBEAT, "d": self.seq})
             self.last_heartbeat = datetime.datetime.now()
+            logger.info("HEARTBEAT SENT")
+
             await asyncio.sleep(self.heartbeat_delay / 1000)
