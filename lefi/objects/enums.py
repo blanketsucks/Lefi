@@ -18,7 +18,23 @@ __all__ = (
     "PremiumType",
     "ChannelType",
     "OverwriteType",
+    "ComponentStyle",
+    "ComponentType",
 )
+
+
+class ComponentStyle(IntEnum):
+    PRIMARY = 1
+    SECONDARY = 2
+    SUCCESS = 3
+    DANGER = 4
+    LINK = 5
+
+
+class ComponentType(IntEnum):
+    ACTIONROW = 1
+    BUTTON = 2
+    SELECTMENU = 3
 
 
 class AuditLogsEvent(IntEnum):

@@ -30,25 +30,15 @@ class BaseWebsocketClient:
     ) -> None:
         self.intents: Intents = Intents.default() if intents is None else intents
         self.websocket: aiohttp.ClientWebSocketResponse = None  # type: ignore
-        self.last_heartbeat: Optional[datetime.datetime] = None
-        self.latency: float = float("inf")
-        self.heartbeat_delay: float = 0
         self.client: Client = client
         self.closed: bool = False
         self.seq: int = 0
 
-        self._event_mapping: Dict[str, Callable] = {
-            "ready": self.client._state.parse_ready,
-            "message_create": self.client._state.parse_message_create,
-            "message_update": self.client._state.parse_message_update,
-            "message_delete": self.client._state.parse_message_delete,
-            "guild_create": self.client._state.parse_guild_create,
-            "channel_create": self.client._state.parse_channel_create,
-            "channel_update": self.client._state.parse_channel_update,
-            "channel_delete": self.client._state.parse_channel_delete,
-            "voice_server_update": self.client._state.parse_voice_server_update,
-            "voice_state_update": self.client._state.parse_voice_state_update,
-        }
+        self.last_heartbeat: Optional[datetime.datetime] = None
+        self.latency: float = float("inf")
+        self.heartbeat_delay: float = 0
+
+        self._event_mapping = self.client._state._event_mapping
 
     async def _get_gateway(self) -> Dict:
         http = self.client.http
@@ -197,4 +187,6 @@ class BaseWebsocketClient:
 
             await self.websocket.send_json({"op": OpCodes.HEARTBEAT, "d": self.seq})
             self.last_heartbeat = datetime.datetime.now()
+            logger.info("HEARTBEAT SENT")
+
             await asyncio.sleep(self.heartbeat_delay / 1000)

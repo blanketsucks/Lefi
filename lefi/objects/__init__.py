@@ -12,3 +12,5 @@ from .permissions import *
 from .role import *
 from .template import *
 from .user import *
+from .components import *
+from .files import *

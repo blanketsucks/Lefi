@@ -3,13 +3,13 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from typing import Any, ClassVar, Dict, List, Optional, Union, IO
-import io
+from typing import Any, ClassVar, Dict, List, Optional, Union
 import aiohttp
 
 from .errors import BadRequest, Forbidden, NotFound, Unauthorized
 from .ratelimiter import Ratelimiter
 from .utils import bytes_to_data_uri, update_payload
+from .objects import File
 
 __all__ = (
     "HTTPClient",
@@ -178,6 +178,48 @@ class HTTPClient:
             await self.get_current_user()
         except (Forbidden, Unauthorized):
             raise ValueError("Invalid token")
+
+    def build_file_form(self, file: File, index: Optional[int] = None) -> Dict:
+        return {
+            "name": f"file-{index}" if index else "file",
+            "value": file.fd,
+            "filename": file.filename,
+            "content_type": "application/octect-stream",
+        }
+
+    def form_helper(self, files: Optional[List[Optional[File]]] = None) -> List[Dict]:
+        """
+        A helper method which formats the files to be sent in a multipart/form-data request.
+
+        Parameters:
+            files (Optional[List[lefi.File]]): The files to send.
+
+        Returns:
+            A dict which should contain the files.
+
+        """
+        form: List[Dict] = []
+
+        if not files:
+            return form
+
+        if len(files) == 1:
+            file = files[0]
+
+            if not file:
+                return form
+
+            form.append(self.build_file_form(file))
+            return form
+
+        for index, file in enumerate(files):
+            if not file:
+                continue
+
+            param = self.build_file_form(file, index)
+            form.append(param)
+
+        return form
 
     async def get_channel(self, channel_id: int) -> Dict[str, Any]:
         """
@@ -357,7 +399,7 @@ class HTTPClient:
         message_reference: Optional[Dict[str, Any]] = None,
         components: Optional[List[Dict[str, Any]]] = None,
         sticker_ids: Optional[List[int]] = None,
-        files: Optional[List[io.BufferedIOBase]] = None,
+        files: Optional[List[File]] = None,
     ) -> Dict[str, Any]:
         """
         Makes an API call to send a message.
@@ -376,19 +418,7 @@ class HTTPClient:
 
         """
         payload = {"tts": tts}
-
-        files = files or []
-        form = []
-
-        for index, file in enumerate(files):
-            form.append(
-                {
-                    "name": f"file-{index}",
-                    "value": file,
-                    "filename": getattr(file, "name", None),
-                    "content_type": "application/octect-stream",
-                }
-            )
+        form = self.form_helper(files)  # type: ignore
 
         update_payload(
             payload,
@@ -2731,7 +2761,7 @@ class HTTPClient:
         username: Optional[str] = None,
         avatar_url: Optional[str] = None,
         tts: Optional[bool] = None,
-        file: Optional[io.BufferedIOBase] = None,
+        file: Optional[File] = None,
         embeds: Optional[List[Dict[str, Any]]] = None,
         allowed_mentions: Optional[Dict[str, Any]] = None,
         componenets: Optional[List[Dict[str, Any]]] = None,
@@ -2748,7 +2778,7 @@ class HTTPClient:
             username (Optional[str]): The username of the webhook.
             avatar_url (Optional[str]): The avatar url of the webhook.
             tts (Optional[bool]): Whether the message should be TTS.
-            file (Optional[io.BufferedIOBase]): The file to upload.
+            file (Optional[File]): The file to upload.
             embeds (Optional[List[Dict[str, Any]]]): The embeds to send.
             allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions.
             componenets (Optional[List[Dict[str, Any]]]): The components to send.
@@ -2759,7 +2789,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        form = []
+        form = self.form_helper([file])
         payload = update_payload(
             {},
             content=content,
@@ -2772,16 +2802,6 @@ class HTTPClient:
         )
 
         params = update_payload({}, wait=wait, thread_id=thread_id)
-
-        if file:
-            form.append(
-                {
-                    "name": "file",
-                    "value": file,
-                    "filename": getattr(file, "name", None),
-                    "content_type": "application/octect-stream",
-                }
-            )
 
         return await self.request(
             "POST",
@@ -2827,7 +2847,7 @@ class HTTPClient:
         *,
         content: Optional[str] = None,
         embeds: Optional[List[Dict[str, Any]]] = None,
-        file: Optional[io.BufferedIOBase] = None,
+        file: Optional[File] = None,
         allowed_mentions: Optional[Dict[str, Any]] = None,
         componenets: Optional[List[Dict[str, Any]]] = None,
         attachments: Optional[List[Dict[str, Any]]] = None,
@@ -2841,7 +2861,7 @@ class HTTPClient:
             message_id (int): The ID of the message.
             content (Optional[str]): The content of the message.
             embeds (Optional[List[Dict[str, Any]]]): The embeds to send.
-            file (Optional[io.BufferedIOBase]): The file to upload.
+            file (Optional[File]): The file to upload.
             allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions.
             componenets (Optional[List[Dict[str, Any]]]): The components to send.
             attachments (Optional[List[Dict[str, Any]]]): The attachments to send.
@@ -2850,7 +2870,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        form = []
+        form = self.form_helper([file])
         payload = update_payload(
             {},
             content=content,
@@ -2859,16 +2879,6 @@ class HTTPClient:
             componenets=componenets,
             attachments=attachments,
         )
-
-        if file:
-            form.append(
-                {
-                    "name": "file",
-                    "value": file,
-                    "filename": getattr(file, "name", None),
-                    "content_type": "application/octect-stream",
-                }
-            )
 
         return await self.request(
             "PATCH",
@@ -3382,7 +3392,7 @@ class HTTPClient:
         *,
         content: Optional[str] = None,
         embeds: Optional[List[Dict[str, Any]]] = None,
-        file: Optional[io.BufferedIOBase] = None,
+        file: Optional[File] = None,
         allowed_mentions: Optional[Dict[str, Any]] = None,
         componenets: Optional[List[Dict[str, Any]]] = None,
         attachments: Optional[List[Dict[str, Any]]] = None,
@@ -3395,7 +3405,7 @@ class HTTPClient:
             interaction_token (str): The token of the interaction.
             content (Optional[str]): The content of the response.
             embeds (Optional[List[Dict[str, Any]]]): The embeds of the response.
-            file (Optional[io.BufferedIOBase]): The file of the response.
+            file (Optional[File]): The file of the response.
             allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions of the response.
             componenets (Optional[List[Dict[str, Any]]]): The components of the response.
             attachments (Optional[List[Dict[str, Any]]]): The attachments of the response.
@@ -3404,7 +3414,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        form = []
+        form = self.form_helper([file])
         payload = update_payload(
             {},
             content=content,
@@ -3413,16 +3423,6 @@ class HTTPClient:
             componenets=componenets,
             attachments=attachments,
         )
-
-        if file:
-            form.append(
-                {
-                    "name": "file",
-                    "value": file,
-                    "filename": getattr(file, "name", None),
-                    "content_type": "application/octect-stream",
-                }
-            )
 
         return await self.request(
             "PATCH",
@@ -3457,7 +3457,7 @@ class HTTPClient:
         *,
         content: Optional[str] = None,
         embeds: Optional[List[Dict[str, Any]]] = None,
-        file: Optional[io.BufferedIOBase] = None,
+        file: Optional[File] = None,
         allowed_mentions: Optional[Dict[str, Any]] = None,
         componenets: Optional[List[Dict[str, Any]]] = None,
         attachments: Optional[List[Dict[str, Any]]] = None,
@@ -3471,7 +3471,7 @@ class HTTPClient:
             interaction_token (str): The token of the interaction.
             content (Optional[str]): The content of the response.
             embeds (Optional[List[Dict[str, Any]]]): The embeds of the response.
-            file (Optional[io.BufferedIOBase]): The file of the response.
+            file (Optional[File]): The file of the response.
             allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions of the response.
             componenets (Optional[List[Dict[str, Any]]]): The components of the response.
             attachments (Optional[List[Dict[str, Any]]]): The attachments of the response.
@@ -3481,7 +3481,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        form = []
+        form = self.form_helper([file])
         payload = update_payload(
             {},
             content=content,
@@ -3491,16 +3491,6 @@ class HTTPClient:
             attachments=attachments,
             flags=flags,
         )
-
-        if file:
-            form.append(
-                {
-                    "name": "file",
-                    "value": file,
-                    "filename": getattr(file, "name", None),
-                    "content_type": "application/octect-stream",
-                }
-            )
 
         return await self.request(
             "POST",
@@ -3539,7 +3529,7 @@ class HTTPClient:
         *,
         content: Optional[str] = None,
         embeds: Optional[List[Dict[str, Any]]] = None,
-        file: Optional[io.BufferedIOBase] = None,
+        file: Optional[File] = None,
         allowed_mentions: Optional[Dict[str, Any]] = None,
         componenets: Optional[List[Dict[str, Any]]] = None,
         attachments: Optional[List[Dict[str, Any]]] = None,
@@ -3553,7 +3543,7 @@ class HTTPClient:
             message_id (int): The ID of the message.
             content (Optional[str]): The content of the response.
             embeds (Optional[List[Dict[str, Any]]]): The embeds of the response.
-            file (Optional[io.BufferedIOBase]): The file of the response.
+            file (Optional[File]): The file of the response.
             allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions of the response.
             componenets (Optional[List[Dict[str, Any]]]): The components of the response.
             attachments (Optional[List[Dict[str, Any]]]): The attachments of the response.
@@ -3562,7 +3552,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        form = []
+        form = self.form_helper([file])
         payload = update_payload(
             {},
             content=content,
@@ -3571,16 +3561,6 @@ class HTTPClient:
             componenets=componenets,
             attachments=attachments,
         )
-
-        if file:
-            form.append(
-                {
-                    "name": "file",
-                    "value": file,
-                    "filename": getattr(file, "name", None),
-                    "content_type": "application/octect-stream",
-                }
-            )
 
         return await self.request(
             "PATCH",

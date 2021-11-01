@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncIterator,
     Callable,
     Dict,
     Iterable,
@@ -12,14 +11,15 @@ from typing import (
     Union,
 )
 
-from .flags import Permissions
-from ..voice import VoiceClient
 from .embed import Embed
 from .enums import ChannelType
 from .permissions import Overwrite
+from .components import MessageActionRow
+from .flags import Permissions
+from .files import File
 from ..errors import VoiceException
 from ..utils import ChannelHistoryIterator
-from .files import File
+from ..voice import VoiceClient
 
 if TYPE_CHECKING:
     from ..state import State
@@ -259,6 +259,7 @@ class TextChannel(Channel):
         embeds: Optional[List[Embed]] = None,
         reference: Optional[Message] = None,
         files: Optional[List[File]] = None,
+        row: Optional[MessageActionRow] = None,
     ) -> Message:
         """
         Sends a message to the channel.
@@ -278,16 +279,14 @@ class TextChannel(Channel):
         if reference is not None:
             message_reference = reference.to_reference()
 
-        if files is not None:
-            files = [file.fd for file in files]  # type: ignore
-
         data = await self._state.http.send_message(
             channel_id=self.id,
             content=content,
             tts=tts,
             embeds=[embed.to_dict() for embed in embeds],
+            components=[row._to_dict()] if row is not None else None,
             message_reference=message_reference,
-            files=files,  # type: ignore
+            files=files,
         )
         return self._state.create_message(data, self)
 
@@ -459,18 +458,24 @@ class DMChannel:
         return f"<DMChannel id={self.id} type={self.type!r}>"
 
     async def send(
-        self, content: Optional[str] = None, *, embeds: Optional[List[Embed]] = None
+        self,
+        content: Optional[str] = None,
+        *,
+        embeds: Optional[List[Embed]] = None,
+        row: Optional[MessageActionRow] = None,
+        **kwargs,
     ) -> Message:
         """
         Sends a message to the channel.
 
         Parameters:
             content (Optional[str]): The content of the message.
-            embeds (Optional[List[lefi.Embed]]): The list of [Embed](./embed.md)s to send with the message.
+            embeds (Optional[List[lefi.Embed]]): The list of embeds to send with the message.
+            **kwargs (Any): Extra options to pass to
+            [lefi.HTTPClient.send_message](./http.md#lefi.http.HTTPClient.send_message).
 
         Returns:
             The sent [lefi.Message](./message.md) instance.
-
         """
         embeds = [] if embeds is None else embeds
 
@@ -478,6 +483,8 @@ class DMChannel:
             channel_id=self.id,
             content=content,
             embeds=[embed.to_dict() for embed in embeds],
+            components=[row._to_dict()] if row is not None else None,
+            **kwargs,
         )
         return self._state.create_message(data, self)
 

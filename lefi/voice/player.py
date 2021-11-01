@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import io
-from typing import TYPE_CHECKING, Optional, Protocol, Union
+from typing import IO, TYPE_CHECKING, Optional, Protocol, Union
 import time
 import audioop
 
@@ -65,7 +65,7 @@ class BaseAudioStream(AudioStream):
 
 
 class PCMAudioStream(BaseAudioStream):
-    def __init__(self, source: io.BufferedIOBase) -> None:
+    def __init__(self, source: IO[bytes]) -> None:
         self.source = source
         self.loop = asyncio.get_running_loop()
 
@@ -84,7 +84,7 @@ class PCMAudioStream(BaseAudioStream):
 
 
 class FFmpegAudioStream(BaseAudioStream):
-    def __init__(self, source: Union[str, io.BufferedIOBase]):
+    def __init__(self, source: Union[str, IO[bytes]]):
         self.source = source
         self.process: Optional[asyncio.subprocess.Process] = None
 

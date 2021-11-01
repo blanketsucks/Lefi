@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Optional, Union, List
 
+from .embed import Embed
+
 from ..utils import Snowflake
 from .embed import Embed
 
