@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional, Union
+from typing import TYPE_CHECKING, Dict, Optional, Union, List
 
 from ..utils import Snowflake
+from .embed import Embed
 
 if TYPE_CHECKING:
     from ..state import State
@@ -52,6 +53,8 @@ class Message:
         self._channel = channel
         self._state = state
         self._data = data
+
+        self._pinned = data["pinned"]
 
     def __repr__(self) -> str:
         return f"<Message id={self.id}>"
@@ -112,12 +115,34 @@ class Message:
             user_id=user.id if user is not None else user,
         )
 
+    async def pin(self) -> None:
+        """
+        Pins the message.
+        """
+        await self._state.http.pin_message(self.channel.id, self.id)
+        self._pinned = True
+
+    async def unpin(self) -> None:
+        """
+        Unpins the message.
+        """
+        await self._state.http.unpin_message(self.channel.id, self.id)
+        self._pinned = False
+
     async def delete(self) -> None:
         """
         Deletes the message.
         """
         await self._state.http.delete_message(self.channel.id, self.id)
         self._state._messages.pop(self.id, None)
+
+    def to_reference(self) -> Dict:
+        payload = {"message_id": self.id, "channel_id": self.channel.id}
+
+        if self.guild:
+            payload["guild_id"] = self.guild.id
+
+        return payload
 
     @property
     def id(self) -> int:
@@ -159,3 +184,10 @@ class Message:
             return author
         else:
             return self._state.add_user(self._data["author"])
+
+    @property
+    def pinned(self) -> bool:
+        """
+        Whether the message is pinned.
+        """
+        return self._pinned

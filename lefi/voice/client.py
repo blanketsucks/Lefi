@@ -14,6 +14,11 @@ if TYPE_CHECKING:
 
 
 class VoiceClient:
+    """
+    Represents a voice client.
+
+    """
+
     def __init__(self, state: State, channel: VoiceChannel) -> None:
         if not has_nacl:
             raise PyNaClNotFound("PyNaCl is required for voice")
@@ -39,6 +44,9 @@ class VoiceClient:
 
     @property
     def player(self) -> Optional[AudioPlayer]:
+        """
+        Returns the current player. If no player is playing, returns None.
+        """
         return self._player
 
     async def voice_state_update(self, data: Dict) -> None:
@@ -52,6 +60,10 @@ class VoiceClient:
         self._received_server_update.set()
 
     async def connect(self) -> None:
+        """
+        Connects the voice client.
+
+        """
         await self.channel.guild.change_voice_state(channel=self.channel)
 
         futures = [
@@ -65,6 +77,10 @@ class VoiceClient:
         self._connected = True
 
     async def disconnect(self) -> None:
+        """
+        Disconnects the voice client.
+
+        """
         if self._player:
             await self._player.stop()
 
@@ -77,12 +93,27 @@ class VoiceClient:
         self._received_state_update.clear()
 
     def is_connected(self) -> bool:
+        """
+        Wether the client is connected to the voice channel.
+
+        """
         return self._connected
 
     def is_playing(self) -> bool:
+        """
+        Wether the client is playing.
+
+        """
         return self._player is not None
 
     def play(self, stream: AudioStream) -> AudioPlayer:
+        """
+        Plays an audio stream. If the client is either connected or already playing it raises an error.
+
+        Parameters:
+            stream (AudioStream): The audio stream to play.
+
+        """
         if not self.is_connected():
             raise VoiceException("Client not connected")
 
@@ -93,6 +124,11 @@ class VoiceClient:
         return self._player.play()
 
     def pause(self) -> None:
+        """
+        A shortcut for VoiceClient.player.pause().
+        If not player is playing, raises an error.
+
+        """
         if not self.is_playing() or self._player is None:
             raise VoiceException("Client is not playing")
 

@@ -46,6 +46,8 @@ class BaseWebsocketClient:
             "channel_create": self.client._state.parse_channel_create,
             "channel_update": self.client._state.parse_channel_update,
             "channel_delete": self.client._state.parse_channel_delete,
+            "voice_server_update": self.client._state.parse_voice_server_update,
+            "voice_state_update": self.client._state.parse_voice_state_update,
         }
 
     async def _get_gateway(self) -> Dict:

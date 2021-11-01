@@ -76,7 +76,7 @@ class Client:
         self.futures: Dict[str, List[Tuple[asyncio.Future, Callable[..., bool]]]] = {}
 
         self.user: User = None  # type: ignore
-        self.shards: Optional[Dict[int, Shard]] = None
+        self.shards: Optional[List[Shard]] = None
 
     def _create_loop(self) -> asyncio.AbstractEventLoop:
         try:
@@ -216,10 +216,12 @@ class Client:
             await voice.disconnect()
 
         if self.shards:
-            for shard in self.shards.values():
+            for shard in self.shards:
                 await shard.close()
         else:
             await self.ws.close()
+
+        return None
 
     def run(self) -> None:
         """

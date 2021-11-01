@@ -12,12 +12,14 @@ from typing import (
     Union,
 )
 
-from lefi.objects.flags import Permissions
+from .flags import Permissions
 from ..voice import VoiceClient
 from .embed import Embed
 from .enums import ChannelType
 from .permissions import Overwrite
 from ..errors import VoiceException
+from ..utils import ChannelHistoryIterator
+from .files import File
 
 if TYPE_CHECKING:
     from ..state import State
@@ -133,13 +135,12 @@ class Channel:
             base |= everyone.allow
             base &= ~everyone.deny
 
-        overwrites = self.overwrites
         allow = Permissions(0)
         deny = Permissions(0)
 
         if isinstance(target, Member):
             for role in target.roles:
-                overwrite = overwrites.get(role)
+                overwrite = self.overwrites_for(role)
                 if overwrite is not None:
                     allow |= overwrite.allow
                     deny |= overwrite.deny
@@ -147,7 +148,7 @@ class Channel:
             base |= allow
             base &= ~deny
 
-            member_overwrite = overwrites.get(target)
+            member_overwrite = self.overwrites_for(target)
             if member_overwrite:
                 base |= member_overwrite.allow
                 base &= ~member_overwrite.deny
@@ -172,7 +173,7 @@ class TextChannel(Channel):
         """
         super().__init__(state, data, guild)
 
-    async def fetch_history(self, **kwargs) -> AsyncIterator[Message]:
+    def history(self, **kwargs) -> ChannelHistoryIterator:
         """
         Makes an API call to grab messages from the channel.
 
@@ -184,9 +185,8 @@ class TextChannel(Channel):
             A list of the fetched [lefi.Message](./message.md) instances.
 
         """
-        data = await self._state.http.get_channel_messages(self.id, **kwargs)
-        for payload in data:
-            yield self._state.create_message(payload, self)
+        coro = self._state.http.get_channel_messages(self.id, **kwargs)
+        return ChannelHistoryIterator(self._state, self, coro)
 
     async def edit(self, **kwargs) -> TextChannel:
         """
@@ -243,9 +243,7 @@ class TextChannel(Channel):
         if not check:
             check = lambda message: True
 
-        iterator = self.fetch_history(
-            limit=limit, around=around, before=before, after=after
-        )
+        iterator = self.history(limit=limit, around=around, before=before, after=after)
         async for message in iterator:
             if check(message):
                 to_delete.append(message)
@@ -257,8 +255,10 @@ class TextChannel(Channel):
         self,
         content: Optional[str] = None,
         *,
+        tts: bool = False,
         embeds: Optional[List[Embed]] = None,
-        **kwargs,
+        reference: Optional[Message] = None,
+        files: Optional[List[File]] = None,
     ) -> Message:
         """
         Sends a message to the channel.
@@ -273,12 +273,21 @@ class TextChannel(Channel):
             The sent [lefi.Message](./message.md) instance.
         """
         embeds = [] if embeds is None else embeds
+        message_reference = None
 
-        data = await self._state.client.http.send_message(
+        if reference is not None:
+            message_reference = reference.to_reference()
+
+        if files is not None:
+            files = [file.fd for file in files]  # type: ignore
+
+        data = await self._state.http.send_message(
             channel_id=self.id,
             content=content,
+            tts=tts,
             embeds=[embed.to_dict() for embed in embeds],
-            **kwargs,
+            message_reference=message_reference,
+            files=files,  # type: ignore
         )
         return self._state.create_message(data, self)
 

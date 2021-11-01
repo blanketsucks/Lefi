@@ -1,16 +1,13 @@
 from __future__ import annotations
 
 import asyncio
-import contextlib
-import datetime
-import io
 import json
 import logging
-from typing import Any, ClassVar, Dict, List, Optional, Union
-
+from typing import Any, ClassVar, Dict, List, Optional, Union, IO
+import io
 import aiohttp
 
-from .errors import BadRequest, Forbidden, HTTPException, NotFound, Unauthorized
+from .errors import BadRequest, Forbidden, NotFound, Unauthorized
 from .ratelimiter import Ratelimiter
 from .utils import bytes_to_data_uri, update_payload
 

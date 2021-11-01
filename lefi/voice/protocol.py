@@ -154,7 +154,7 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
 
     def encrypt(self, data: bytes, nonce: bytes) -> bytes:
         box = self.create_secret_box()
-        return box.encrypt(bytes(data), bytes(nonce))
+        return box.encrypt(bytes(data), bytes(nonce)).ciphertext
 
     def create_voice_packet(self, data: bytes) -> bytes:
         header = self.create_rtp_header()
@@ -171,3 +171,7 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         await self.sendto(packet, addr)
 
         self.increment("timestamp", 960, 0xFFFFFFFF)
+
+    async def send_raw_voice_packet(self, data: bytes) -> None:
+        addr = self.websocket.remote_addr
+        await self.sendto(data, addr)

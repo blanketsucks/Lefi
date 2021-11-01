@@ -16,6 +16,9 @@ class VoiceState:
 
     @property
     def user_id(self) -> int:
+        """
+        The ID of the user in this voice state.
+        """
         return int(self._data["user_id"])
 
     @property

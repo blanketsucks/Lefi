@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import asyncio
-from typing import IO, TYPE_CHECKING, Optional, Protocol, Union
+import io
+from typing import TYPE_CHECKING, Optional, Protocol, Union
+import time
 import audioop
 
 from . import _opus
@@ -63,7 +65,7 @@ class BaseAudioStream(AudioStream):
 
 
 class PCMAudioStream(BaseAudioStream):
-    def __init__(self, source: IO[bytes]) -> None:
+    def __init__(self, source: io.BufferedIOBase) -> None:
         self.source = source
         self.loop = asyncio.get_running_loop()
 
@@ -82,7 +84,7 @@ class PCMAudioStream(BaseAudioStream):
 
 
 class FFmpegAudioStream(BaseAudioStream):
-    def __init__(self, source: Union[str, IO[bytes]]):
+    def __init__(self, source: Union[str, io.BufferedIOBase]):
         self.source = source
         self.process: Optional[asyncio.subprocess.Process] = None
 
@@ -124,8 +126,11 @@ class FFmpegAudioStream(BaseAudioStream):
 
     async def close(self) -> None:
         if self.process:
-            self.process.terminate()
-            await self.process.wait()
+            try:
+                self.process.kill()
+                await self.process.wait()
+            except ProcessLookupError:
+                pass
 
 
 class AudioPlayer:
@@ -141,23 +146,40 @@ class AudioPlayer:
         self._waiter: Optional[asyncio.Task] = None
 
     async def _play(self) -> None:
+        self._start = time.perf_counter()
+        self.loops = 0
+
         await self.protocol.websocket.speak(state=SpeakingState.VOICE)
 
         async with self.stream:
             async for packet in self.stream:
+                self.loops += 1
+
                 if self.is_paused():
                     await self._resumed.wait()
 
-                await self.protocol.send_voice_packet(packet)
-                await asyncio.sleep(_opus.FRAME_DURATION / 1000)
+                transformed = audioop.mul(packet, 2, self._volume)
+                await self.protocol.send_voice_packet(transformed)
+
+                # Shamelessly copied from discord.py
+                next_time = self._start + self.delay * self.loops
+                delay = max(0, self.delay + (next_time - time.perf_counter()))
+
+                await asyncio.sleep(delay)
 
         await self.protocol.websocket.speak(state=SpeakingState.NONE)
 
     def play(self) -> AudioPlayer:
+        """
+        Starts playing the audio stream.
+        """
         self._waiter = self.loop.create_task(self._play())
         return self
 
     async def stop(self) -> None:
+        """
+        Stops the player.
+        """
         if self._waiter is not None:
             if not self._waiter.done():
                 self._waiter.cancel()
@@ -167,24 +189,51 @@ class AudioPlayer:
         await self.protocol.websocket.speak(state=SpeakingState.NONE)
 
     async def wait(self) -> None:
+        """
+        Waits for the player to finish.
+
+        """
         if self._waiter is not None:
             await self._waiter
 
     def pause(self) -> AudioPlayer:
+        """
+        Pauses the player.
+
+        """
         self._resumed.clear()
         return self
 
     def resume(self) -> AudioPlayer:
+        """
+        Resumes the player.
+
+        """
         self._resumed.set()
         return self
 
     def is_paused(self) -> bool:
+        """
+        Whether the player is paused.
+
+        """
         return not self._resumed.is_set()
 
     def set_volume(self, volume: float) -> AudioPlayer:
-        self._volume = min(max(0.0, volume), 5.0)
+        """
+        Sets the volume. The volume passed in must be between 0.0 and 2.0.
+
+        Parameters:
+            volume (float): The volume to set the player to.
+
+        """
+        self._volume = min(max(0.0, volume), 2.0)
         return self
 
     @property
     def volume(self) -> float:
+        """
+        The current volume of the player.
+
+        """
         return self._volume

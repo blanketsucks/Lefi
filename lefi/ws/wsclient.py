@@ -49,7 +49,7 @@ class WebSocketClient(BaseWebsocketClient):
         async with Ratelimiter(max_concurrency, 1) as handler:
             if self.shard_ids is not None:
                 shards = [Shard(self, id_) for id_ in self.shard_ids]
-                self.client.shards = {shard.id: shard for shard in shards}
+                self.client.shards = shards
 
                 for shard in shards:
                     await shard.start(url, max_concurrency)

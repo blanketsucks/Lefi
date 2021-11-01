@@ -33,6 +33,9 @@ class Role(Snowflake):
         self._data = data
         self._guild = guild
 
+    def __repr__(self) -> str:
+        return f"<Role id={self.id} name={self.name!r} position={self.position}>"
+
     async def delete(self) -> None:
         """
         Deletes the role from its guild.
@@ -46,7 +49,7 @@ class Role(Snowflake):
         permissions: Optional[Permissions] = None,
         color: Optional[int] = None,
         hoist: Optional[bool] = None,
-        mentionable: Optional[bool] = None
+        mentionable: Optional[bool] = None,
     ) -> Role:
         """
         Edits the role.

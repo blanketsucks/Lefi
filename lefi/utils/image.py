@@ -1,10 +1,54 @@
 import base64
-import imghdr
 
 __all__ = (
+    "is_jpeg",
+    "is_png",
+    "is_gif",
     "get_mimetype",
     "bytes_to_data_uri",
 )
+
+
+def is_jpeg(data: bytes) -> bool:
+    """
+    Check if the data is a JPEG image.
+
+    Parameters:
+        data (bytes): The data to check.
+
+    Returns:
+        True if the data is a JPEG image, False otherwise.
+
+    """
+    return data[6:10] in (b"JFIF", b"Exif")
+
+
+def is_png(data: bytes) -> bool:
+    """
+    Check if the given data is a PNG.
+
+    Parameters:
+        data (bytes): The data to check.
+
+    Returns:
+        True if the data is a PNG, False otherwise.
+
+    """
+    return data[:8] == b"\211PNG\r\n\032\n"
+
+
+def is_gif(data: bytes) -> bool:
+    """
+    Check if the given data is a GIF.
+
+    Parameters:
+        data (bytes): The data to check.
+
+    Returns:
+        True if the data is a GIF, False otherwise.
+
+    """
+    return data[:6] in (b"GIF87a", b"GIF89a")
 
 
 def get_mimetype(data: bytes) -> str:
@@ -17,14 +61,14 @@ def get_mimetype(data: bytes) -> str:
     Returns:
         The mimetype of the data.
     """
-    type_ = imghdr.what(file=None, h=data)
-    if not type_:
-        raise ValueError("Unable to determine image type")
-
-    if type_ not in ("jpeg", "png", "gif"):
-        raise ValueError("Unsupported image type")
-
-    return f"image/{type_}"
+    if is_jpeg(data):
+        return "image/jpeg"
+    elif is_png(data):
+        return "image/png"
+    elif is_gif(data):
+        return "image/gif"
+    else:
+        raise ValueError("Unknown image type")
 
 
 def bytes_to_data_uri(data: bytes) -> str:

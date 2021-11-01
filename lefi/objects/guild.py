@@ -16,6 +16,7 @@ from .integration import Integration
 from .invite import Invite, PartialInvite
 from .template import GuildTemplate
 from ..voice import VoiceState, VoiceClient
+from ..utils import MemberIterator
 
 if TYPE_CHECKING:
     from ..state import State
@@ -193,7 +194,7 @@ class Guild:
         data = await self._state.http.get_guild_templates(self.id)
         return [GuildTemplate(self._state, payload) for payload in data]
 
-    async def query(self, q: str, *, limit: int = 1) -> AsyncIterator[Member]:
+    def query(self, q: str, *, limit: int = 1) -> MemberIterator:
         """
         Queries the guild for a specific string.
 
@@ -205,14 +206,8 @@ class Guild:
             A list of [lefi.Member](./member.md) instances.
 
         """
-        from .member import Member
-
-        data = await self._state.http.search_guild_members(
-            self.id, query=q, limit=limit
-        )
-        for payload in data:
-            member = Member(self._state, payload, self)
-            yield member
+        coro = self._state.http.search_guild_members(self.id, query=q, limit=limit)
+        return MemberIterator(self._state, self, coro)
 
     async def change_voice_state(
         self,
