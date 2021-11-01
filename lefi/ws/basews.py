@@ -38,8 +38,6 @@ class BaseWebsocketClient:
         self.latency: float = float("inf")
         self.heartbeat_delay: float = 0
 
-        self._event_mapping = self.client._state._event_mapping
-
     async def _get_gateway(self) -> Dict:
         headers = {"Authorization": f"Bot {self.client.http.token}"}
         session = self.client.http.session or await self.client.http._create_session()
@@ -105,8 +103,10 @@ class BaseWebsocketClient:
         if event == "READY":
             self.session_id = data["session_id"]
 
-        if event_parser := self._event_mapping.get(event.lower()):
-            await event_parser(data)
+        if parser := getattr(self.client._state, f"parse_{event.lower()}"):
+            await parser(data)
+
+        self.client._state.dispatch("websocket_message", data)
 
     async def reconnect(self) -> None:
         """
@@ -119,7 +119,7 @@ class BaseWebsocketClient:
         await self.start()
 
     async def resume(self) -> None:
-        """
+        """;eval return 2+2
         Sends a resume payload to the websocket.
         """
         payload = {
