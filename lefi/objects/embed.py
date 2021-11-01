@@ -161,7 +161,7 @@ class Embed:
             color (int): The new color to use.
 
         """
-        self.data["color"] - color
+        self.data["color"] = color
 
     @property
     def footer(self) -> Optional[EmbedItem]:
