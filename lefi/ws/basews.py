@@ -95,6 +95,7 @@ class BaseWebsocketClient:
     async def dispatch(self, event: str, data: Dict) -> None:
         """
         Dispatches an event and its data to the parsers.
+
         Parameters:
             event (str): The event being dispatched.
             data (Dict): The raw data of the event.
@@ -103,8 +104,8 @@ class BaseWebsocketClient:
         if event == "READY":
             self.session_id = data["session_id"]
 
-        if parser := getattr(self.client._state, f"parse_{event.lower()}"):
-            await parser(data)
+        if parser := getattr(self.client._state, f"parse_{event.lower()}", None):
+            return await parser(data)
 
         self.client._state.dispatch("websocket_message", event, data)
 
