@@ -10,7 +10,7 @@ from .enums import ComponentStyle, ComponentType
 from ..utils.payload import update_payload
 
 __all__ = (
-    "MessageActionRow",
+    "ActionRow",
     "Component",
     "Button",
 )
@@ -78,7 +78,7 @@ class Button(Component):
         )
 
 
-class MessageActionRow(Component):
+class ActionRow(Component):
     """
     Represents a message action row.
 

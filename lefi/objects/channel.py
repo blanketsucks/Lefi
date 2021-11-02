@@ -15,7 +15,7 @@ from typing import (
 from .embed import Embed
 from .enums import ChannelType
 from .permissions import Overwrite
-from .components import MessageActionRow
+from .components import ActionRow
 from .flags import Permissions
 
 
@@ -252,7 +252,7 @@ class TextChannel(Channel):
         content: Optional[str] = None,
         *,
         embeds: Optional[List[Embed]] = None,
-        row: Optional[MessageActionRow] = None,
+        row: Optional[ActionRow] = None,
         **kwargs,
     ) -> Message:
         """
@@ -426,7 +426,7 @@ class DMChannel:
         content: Optional[str] = None,
         *,
         embeds: Optional[List[Embed]] = None,
-        row: Optional[MessageActionRow] = None,
+        row: Optional[ActionRow] = None,
         **kwargs,
     ) -> Message:
         """
