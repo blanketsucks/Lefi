@@ -14,7 +14,7 @@ from typing import (
 from .embed import Embed
 from .enums import ChannelType
 from .permissions import Overwrite
-from .components import MessageActionRow
+from .components import ActionRow
 from .flags import Permissions
 from .files import File
 from ..errors import VoiceException
@@ -316,7 +316,7 @@ class TextChannel(Channel):
         embeds: Optional[List[Embed]] = None,
         reference: Optional[Message] = None,
         files: Optional[List[File]] = None,
-        row: Optional[MessageActionRow] = None,
+        row: Optional[ActionRow] = None,
     ) -> Message:
         """
         Sends a message to the channel.
@@ -345,7 +345,13 @@ class TextChannel(Channel):
             message_reference=message_reference,
             files=files,
         )
-        return self._state.create_message(data, self)
+
+        message = self._state.create_message(data, self)
+
+        if row is not None and data.get("components"):
+            self._state._components.setdefault(message.id, []).extend(row.callbacks)
+
+        return message
 
     async def fetch_message(self, message_id: int) -> Message:
         """
@@ -541,7 +547,7 @@ class DMChannel:
         content: Optional[str] = None,
         *,
         embeds: Optional[List[Embed]] = None,
-        row: Optional[MessageActionRow] = None,
+        row: Optional[ActionRow] = None,
         **kwargs,
     ) -> Message:
         """

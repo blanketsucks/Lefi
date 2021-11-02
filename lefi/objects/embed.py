@@ -4,16 +4,15 @@ import datetime
 
 from typing import (
     TYPE_CHECKING,
-    Any,
     Dict,
-    Generic,
     Optional,
     List,
     Type,
+    TypedDict,
     TypeVar,
-    Union,
+    Generic,
+    Any,
 )
-from typing_extensions import TypedDict
 
 from ..utils.payload import update_payload
 

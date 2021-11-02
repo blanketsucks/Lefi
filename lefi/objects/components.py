@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import enum
+import functools
 import uuid
 
-from typing import List, Dict, Optional, Coroutine
+from typing import List, Dict, Optional, Coroutine, Callable
 
 from .enums import ComponentStyle, ComponentType
 from ..utils.payload import update_payload
 
 __all__ = (
-    "MessageActionRow",
+    "ActionRow",
     "Component",
     "Button",
 )
@@ -19,6 +20,8 @@ class Component:
     """
     Represents a message component.
     """
+
+    callback: Callable
 
     def _to_dict(self) -> Dict:
         raise NotImplementedError
@@ -39,9 +42,7 @@ class Button(Component):
 
     """
 
-    def __init__(
-        self, style: ComponentStyle, label: str, callback: Coroutine, **kwargs
-    ) -> None:
+    def __init__(self, style: ComponentStyle, label: str, **kwargs) -> None:
         """
         Parameters:
             style (ComponentStyle): The style to use.
@@ -57,7 +58,8 @@ class Button(Component):
         self.emoji: Optional[str] = kwargs.get("emoji")
         self.url: Optional[str] = kwargs.get("url")
 
-        self.callback: Coroutine = callback
+    async def callback(self, interaction) -> None:
+        raise NotImplementedError
 
     def _to_dict(self) -> Dict:
         payload = {
@@ -76,12 +78,13 @@ class Button(Component):
         )
 
 
-class MessageActionRow(Component):
+class ActionRow(Component):
     """
     Represents a message action row.
 
     Attributes:
         components (List[Component]): A list of components connected to the action row.
+        callbacks (List[Callable]): A list of callbacks for each child component of the row.
 
     """
 
@@ -92,6 +95,7 @@ class MessageActionRow(Component):
 
         """
         self.components = components
+        self.callbacks = [c.callback for c in components]
 
     def add(self, component: Component) -> None:
         """
