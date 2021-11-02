@@ -188,6 +188,10 @@ class Message:
             return self._state.add_user(self._data["author"])
 
     @property
+    def embeds(self) -> List[Embed]:
+        return [Embed.from_dict(embed) for embed in self._data["embeds"]]
+
+    @property
     def pinned(self) -> bool:
         """
         Whether the message is pinned.

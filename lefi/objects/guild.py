@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, AsyncIterator, Dict, List, NamedTuple, Optiona
 from ..utils import Snowflake
 from .emoji import Emoji
 from .enums import (
+    ChannelType,
     ExplicitContentFilterLevel,
     GuildPremiumTier,
     MessageNotificationLevel,
@@ -73,6 +74,42 @@ class Guild:
         data = await self._state.http.modify_guild(self.id, **kwargs)
         self._data = data
         return self
+
+    async def create_text_channel(
+        self,
+        *,
+        name: str,
+        topic: Optional[str] = None,
+        position: Optional[int] = None,
+        nsfw: Optional[bool] = None,
+        parent: Optional[CategoryChannel] = None,
+    ) -> TextChannel:
+        """
+        Creates a new text channel in the guild.
+
+        Parameters:
+            name (str): The name of the channel.
+            topic (str): The topic of the channel.
+            position (int): The position of the channel.
+            nsfw (bool): Whether the channel is nsfw.
+            parent (lefi.CategoryChannel): The parent category of the channel.
+
+        """
+        data = await self._state.http.create_guild_channel(
+            guild_id=self.id,
+            name=name,
+            type=ChannelType.TEXT.value,
+            topic=topic,
+            position=position,
+            parent_id=parent.id if parent else None,
+            nsfw=nsfw,
+        )
+
+        channel = self._state.create_channel(data, self)
+        self._channels[channel.id] = channel
+        self._state._channels[channel.id] = channel
+
+        return channel  # type: ignore
 
     async def create_role(self, name: str, **kwargs) -> Role:
         """

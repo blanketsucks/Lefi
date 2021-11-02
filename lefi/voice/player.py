@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-import io
-from typing import IO, TYPE_CHECKING, Optional, Protocol, Union
+from typing import TYPE_CHECKING, List, Optional, Protocol, Union
 import time
 import audioop
 
@@ -10,6 +9,7 @@ from . import _opus
 from .wsclient import SpeakingState
 
 __all__ = (
+    "AudioIOSource",
     "AudioStream",
     "BaseAudioStream",
     "PCMAudioStream",
@@ -19,6 +19,14 @@ __all__ = (
 
 if TYPE_CHECKING:
     from .protocol import VoiceProtocol
+
+
+class AudioIOSource(Protocol):
+    def read(self, n: Optional[int] = ...) -> bytes:
+        ...
+
+    def close(self) -> None:
+        ...
 
 
 class AudioStream(Protocol):
@@ -65,7 +73,7 @@ class BaseAudioStream(AudioStream):
 
 
 class PCMAudioStream(BaseAudioStream):
-    def __init__(self, source: IO[bytes]) -> None:
+    def __init__(self, source: AudioIOSource) -> None:
         self.source = source
         self.loop = asyncio.get_running_loop()
 
@@ -84,13 +92,23 @@ class PCMAudioStream(BaseAudioStream):
 
 
 class FFmpegAudioStream(BaseAudioStream):
-    def __init__(self, source: Union[str, IO[bytes]]):
+    def __init__(
+        self,
+        source: Union[str, AudioIOSource],
+        ffmpeg_options: Optional[List[str]] = None,
+    ) -> None:
+        self.pipe = False
+        if hasattr(source, "read"):
+            self.pipe = True
+
         self.source = source
         self.process: Optional[asyncio.subprocess.Process] = None
+        self.options = ffmpeg_options or []
+        self.loop = asyncio.get_running_loop()
 
     async def create_process(self):
         kwargs = {
-            "-i": self.source,
+            "-i": "-" if self.pipe else self.source,
             "-f": "s16le",
             "-ar": "48000",
             "-ac": "2",
@@ -101,12 +119,15 @@ class FFmpegAudioStream(BaseAudioStream):
         for k, v in kwargs.items():
             args.extend([k, v])
 
+        args.extend(self.options)
         args.append("pipe:1")
+
+        stdin = self.source if self.pipe else asyncio.subprocess.DEVNULL
         process = await asyncio.create_subprocess_exec(
             "ffmpeg",
             *args,
             stdout=asyncio.subprocess.PIPE,
-            stdin=asyncio.subprocess.DEVNULL,
+            stdin=stdin,  # type: ignore
         )
 
         return process
@@ -131,6 +152,8 @@ class FFmpegAudioStream(BaseAudioStream):
                 await self.process.wait()
             except ProcessLookupError:
                 pass
+
+            self.process = None
 
 
 class AudioPlayer:

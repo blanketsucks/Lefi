@@ -180,6 +180,17 @@ class HTTPClient:
             raise ValueError("Invalid token")
 
     def build_file_form(self, file: File, index: Optional[int] = None) -> Dict:
+        """
+        Builds a form for a file upload.
+
+        Parameters:
+            file (lefi.File): The file to upload.
+            index (Optional[int]): The index of the file.
+
+        Returns:
+            A dict which can be used as a form for a file upload.
+
+        """
         return {
             "name": f"file-{index}" if index else "file",
             "value": file.fd,
@@ -195,7 +206,7 @@ class HTTPClient:
             files (Optional[List[lefi.File]]): The files to send.
 
         Returns:
-            A dict which should contain the files.
+            A list which should contain the files.
 
         """
         form: List[Dict] = []
@@ -295,7 +306,7 @@ class HTTPClient:
         rtc_region: Optional[str] = None,
         video_quality_mode: Optional[int] = None,
         sync_permissions: Optional[bool] = None,
-        permissions_overwrites: Optional[List[Dict[str, Any]]] = None,
+        permission_overwrites: Optional[List[Dict[str, Any]]] = None,
     ) -> Dict[str, Any]:
         """
         Makes an API call to edit a voice channel.
@@ -324,13 +335,28 @@ class HTTPClient:
             rtc_region=rtc_region,
             video_quality_mode=video_quality_mode,
             sync_permissions=sync_permissions,
-            permissions_overwrites=permissions_overwrites,
+            permissions_overwrites=permission_overwrites,
         )
 
         return await self.request(
             "PATCH",
             Route(f"/channels/{channel_id}", channel_id=channel_id),
             json=payload,
+        )
+
+    async def delete_channel(self, channel_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call to delete a channel.
+
+        Parameters:
+            channel_id (int): The ID representing the channel to delete.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
+        return await self.request(
+            "DELETE", Route(f"/channels/{channel_id}", channel_id=channel_id)
         )
 
     async def get_channel_messages(

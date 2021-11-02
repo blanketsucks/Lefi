@@ -60,6 +60,44 @@ class Channel:
 
         return self.id == o.id
 
+    async def delete(self) -> None:
+        """
+        Deletes the channel.
+        """
+        await self._state.http.delete_channel(self.id)
+
+        self._state._channels.pop(self.id, None)
+        self._guild._channels.pop(self.id, None)
+
+        return None
+
+    def _make_permission_overwrites(
+        self, base: Optional[Dict[Union[Member, Role], Permissions]]
+    ) -> Optional[List[Dict]]:
+        if not base:
+            return None
+
+        permission_overwrites = []
+        for target, overwrite in base.items():
+            if not isinstance(target, (Member, Role)):
+                raise TypeError("Target must be a Member or Role")
+
+            if not isinstance(overwrite, Permissions):
+                raise TypeError("Overwrite must be a Permissions instance")
+
+            allow, deny = overwrite.to_overwrite_pair()
+
+            ow = {
+                "id": target.id,
+                "type": 1 if isinstance(target, Member) else 0,
+                "allow": allow.value,
+                "deny": deny.value,
+            }
+
+            permission_overwrites.append(ow)
+
+        return permission_overwrites
+
     @property
     def guild(self) -> Guild:
         """
@@ -188,7 +226,17 @@ class TextChannel(Channel):
         coro = self._state.http.get_channel_messages(self.id, **kwargs)
         return ChannelHistoryIterator(self._state, self, coro)
 
-    async def edit(self, **kwargs) -> TextChannel:
+    async def edit(
+        self,
+        *,
+        name: Optional[str] = None,
+        type: Optional[ChannelType] = None,
+        position: Optional[int] = None,
+        topic: Optional[str] = None,
+        nsfw: Optional[bool] = None,
+        slowmode: Optional[int] = None,
+        overwrites: Optional[Dict[Union[Member, Role], Permissions]],
+    ) -> TextChannel:
         """
         Edits the channel.
 
@@ -200,8 +248,17 @@ class TextChannel(Channel):
             The lefi.TextChannel instance after editting.
 
         """
-
-        data = await self._state.http.edit_text_channel(self.id, **kwargs)
+        permission_overwrites = self._make_permission_overwrites(overwrites)
+        data = await self._state.http.edit_text_channel(
+            channel_id=self.id,
+            name=name,
+            type=type.value if type else None,
+            position=position,
+            topic=topic,
+            nsfw=nsfw,
+            rate_limit_per_user=slowmode,
+            permission_overwrites=permission_overwrites,
+        )
         self._data = data
         return self
 
@@ -355,7 +412,18 @@ class VoiceChannel(Channel):
         """
         super().__init__(state, data, guild)
 
-    async def edit(self, **kwargs) -> VoiceChannel:
+    async def edit(
+        self,
+        *,
+        name: Optional[str] = None,
+        position: Optional[int] = None,
+        bitrate: Optional[int] = None,
+        user_limit: Optional[int] = None,
+        rtc_region: Optional[str] = None,
+        video_quality_mode: Optional[int] = None,
+        sync_permissions: Optional[bool] = None,
+        overwrites: Optional[Dict[Union[Member, Role], Permissions]],
+    ) -> VoiceChannel:
         """
         Edits the channel.
 
@@ -367,7 +435,18 @@ class VoiceChannel(Channel):
             The lefi.VoiceChannel instance after editting.
 
         """
-        data = await self._state.http.edit_voice_channel(**kwargs)
+        permission_overwrites = self._make_permission_overwrites(overwrites)
+        data = await self._state.http.edit_voice_channel(
+            channel_id=self.id,
+            name=name,
+            position=position,
+            bitrate=bitrate,
+            user_limit=user_limit,
+            rtc_region=rtc_region,
+            video_quality_mode=video_quality_mode,
+            sync_permissions=sync_permissions,
+            permission_overwrites=permission_overwrites,
+        )
         self._data = data
         return self
 

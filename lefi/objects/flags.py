@@ -135,7 +135,7 @@ class Flag(metaclass=FlagMeta):
         if not isinstance(other, Flag):
             return NotImplemented
 
-        return self.__values__ == other.__values__
+        return self.value == other.value
 
     @property
     def __values__(self) -> Dict[FlagValue, bool]:
@@ -204,41 +204,17 @@ class Intents(Flag):
 
     @classmethod
     def all(cls):
-        return cls(
-            cls.guilds
-            | cls.guild_members
-            | cls.guild_bans
-            | cls.guild_emojis_and_stickers
-            | cls.guild_intergrations
-            | cls.guild_webhooks
-            | cls.guild_invites
-            | cls.guild_voice_states
-            | cls.guild_presences
-            | cls.guild_messages
-            | cls.guild_message_reactions
-            | cls.guild_message_typing
-            | cls.direct_messages
-            | cls.direct_message_reactions
-            | cls.direct_message_typing
-        )
+        kwargs = {flag.name: True for flag in cls}
+        return cls(**kwargs)
 
     @classmethod
     def default(cls):
-        return cls(
-            cls.guilds
-            | cls.guild_bans
-            | cls.guild_emojis_and_stickers
-            | cls.guild_intergrations
-            | cls.guild_webhooks
-            | cls.guild_invites
-            | cls.guild_voice_states
-            | cls.guild_messages
-            | cls.guild_message_reactions
-            | cls.guild_message_typing
-            | cls.direct_messages
-            | cls.direct_message_reactions
-            | cls.direct_message_typing
-        )
+        self = cls.all()
+
+        self.guild_members = False
+        self.guild_presences = False
+
+        return self
 
     @classmethod
     def none(cls):
@@ -287,47 +263,35 @@ class Permissions(Flag):
 
     @classmethod
     def all(cls):
-        return cls(
-            cls.create_instant_invite
-            | cls.kick_members
-            | cls.ban_members
-            | cls.administrator
-            | cls.manage_channels
-            | cls.manage_guild
-            | cls.add_reactions
-            | cls.view_audit_log
-            | cls.priority_speaker
-            | cls.stream
-            | cls.view_channel
-            | cls.send_messages
-            | cls.send_tts_messages
-            | cls.manage_messages
-            | cls.embed_links
-            | cls.attach_files
-            | cls.read_message_history
-            | cls.mention_everyone
-            | cls.use_external_emojis
-            | cls.connect
-            | cls.speak
-            | cls.mute_members
-            | cls.deafen_members
-            | cls.move_members
-            | cls.use_vad
-            | cls.change_nickname
-            | cls.manage_nicknames
-            | cls.manage_roles
-            | cls.manage_webhooks
-            | cls.manage_emojis_and_stickers
-            | cls.use_application_commands
-            | cls.request_to_speak
-            | cls.manage_threads
-            | cls.create_public_threads
-            | cls.create_private_threads
-            | cls.use_external_stickers
-            | cls.send_messages_in_threads
-            | cls.start_embedded_activities
-        )
+        kwargs = {flag.name: True for flag in cls}
+        return cls(**kwargs)
 
     @classmethod
     def none(cls):
         return cls(0)
+
+    def to_overwrite_pair(self) -> Tuple[Permissions, Permissions]:
+        deny = Permissions.none()
+        allow = Permissions.none()
+
+        for flag, value in self:
+            if value is True:
+                setattr(allow, flag.name, True)
+            else:
+                setattr(deny, flag.name, True)
+
+        return allow, deny
+
+    @classmethod
+    def from_overwrite_pair(cls, allow: Permissions, deny: Permissions) -> Permissions:
+        self = cls()
+
+        for flag, value in allow:
+            if value is True:
+                setattr(self, flag.name, True)
+
+        for flag, value in deny:
+            if value is True:
+                setattr(self, flag.name, False)
+
+        return self
