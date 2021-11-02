@@ -4,7 +4,17 @@ import asyncio
 import collections
 import logging
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union, Callable
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+    Callable,
+    List,
+)
 
 from .objects import (
     CategoryChannel,
@@ -110,6 +120,7 @@ class State:
         self._users = Cache[User]()
         self._guilds = Cache[Guild]()
         self._emojis = Cache[Emoji]()
+        self._components = Cache[List[Callable]]()
         self._channels = Cache[
             Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
         ]()
@@ -140,7 +151,7 @@ class State:
             *payload (Any): The data after parsing is finished.
 
         """
-        events: dict = self.client.events.get(event, {})
+        events: Optional[dict] = self.client.events.get(event)
         futures = self.client.futures.get(event, [])
 
         if callbacks := self.client.once_events.get(event):
@@ -157,11 +168,18 @@ class State:
 
                 break
 
-        for callback in events.values():
-            self.loop.create_task(callback(*payload))
+        if events is not None:
+            for callback in events.values():
+                self.loop.create_task(callback(*payload))
 
     async def parse_interaction_create(self, data: Dict) -> None:
-        raise NotImplementedError
+        message_id = int(data["message"]["id"])
+
+        if callbacks := self._components.get(message_id):
+            for callback in callbacks:
+                self.loop.create_task(callback(data))
+
+        self.dispatch("interaction_create", data)
 
     async def parse_ready(self, data: Dict) -> None:
         """

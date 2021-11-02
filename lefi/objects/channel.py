@@ -276,7 +276,13 @@ class TextChannel(Channel):
             components=[row._to_dict()] if row is not None else None,
             **kwargs,
         )
-        return self._state.create_message(data, self)
+
+        message = self._state.create_message(data, self)
+
+        if row is not None and data.get("components"):
+            self._state._components.setdefault(message.id, []).extend(row.callbacks)
+
+        return message
 
     async def fetch_message(self, message_id: int) -> Message:
         """

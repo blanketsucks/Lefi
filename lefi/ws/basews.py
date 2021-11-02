@@ -106,7 +106,7 @@ class BaseWebsocketClient:
         if parser := getattr(self.client._state, f"parse_{event.lower()}"):
             await parser(data)
 
-        self.client._state.dispatch("websocket_message", event.lower(), data)
+        self.client._state.dispatch("websocket_message", event, data)
 
     async def reconnect(self) -> None:
         """
