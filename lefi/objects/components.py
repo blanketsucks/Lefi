@@ -22,6 +22,7 @@ class Component:
     """
 
     callback: Callable
+    custom_id: str
 
     def _to_dict(self) -> Dict:
         raise NotImplementedError
@@ -95,7 +96,6 @@ class ActionRow(Component):
 
         """
         self.components = components
-        self.callbacks = [c.callback for c in components]
 
     def add(self, component: Component) -> None:
         """

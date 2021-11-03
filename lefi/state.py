@@ -14,6 +14,7 @@ from typing import (
     Union,
     Callable,
     List,
+    Tuple,
 )
 
 from .objects import (
@@ -31,6 +32,8 @@ from .objects import (
     User,
     VoiceChannel,
     Channel,
+    Interaction,
+    Component,
 )
 
 if TYPE_CHECKING:
@@ -120,7 +123,7 @@ class State:
         self._users = Cache[User]()
         self._guilds = Cache[Guild]()
         self._emojis = Cache[Emoji]()
-        self._components = Cache[List[Callable]]()
+        self._components = Cache[Tuple[Callable, Component]]()
         self._channels = Cache[
             Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
         ]()
@@ -173,11 +176,9 @@ class State:
                 self.loop.create_task(callback(*payload))
 
     async def parse_interaction_create(self, data: Dict) -> None:
-        message_id = int(data["message"]["id"])
-
-        if callbacks := self._components.get(message_id):
-            for callback in callbacks:
-                self.loop.create_task(callback(data))
+        if component := self._components.get(data["data"]["custom_id"]):
+            callback, instance = component
+            self.loop.create_task(callback(Interaction(self, data), instance))
 
         self.dispatch("interaction_create", data)
 
@@ -554,3 +555,12 @@ class State:
             ows[target] = overwrite  # type: ignore
 
         channel._overwrites = ows
+
+    def _create_member(self, data: Dict, guild: Guild) -> Union[User, Member]:
+        member = Member(self, data, guild)
+
+        for role_data in data["roles"]:
+            role = guild.get_role(int(role_data))
+            member._roles.setdefault(role.id, role)  # type: ignore
+
+        return member

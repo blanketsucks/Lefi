@@ -13,3 +13,4 @@ from .role import *
 from .template import *
 from .user import *
 from .components import *
+from .interactions import *

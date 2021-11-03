@@ -119,7 +119,7 @@ class Ratelimiter:
 
         if 300 > resp.status >= 200:
             logger.info(
-                f"SUCCESS: {self.method} ROUTE: {self.route.url} STATUS: {resp.status}"
+                f"{resp.status}: {self.method} ROUTE: {self.route.url} REMAINING: {remaining}"
             )
             return data
 
