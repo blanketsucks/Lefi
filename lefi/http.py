@@ -838,7 +838,7 @@ class HTTPClient:
             "POST", Route(f"/channels/{channel_id}/typing", channel_id=channel_id)
         )
 
-    async def get_pinned_messages(self, channel_id: int) -> Dict[str, Any]:
+    async def get_pinned_messages(self, channel_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the pinned messages of a channel.
 
@@ -888,7 +888,12 @@ class HTTPClient:
         )
 
     async def start_thread_with_message(
-        self, channel_id: int, message_id: int, *, name: str, auto_archive_duration: int
+        self,
+        channel_id: int,
+        message_id: int,
+        *,
+        name: str,
+        auto_archive_duration: Optional[int] = None,
     ) -> Dict[str, Any]:
         """
         Makes an API call to start a thread with a message.
@@ -903,7 +908,9 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        payload = {"name": name, "auto_archive_duration": auto_archive_duration}
+        payload = update_payload(
+            {}, name=name, auto_archive_duration=auto_archive_duration
+        )
         return await self.request(
             "POST",
             Route(
@@ -918,7 +925,7 @@ class HTTPClient:
         channel_id: int,
         *,
         name: str,
-        auto_archive_duration: int,
+        auto_archive_duration: Optional[int] = None,
         type: Optional[int] = None,
         invitable: Optional[bool] = None,
     ) -> Dict[str, Any]:
@@ -936,8 +943,13 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        payload = {"name": name, "auto_archive_duration": auto_archive_duration}
-        update_payload(payload, type=type, invitable=invitable)
+        payload = update_payload(
+            {},
+            name=name,
+            auto_archive_duration=auto_archive_duration,
+            type=type,
+            invitable=invitable,
+        )
 
         return await self.request(
             "POST",
@@ -1019,7 +1031,7 @@ class HTTPClient:
             ),
         )
 
-    async def list_thread_members(self, channel_id: int) -> Dict[str, Any]:
+    async def list_thread_members(self, channel_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get all of the members of a thread.
 
@@ -1069,7 +1081,7 @@ class HTTPClient:
         *,
         before: Optional[int] = None,
         limit: Optional[int] = None,
-    ):
+    ) -> Dict[str, Any]:
         """
         Makes an API call which list all the private archived threads in the channel.
 

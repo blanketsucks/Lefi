@@ -20,6 +20,7 @@ __all__ = (
     "OverwriteType",
     "ComponentStyle",
     "ComponentType",
+    "ActivityType",
 )
 
 
@@ -191,3 +192,13 @@ class PremiumType(IntEnum):
 class OverwriteType(Enum):
     ROLE = "role"
     MEMBER = "member"
+
+
+class ActivityType(IntEnum):
+    UNKNOWN = -1
+    PLAYING = 0
+    STREAMING = 1
+    LISTENING = 2
+    WATCHING = 3
+    CUSTOM = 4
+    COMPETING = 5

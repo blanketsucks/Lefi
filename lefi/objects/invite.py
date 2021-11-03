@@ -4,11 +4,11 @@ import datetime
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from .enums import InviteTargetType
-from .user import User
 
 if TYPE_CHECKING:
+    from .user import User
     from ..state import State
-    from .channel import Channel, TextChannel, VoiceChannel
+    from .channel import TextChannel, VoiceChannel
     from .guild import Guild
 
 __all__ = ("Invite", "PartialInvite")

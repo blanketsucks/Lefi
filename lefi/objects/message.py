@@ -6,6 +6,7 @@ from .embed import Embed
 
 from ..utils import Snowflake
 from .embed import Embed
+from .threads import Thread
 
 if TYPE_CHECKING:
     from ..state import State
@@ -61,6 +62,9 @@ class Message:
     def __repr__(self) -> str:
         return f"<Message id={self.id}>"
 
+    def _copy(self) -> Message:
+        return self.__class__(self._state, self._data, self._channel)
+
     async def edit(self, **kwargs) -> Message:
         """
         Edits the message.
@@ -73,7 +77,6 @@ class Message:
 
         """
         data = await self._state.http.edit_message(**kwargs)
-        self._data = data
         return self
 
     async def crosspost(self) -> Message:
@@ -137,6 +140,38 @@ class Message:
         """
         await self._state.http.delete_message(self.channel.id, self.id)
         self._state._messages.pop(self.id, None)
+
+    async def create_thread(
+        self, *, name: str, auto_archive_duration: Optional[int] = None
+    ) -> Thread:
+        """
+        Creates a thread from the message.
+
+        Parameters:
+            name (str): The name of the thread.
+            auto_archive_duration (Optional[int]): The amount of time to archive the thread.
+
+        Returns:
+            The created thread.
+
+        """
+        if not self.guild:
+            raise TypeError("Cannot a create thread in a DM channel.")
+
+        if auto_archive_duration is not None:
+            if auto_archive_duration not in (60, 1440, 4320, 10080):
+                raise ValueError(
+                    "auto_archive_duration must be 60, 1440, 4320 or 10080"
+                )
+
+        data = await self._state.http.start_thread_with_message(
+            channel_id=self.channel.id,
+            message_id=self.id,
+            name=name,
+            auto_archive_duration=auto_archive_duration,
+        )
+
+        return Thread(self._state, self.guild, data)
 
     def to_reference(self) -> Dict:
         payload = {"message_id": self.id, "channel_id": self.channel.id}

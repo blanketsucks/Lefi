@@ -12,14 +12,16 @@ from typing import (
 )
 
 from .embed import Embed
-from .enums import ChannelType
+from .enums import ChannelType, InviteTargetType
 from .permissions import Overwrite
 from .components import ActionRow
 from .flags import Permissions
 from .files import File
+from .invite import Invite
 from ..errors import VoiceException
-from ..utils import ChannelHistoryIterator
+from ..utils import ChannelHistoryIterator, to_snowflake
 from ..voice import VoiceClient
+from .threads import Thread
 
 if TYPE_CHECKING:
     from ..state import State
@@ -54,6 +56,12 @@ class Channel:
         name = self.__class__.__name__
         return f"<{name} name={self.name!r} id={self.id} position={self.position} type={self.type!r}>"
 
+    def _copy(self):
+        copy = self.__class__(self._state, self._data, self._guild)
+        copy._overwrites = self._overwrites.copy()
+
+        return copy
+
     def __eq__(self, o: object) -> bool:
         if not isinstance(o, Channel):
             return NotImplemented
@@ -65,11 +73,6 @@ class Channel:
         Deletes the channel.
         """
         await self._state.http.delete_channel(self.id)
-
-        self._state._channels.pop(self.id, None)
-        self._guild._channels.pop(self.id, None)
-
-        return None
 
     def _make_permission_overwrites(
         self, base: Optional[Dict[Union[Member, Role], Permissions]]
@@ -97,6 +100,50 @@ class Channel:
             permission_overwrites.append(ow)
 
         return permission_overwrites
+
+    async def edit_permissions(
+        self, target: Union[Role, Member], **permissions: bool
+    ) -> None:
+        """
+        Edits the permissions for the given target.
+
+        Parameters:
+            target (lefi.Role or lefi.Member): The target to edit the permissions for.
+            **permissions (bool): The permissions to set.
+
+        """
+        if not isinstance(target, (Role, Member)):
+            raise TypeError("target must be either a Role or Member")
+
+        perms = Permissions(**permissions)
+
+        allow, deny = perms.to_overwrite_pair()
+        type = 0 if isinstance(target, Role) else 1
+
+        await self._state.http.edit_channel_permissions(
+            channel_id=self.id,
+            overwrite_id=target.id,
+            allow=allow.value,
+            deny=deny.value,
+            type=type,
+        )
+
+    async def delete_permission(self, target: Union[Member, Role]) -> None:
+        """
+        Deletes the permission for the given target.
+
+        Parameters:
+            target (lefi.Member or lefi.Role): The target to delete the permission for.
+        """
+        if not isinstance(target, (Member, Role)):
+            raise TypeError("target must be either a Member or Role")
+
+        await self._state.http.delete_channel_permissions(
+            channel_id=self.id,
+            overwrite_id=target.id,
+        )
+
+        self._overwrites.pop(target, None)
 
     @property
     def guild(self) -> Guild:
@@ -262,6 +309,127 @@ class TextChannel(Channel):
         self._data = data
         return self
 
+    async def create_invite(
+        self,
+        *,
+        max_age: int = 86400,
+        max_uses: int = 0,
+        temporary: bool = False,
+        unique: bool = False,
+    ) -> Invite:
+        """
+        Creates an invite for the channel.
+
+        Parameters:
+            max_age (int): The max age of the invite.
+            max_uses (int): The max uses of the invite.
+            temporary (bool): Whether or not the invite is temporary.
+            unique (bool): Whether or not the invite is unique.
+
+        Returns:
+            The [lefi.Invite](./invite.md) instance.
+
+        """
+        data = await self._state.http.create_channel_invite(
+            channel_id=self.id,
+            max_age=max_age,
+            max_uses=max_uses,
+            temporary=temporary,
+            unique=unique,
+        )
+
+        return Invite(self._state, data)
+
+    async def trigger_typing(self) -> None:
+        """
+        Triggers typing in this text channel.
+        """
+        await self._state.http.trigger_typing(channel_id=self.id)
+
+    async def create_thread(
+        self,
+        *,
+        name: str,
+        auto_archive_duration: Optional[int] = None,
+        type: Optional[ChannelType] = None,
+        invitable: Optional[bool] = None,
+    ) -> Thread:
+        """
+        Creates a thread in this text channel.
+
+        Parameters:
+            name (str): The name of the thread.
+            auto_archive_duration (int): The duration of the thread.
+            type (lefi.ChannelType): The type of the thread.
+            invitable (bool): Whether or not the thread is invitable.
+
+        Returns:
+            The [lefi.Thread](./thread.md) instance.
+
+        """
+        if auto_archive_duration is not None:
+            if auto_archive_duration not in (60, 1440, 4320, 10080):
+                raise ValueError(
+                    "auto_archive_duration must be 60, 1440, 4320 or 10080"
+                )
+
+        if not type:
+            type = ChannelType.PRIVATE_THREAD
+
+        data = await self._state.http.start_thread_without_message(
+            channel_id=self.id,
+            name=name,
+            auto_archive_duration=auto_archive_duration,
+            type=type.value,
+            invitable=invitable,
+        )
+
+        return Thread(self._state, self.guild, data)
+
+    async def fetch_archived_threads(
+        self,
+        *,
+        public: bool = True,
+        before: Optional[int] = None,
+        limit: Optional[int] = None,
+    ) -> List[Thread]:
+        """
+        Fetches archived threads in this text channel.
+
+        Parameters:
+            public (bool): Whether or not to fetch public threads.
+            before (int): The timestamp to fetch threads before.
+            limit (int): The limit of the messages to fetch.
+
+        Returns:
+            A list of [lefi.Thread](./thread.md) instances.
+
+        """
+        if public:
+            data = await self._state.http.list_public_archived_threads(
+                channel_id=self.id,
+                before=before,
+                limit=limit,
+            )
+        else:
+            data = await self._state.http.list_private_archived_threads(
+                channel_id=self.id, before=before, limit=limit
+            )
+
+        return self.guild._create_threads(data)
+
+    async def fetch_joined_private_archived_threads(self) -> List[Thread]:
+        """
+        Fetches joined private archived threads in this text channel.
+
+        Returns:
+            A list of [lefi.Thread](./thread.md) instances.
+
+        """
+        data = await self._state.http.list_private_archived_threads(channel_id=self.id)
+
+        return self.guild._create_threads(data)
+
     async def delete_messages(self, messages: Iterable[Message]) -> None:
         """
         Bulk deletes messages from the channel.
@@ -366,6 +534,16 @@ class TextChannel(Channel):
         data = await self._state.http.get_channel_message(self.id, message_id)
         return self._state.create_message(data, self)
 
+    async def fetch_pins(self) -> List[Message]:
+        """
+        Fetches the pins of the channel.
+
+        Returns:
+            A list of [lefi.Message](./message.md) instances.
+        """
+        data = await self._state.http.get_pinned_messages(self.id)
+        return [self._state.create_message(m, self) for m in data]
+
     @property
     def topic(self) -> str:
         """
@@ -374,11 +552,19 @@ class TextChannel(Channel):
         return self._data["topic"]
 
     @property
+    def last_message_id(self) -> Optional[int]:
+        return to_snowflake(self._data, "last_message_id")
+
+    @property
     def last_message(self) -> Optional[Message]:
         """
         The last [lefi.Message](./message.md) instance sent in the channel.
         """
-        return self._state.get_message(self._data["last_message_id"])
+        return (
+            self._state.get_message(self.last_message_id)
+            if self.last_message_id
+            else None
+        )
 
     @property
     def rate_limit_per_user(self) -> int:
@@ -417,6 +603,46 @@ class VoiceChannel(Channel):
             guild (lefi.Guild): The [Guild](./guild.md) the channel belongs to.
         """
         super().__init__(state, data, guild)
+
+    async def create_invite(
+        self,
+        *,
+        max_age: int = 86400,
+        max_uses: int = 0,
+        temporary: bool = False,
+        unique: bool = False,
+        target_type: Optional[InviteTargetType] = None,
+        target_user: Optional[User] = None,
+        target_application_id: Optional[int] = None,
+    ) -> Invite:
+        """
+        Creates an invite for the channel.
+
+        Parameters:
+            max_age (int): The max age of the invite.
+            max_uses (int): The max uses of the invite.
+            temporary (bool): Whether or not the invite is temporary.
+            unique (bool): Whether or not the invite is unique.
+            target_type (Optional[lefi.InviteTargetType]): The target type of the invite.
+            target_user (Optional[lefi.User]): The target user of the invite.
+            target_application_id (Optional[int]): The target application ID of the invite.
+
+        Returns:
+            The [lefi.Invite](./invite.md) instance.
+
+        """
+        data = await self._state.http.create_channel_invite(
+            channel_id=self.id,
+            max_age=max_age,
+            max_uses=max_uses,
+            temporary=temporary,
+            unique=unique,
+            target_type=target_type,
+            target_user_id=target_user.id if target_user is not None else None,
+            target_application_id=target_application_id,
+        )
+
+        return Invite(self._state, data)
 
     async def edit(
         self,
@@ -581,11 +807,15 @@ class DMChannel:
         return int(self._data["id"])
 
     @property
+    def last_message_id(self) -> Optional[int]:
+        return to_snowflake(self._data, "last_message_id")
+
+    @property
     def last_message(self) -> Optional[Message]:
         """
         The last [lefi.Message](./message.md) instance sent in the channel.
         """
-        return self._state.get_message(self._data["last_message_id"])
+        return self._state.get_message(self.last_message_id)  # type: ignore
 
     @property
     def type(self) -> int:

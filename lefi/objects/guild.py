@@ -17,7 +17,8 @@ from .integration import Integration
 from .invite import Invite, PartialInvite
 from .template import GuildTemplate
 from ..voice import VoiceState, VoiceClient
-from ..utils import MemberIterator
+from ..utils import MemberIterator, to_snowflake
+from .threads import Thread
 
 if TYPE_CHECKING:
     from ..state import State
@@ -54,12 +55,39 @@ class Guild:
         self._roles: Dict[int, Role] = {}
         self._emojis: Dict[int, Emoji] = {}
         self._voice_states: Dict[int, VoiceState] = {}
+        self._threads: Dict[int, Thread] = {}
 
         self._state = state
         self._data = data
 
     def __repr__(self) -> str:
         return f"<Guild id={self.id}>"
+
+    def _copy(self) -> Guild:
+        copy = self.__class__(self._state, self._data)
+
+        copy._channels = self._channels.copy()
+        copy._members = self._members.copy()
+        copy._roles = self._roles.copy()
+        copy._emojis = self._emojis.copy()
+        copy._voice_states = self._voice_states.copy()
+        copy._threads = self._threads.copy()
+
+        return copy
+
+    def _create_threads(self, data: Dict) -> List[Thread]:
+        threads = {
+            int(thread["id"]): Thread(self._state, self, thread)
+            for thread in data.get("threads", [])
+        }
+
+        for member in data.get("members", []):
+            thread = threads.get(int(member["id"]))
+
+            if thread:
+                thread._create_member(member)
+
+        return list(threads.values())
 
     async def edit(self, **kwargs) -> Guild:
         """
@@ -246,6 +274,17 @@ class Guild:
         coro = self._state.http.search_guild_members(self.id, query=q, limit=limit)
         return MemberIterator(self._state, self, coro)
 
+    async def fetch_active_threads(self) -> List[Thread]:
+        """
+        Fetches the guild's active threads.
+
+        Returns:
+            A list of [lefi.Thread](./thread.md) instances.
+
+        """
+        data = await self._state.http.list_active_threads(self.id)
+        return self._create_threads(data)
+
     async def change_voice_state(
         self,
         *,
@@ -332,6 +371,19 @@ class Guild:
         """
         return self._voice_states.get(member_id)
 
+    def get_thread(self, thread_id: int) -> Optional[Thread]:
+        """
+        Gets a thread from the guilds thread cache.
+
+        Parameters:
+            thread_id (int): The ID of the thread.
+
+        Returns:
+            The [lefi.Thread](./thread.md) instance corresponding to the ID if found.
+
+        """
+        return self._threads.get(thread_id)
+
     @property
     def voice_client(self) -> Optional[VoiceClient]:
         """
@@ -396,7 +448,7 @@ class Guild:
         """
         The ID of the owner.
         """
-        return self._data["owner_id"]
+        return int(self._data["owner_id"])
 
     @property
     def channels(self) -> List[GuildChannels]:

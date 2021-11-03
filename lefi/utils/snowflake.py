@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Protocol
+from typing import Any, Dict, Optional, Protocol
 
-__all__ = ("Snowflake",)
+__all__ = ("Snowflake", "to_snowflake")
 
 
 class Snowflake(Protocol):
@@ -14,3 +14,11 @@ class Snowflake(Protocol):
     """
 
     id: int
+
+
+def to_snowflake(data: Dict[str, Any], key: str) -> Optional[int]:
+    value = data.get(key)
+    if not value:
+        return None
+
+    return int(value)

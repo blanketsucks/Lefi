@@ -31,9 +31,10 @@ from .objects import (
     User,
     VoiceChannel,
     Channel,
+    Thread,
+    ThreadMember,
 )
 from .voice import VoiceClient, VoiceState
-from .ws.basews import BaseWebsocketClient
 
 if TYPE_CHECKING:
     from .client import Client
@@ -128,6 +129,10 @@ class State:
         self._emojis = Cache[Emoji]()
         self._voice_clients = Cache[VoiceClient]()
 
+    @property
+    def user(self) -> User:
+        return self.client.user
+
     def get_websocket(self, guild_id: int) -> BaseWebsocketClient:
         if not self.client.shards:
             return self.client.ws
@@ -209,6 +214,36 @@ class State:
 
         self._guilds[guild.id] = guild
         self.dispatch("guild_create", guild)
+
+    async def parse_guild_update(self, data: Dict) -> None:
+        """
+        Parses `GUILD_UPDATE` event. Updates a Guild then dispatches it afterwards.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["id"]))
+        if not guild:
+            return
+
+        before, after = self.update_guild(guild, data)
+        self.dispatch("guild_update", before, after)
+
+    async def parse_guild_delete(self, data: Dict) -> None:
+        """
+        Parses `GUILD_DELETE` event. Deletes a Guild then dispatches it afterwards.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["id"]))
+        if not guild:
+            return
+
+        self.dispatch("guild_delete", guild)
+        self._guilds.pop(guild.id)
 
     async def parse_message_create(self, data: Dict) -> None:
         """
@@ -292,12 +327,11 @@ class State:
             data (Dict): The raw data.
 
         """
-        guild = self.get_guild(int(data["guild_id"]))
+        channel = self.get_channel(int(data["id"]))
+        if not channel:
+            return
 
-        before = self.get_channel(int(data["id"]))
-        after = self.create_channel(data, guild)
-
-        self._channels[after.id] = after
+        before, after = self.update_channel(channel, data)  # type: ignore
         self.dispatch("channel_update", before, after)
 
     async def parse_channel_delete(self, data: Dict) -> None:
@@ -322,6 +356,7 @@ class State:
 
         """
         after = VoiceState(self, data)
+
         if after.guild:
             if after.user_id == self.client.user.id:
                 voice = self.get_voice_client(after.guild.id)
@@ -345,6 +380,143 @@ class State:
 
         if voice:
             await voice.voice_server_update(data)
+
+    async def parse_thread_create(self, data: Dict) -> None:
+        """
+        Parses `THREAD_CREATE` event. Creates a Thread then caches it, as well as dispatching it afterwards.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild_id = int(data["guild_id"])
+        guild = self.get_guild(guild_id)
+
+        if not guild:
+            return
+
+        thread = Thread(self, guild, data)
+        guild._threads[thread.id] = thread
+
+        self.dispatch("thread_create", thread)
+
+    async def parse_thread_update(self, data: Dict) -> None:
+        """
+        Parses `THREAD_UPDATE` event. Dispatches `before` and `after`.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild_id = int(data["guild_id"])
+        guild = self.get_guild(guild_id)
+
+        if not guild:
+            return
+
+        thread_id = int(data["id"])
+        thread = guild.get_thread(thread_id)
+
+        if not thread:
+            return
+
+        before, after = self.update_thread(thread, data)
+        self.dispatch("thread_update", before, after)
+
+    async def parse_thread_delete(self, data: Dict) -> None:
+        """
+        Parses `THREAD_DELETE` event. Dispatches the deleted thread.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild_id = int(data["guild_id"])
+        guild = self.get_guild(guild_id)
+
+        if not guild:
+            return
+
+        thread_id = int(data["id"])
+        thread = guild.get_thread(thread_id)
+
+        if not thread:
+            return
+
+        guild._threads.pop(thread.id)
+        self.dispatch("thread_delete", thread)
+
+    async def parse_thread_list_sync(self, data: Dict) -> None:
+        """
+        Parses `THREAD_LIST_SYNC` event.
+        Dispatches the created threads under `THREAD_CREATE` and the removed ones under `THREAD_DELETE`.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        channel_ids = data.get("channel_ids")
+        if not channel_ids:
+            previous = guild._threads.copy()
+            guild._threads.clear()
+        else:
+            previous = {
+                t.id: t for t in guild._threads.values() if t.parent_id in channel_ids
+            }
+            for thread_id in previous:
+                del guild._threads[thread_id]
+
+        threads = {
+            int(d["id"]): Thread(self, guild, d) for d in data.get("threads", [])
+        }
+        guild._threads.update(threads)
+
+        for member in data.get("members", []):
+            thread = threads.get(int(member["id"]))
+            if thread:
+                thread._create_member(member)
+
+        for thread in threads.values():
+            self.dispatch("thread_create", thread)
+
+        for thread in previous.values():
+            self.dispatch("thread_delete", thread)
+
+    async def parse_thread_members_update(self, data: Dict) -> None:
+        """
+        Parses `THREAD_MEMBERS_UPDATE` event.
+        Dispatches the added thread members under `thread_member_add` and the removed ones
+        under `thread_member_remove`.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        thread = guild.get_thread(int(data["id"]))
+        if not thread:
+            return
+
+        new: List[ThreadMember] = [
+            ThreadMember(self, m, thread) for m in data.get("added_members", [])
+        ]
+        removed: List[int] = [int(id) for id in data.get("removed_member_ids", [])]
+
+        for member in new:
+            thread._members[member.id] = member
+            self.dispatch("thread_member_add", member)
+
+        for member_id in removed:
+            member = thread._members.pop(member_id, None)  # type: ignore
+            if member:
+                self.dispatch("thread_member_remove", member)
 
     def get_message(self, message_id: int) -> Optional[Message]:
         """
@@ -477,6 +649,9 @@ class State:
             The [lefi.Guild](./guild.md) instance passed in.
 
         """
+        if "channels" not in data:
+            return guild
+
         channels = {
             int(payload["id"]): self.create_channel(payload, guild)
             for payload in data["channels"]
@@ -500,6 +675,9 @@ class State:
             The [lefi.Guild](./guild.md) instance passed in.
 
         """
+        if "members" not in data:
+            return guild
+
         members: Dict[int, Member] = {}
         for member_data in data["members"]:
             member = Member(self, member_data, guild)
@@ -524,6 +702,9 @@ class State:
             The [lefi.Guild][] instance passed in.
 
         """
+        if "roles" not in data:
+            return guild
+
         roles = {
             int(payload["id"]): Role(self, payload, guild) for payload in data["roles"]
         }
@@ -542,6 +723,9 @@ class State:
             The [lefi.Guild][] instance passed in.
 
         """
+        if "emojis" not in data:
+            return guild
+
         emojis = {
             int(payload["id"]): Emoji(self, payload, guild)
             for payload in data["emojis"]
@@ -586,6 +770,9 @@ class State:
         if isinstance(channel, DMChannel):
             return
 
+        if "permission_overwrites" not in channel._data:
+            return
+
         overwrites = [
             Overwrite(data) for data in channel._data["permission_overwrites"]
         ]
@@ -601,6 +788,35 @@ class State:
             ows[target] = overwrite  # type: ignore
 
         channel._overwrites = ows
+
+    def update_guild(self, guild: Guild, data: Dict):
+        before = guild._copy()
+
+        self.create_guild_channels(guild, data)
+        self.create_guild_members(guild, data)
+        self.create_guild_roles(guild, data)
+        self.create_guild_emojis(guild, data)
+        self.create_guild_voice_states(guild, data)
+
+        guild._data = data
+        return before, guild
+
+    def update_channel(self, channel: Channel, data: Dict):
+        before = channel._copy()
+
+        channel._data = data
+        self.create_overwrites(channel)
+
+        return before, channel
+
+    def update_thread(self, thread: Thread, data: Dict):
+        before = thread._copy()
+        thread._data = data
+
+        if metadata := data.get("metadata"):
+            thread._metadata = metadata
+
+        return before, thread
 
     def add_voice_client(self, guild_id: int, voice_client: VoiceClient) -> None:
         """

@@ -153,7 +153,7 @@ class ApplicationFlags(Flag):
 
 class MessageFlags(Flag):
     crossposted = 1 << 0
-    is_crssposted = 1 << 1
+    is_crossposted = 1 << 1
     suppress_embeds = 1 << 2
     source_message_deleted = 1 << 3
     urgent = 1 << 4
