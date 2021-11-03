@@ -476,11 +476,7 @@ class State:
         """
         members: Dict[int, Member] = {}
         for member_data in data["members"]:
-            member = Member(self, member_data, guild)
-            member._roles = {  # type: ignore
-                int(role): guild.get_role(int(role)) for role in member_data["roles"]  # type: ignore
-            }
-
+            member = self._create_member(member_data, guild)
             members[member.id] = member
 
         guild._members = members
@@ -556,7 +552,7 @@ class State:
 
         channel._overwrites = ows
 
-    def _create_member(self, data: Dict, guild: Guild) -> Union[User, Member]:
+    def _create_member(self, data: Dict, guild: Guild) -> Member:
         member = Member(self, data, guild)
 
         for role_data in data["roles"]:
