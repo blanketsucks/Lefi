@@ -517,7 +517,11 @@ class TextChannel(Channel):
         message = self._state.create_message(data, self)
 
         if row is not None and data.get("components"):
-            self._state._components.setdefault(message.id, []).extend(row.callbacks)
+            for component in row.components:
+                self._state._components[component.custom_id] = (
+                    component.callback,
+                    component,
+                )
 
         return message
 
