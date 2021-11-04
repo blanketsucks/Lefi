@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import inspect
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Iterable, Union, Tuple
 
 from .command import Command
 
@@ -20,7 +20,7 @@ class StringParser:
         prefix (Union[Tuple[str], str]): The prefix of the command.
     """
 
-    def __init__(self, content: str, prefix: Union[Tuple[str], str]) -> None:
+    def __init__(self, content: str, prefix: Union[str, Iterable[str]]) -> None:
         """
         Initialize a StringParser.
 
@@ -70,7 +70,7 @@ class StringParser:
 
                 return self.prefix[index]
 
-        elif not isinstance(self.prefix, tuple):
+        elif not isinstance(self.prefix, Iterable):
             return self.prefix
 
         assert False
