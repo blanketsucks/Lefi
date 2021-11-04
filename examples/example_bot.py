@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import textwrap
 import os
+import textwrap
 
 import lefi
 from lefi.exts import commands
