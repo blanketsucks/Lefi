@@ -38,8 +38,23 @@ bot = commands.Bot(
 @bot.once("ready")
 async def register_plugins(_: lefi.User) -> None:
     """
-    Safe to do in `READY`ONLY if using `@bot.once` since it cuts off.
-    Or you can do this elsewhere such as ontop of `bot.run()` in this example.
+    You may add plugins inside of `READY` **ONLY** if you are using the `bot.once` decorator.
+    As using `once` will cut the callback off the event after running once.
+
+    FIRST RUN: --------->
+    SECOND RUN: ---/ --->
+
+    ===GOOD===
+
+    bot.once("ready")
+    async def register_plugins(_: lefi.User) -> None:
+        bot.add_plugin(MyPlugin)
+
+    ===BAD===
+
+    @bot.on("ready")
+    async def register_plugins(_: lefi.User) -> None:
+        bot.add_plugin(MyPlugin)
 
     """
     print(f"[LOGGED IN]: {bot.user.id}")
