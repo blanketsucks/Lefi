@@ -14,7 +14,6 @@ from typing import (
     Type,
     TypeVar,
     Union,
-    Iterable,
 )
 
 import lefi
@@ -44,7 +43,11 @@ class Bot(lefi.Client):
     """
 
     def __init__(
-        self, prefix: Union[str, Iterable[str], Callable], token: str, *args, **kwargs
+        self,
+        prefix: Union[str, Tuple[str, ...], List[str], Callable],
+        token: str,
+        *args,
+        **kwargs,
     ) -> None:
         """
         Parameters:
@@ -185,7 +188,9 @@ class Bot(lefi.Client):
 
         return ctx
 
-    async def get_prefix(self, message: lefi.Message) -> Union[str, Iterable[str]]:
+    async def get_prefix(
+        self, message: lefi.Message
+    ) -> Union[str, Tuple[str, ...], List[str]]:
         """
         Get the prefix for a message.
 

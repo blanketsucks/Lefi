@@ -20,7 +20,9 @@ class StringParser:
         prefix (Union[Tuple[str], str]): The prefix of the command.
     """
 
-    def __init__(self, content: str, prefix: Union[str, Iterable[str]]) -> None:
+    def __init__(
+        self, content: str, prefix: Union[str, Tuple[str, ...], List[str]]
+    ) -> None:
         """
         Initialize a StringParser.
 
@@ -52,7 +54,7 @@ class StringParser:
 
             return self.command_name
 
-        assert False
+        return None
 
     def parse_prefix(self) -> Optional[str]:
         """
@@ -61,7 +63,7 @@ class StringParser:
         Returns:
             The prefix.
         """
-        if isinstance(self.prefix, tuple):
+        if isinstance(self.prefix, (tuple, list)):
             find_prefix = [self.content.startswith(prefix) for prefix in self.prefix]
 
             for index, prefix in enumerate(find_prefix):
@@ -70,10 +72,10 @@ class StringParser:
 
                 return self.prefix[index]
 
-        elif not isinstance(self.prefix, Iterable):
+        elif not isinstance(self.prefix, (tuple, list)):
             return self.prefix
 
-        assert False
+        return None
 
     async def parse_arguments(self) -> Tuple[Dict, List]:
         """
