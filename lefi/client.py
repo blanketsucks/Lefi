@@ -240,7 +240,8 @@ class Client:
         """
         A method which calls [lefi.Client.login][] and [lefi.Client.connect][] in that order.
         """
-        await asyncio.gather(self.login(), self.connect())
+        await self.login()
+        await self.connect()
 
     async def wait_for(
         self, event: str, *, check: Callable[..., bool] = None, timeout: float = None
