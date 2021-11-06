@@ -5,11 +5,18 @@ from typing import TYPE_CHECKING, Any, Coroutine, Dict, Generic, TypeVar, List
 
 _T = TypeVar("_T")
 
+from ..objects import User, AuditLogEntry
+
 if TYPE_CHECKING:
     from ..objects import Member, Guild, Message, TextChannel, AuditLogEntry
     from ..state import State
 
-__all__ = ("MemberIterator", "AsyncIterator", "ChannelHistoryIterator")
+__all__ = (
+    "MemberIterator",
+    "AsyncIterator",
+    "ChannelHistoryIterator",
+    "AuditLogIterator",
+)
 
 
 class AsyncIterator(Generic[_T]):
@@ -33,7 +40,7 @@ class AsyncIterator(Generic[_T]):
             await self._fill_queue()
             self.filled = True
 
-        return await asyncio.wait_for(self.queue.get(), timeout=0.2)
+        return self.queue.get_nowait()
 
     def __await__(self):
         return self.all().__await__()
@@ -44,7 +51,7 @@ class AsyncIterator(Generic[_T]):
     async def __anext__(self):
         try:
             value = await self.next()
-        except asyncio.TimeoutError:
+        except asyncio.QueueEmpty:
             raise StopAsyncIteration
         else:
             return value
@@ -100,12 +107,19 @@ class AuditLogIterator(AsyncIterator["AuditLogEntry"]):
     ) -> None:
         self.state = state
         self.guild = guild
+        self.users: Dict[int, User] = {}
         super().__init__(coroutine)
 
     async def _fill_queue(self) -> None:
         logs = await self.coroutine
+
+        users = logs["users"]
         values = logs["audit_log_entries"]
 
+        for user in users:
+            u = User(self.state, user)
+            self.users[u.id] = u
+
         for value in values:
-            entry = AuditLogEntry(self.state, self.guild, value)
+            entry = AuditLogEntry(self.users, self.state, self.guild, value)
             await self.queue.put(entry)

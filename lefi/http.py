@@ -1531,6 +1531,29 @@ class HTTPClient:
             "GET", Route(f"/guilds/{guild_id}/members/{member_id}", guild_id=guild_id)
         )
 
+    async def get_guild_audit_log(
+        self,
+        guild_id: int,
+        *,
+        user_id: Optional[int] = None,
+        action_type: Optional[int] = None,
+        before: Optional[int] = None,
+        limit: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        params = update_payload(
+            {},
+            user_id=user_id,
+            action_type=action_type,
+            before=before,
+            limit=limit,
+        )
+
+        return await self.request(
+            "GET",
+            Route(f"/guilds/{guild_id}/audit-logs", guild_id=guild_id),
+            params=params,
+        )
+
     async def list_guild_members(
         self, guild_id: int, *, limit: int = 1, after: int = 0
     ) -> Dict[str, Any]:

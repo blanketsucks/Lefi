@@ -17,7 +17,7 @@ from .integration import Integration
 from .invite import Invite, PartialInvite
 from .template import GuildTemplate
 from ..voice import VoiceState, VoiceClient
-from ..utils import MemberIterator, to_snowflake
+from ..utils import MemberIterator, AuditLogIterator
 from .threads import Thread
 
 if TYPE_CHECKING:
@@ -273,6 +273,10 @@ class Guild:
         """
         coro = self._state.http.search_guild_members(self.id, query=q, limit=limit)
         return MemberIterator(self._state, self, coro)
+
+    def audit_logs(self) -> AuditLogIterator:
+        coro = self._state.http.get_guild_audit_log(self.id)
+        return AuditLogIterator(self._state, self, coro)
 
     async def fetch_active_threads(self) -> List[Thread]:
         """

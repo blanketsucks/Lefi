@@ -1,11 +1,30 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    List,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 from functools import cached_property
+from enum import IntEnum
 
-from .enums import AuditLogsEvent
+from .enums import (
+    AuditLogsEvent,
+    ChannelType,
+    VerificationLevel,
+    ExplicitContentFilterLevel,
+)
 from .user import User
-from ..utils import to_snowflake
+from ..utils import to_snowflake, Object
+from .permissions import Permissions
+from .role import PartialRole
 
 _member_events = (
     AuditLogsEvent.MEMBER_ROLE_UPDATE,
@@ -55,7 +74,25 @@ if TYPE_CHECKING:
     from .threads import Thread
     from .message import Message
 
-    Target = Union[User, Member, Role, Channel, Guild, Thread, Message]
+    Change = Union[
+        int,
+        Dict[Union[Role, Member, Object], Permissions],
+        List[Union[Role, PartialRole]],
+        Channel,
+        Permissions,
+        Member,
+        User,
+        Guild,
+        Object,
+        ExplicitContentFilterLevel,
+        ChannelType,
+        VerificationLevel,
+        None,
+    ]
+
+    Target = Union[User, Member, Role, Channel, Guild, Thread, Message, Object]
+
+    T = TypeVar("T")
 
 __all__ = (
     "AuditLogChange",
@@ -63,31 +100,175 @@ __all__ = (
 )
 
 
+def _get(
+    getter: Callable[[int], Optional[T]], value: Optional[int]
+) -> Union[T, Object]:
+    return getter(value) or Object(id=value)  # type: ignore
+
+
+def _handle_channel_snowflake(
+    change: AuditLogChange, value: str
+) -> Union[Channel, Object]:
+    guild = change.entry.guild
+    return _get(guild.get_channel, int(value))
+
+
+def _handle_snowflake(change: AuditLogChange, value: str) -> int:
+    return int(value)
+
+
+def _handle_permission(change: AuditLogChange, value: str) -> Permissions:
+    return Permissions(int(value))
+
+
+def _handle_permission_overwrites(
+    change: AuditLogChange, value: List[Dict[str, Any]]
+) -> Dict[Union[Role, Member, Object], Permissions]:
+    overwrites = {}
+    guild = change.entry.guild
+
+    for data in value:
+        allow = Permissions(int(data["allow"]))
+        deny = Permissions(int(data["deny"]))
+
+        ow = Permissions.from_overwrite_pair(allow, deny)
+
+        type = data["type"]
+        target_id = int(data["id"])
+
+        target: Union[Role, Member, Object, None]
+
+        if type == "1":
+            target = guild.get_role(target_id)
+        else:
+            target = guild.get_member(target_id)
+
+        if target is None:
+            target = Object(id=target_id)
+
+        overwrites[target] = ow
+
+    return overwrites
+
+
+def _handle_member(change: AuditLogChange, value: str) -> Union[Member, User, Object]:
+    entry = change.entry
+    return _get(entry._get_member, int(value))
+
+
+def _handle_guild(change: AuditLogChange, value: str) -> Union[Guild, Object]:
+    state = change.entry._state
+    return _get(state.get_guild, int(value))
+
+
+def _handle_roles(
+    change: AuditLogChange, value: List[Dict[str, Any]]
+) -> List[Union[Role, PartialRole]]:
+    guild = change.entry.guild
+    roles = []
+
+    for payload in value:
+        role: Union[Role, PartialRole, None]
+        role = guild.get_role(int(payload["id"]))
+
+        if not role:
+            role = PartialRole(payload, guild)
+
+        roles.append(role)
+
+    return roles
+
+
+def _handle_enum(cls: Type[T]) -> Callable[[AuditLogChange, int], T]:
+    def _handle(change: AuditLogChange, value: int) -> T:
+        return cls(int(value))  # type: ignore
+
+    return _handle
+
+
+def _handle_type(change: AuditLogChange, value: int) -> int:
+    entry = change.entry
+    if entry.action.name.startswith("CHANNEL") or entry.action.name.startswith(
+        "THREAD"
+    ):
+        return ChannelType(value)
+
+    return value
+
+
+def _handle_value(change: AuditLogChange, value: Any) -> Any:
+    key = change.key
+    handler = change._handlers.get(key)
+
+    if not value:
+        return None
+
+    if not handler:
+        return value
+
+    return handler(change, value)
+
+
 class AuditLogChange:
-    def __init__(self, data: Dict) -> None:
+    _handlers: ClassVar[Dict[str, Callable[[AuditLogChange, Any], Any]]] = {
+        "allow": _handle_permission,
+        "deny": _handle_permission,
+        "permissions": _handle_permission,
+        "permission_overwrites": _handle_permission_overwrites,
+        "id": _handle_snowflake,
+        "channel_id": _handle_channel_snowflake,
+        "guild_id": _handle_guild,
+        "owner_id": _handle_member,
+        "inviter_id": _handle_member,
+        "afk_channel_id": _handle_channel_snowflake,
+        "system_channel_id": _handle_channel_snowflake,
+        "widget_channel_id": _handle_channel_snowflake,
+        "rules_channel_id": _handle_channel_snowflake,
+        "public_updates_channel_id": _handle_channel_snowflake,
+        "explicit_content_filter": _handle_enum(ExplicitContentFilterLevel),
+        "verification_level": _handle_enum(VerificationLevel),
+        "type": _handle_type,
+        "$add": _handle_roles,
+        "$remove": _handle_roles,
+    }
+
+    def __init__(self, entry: AuditLogEntry, data: Dict) -> None:
         self._data = data
+        self._entry = entry
 
     def __repr__(self) -> str:
         return f"<AuditLogChange key={self.key!r}>"
 
     @property
+    def entry(self) -> AuditLogEntry:
+        return self._entry
+
+    @property
     def key(self) -> str:
         return self._data["key"]
 
-    @property
-    def old(self) -> Any:
-        return self._data["old_value"]
+    @cached_property
+    def before(self) -> Change:
+        value = self._data.get("old_value")
+        return _handle_value(self, value)
 
-    @property
-    def new(self) -> Any:
-        return self._data["new_value"]
+    @cached_property
+    def after(self) -> Change:
+        value = self._data.get("new_value", None)
+        return _handle_value(self, value)
 
 
 class AuditLogEntry:
-    def __init__(self, state: State, guild: Guild, data: Dict) -> None:
+    def __init__(
+        self, users: Dict[int, User], state: State, guild: Guild, data: Dict
+    ) -> None:
         self._state = state
         self._guild = guild
         self._data = data
+        self._users = users
+
+    def _get_member(self, value: int) -> Optional[Union[Member, User]]:
+        return self._guild.get_member(value) or self._users.get(value)
 
     @property
     def guild(self) -> Guild:
@@ -95,41 +276,39 @@ class AuditLogEntry:
 
     @property
     def changes(self) -> List[AuditLogChange]:
-        return [AuditLogChange(change) for change in self._data["changes"]]
+        return [
+            AuditLogChange(self, change) for change in self._data.get("changes", [])
+        ]
 
     @property
-    def type(self) -> AuditLogsEvent:
+    def action(self) -> AuditLogsEvent:
         return AuditLogsEvent(self._data["action_type"])
 
     @property
-    def target_id(self) -> int:
-        return int(self._data["target_id"])
+    def target_id(self) -> Optional[int]:
+        return to_snowflake(self._data, "target_id")
 
     @cached_property
-    def target(self) -> Optional[Target]:
-        if self.type is AuditLogsEvent.GUILD_UPDATE:
+    def target(self) -> Target:
+        if self.action is AuditLogsEvent.GUILD_UPDATE:
             return self._guild
 
-        if self.type in _member_events:
-            member = self._guild.get_member(self.target_id)
-            if not member:
-                return self._state.get_user(self.target_id)
+        if self.action in _member_events:
+            return _get(self._get_member, self.target_id)
 
-            return member
+        if self.action in _role_events:
+            return _get(self._guild.get_role, self.target_id)
 
-        if self.type in _role_events:
-            return self._guild.get_role(self.target_id)
+        if self.action in _channel_events:
+            return _get(self._guild.get_channel, self.target_id)
 
-        if self.type in _channel_events:
-            return self._guild.get_channel(self.target_id)
+        if self.action in _thread_events:
+            return _get(self._guild.get_thread, self.target_id)
 
-        if self.type in _thread_events:
-            return self._guild.get_thread(self.target_id)
+        if self.action in _message_events:
+            return _get(self._state.get_message, self.target_id)
 
-        if self.type in _message_events:
-            return self._state.get_message(self.target_id)
-
-        return None
+        return Object(id=self.target_id)  # type: ignore
 
     @property
     def user_id(self) -> Optional[int]:

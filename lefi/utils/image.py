@@ -4,6 +4,7 @@ __all__ = (
     "is_jpeg",
     "is_png",
     "is_gif",
+    "is_webp",
     "get_mimetype",
     "bytes_to_data_uri",
 )
@@ -51,6 +52,20 @@ def is_gif(data: bytes) -> bool:
     return data[:6] in (b"GIF87a", b"GIF89a")
 
 
+def is_webp(data: bytes) -> bool:
+    """
+    Check if the given data is a WebP.
+
+    Parameters:
+        data (bytes): The data to check.
+
+    Returns:
+        True if the data is a WebP, False otherwise.
+
+    """
+    return data.startswith(b"RIFF") and data[8:12] == b"WEBP"
+
+
 def get_mimetype(data: bytes) -> str:
     """
     Get the mimetype of the given data.
@@ -67,6 +82,8 @@ def get_mimetype(data: bytes) -> str:
         return "image/png"
     elif is_gif(data):
         return "image/gif"
+    elif is_webp(data):
+        return "image/webp"
     else:
         raise ValueError("Unknown image type")
 
