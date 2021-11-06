@@ -19,32 +19,7 @@ A discord API wrapper focused on clean code, and usability
    ```
 
 ## Example(s)
-```py
-import os
-import asyncio
-
-import lefi
-
-
-async def main() -> None:
-    token = os.getenv(
-        "discord_token"
-    )  # NOTE: I'm on linux so I can just export, windows might need a `.env`
-    client = lefi.Client(token)  # type: ignore
-
-    @client.once("ready")
-    async def on_ready(user: lefi.User) -> None:
-        print(f"LOGGED IN AS {client_user.id}") # You can also access `client.user`
-
-    @client.on("message_create")
-    async def on_message_create(message: lefi.Message) -> None:
-        print(message)
-
-    await client.start()
-
-
-asyncio.run(main())
-```
+[Here!](examples/)
 
 ## Documentation
 [Here!](https://lefi.readthedocs.io/en/latest/)
