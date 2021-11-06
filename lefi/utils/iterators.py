@@ -6,21 +6,20 @@ from typing import TYPE_CHECKING, Any, Coroutine, Dict, Generic, TypeVar, List
 _T = TypeVar("_T")
 
 if TYPE_CHECKING:
-    from ..objects import Member, Guild, Message, TextChannel
+    from ..objects import Member, Guild, Message, TextChannel, AuditLogEntry
     from ..state import State
 
 __all__ = ("MemberIterator", "AsyncIterator", "ChannelHistoryIterator")
 
 
 class AsyncIterator(Generic[_T]):
-    def __init__(self, coroutine: Coroutine[None, None, List[Any]]) -> None:
+    def __init__(self, coroutine: Coroutine[None, None, Any]) -> None:
         self.coroutine = coroutine
         self.queue = asyncio.Queue[_T]()
-
+        self.filled = False
         self.loop = asyncio.get_running_loop()
-        self.loop.create_task(self._fill_queue())
 
-    async def _fill_queue(self):
+    async def _fill_queue(self) -> None:
         values = await self.coroutine
 
         for value in values:
@@ -30,9 +29,11 @@ class AsyncIterator(Generic[_T]):
         return [val async for val in self]
 
     async def next(self) -> _T:
-        value = await asyncio.wait_for(self.queue.get(), timeout=0.5)
+        if not self.filled:
+            await self._fill_queue()
+            self.filled = True
 
-        return value
+        return await asyncio.wait_for(self.queue.get(), timeout=0.2)
 
     def __await__(self):
         return self.all().__await__()
@@ -53,14 +54,12 @@ class MemberIterator(AsyncIterator["Member"]):
     def __init__(
         self, state: State, guild: Guild, coroutine: Coroutine[None, None, List[Dict]]
     ) -> None:
-        self.state = state
+        self._state = state
         self.guild = guild
 
         super().__init__(coroutine)
 
-    async def _fill_queue(self):
-        from ..objects import Member
-
+    async def _fill_queue(self) -> None:
         values = await self.coroutine
 
         for value in values:
@@ -68,7 +67,7 @@ class MemberIterator(AsyncIterator["Member"]):
             member = self.guild.get_member(user_id)
 
             if not member:
-                member = Member(self.state, value, self.guild)
+                member = self._state._create_member(value, self.guild)
 
             await self.queue.put(member)
 
@@ -84,9 +83,29 @@ class ChannelHistoryIterator(AsyncIterator["Message"]):
         self.channel = channel
         super().__init__(coroutine)
 
-    async def _fill_queue(self):
+    async def _fill_queue(self) -> None:
         values = await self.coroutine
 
         for value in values:
             message = self.state.create_message(value, self.channel)
             await self.queue.put(message)
+
+
+class AuditLogIterator(AsyncIterator["AuditLogEntry"]):
+    def __init__(
+        self,
+        state: State,
+        guild: Guild,
+        coroutine: Coroutine[None, None, Dict],
+    ) -> None:
+        self.state = state
+        self.guild = guild
+        super().__init__(coroutine)
+
+    async def _fill_queue(self) -> None:
+        logs = await self.coroutine
+        values = logs["audit_log_entries"]
+
+        for value in values:
+            entry = AuditLogEntry(self.state, self.guild, value)
+            await self.queue.put(entry)

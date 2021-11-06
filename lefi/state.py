@@ -853,7 +853,7 @@ class State:
         """
         self._voice_clients.pop(guild_id, None)
 
-    def _create_member(self, data: Dict, guild: Guild) -> Union[User, Member]:
+    def _create_member(self, data: Dict, guild: Guild) -> Member:
         member = Member(self, data, guild)
 
         for role_data in data["roles"]:

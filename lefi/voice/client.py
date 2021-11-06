@@ -106,7 +106,7 @@ class VoiceClient:
         """
         return self._player is not None
 
-    def play(self, stream: AudioStream) -> AudioPlayer:
+    def play(self, stream: AudioStream, *, volume: float = 1.0) -> AudioPlayer:
         """
         Plays an audio stream. If the client is either connected or already playing it raises an error.
 
@@ -120,8 +120,10 @@ class VoiceClient:
         if self.is_playing():
             raise VoiceException("Client is already playing")
 
-        self._player = AudioPlayer(self.protocol, stream)
-        return self._player.play()
+        self._player = player = AudioPlayer(self.protocol, stream)
+        player.set_volume(volume)
+
+        return player.play()
 
     def pause(self) -> None:
         """

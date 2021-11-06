@@ -119,7 +119,7 @@ class BaseWebsocketClient:
         await self.start()
 
     async def resume(self) -> None:
-        """;eval return 2+2
+        """
         Sends a resume payload to the websocket.
         """
         payload = {

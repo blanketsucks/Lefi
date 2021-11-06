@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Optional, Union, List
 
-from .embed import Embed
-
 from ..utils import Snowflake
 from .embed import Embed
 from .threads import Thread
@@ -76,7 +74,7 @@ class Message:
             The message after being editted.
 
         """
-        data = await self._state.http.edit_message(**kwargs)
+        await self._state.http.edit_message(**kwargs)
         return self
 
     async def crosspost(self) -> Message:
