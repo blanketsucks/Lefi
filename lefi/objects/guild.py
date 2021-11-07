@@ -1,6 +1,16 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, AsyncIterator, Dict, List, NamedTuple, Optional, Union
+from typing import (
+    TYPE_CHECKING,
+    Dict,
+    List,
+    Literal,
+    NamedTuple,
+    Optional,
+    Union,
+    overload,
+    Any,
+)
 
 from ..utils import Snowflake
 from .emoji import Emoji
@@ -12,13 +22,16 @@ from .enums import (
     MFALevel,
     NSFWLevel,
     VerificationLevel,
+    AuditLogsEvent,
 )
 from .integration import Integration
 from .invite import Invite, PartialInvite
 from .template import GuildTemplate
-from ..voice import VoiceState, VoiceClient
+from ..voice import VoiceState, VoiceClient, VoiceRegion
 from ..utils import MemberIterator, AuditLogIterator
 from .threads import Thread
+from .attachments import CDNAsset
+from .flags import Permissions
 
 if TYPE_CHECKING:
     from ..state import State
@@ -89,6 +102,52 @@ class Guild:
 
         return list(threads.values())
 
+    def _make_permission_overwrites(
+        self, base: Optional[Dict[Union[Member, Role], Permissions]]
+    ) -> Optional[List[Dict]]:
+        if not base:
+            return None
+
+        permission_overwrites = []
+        for target, overwrite in base.items():
+            if not isinstance(target, (Member, Role)):
+                raise TypeError("Target must be a Member or Role")
+
+            if not isinstance(overwrite, Permissions):
+                raise TypeError("Overwrite must be a Permissions instance")
+
+            allow, deny = overwrite.to_overwrite_pair()
+
+            ow = {
+                "id": target.id,
+                "type": 1 if isinstance(target, Member) else 0,
+                "allow": allow.value,
+                "deny": deny.value,
+            }
+
+            permission_overwrites.append(ow)
+
+        return permission_overwrites
+
+    async def _create_channel(
+        self,
+        *,
+        name: str,
+        type: ChannelType,
+        overwrites: Dict[Union[Member, Role], Permissions] = None,
+        parent: Optional[CategoryChannel] = None,
+        **kwargs,
+    ) -> Dict[str, Any]:
+        permission_overwrites = self._make_permission_overwrites(overwrites)
+        return await self._state.http.create_guild_channel(
+            guild_id=self.id,
+            name=name,
+            type=type.value,
+            parent_id=parent.id if parent else None,
+            permission_overwrites=permission_overwrites,
+            **kwargs,
+        )
+
     async def edit(self, **kwargs) -> Guild:
         """
         Edits the guild.
@@ -110,6 +169,7 @@ class Guild:
         topic: Optional[str] = None,
         position: Optional[int] = None,
         nsfw: Optional[bool] = None,
+        overwrites: Optional[Dict[Union[Member, Role], Permissions]] = None,
         parent: Optional[CategoryChannel] = None,
     ) -> TextChannel:
         """
@@ -123,20 +183,85 @@ class Guild:
             parent (lefi.CategoryChannel): The parent category of the channel.
 
         """
-        data = await self._state.http.create_guild_channel(
-            guild_id=self.id,
+        data = await self._create_channel(
             name=name,
-            type=ChannelType.TEXT.value,
+            type=ChannelType.TEXT,
             topic=topic,
             position=position,
-            parent_id=parent.id if parent else None,
             nsfw=nsfw,
+            parent=parent,
+            overwrites=overwrites,
         )
 
         channel = self._state.create_channel(data, self)
-        self._channels[channel.id] = channel
-        self._state._channels[channel.id] = channel
+        return channel  # type: ignore
 
+    async def create_voice_channel(
+        self,
+        *,
+        name: str,
+        bitrate: Optional[int] = None,
+        user_limit: Optional[int] = None,
+        position: Optional[int] = None,
+        overwrites: Optional[Dict[Union[Member, Role], Permissions]] = None,
+        parent: Optional[CategoryChannel] = None,
+    ) -> VoiceChannel:
+        """
+        Creates a new voice channel in the guild.
+
+        Parameters:
+            name (str): The name of the channel.
+            bitrate (int): The bitrate of the channel.
+            user_limit (int): The user limit of the channel.
+            position (int): The position of the channel.
+            parent (lefi.CategoryChannel): The parent category of the channel.
+            overwrites (Dict[Union[lefi.Member, lefi.Role], lefi.Permissions]): The overwrites of the channel.
+
+        Returns:
+            The newly created [lefi.VoiceChannel] instance.
+
+        """
+        data = await self._create_channel(
+            name=name,
+            type=ChannelType.VOICE,
+            bitrate=bitrate,
+            user_limit=user_limit,
+            position=position,
+            parent=parent,
+            overwrites=overwrites,
+        )
+
+        channel = self._state.create_channel(data, self)
+        return channel  # type: ignore
+
+    async def create_category(
+        self,
+        *,
+        name: str,
+        position: Optional[int] = None,
+        overwrites: Optional[Dict[Union[Member, Role], Permissions]] = None,
+    ) -> CategoryChannel:
+        """
+        Creates a new category in the guild.
+
+        Parameters:
+            name (str): The name of the category.
+            position (int): The position of the category.
+            parent (lefi.CategoryChannel): The parent category of the category.
+            overwrites (Dict[Union[lefi.Member, lefi.Role], lefi.Permissions]): The overwrites of the category.
+
+        Returns:
+            The newly created [lefi.CategoryChannel] instance.
+
+        """
+        data = await self._create_channel(
+            name=name,
+            type=ChannelType.CATEGORY,
+            position=position,
+            overwrites=overwrites,
+        )
+
+        channel = self._state.create_channel(data, self)
         return channel  # type: ignore
 
     async def create_role(self, name: str, **kwargs) -> Role:
@@ -259,6 +384,133 @@ class Guild:
         data = await self._state.http.get_guild_templates(self.id)
         return [GuildTemplate(self._state, payload) for payload in data]
 
+    async def fetch_member(self, user_id: int) -> Member:
+        """
+        Fetches a member from the guild.
+
+        Parameters:
+            user_id (int): The id of the user to fetch.
+
+        Returns:
+            The [lefi.Member](./member.md) instance.
+
+        """
+        data = await self._state.http.get_guild_member(self.id, user_id)
+        return self._state.create_member(data, self)
+
+    async def fetch_members(
+        self, *, limit: int = 100, after: Optional[int] = None
+    ) -> List[Member]:
+        """
+        Fetches the guild's members.
+
+        Parameters:
+            limit (int): The number of members to fetch.
+            after (int): The id of the member to start at.
+
+        Returns:
+            A list of [lefi.Member](./member.md) instances.
+
+        """
+        data = await self._state.http.list_guild_members(
+            self.id, limit=limit, after=after
+        )
+        return [self._state.create_member(payload, self) for payload in data]
+
+    async def fetch_roles(self) -> List[Role]:
+        """
+        Fetches the guild's roles.
+
+        Returns:
+            A list of [lefi.Role](./role.md) instances.
+
+        """
+        data = await self._state.http.get_guild_roles(self.id)
+        return [Role(self._state, payload, self) for payload in data]
+
+    async def fetch_prune_count(
+        self, *, days: int = 7, roles: Optional[List[Role]] = None
+    ) -> int:
+        """
+        Fetches the number of members that would be pruned.
+
+        Parameters:
+            days (int): The number of days to prune for.
+            roles (List[lefi.Role]): The roles to include.
+
+        Returns:
+            The number of members that would be pruned.
+
+        """
+        include_roles = [r.id for r in roles] if roles else None
+
+        data = await self._state.http.get_guild_prune_count(
+            guild_id=self.id, days=days, include_roles=include_roles
+        )
+        return data["pruned"]
+
+    @overload
+    async def prune(
+        self,
+        *,
+        days: int = 7,
+        roles: Optional[List[Role]] = None,
+        compute_prune_count: Literal[True],
+    ) -> int:
+        ...
+
+    @overload
+    async def prune(
+        self,
+        *,
+        days: int = 7,
+        roles: Optional[List[Role]] = None,
+        compute_prune_count: Literal[False],
+    ) -> None:
+        ...
+
+    async def prune(
+        self,
+        *,
+        days: int = 7,
+        roles: Optional[List[Role]] = None,
+        compute_prune_count: bool = True,
+    ) -> Optional[int]:
+        """
+        Prunes the guild.
+
+        Parameters:
+            days (int): The number of days to prune for.
+            roles (List[lefi.Role]): The roles to include.
+
+        Returns:
+            The number of members that were pruned.
+
+        """
+        include_roles = [r.id for r in roles] if roles else None
+        data = await self._state.http.begin_guild_prune(
+            guild_id=self.id,
+            days=days,
+            include_roles=include_roles,
+            compute_prune_count=compute_prune_count,
+        )
+
+        if compute_prune_count:
+            return data["pruned"]
+
+        return None
+
+    async def fetch_voice_regions(self) -> List[VoiceRegion]:
+        """
+        Fetches the guild's voice regions.
+
+        Returns:
+            A list of [lefi.VoiceRegion](./voiceregion.md) instances.
+
+        """
+        data = await self._state.http.get_guild_voice_regions(self.id)
+        return [VoiceRegion(payload) for payload in data]
+
     def query(self, q: str, *, limit: int = 1) -> MemberIterator:
         """
         Queries the guild for a specific string.
@@ -274,8 +526,32 @@ class Guild:
         coro = self._state.http.search_guild_members(self.id, query=q, limit=limit)
         return MemberIterator(self._state, self, coro)
 
-    def audit_logs(self) -> AuditLogIterator:
-        coro = self._state.http.get_guild_audit_log(self.id)
+    def audit_logs(
+        self,
+        *,
+        user: Optional[Snowflake] = None,
+        action: Optional[AuditLogsEvent] = None,
+        limit: Optional[int] = None,
+    ) -> AuditLogIterator:
+        """
+        Returns an iterator for the guild's audit logs.
+
+        Example:
+            ```py
+            async for entry in guild.audit_logs():
+                print(f"Action: {entry.action.name}. Target: {entry.target}. Reason: {entry.reason}")
+
+                for change in entry.changes:
+                    print(f"Change: {change.key} - {change.before} -> {change.after}")
+            ```
+
+        """
+        user_id = user.id if user else None
+        action_type = action.value if action else None
+
+        coro = self._state.http.get_guild_audit_log(
+            guild_id=self.id, user_id=user_id, action_type=action_type, limit=limit
+        )
         return AuditLogIterator(self._state, self, coro)
 
     async def fetch_active_threads(self) -> List[Thread]:
@@ -410,11 +686,27 @@ class Guild:
         return self._data["name"]
 
     @property
-    def icon(self) -> str:
+    def description(self) -> Optional[str]:
+        return self._data["description"]
+
+    @property
+    def banner(self) -> Optional[CDNAsset]:
+        banner_hash = self._data["banner"]
+        if not banner_hash:
+            return None
+
+        return CDNAsset.from_guild_banner(self._state, self.id, banner_hash)
+
+    @property
+    def icon(self) -> Optional[CDNAsset]:
         """
         The icon of the guild.
         """
-        return self._data["icon"]
+        icon_hash = self._data["icon"]
+        if not icon_hash:
+            return None
+
+        return CDNAsset.from_guild_icon(self._state, self.id, icon_hash)
 
     @property
     def icon_hash(self) -> str:
@@ -424,18 +716,28 @@ class Guild:
         return self._data["icon_hash"]
 
     @property
-    def splash(self) -> str:
+    def splash(self) -> Optional[CDNAsset]:
         """
         The guild's splash.
         """
-        return self._data["splash"]
+        splash_hash = self._data["splash"]
+        if not splash_hash:
+            return None
+
+        return CDNAsset.from_guild_splash(self._state, self.id, splash_hash)
 
     @property
-    def discovery_splash(self) -> str:
+    def discovery_splash(self) -> Optional[CDNAsset]:
         """
         The guilds discovery splash.
         """
-        return self._data["discovery_splash"]
+        discovery_splash = self._data["discovery_splash"]
+        if not discovery_splash:
+            return None
+
+        return CDNAsset.from_guild_discovery_splash(
+            self._state, self.id, discovery_splash
+        )
 
     @property
     def owner(self) -> Optional[Union[User, Member]]:

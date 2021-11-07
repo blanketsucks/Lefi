@@ -7,8 +7,8 @@ from typing import (
     Dict,
     Optional,
     List,
+    Protocol,
     Type,
-    TypedDict,
     TypeVar,
     Generic,
     Any,
@@ -18,35 +18,38 @@ from ..utils.payload import update_payload
 
 if TYPE_CHECKING:
 
-    class EmbedFooter(TypedDict):
+    class _EmbedItem(Protocol):
+        data: Dict[str, Any]
+
+    class EmbedFooter(_EmbedItem):
         text: str
         icon_url: Optional[str]
 
-    class EmbedAuthor(TypedDict):
+    class EmbedAuthor(_EmbedItem):
         name: str
         url: Optional[str]
         icon_url: Optional[str]
 
-    class EmbedProvider(TypedDict):
+    class EmbedProvider(_EmbedItem):
         name: Optional[str]
         url: Optional[str]
 
-    class EmbedVideo(TypedDict):
+    class EmbedVideo(_EmbedItem):
         url: str
         height: Optional[int]
         width: Optional[int]
 
-    class EmbedImage(TypedDict):
+    class EmbedImage(_EmbedItem):
         url: str
         height: Optional[int]
         width: Optional[int]
 
-    class EmbedThumbnail(TypedDict):
+    class EmbedThumbnail(_EmbedItem):
         url: str
         height: Optional[int]
         width: Optional[int]
 
-    class EmbedField(TypedDict):
+    class EmbedField(_EmbedItem):
         name: str
         value: str
         inline: bool
@@ -54,12 +57,10 @@ if TYPE_CHECKING:
 
 __all__ = ("Embed",)
 
-T = TypeVar("T")
 
-
-class EmbedItem(Generic[T]):
+class EmbedItem:
     def __init__(self, **kwargs: Any) -> None:
-        self.data: T = kwargs  # type: ignore
+        self.data = kwargs
         self.__dict__.update(kwargs)
 
 
@@ -214,7 +215,7 @@ class Embed:
         self._data["color"] = color
 
     @property
-    def footer(self) -> Optional[EmbedItem[EmbedFooter]]:
+    def footer(self) -> Optional[EmbedFooter]:
         """
         The embed's footer.
         """
@@ -232,7 +233,7 @@ class Embed:
         self._data["footer"] = EmbedItem(text=text, icon_url=icon_url)
 
     @property
-    def image(self) -> Optional[EmbedItem[EmbedImage]]:
+    def image(self) -> Optional[EmbedImage]:
         """
         The embed's image.
         """
@@ -253,7 +254,7 @@ class Embed:
         self._data["image"] = EmbedItem(url=url, height=height, width=width)
 
     @property
-    def thumbnail(self) -> Optional[EmbedItem[EmbedThumbnail]]:
+    def thumbnail(self) -> Optional[EmbedThumbnail]:
         """
         The embed's thumbnail.
         """
@@ -274,7 +275,7 @@ class Embed:
         self._data["thumbnail"] = EmbedItem(url=url, height=height, width=width)
 
     @property
-    def video(self) -> Optional[EmbedItem[EmbedVideo]]:
+    def video(self) -> Optional[EmbedVideo]:
         """
         The embed's video.
         """
@@ -295,7 +296,7 @@ class Embed:
         self._data["thumbnail"] = EmbedItem(url=url, height=height, width=width)
 
     @property
-    def provider(self) -> Optional[EmbedItem[EmbedProvider]]:
+    def provider(self) -> Optional[EmbedProvider]:
         """
         The embed's provider.
         """
@@ -315,7 +316,7 @@ class Embed:
         self._data["thumbnail"] = EmbedItem(name=name, url=url)
 
     @property
-    def author(self) -> Optional[EmbedItem[EmbedAuthor]]:
+    def author(self) -> Optional[EmbedAuthor]:
         """
         The embed's author.
         """
@@ -336,7 +337,7 @@ class Embed:
         self._data["author"] = EmbedItem(name=name, url=url, icon_url=icon_url)
 
     @property
-    def fields(self) -> Optional[List[EmbedItem[EmbedField]]]:
+    def fields(self) -> Optional[List[EmbedField]]:
         """
         The embed's fields.
         """

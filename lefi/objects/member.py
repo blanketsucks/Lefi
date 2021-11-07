@@ -7,6 +7,7 @@ from ..utils import Snowflake
 from .flags import Permissions
 from .user import User
 from ..voice import VoiceState
+from .attachments import CDNAsset
 
 if TYPE_CHECKING:
     from ..state import State
@@ -206,3 +207,13 @@ class Member(User):
             return Permissions.all()
 
         return base
+
+    @property
+    def guild_avatar(self) -> Optional[CDNAsset]:
+        guild_avatar_hash = self._member.get("avatar")
+        if not guild_avatar_hash:
+            return None
+
+        return CDNAsset.from_guild_member_avatar(
+            self._state, self.guild.id, self.id, guild_avatar_hash
+        )

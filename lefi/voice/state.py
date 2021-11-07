@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from ..objects import Guild, VoiceChannel, User
     from ..state import State
 
-__all__ = ("VoiceState",)
+__all__ = ("VoiceState", "VoiceRegion")
 
 
 class VoiceState:
@@ -72,3 +72,28 @@ class VoiceState:
     @property
     def suppress(self) -> bool:
         return self._data["suppress"]
+
+
+class VoiceRegion:
+    def __init__(self, data: Dict) -> None:
+        self._data = data
+
+    @property
+    def id(self) -> int:
+        return int(self._data["id"])
+
+    @property
+    def name(self) -> str:
+        return self._data["name"]
+
+    @property
+    def optimal(self) -> bool:
+        return self._data["optimal"]
+
+    @property
+    def deprecated(self) -> bool:
+        return self._data["deprecated"]
+
+    @property
+    def custom(self) -> bool:
+        return self._data["custom"]

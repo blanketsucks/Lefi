@@ -103,6 +103,6 @@ class Interaction:
 
     def _create_user(self) -> Union[User, Member]:
         if (member_data := self._data.get("member")) and self.guild:
-            return self._state._create_member(member_data, self.guild)
+            return self._state.create_member(member_data, self.guild)
 
         return self._state.add_user(self._data["user"])

@@ -109,6 +109,7 @@ class State:
         1: DMChannel,
         2: VoiceChannel,
         3: CategoryChannel,
+        5: TextChannel,
     }
 
     def __init__(self, client: Client, loop: asyncio.AbstractEventLoop) -> None:
@@ -681,7 +682,7 @@ class State:
 
         members: Dict[int, Member] = {}
         for member_data in data["members"]:
-            member = self._create_member(member_data, guild)
+            member = self.create_member(member_data, guild)
             members[member.id] = member
 
         guild._members = members
@@ -849,7 +850,7 @@ class State:
         """
         self._voice_clients.pop(guild_id, None)
 
-    def _create_member(self, data: Dict, guild: Guild) -> Member:
+    def create_member(self, data: Dict, guild: Guild) -> Member:
         member = Member(self, data, guild)
 
         for role_data in data["roles"]:
@@ -857,3 +858,6 @@ class State:
             member._roles.setdefault(role.id, role)  # type: ignore
 
         return member
+
+    def create_user(self, data: Dict) -> User:
+        return User(self, data)

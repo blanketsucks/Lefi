@@ -25,6 +25,7 @@ from .user import User
 from ..utils import to_snowflake, Object
 from .permissions import Permissions
 from .role import PartialRole
+from .attachments import CDNAsset
 
 _member_events = (
     AuditLogsEvent.MEMBER_ROLE_UPDATE,
@@ -87,6 +88,7 @@ if TYPE_CHECKING:
         ExplicitContentFilterLevel,
         ChannelType,
         VerificationLevel,
+        CDNAsset,
         None,
     ]
 
@@ -196,11 +198,36 @@ def _handle_type(change: AuditLogChange, value: int) -> int:
     return value
 
 
-def _handle_value(change: AuditLogChange, value: Any) -> Any:
-    key = change.key
-    handler = change._handlers.get(key)
+def _handle_icon_hash(change: AuditLogChange, value: str) -> CDNAsset:
+    entry = change.entry
+    return CDNAsset.from_guild_icon(entry._state, entry.guild.id, value)
 
-    if not value:
+
+def _handle_avatar_hash(change: AuditLogChange, value: str):
+    entry = change.entry
+    return CDNAsset.from_user_avatar(entry._state, entry.target_id, value)  # type: ignore
+
+
+def _handle_splash_hash(change: AuditLogChange, value: str):
+    entry = change.entry
+    return CDNAsset.from_guild_splash(entry._state, entry.guild.id, value)
+
+
+def _handle_banner_hash(change: AuditLogChange, value: str):
+    entry = change.entry
+    return CDNAsset.from_guild_banner(entry._state, entry.guild.id, value)
+
+
+def _handle_discovery_splash_hash(change: AuditLogChange, value: str):
+    entry = change.entry
+    return CDNAsset.from_guild_discovery_splash(entry._state, entry.guild.id, value)
+
+
+def _handle_value(change: AuditLogChange, value: Any) -> Any:
+    key = change._data["key"]
+    handler = _handlers.get(key)
+
+    if value is None:
         return None
 
     if not handler:
@@ -209,29 +236,52 @@ def _handle_value(change: AuditLogChange, value: Any) -> Any:
     return handler(change, value)
 
 
-class AuditLogChange:
-    _handlers: ClassVar[Dict[str, Callable[[AuditLogChange, Any], Any]]] = {
-        "allow": _handle_permission,
-        "deny": _handle_permission,
-        "permissions": _handle_permission,
-        "permission_overwrites": _handle_permission_overwrites,
-        "id": _handle_snowflake,
-        "channel_id": _handle_channel_snowflake,
-        "guild_id": _handle_guild,
-        "owner_id": _handle_member,
-        "inviter_id": _handle_member,
-        "afk_channel_id": _handle_channel_snowflake,
-        "system_channel_id": _handle_channel_snowflake,
-        "widget_channel_id": _handle_channel_snowflake,
-        "rules_channel_id": _handle_channel_snowflake,
-        "public_updates_channel_id": _handle_channel_snowflake,
-        "explicit_content_filter": _handle_enum(ExplicitContentFilterLevel),
-        "verification_level": _handle_enum(VerificationLevel),
-        "type": _handle_type,
-        "$add": _handle_roles,
-        "$remove": _handle_roles,
-    }
+_names: Dict[str, str] = {
+    "channel_id": "channel",
+    "guild_id": "guild",
+    "target_id": "target",
+    "owner_id": "owner",
+    "inviter_id": "inviter",
+    "afk_channel_id": "afk_channel",
+    "widget_channel_id": "widget_channel",
+    "rules_channel_id": "rules_channel",
+    "public_updates_channel_id": "public_updates_channel",
+    "icon_hash": "icon",
+    "splash_hash": "splash",
+    "discovery_splash_hash": "discovery_splash",
+    "banner_hash": "banner",
+    "avatar_hash": "avatar",
+}
 
+_handlers: Dict[str, Callable[[AuditLogChange, Any], Change]] = {
+    "allow": _handle_permission,
+    "deny": _handle_permission,
+    "permissions": _handle_permission,
+    "permission_overwrites": _handle_permission_overwrites,
+    "id": _handle_snowflake,
+    "channel_id": _handle_channel_snowflake,
+    "guild_id": _handle_guild,
+    "owner_id": _handle_member,
+    "inviter_id": _handle_member,
+    "afk_channel_id": _handle_channel_snowflake,
+    "system_channel_id": _handle_channel_snowflake,
+    "widget_channel_id": _handle_channel_snowflake,
+    "rules_channel_id": _handle_channel_snowflake,
+    "public_updates_channel_id": _handle_channel_snowflake,
+    "explicit_content_filter": _handle_enum(ExplicitContentFilterLevel),
+    "verification_level": _handle_enum(VerificationLevel),
+    "type": _handle_type,
+    "icon_hash": _handle_icon_hash,
+    "avatar_hash": _handle_avatar_hash,
+    "splash_hash": _handle_splash_hash,
+    "banner_hash": _handle_banner_hash,
+    "discovery_splash_hash": _handle_discovery_splash_hash,
+    "$add": _handle_roles,
+    "$remove": _handle_roles,
+}
+
+
+class AuditLogChange:
     def __init__(self, entry: AuditLogEntry, data: Dict) -> None:
         self._data = data
         self._entry = entry
@@ -245,7 +295,8 @@ class AuditLogChange:
 
     @property
     def key(self) -> str:
-        return self._data["key"]
+        name = self._data["key"]
+        return _names.get(name, name)
 
     @cached_property
     def before(self) -> Change:

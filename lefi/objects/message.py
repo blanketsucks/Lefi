@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Dict, Optional, Union, List
 from ..utils import Snowflake
 from .embed import Embed
 from .threads import Thread
+from .attachments import Attachment
 
 if TYPE_CHECKING:
     from ..state import State
@@ -223,6 +224,13 @@ class Message:
     @property
     def embeds(self) -> List[Embed]:
         return [Embed.from_dict(embed) for embed in self._data["embeds"]]
+
+    @property
+    def attachments(self) -> List[Attachment]:
+        return [
+            Attachment(self._state, attachment)
+            for attachment in self._data["attachments"]
+        ]
 
     @property
     def pinned(self) -> bool:

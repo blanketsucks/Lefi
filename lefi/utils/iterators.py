@@ -5,11 +5,10 @@ from typing import TYPE_CHECKING, Any, Coroutine, Dict, Generic, TypeVar, List
 
 _T = TypeVar("_T")
 
-from ..objects import User, AuditLogEntry
-
 if TYPE_CHECKING:
-    from ..objects import Member, Guild, Message, TextChannel, AuditLogEntry
+    from ..objects import Member, Guild, Message, TextChannel, AuditLogEntry, User
     from ..state import State
+
 
 __all__ = (
     "MemberIterator",
@@ -74,7 +73,7 @@ class MemberIterator(AsyncIterator["Member"]):
             member = self.guild.get_member(user_id)
 
             if not member:
-                member = self._state._create_member(value, self.guild)
+                member = self._state.create_member(value, self.guild)
 
             await self.queue.put(member)
 
@@ -111,13 +110,16 @@ class AuditLogIterator(AsyncIterator["AuditLogEntry"]):
         super().__init__(coroutine)
 
     async def _fill_queue(self) -> None:
+        from ..objects import AuditLogEntry
+
         logs = await self.coroutine
 
         users = logs["users"]
-        values = logs["audit_log_entries"]
+        values: List = logs["audit_log_entries"]
+        values.reverse()
 
         for user in users:
-            u = User(self.state, user)
+            u = self.state.create_user(user)
             self.users[u.id] = u
 
         for value in values:

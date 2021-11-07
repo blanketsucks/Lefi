@@ -166,6 +166,20 @@ class HTTPClient:
         """
         return await self.session.ws_connect(url)
 
+    async def read_from_url(self, url: str) -> bytes:
+        """
+        A method which reads the data from a url.
+
+        Parameters:
+            url (str): The url to read from.
+
+        Returns:
+            The data read from the url.
+
+        """
+        async with self.session.get(url) as resp:
+            return await resp.read()
+
     async def login(self) -> None:
         """
         Checks to see if the token given is valid.
@@ -1555,8 +1569,8 @@ class HTTPClient:
         )
 
     async def list_guild_members(
-        self, guild_id: int, *, limit: int = 1, after: int = 0
-    ) -> Dict[str, Any]:
+        self, guild_id: int, *, limit: int = 1, after: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
         """
         Makes an API call to get a guild's members.
 
@@ -1567,7 +1581,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        params = {"limit": limit, "after": after}
+        params = update_payload({}, limit=limit, after=after)
         return await self.request(
             "GET",
             Route(f"/guilds/{guild_id}/members", guild_id=guild_id),
@@ -1817,7 +1831,7 @@ class HTTPClient:
             "DELETE", Route(f"/guilds/{guild_id}/bans/{user_id}"), guild_id=guild_id
         )
 
-    async def get_guild_roles(self, guild_id: int) -> Dict[str, Any]:
+    async def get_guild_roles(self, guild_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the roles of a guild.
 
@@ -1976,7 +1990,7 @@ class HTTPClient:
         days: int = 7,
         compute_prune_count: bool = True,
         include_roles: Optional[List[int]] = None,
-    ):
+    ) -> Dict[str, Any]:
         """
         Makes an API call to begin pruning a guild.
 
@@ -1995,11 +2009,11 @@ class HTTPClient:
         if include_roles is not None:
             payload["include_roles"] = ",".join(map(str, include_roles))
 
-        await self.request(
+        return await self.request(
             "POST", Route(f"/guilds/{guild_id}/prune", guild_id=guild_id), json=payload
         )
 
-    async def get_guild_voice_regions(self, guild_id: int) -> Dict[str, Any]:
+    async def get_guild_voice_regions(self, guild_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the voice regions in a guild.
 

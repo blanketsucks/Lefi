@@ -17,3 +17,4 @@ from .files import *
 from .threads import *
 from .interactions import *
 from .audit_logs import *
+from .attachments import *

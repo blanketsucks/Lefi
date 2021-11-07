@@ -78,10 +78,7 @@ class PCMAudioStream(BaseAudioStream):
         self.loop = asyncio.get_running_loop()
 
     async def read(self) -> bytes:
-        data = await self.loop.run_in_executor(
-            None, self.source.read, _opus.PACKET_SIZE
-        )
-
+        data = await asyncio.to_thread(self.source.read, _opus.PACKET_SIZE)
         if len(data) != _opus.PACKET_SIZE:
             return b""
 

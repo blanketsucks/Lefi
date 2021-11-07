@@ -10,6 +10,7 @@ from typing import (
     Optional,
     Union,
 )
+from functools import cached_property
 
 from .embed import Embed
 from .enums import ChannelType, InviteTargetType
@@ -73,33 +74,6 @@ class Channel:
         Deletes the channel.
         """
         await self._state.http.delete_channel(self.id)
-
-    def _make_permission_overwrites(
-        self, base: Optional[Dict[Union[Member, Role], Permissions]]
-    ) -> Optional[List[Dict]]:
-        if not base:
-            return None
-
-        permission_overwrites = []
-        for target, overwrite in base.items():
-            if not isinstance(target, (Member, Role)):
-                raise TypeError("Target must be a Member or Role")
-
-            if not isinstance(overwrite, Permissions):
-                raise TypeError("Overwrite must be a Permissions instance")
-
-            allow, deny = overwrite.to_overwrite_pair()
-
-            ow = {
-                "id": target.id,
-                "type": 1 if isinstance(target, Member) else 0,
-                "allow": allow.value,
-                "deny": deny.value,
-            }
-
-            permission_overwrites.append(ow)
-
-        return permission_overwrites
 
     async def edit_permissions(
         self, target: Union[Role, Member], **permissions: bool
@@ -295,7 +269,7 @@ class TextChannel(Channel):
             The lefi.TextChannel instance after editting.
 
         """
-        permission_overwrites = self._make_permission_overwrites(overwrites)
+        permission_overwrites = self.guild._make_permission_overwrites(overwrites)
         data = await self._state.http.edit_text_channel(
             channel_id=self.id,
             name=name,
@@ -585,11 +559,25 @@ class TextChannel(Channel):
         return self._data["default_auto_archive_duration"]
 
     @property
-    def parent(self) -> Optional[Channel]:
+    def parent_id(self) -> Optional[int]:
+        """
+        The ID of the parent channel.
+        """
+        return to_snowflake(self._data, "parent_id")
+
+    @property
+    def parent(self) -> Optional[CategoryChannel]:
         """
         The channels parent.
         """
-        return self.guild.get_channel(self._data["parent_id"])
+        return self.guild.get_channel(self.parent_id)  # type: ignore
+
+    @property
+    def category(self) -> Optional[CategoryChannel]:
+        """
+        An alias of `parent`
+        """
+        return self.parent
 
 
 class VoiceChannel(Channel):
@@ -671,7 +659,7 @@ class VoiceChannel(Channel):
             The lefi.VoiceChannel instance after editting.
 
         """
-        permission_overwrites = self._make_permission_overwrites(overwrites)
+        permission_overwrites = self.guild._make_permission_overwrites(overwrites)
         data = await self._state.http.edit_voice_channel(
             channel_id=self.id,
             name=name,
@@ -738,15 +726,49 @@ class VoiceChannel(Channel):
         return self._data["rtc_region"]
 
     @property
-    def parent(self):
+    def parent_id(self) -> Optional[int]:
         """
-        The parent of the voice channel.
+        The ID of the parent channel.
         """
-        return self.guild.get_channel(self._data["parent_id"])
+        return to_snowflake(self._data, "parent_id")
+
+    @property
+    def parent(self) -> Optional[CategoryChannel]:
+        """
+        The channels parent.
+        """
+        return self.guild.get_channel(self.parent_id)  # type: ignore
+
+    @property
+    def category(self) -> Optional[CategoryChannel]:
+        """
+        An alias of `parent`
+        """
+        return self.parent
+
+    @cached_property
+    def members(self) -> List[Member]:
+        """
+        The members in the voice channel.
+        """
+        members = []
+
+        for user_id, voice in self.guild._voice_states.items():
+            if voice.channel_id == self.id:
+                member = self.guild.get_member(user_id)
+
+                if member:
+                    members.append(member)
+
+        return members
 
 
 class CategoryChannel(Channel):
-    pass
+    async def create_text_channel(self, *, name: str, **kwargs: Any) -> TextChannel:
+        return await self.guild.create_text_channel(name=name, parent=self, **kwargs)
+
+    async def create_voice_channel(self, *, name: str, **kwargs) -> VoiceChannel:
+        return await self.guild.create_voice_channel(name=name, parent=self, **kwargs)
 
 
 class DMChannel:
