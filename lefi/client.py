@@ -29,7 +29,7 @@ from .objects import (
     VoiceChannel,
 )
 from .state import Cache, State
-from .ws import WebSocketClient, Shard
+from .ws import Shard, WebSocketClient
 
 if TYPE_CHECKING:
     from .objects import Intents

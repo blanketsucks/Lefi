@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import inspect
-from typing import Any, Dict, List, Optional, Iterable, Union, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 from .command import Command
 

@@ -3,9 +3,9 @@ from __future__ import annotations
 import contextlib
 from typing import Any
 
+from ..errors import CheckFailed, CommandOnCooldown
 from .command import Command
 from .context import Context
-from ..errors import CheckFailed, CommandOnCooldown
 
 __all__ = ("Handler",)
 

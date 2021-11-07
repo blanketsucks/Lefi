@@ -2,16 +2,15 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from typing import TYPE_CHECKING, List, Optional
 
-from typing import TYPE_CHECKING, Optional, List
-
+from .basews import BaseWebsocketClient
 from .ratelimiter import Ratelimiter
 from .shard import Shard
-from .basews import BaseWebsocketClient
 
 if TYPE_CHECKING:
-    from ..client import Client
     from .. import Intents
+    from ..client import Client
 
 __all__ = ("WebSocketClient",)
 

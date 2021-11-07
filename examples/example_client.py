@@ -4,9 +4,7 @@ import os
 
 import lefi
 
-client = lefi.Client(
-    os.getenv("DISCORD_TOKEN"), intents=lefi.Intents.all()  # type: ignore
-)
+client = lefi.Client(os.getenv("DISCORD_TOKEN"), intents=lefi.Intents.all())  # type: ignore
 
 
 @client.on("ready")

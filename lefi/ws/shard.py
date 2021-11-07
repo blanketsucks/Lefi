@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-import aiohttp
 import logging
 import sys
-
 from typing import TYPE_CHECKING, Dict
+
+import aiohttp
 
 from .basews import BaseWebsocketClient
 from .opcodes import OpCodes
 
 if TYPE_CHECKING:
-    from .wsclient import WebSocketClient
     from ..client import Client
+    from .wsclient import WebSocketClient
 
 __all__ = ("Shard",)
 

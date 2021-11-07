@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import datetime
-
-from typing import TYPE_CHECKING, Dict, Optional, List, Type
+from typing import TYPE_CHECKING, Dict, List, Optional, Type
 
 from ..utils.payload import update_payload
 
