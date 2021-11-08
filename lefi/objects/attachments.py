@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import IO, TYPE_CHECKING, Dict, Optional, Tuple, Union
+from typing import TYPE_CHECKING, BinaryIO, Dict, Optional, Tuple, Union
 import io
 import os
 import asyncio
@@ -13,7 +13,7 @@ def _sync_save(fp: str, data: bytes) -> None:
         _sync_write(f, data)
 
 
-def _sync_write(fp: IO[bytes], data: bytes) -> None:
+def _sync_write(fp: BinaryIO, data: bytes) -> None:
     fp.write(data)
 
 
@@ -37,7 +37,7 @@ class AttachmentMixin:
     async def read(self) -> bytes:
         return await self._state.http.read_from_url(self.url)  # type: ignore
 
-    async def save(self, file: Union[IO[bytes], os.PathLike[str]]) -> None:
+    async def save(self, file: Union[BinaryIO, os.PathLike[str]]) -> None:
         data = await self.read()
 
         if isinstance(file, (str, os.PathLike)):

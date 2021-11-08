@@ -3,11 +3,10 @@ from __future__ import annotations
 import enum
 import functools
 import uuid
+from typing import Callable, Coroutine, Dict, List, Optional
 
-from typing import List, Dict, Optional, Coroutine, Callable
-
-from .enums import ComponentStyle, ComponentType
 from ..utils.payload import update_payload
+from .enums import ComponentStyle, ComponentType
 
 __all__ = (
     "ActionRow",

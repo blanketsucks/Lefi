@@ -12,6 +12,7 @@ from typing import (
 )
 from functools import cached_property
 
+from .components import ActionRow
 from .embed import Embed
 from .enums import ChannelType, InviteTargetType
 from .permissions import Overwrite
@@ -23,6 +24,9 @@ from ..errors import VoiceException
 from ..utils import ChannelHistoryIterator, to_snowflake
 from ..voice import VoiceClient
 from .threads import Thread
+from .enums import ChannelType
+from .flags import Permissions
+from .permissions import Overwrite
 
 if TYPE_CHECKING:
     from ..state import State

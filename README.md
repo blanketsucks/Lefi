@@ -1,7 +1,10 @@
 # Lefi
 [![Documentation Status](https://readthedocs.org/projects/lefi/badge/?version=latest)](https://lefi.readthedocs.io/en/latest/?badge=latest)
-![Pytest](https://github.com/an-dyy/Lefi/actions/workflows/run-pytest.yml/badge.svg?event=push)
+![Pytests](https://github.com/an-dyy/Lefi/actions/workflows/run-pytest.yml/badge.svg?event=push)
 ![Mypy](https://github.com/an-dyy/Lefi/actions/workflows/mypy.yml/badge.svg?event=push)
+[![PyPI version](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.python.org/pypi/lefi/)
+[![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/QPFXzFbqrK)
+
 
 A discord API wrapper focused on clean code, and usability
 
@@ -32,7 +35,10 @@ A discord API wrapper focused on clean code, and usability
     pre-commit install
     ```
 
-## Contributors
+## Join the discord!
+- [Discord](https://discord.gg/QPFXzFbqrK)
+
+## Notable contributors
 
 - [blanketsucks](https://github.com/blanketsucks) - collaborator
 - [an-dyy](https://github.com/an-dyy) - creator and maintainer

@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import BinaryIO, Optional, Union
 import io
 
 __all__ = ("File",)
@@ -6,12 +6,12 @@ __all__ = ("File",)
 
 class File:
     def __init__(
-        self, fp: Union[str, io.BytesIO], *, filename: Optional[str] = None
+        self, fp: Union[str, BinaryIO], *, filename: Optional[str] = None
     ) -> None:
         if isinstance(fp, str):
             self.fd = open(fp, "rb")
         else:
-            self.fd = fp  # type: ignore
+            self.fd = fp
 
         self.filename = filename or getattr(self.fd, "name", None)
 

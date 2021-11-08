@@ -1,17 +1,16 @@
 from __future__ import annotations
 
 import asyncio
-import aiohttp
 import datetime
-
 import logging
 import sys
+from typing import TYPE_CHECKING, Callable, Dict, List, Optional
 
-from typing import TYPE_CHECKING, Optional, List, Dict, Callable
+import aiohttp
 
+from ..objects import Intents
 from .opcodes import OpCodes
 from .ratelimiter import Ratelimiter
-from ..objects import Intents
 
 if TYPE_CHECKING:
     from ..client import Client

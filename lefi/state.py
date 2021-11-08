@@ -3,18 +3,17 @@ from __future__ import annotations
 import asyncio
 import collections
 import logging
-
 from typing import (
     TYPE_CHECKING,
     Any,
+    Callable,
     Dict,
+    List,
     Optional,
+    Tuple,
     Type,
     TypeVar,
     Union,
-    Callable,
-    List,
-    Tuple,
 )
 
 from .objects import (

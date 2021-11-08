@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import asyncio
 import logging
 import sys
-
 from typing import TYPE_CHECKING
+import asyncio
 
 from .basews import BaseWebsocketClient
 from .opcodes import OpCodes

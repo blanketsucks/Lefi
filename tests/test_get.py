@@ -1,5 +1,6 @@
-import lefi
 import random
+
+import lefi
 
 
 class FakeObj:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, List, Optional, Protocol, Union
+from typing import TYPE_CHECKING, BinaryIO, List, Optional, Protocol, Union
 import time
 import audioop
 
@@ -9,7 +9,6 @@ from . import _opus
 from .wsclient import SpeakingState
 
 __all__ = (
-    "AudioIOSource",
     "AudioStream",
     "BaseAudioStream",
     "PCMAudioStream",
@@ -19,14 +18,6 @@ __all__ = (
 
 if TYPE_CHECKING:
     from .protocol import VoiceProtocol
-
-
-class AudioIOSource(Protocol):
-    def read(self, n: Optional[int] = ...) -> bytes:
-        ...
-
-    def close(self) -> None:
-        ...
 
 
 class AudioStream(Protocol):
@@ -73,7 +64,7 @@ class BaseAudioStream(AudioStream):
 
 
 class PCMAudioStream(BaseAudioStream):
-    def __init__(self, source: AudioIOSource) -> None:
+    def __init__(self, source: BinaryIO) -> None:
         self.source = source
         self.loop = asyncio.get_running_loop()
 
@@ -91,11 +82,11 @@ class PCMAudioStream(BaseAudioStream):
 class FFmpegAudioStream(BaseAudioStream):
     def __init__(
         self,
-        source: Union[str, AudioIOSource],
+        source: Union[str, BinaryIO],
         ffmpeg_options: Optional[List[str]] = None,
     ) -> None:
         self.pipe = False
-        if hasattr(source, "read"):
+        if not isinstance(source, str):
             self.pipe = True
 
         self.source = source

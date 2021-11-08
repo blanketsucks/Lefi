@@ -1,18 +1,7 @@
 from __future__ import annotations
 
 import datetime
-
-from typing import (
-    TYPE_CHECKING,
-    Dict,
-    Optional,
-    List,
-    Protocol,
-    Type,
-    TypeVar,
-    Generic,
-    Any,
-)
+from typing import TYPE_CHECKING, Dict, List, Optional, Type, Protocol, Any
 
 from ..utils.payload import update_payload
 

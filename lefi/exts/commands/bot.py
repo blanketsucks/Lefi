@@ -18,7 +18,7 @@ from typing import (
 
 import lefi
 
-from .core import Command, Context, Plugin, StringParser, Handler
+from .core import Command, Context, Handler, Plugin, StringParser
 from .errors import CheckFailed
 
 CTX = TypeVar("CTX", bound=Context)
@@ -66,9 +66,7 @@ class Bot(lefi.Client):
         self.plugins: Dict[str, Plugin] = {}
         self.prefix = prefix
 
-    def command(
-        self, name: Optional[str] = None, *, cls: Type[CMD] = Command  # type: ignore
-    ) -> Callable[..., CMD]:
+    def command(self, name: Optional[str] = None, *, cls: Type[CMD] = Command) -> Callable[..., CMD]:  # type: ignore
         """
         Decorator to register a command.
 
