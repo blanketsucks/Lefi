@@ -20,7 +20,25 @@ __all__ = (
     "OverwriteType",
     "ComponentStyle",
     "ComponentType",
+    "InteractionType",
+    "InteractionResponse",
 )
+
+
+class InteractionType(IntEnum):
+    PING = 1
+    COMMAND = 2
+    COMPONENT = 3
+    COMMAND_AUTOCOMPLETE = 4
+
+
+class InteractionResponse(IntEnum):
+    PONG = 1
+    MESSAGE = 4
+    DEFER_MESSAGE = 5
+    DERFER_UPDATE = 6
+    UPDATE = 7
+    AUTOCOMPLETE_RESULT = 8
 
 
 class ComponentStyle(IntEnum):

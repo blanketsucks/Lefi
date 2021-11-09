@@ -33,6 +33,7 @@ from .objects import (
     TextChannel,
     User,
     VoiceChannel,
+    InteractionType,
 )
 
 if TYPE_CHECKING:
@@ -177,7 +178,12 @@ class State:
     async def parse_interaction_create(self, data: Dict) -> None:
         if component := self._components.get(data["data"]["custom_id"]):
             callback, instance = component
-            self.loop.create_task(callback(Interaction(self, data), instance))
+            self.loop.create_task(
+                callback(
+                    Interaction(self, data, type=InteractionType(data["type"])),
+                    instance,
+                )
+            )
 
         self.dispatch("interaction_create", data)
 
