@@ -1,19 +1,22 @@
 from typing import BinaryIO, Optional, Union
-import io
+from os import PathLike
 
 __all__ = ("File",)
 
 
 class File:
     def __init__(
-        self, fp: Union[str, BinaryIO], *, filename: Optional[str] = None
+        self, fp: Union[str, PathLike[str], BinaryIO], *, filename: Optional[str] = None
     ) -> None:
-        if isinstance(fp, str):
-            self.fd = open(fp, "rb")
+        if isinstance(fp, (str, PathLike)):
+            self.source = open(fp, "rb")
         else:
-            self.fd = fp
+            self.source = fp
 
-        self.filename = filename or getattr(self.fd, "name", None)
+        self.filename = filename or getattr(self.source, "name", None)
+
+    def read(self, n: int) -> bytes:
+        return self.source.read(n)
 
     def close(self) -> None:
-        self.fd.close()
+        self.source.close()

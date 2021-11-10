@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Lefi"
-version = "0.2.2"
+version = "0.2.3"
 license = "MIT"
 readme = "README.md"
 description = "A discord API wrapper focused on clean code, and usability"

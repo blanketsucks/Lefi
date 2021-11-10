@@ -6,6 +6,7 @@ from ..utils import Snowflake
 from .embed import Embed
 from .threads import Thread
 from .attachments import Attachment
+from .components import ActionRow
 
 if TYPE_CHECKING:
     from ..state import State
@@ -61,21 +62,47 @@ class Message:
     def __repr__(self) -> str:
         return f"<Message id={self.id}>"
 
-    def _copy(self) -> Message:
-        return self.__class__(self._state, self._data, self._channel)
-
-    async def edit(self, **kwargs) -> Message:
+    async def edit(
+        self,
+        content: Optional[str] = None,
+        *,
+        embeds: Optional[List[Embed]] = None,
+        rows: Optional[List[ActionRow]] = None,
+        **kwargs,
+    ) -> Message:
+        ...
         """
         Edits the message.
 
         Parameters:
+            content (Optional[str]): The content of the message.
+            embeds (Optional[List[lefi.Embed]]): The list of embeds.
+            rows (Optional[List[ActionRow]]): The rows to send with the message.
             kwargs (Any): The options to pass to [lefi.HTTPClient.edit_message](./http.md#lefi.HTTPClient.edit_message).
 
         Returns:
             The message after being editted.
 
         """
-        await self._state.http.edit_message(**kwargs)
+        embeds = [] if embeds is None else embeds
+
+        data = await self._state.client.http.edit_message(
+            channel_id=self.channel.id,
+            message_id=self.id,
+            content=content,
+            embeds=[embed.to_dict() for embed in embeds],
+            components=[row.to_dict() for row in rows] if rows is not None else None,
+        )
+
+        if rows is not None and data.get("components"):
+            for row in rows:
+                for component in row.components:
+                    self._state._components[component.custom_id] = (
+                        component.callback,
+                        component,
+                    )
+
+        self._data = data
         return self
 
     async def crosspost(self) -> Message:

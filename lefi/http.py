@@ -207,7 +207,7 @@ class HTTPClient:
         """
         return {
             "name": f"file-{index}" if index else "file",
-            "value": file.fd,
+            "value": file,
             "filename": file.filename,
             "content_type": "application/octect-stream",
         }

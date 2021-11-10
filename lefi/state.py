@@ -35,6 +35,8 @@ from .objects import (
     ThreadMember,
     Interaction,
     Component,
+    InteractionType,
+    ComponentType,
 )
 from .voice import VoiceClient, VoiceState
 
@@ -174,11 +176,19 @@ class State:
                 self.loop.create_task(callback(*payload))
 
     async def parse_interaction_create(self, data: Dict) -> None:
+        interaction: Interaction = Interaction(
+            self, data, type=InteractionType(data["type"])
+        )
+
         if component := self._components.get(data["data"]["custom_id"]):
             callback, instance = component
-            self.loop.create_task(callback(Interaction(self, data), instance))
 
-        self.dispatch("interaction_create", data)
+            if int(data["data"]["component_type"]) == int(ComponentType.SELECTMENU):
+                instance.values = data["data"]["values"]  # type: ignore
+
+            self.loop.create_task(callback(interaction, instance))
+
+        self.dispatch("interaction_create", interaction)
 
     async def parse_ready(self, data: Dict) -> None:
         """
