@@ -52,10 +52,10 @@ nav:
       - Interaction: API-Reference/interactions.md
 
     - Components:
-      - Button: - API-Reference/button.md
-      - SelectMenu: - API-Reference/selectmenu.md
-      - Option: - API-Reference/option.md
-      - ActionRow: - API-Reference/actionrow.md
+      - Button: API-Reference/button.md
+      - SelectMenu: API-Reference/selectmenu.md
+      - Option: API-Reference/option.md
+      - ActionRow: API-Reference/actionrow.md
 
     - Client: API-Reference/client.md
     - HTTPClient: API-Reference/http.md
