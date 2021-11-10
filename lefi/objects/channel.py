@@ -251,7 +251,7 @@ class TextChannel(Channel):
         content: Optional[str] = None,
         *,
         embeds: Optional[List[Embed]] = None,
-        row: Optional[ActionRow] = None,
+        rows: Optional[List[ActionRow]] = None,
         **kwargs,
     ) -> Message:
         """
@@ -260,6 +260,7 @@ class TextChannel(Channel):
         Parameters:
             content (Optional[str]): The content of the message.
             embeds (Optional[List[lefi.Embed]]): The list of embeds to send with the message.
+            rows (Optional[List[ActionRow]]): The rows to send with the message.
             **kwargs (Any): Extra options to pass to
             [lefi.HTTPClient.send_message](./http.md#lefi.http.HTTPClient.send_message).
 
@@ -272,18 +273,19 @@ class TextChannel(Channel):
             channel_id=self.id,
             content=content,
             embeds=[embed.to_dict() for embed in embeds],
-            components=[row.to_dict()] if row is not None else None,
+            components=[[row.to_dict()] for row in rows] if rows is not None else None,  # type: ignore
             **kwargs,
         )
 
         message = self._state.create_message(data, self)
 
-        if row is not None and data.get("components"):
-            for component in row.components:
-                self._state._components[component.custom_id] = (
-                    component.callback,
-                    component,
-                )
+        if rows is not None and data.get("components"):
+            for row in rows:
+                for component in row.components:
+                    self._state._components[component.custom_id] = (
+                        component.callback,
+                        component,
+                    )
 
         return message
 
@@ -429,7 +431,7 @@ class DMChannel:
         content: Optional[str] = None,
         *,
         embeds: Optional[List[Embed]] = None,
-        row: Optional[ActionRow] = None,
+        rows: Optional[List[ActionRow]] = None,
         **kwargs,
     ) -> Message:
         """
@@ -438,6 +440,7 @@ class DMChannel:
         Parameters:
             content (Optional[str]): The content of the message.
             embeds (Optional[List[lefi.Embed]]): The list of embeds to send with the message.
+            rows (Optional[List[ActionRow]]): The rows to send with the message.
             **kwargs (Any): Extra options to pass to
             [lefi.HTTPClient.send_message](./http.md#lefi.http.HTTPClient.send_message).
 
@@ -450,10 +453,21 @@ class DMChannel:
             channel_id=self.id,
             content=content,
             embeds=[embed.to_dict() for embed in embeds],
-            components=[row.to_dict()] if row is not None else None,
+            components=[[row.to_dict()] for row in rows] if rows is not None else None,  # type: ignore
             **kwargs,
         )
-        return self._state.create_message(data, self)
+
+        message = self._state.create_message(data, self)
+
+        if rows is not None and data.get("components"):
+            for row in rows:
+                for component in row.components:
+                    self._state._components[component.custom_id] = (
+                        component.callback,
+                        component,
+                    )
+
+        return message
 
     @property
     def id(self) -> int:

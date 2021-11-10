@@ -121,7 +121,7 @@ class Interaction:
         content: Optional[str] = None,
         *,
         embeds: Optional[List[Embed]] = None,
-        row: Optional[ActionRow] = None,
+        rows: Optional[List[ActionRow]] = None,
         **kwargs,
     ) -> Message:
         """
@@ -130,7 +130,7 @@ class Interaction:
         Parameters:
             content (Optional[str]): The content of the message.
             embeds (Optional[List[Embed]]): The embeds of the message.
-            row (Optional[ActionRow]): The row to send with the message.
+            rows (Optional[List[ActionRow]]): The rows to send with the message.
             **kwargs: Extra options to pass.
 
         Returns:
@@ -145,10 +145,18 @@ class Interaction:
         payload = update_payload(
             {},
             content=content,
-            components=[row.to_dict()] if row is not None else None,
+            components=[[row.to_dict()] for row in rows] if rows is not None else None,
             embeds=[embed.to_dict() for embed in embeds],
             **kwargs,
         )
+
+        if rows is not None and payload.get("components"):
+            for row in rows:
+                for component in row.components:
+                    self._state._components[component.custom_id] = (
+                        component.callback,
+                        component,
+                    )
 
         await self._state.http.create_interaction_response(
             self.id, self.token, type=InteractionResponse.MESSAGE, data=payload
@@ -167,7 +175,7 @@ class Interaction:
         content: Optional[str] = None,
         *,
         embeds: Optional[List[Embed]] = None,
-        row: Optional[ActionRow] = None,
+        rows: Optional[List[ActionRow]] = None,
         **kwargs,
     ) -> Message:
         """
@@ -176,7 +184,7 @@ class Interaction:
         Parameters:
             content (Optional[str]): The content of the message.
             embeds (Optional[List[lefi.Embed]]): The list of embeds.
-            row (Optional[ActionRow]): The Action row of the message
+            rows (Optional[List[ActionRow]]): The rows to send with the message.
             kwargs (Any): The options to pass to [lefi.HTTPClient.edit_message](./http.md#lefi.HTTPClient.edit_message).
 
         Returns:
@@ -188,9 +196,17 @@ class Interaction:
         payload = update_payload(
             {},
             content=content,
-            components=[row.to_dict()] if row is not None else None,
+            components=[[row.to_dict()] for row in rows] if rows is not None else None,
             embeds=[embed.to_dict() for embed in embeds],
         )
+
+        if rows is not None and payload.get("components"):
+            for row in rows:
+                for component in row.components:
+                    self._state._components[component.custom_id] = (
+                        component.callback,
+                        component,
+                    )
 
         data = await self._state.http.edit_original_interaction_response(
             self.application_id, self.token, **payload
@@ -236,7 +252,7 @@ class Interaction:
         content: Optional[str] = None,
         *,
         embeds: Optional[List[Embed]] = None,
-        row: Optional[ActionRow] = None,
+        rows: Optional[List[ActionRow]] = None,
         **kwargs,
     ) -> Message:
         """
@@ -245,7 +261,7 @@ class Interaction:
         Parameters:
             content (Optional[str]): The content of the message.
             embeds (Optional[List[lefi.Embed]]): The list of embeds.
-            row (Optional[ActionRow]): The Action row of the message
+            rows (Optional[List[ActionRow]]): The rows to send with the message.
             kwargs (Any): The options to pass to [lefi.HTTPClient.edit_message](./http.md#lefi.HTTPClient.edit_message).
 
         Returns:
@@ -257,9 +273,17 @@ class Interaction:
         payload = update_payload(
             {},
             content=content,
-            components=[row.to_dict()] if row is not None else None,
+            components=[[row.to_dict()] for row in rows] if rows is not None else None,
             embeds=[embed.to_dict() for embed in embeds],
         )
+
+        if rows is not None and payload.get("components"):
+            for row in rows:
+                for component in row.components:
+                    self._state._components[component.custom_id] = (
+                        component.callback,
+                        component,
+                    )
 
         data = await self._state.http.create_interaction_response(
             self.id, self.token, type=InteractionResponse.UPDATE, data=payload

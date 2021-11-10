@@ -63,7 +63,7 @@ class Message:
         content: Optional[str] = None,
         *,
         embeds: Optional[List[Embed]] = None,
-        row: Optional[ActionRow] = None,
+        rows: Optional[List[ActionRow]] = None,
         **kwargs,
     ) -> Message:
         ...
@@ -73,7 +73,7 @@ class Message:
         Parameters:
             content (Optional[str]): The content of the message.
             embeds (Optional[List[lefi.Embed]]): The list of embeds.
-            row (Optional[ActionRow]): The Action row of the message
+            rows (Optional[List[ActionRow]]): The rows to send with the message.
             kwargs (Any): The options to pass to [lefi.HTTPClient.edit_message](./http.md#lefi.HTTPClient.edit_message).
 
         Returns:
@@ -87,16 +87,16 @@ class Message:
             message_id=self.id,
             content=content,
             embeds=[embed.to_dict() for embed in embeds],
-            components=[row.to_dict()] if row is not None else None,
-            **kwargs,
+            components=[[row.to_dict()] for row in rows] if rows is not None else None,  # type: ignore
         )
 
-        if row is not None and data.get("components"):
-            for component in row.components:
-                self._state._components[component.custom_id] = (
-                    component.callback,
-                    component,
-                )
+        if rows is not None and data.get("components"):
+            for row in rows:
+                for component in row.components:
+                    self._state._components[component.custom_id] = (
+                        component.callback,
+                        component,
+                    )
 
         self._data = data
         return self
