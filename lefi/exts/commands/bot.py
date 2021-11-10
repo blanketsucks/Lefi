@@ -27,7 +27,7 @@ CMD = TypeVar("CMD", bound=Command)
 
 class Bot(lefi.Client):
     """
-    A subclass of [Client](../client.md) that adds Pluign, commands and some more functionality to it.
+    A subclass of [Client](../client.md) that adds Plugins, commands and some more functionality to it.
 
     Attributes:
         prefix (str): The prefix to use for commands.
