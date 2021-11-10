@@ -38,6 +38,25 @@ nav:
   - Home: index.md
   - Getting-Started: getting-started.md
   - API-Reference:
+    - Extensions:
+      - API-Reference/commands/bot.md
+      - core:
+        - API-Reference/exts/commands/core/parser.md
+        - API-Reference/exts/commands/core/command.md
+        - API-Reference/exts/commands/core/context.md
+        - API-Reference/exts/commands/core/cooldown.md
+        - API-Reference/exts/commands/core/handler.md
+        - API-Reference/exts/commands/core/plugin.md
+
+    - Interactions:
+      - API-Reference/interactions.md
+
+    - Components:
+      - API-Reference/button.md
+      - API-Reference/selectmenu.md
+      - API-Reference/option.md
+      - API-Reference/actionrow.md
+
     - Client: API-Reference/client.md
     - HTTPClient: API-Reference/http.md
     - State: API-Reference/state.md
@@ -56,15 +75,6 @@ nav:
     - Invite: API-Reference/invite.md
     - Template: API-Reference/template.md
     - BanEntry: API-Reference/banentry.md
-    - commands:
-      - API-Reference/commands/bot.md
-      - core:
-        - API-Reference/commands/core/parser.md
-        - API-Reference/commands/core/command.md
-        - API-Reference/commands/core/context.md
-        - API-Reference/commands/core/cooldown.md
-        - API-Reference/commands/core/handler.md
-        - API-Reference/commands/core/plugin.md
 
 plugins:
   - search
