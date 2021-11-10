@@ -25,8 +25,10 @@ class Messageable(Snowflake):
         content: Optional[str] = None,
         *,
         tts: bool = False,
+        embed: Optional[Embed] = None,
         embeds: Optional[List[Embed]] = None,
         reference: Optional[Message] = None,
+        file: Optional[File] = None,
         files: Optional[List[File]] = None,
         rows: Optional[List[ActionRow]] = None,
         allowed_mentions: Optional[AllowedMentions] = None,
@@ -46,7 +48,15 @@ class Messageable(Snowflake):
             The sent [lefi.Message](./message.md) instance.
         """
         embeds = [] if embeds is None else embeds
+        files = [] if files is None else files
+
         message_reference = None
+
+        if embed is not None:
+            embeds.append(embed)
+
+        if file is not None:
+            files.append(file)
 
         if reference is not None:
             message_reference = reference.to_reference()
