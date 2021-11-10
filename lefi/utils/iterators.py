@@ -21,7 +21,6 @@ if TYPE_CHECKING:
     from ..objects.base import Messageable
     from ..state import State
 
-
 __all__ = (
     "grouper",
     "MemberIterator",
@@ -34,7 +33,8 @@ T = TypeVar("T")
 
 
 def grouper(n: int, iterable: Iterable[T]) -> Iterator[List[T]]:
-    return itertools.zip_longest(*[iter(iterable)] * n)
+    for group in itertools.zip_longest(*[iter(iterable)] * n):
+        yield [item for item in group if item is not None]
 
 
 class AsyncIterator(Generic[_T]):
