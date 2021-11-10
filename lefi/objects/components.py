@@ -140,8 +140,8 @@ class SelectMenu(Component):
     Attributes:
         custom_id (str): The custom id of the select menu.
         placeholder (Optional[str]): The placeholder of the select menu.
-        min_values (Optional[int]): The minimum amount of values that can be choosen.
-        max_values (Optional[int]): The maximum amount of values that can be choosen.
+        min_values (int): The minimum amount of values that can be choosen.
+        max_values (int): The maximum amount of values that can be choosen.
         disabled (bool): Whether or not the select menu is disabled.
         values (List[str]): The list of values choosen after an interaction happens.
 
@@ -152,8 +152,8 @@ class SelectMenu(Component):
 
         self.custom_id: str = kwargs.get("custom_id", uuid.uuid4().hex)
         self.placeholder: Optional[str] = kwargs.get("placeholder")
-        self.min_values: Optional[int] = kwargs.get("min_values", 1)
-        self.max_values: Optional[int] = kwargs.get("max_values", 1)
+        self.min_values: int = kwargs.get("min_values", 1)
+        self.max_values: int = kwargs.get("max_values", 1)
         self.disabled: bool = kwargs.get("disabled", False)
 
         self.values: List[str] = []
