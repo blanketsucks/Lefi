@@ -1,13 +1,12 @@
 from enum import IntEnum
-from typing import Any, Dict, List, NamedTuple
+from typing import Any, Dict, List, Literal, NamedTuple
 import ctypes
+import ctypes.util
 import struct
 import sys
 import pathlib
 
-c_int_ptr = ctypes.POINTER(ctypes.c_int)
-c_int16_ptr = ctypes.POINTER(ctypes.c_int16)
-c_float_ptr = ctypes.POINTER(ctypes.c_float)
+from ..errors import OpusNotFound
 
 
 class OpusEncoderStruct(ctypes.Structure):
@@ -18,6 +17,9 @@ class OpusDecoderStruct(ctypes.Structure):
     pass
 
 
+c_int_ptr = ctypes.POINTER(ctypes.c_int)
+c_int16_ptr = ctypes.POINTER(ctypes.c_int16)
+c_float_ptr = ctypes.POINTER(ctypes.c_float)
 OpusEncoderPointer = ctypes.POINTER(OpusEncoderStruct)
 OpusDecoderPointer = ctypes.POINTER(OpusDecoderStruct)
 
@@ -45,7 +47,6 @@ class CTL(IntEnum):
 
 
 libopus: ctypes.CDLL = None  # type: ignore
-_bin = pathlib.Path(__file__).parent / "bin"
 exports: Dict[str, CFuncWrapper] = {
     "opus_get_version_string": CFuncWrapper(
         "opus_get_version_string",
@@ -143,18 +144,24 @@ exports: Dict[str, CFuncWrapper] = {
 }
 
 
-def get_cpu_architecture():
+def get_cpu_architecture() -> Literal["x86", "x64"]:
     size = struct.calcsize("P") * 8
     return "x64" if size > 32 else "x86"
 
 
-def find_opus():
+def find_opus() -> ctypes.CDLL:
     if sys.platform == "win32":
+        bin = pathlib.Path(__file__).parent / "bin"
         target = get_cpu_architecture()
-        lib = _bin / f"libopus-0.{target}.dll"
+
+        lib = bin / f"libopus-0.{target}.dll"
         return ctypes.cdll.LoadLibrary(str(lib))
 
-    return ctypes.cdll.LoadLibrary("opus")
+    name = ctypes.util.find_library("opus")
+    if name is None:
+        raise OpusNotFound("Opus is needed in order to use voice")
+
+    return ctypes.cdll.LoadLibrary(name)
 
 
 def load_opus_from_dll(lib: ctypes.CDLL) -> None:
@@ -164,14 +171,13 @@ def load_opus_from_dll(lib: ctypes.CDLL) -> None:
         cfunc.argtypes = wrapped.args
         cfunc.restype = wrapped.returntype
 
-
-def load_opus():
     global libopus
+    libopus = lib
 
+
+def load_opus() -> None:
     lib = find_opus()
     load_opus_from_dll(lib)
-
-    libopus = lib
 
 
 def get_version_string() -> str:
@@ -199,10 +205,6 @@ def get_packet_nb_channels(data: bytes) -> int:
 
 def get_packet_bandwidth(data: bytes) -> int:
     return libopus.opus_packet_get_bandwidth(data)
-
-
-def create_int16_buffer(size: int) -> ctypes.Array[ctypes.c_int16]:
-    return (ctypes.c_int16 * size)()
 
 
 class OpusEncoder:

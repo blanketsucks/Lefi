@@ -1,9 +1,11 @@
 from __future__ import annotations
+import asyncio
 
 from typing import TYPE_CHECKING, Dict, List, Optional
 import datetime
 
 from ..utils import to_snowflake
+from .base import BaseTextChannel
 
 if TYPE_CHECKING:
     from ..state import State
@@ -16,7 +18,7 @@ if TYPE_CHECKING:
 __all__ = ("Thread", "ThreadMember")
 
 
-class Thread:
+class Thread(BaseTextChannel):
     def __init__(self, state: State, guild: Guild, data: Dict) -> None:
         self._state = state
         self._guild = guild
@@ -63,7 +65,7 @@ class Thread:
         return self._data["name"]
 
     @property
-    def id(self) -> int:
+    def id(self) -> int:  # type: ignore
         """
         The ID of the thread.
         """

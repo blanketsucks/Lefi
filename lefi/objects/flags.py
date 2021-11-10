@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Tuple, Type, TypeVar, Union
+from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union
 
 __all__ = (
     "Flag",
@@ -11,6 +11,16 @@ __all__ = (
     "Intents",
     "Permissions",
 )
+
+
+class InvalidFlag(TypeError):
+    def __init__(self, name: str, flag: Type[Flag]) -> None:
+        self.name = name
+        self.flag = flag
+        self.valid_flags: Tuple[str, ...] = tuple(flag.__members__.keys())
+
+        super().__init__(f"{name!r} is not a valid flag for {flag.__name__}")
+
 
 FlagT = TypeVar("FlagT", bound="Flag")
 
@@ -75,13 +85,15 @@ class Flag(metaclass=FlagMeta):
         self.value = value
         cls = type(self)
 
-        for flag in cls:
-            if value & flag:
+        for name, value in kwargs.items():
+            flag: Optional[FlagValue] = getattr(cls, name, None)
+            if not flag:
+                raise InvalidFlag(name, cls)
+
+            if self.value & flag:
                 continue
 
-            ret = kwargs.get(flag.name, False)
-
-            if ret:
+            if value is True:
                 self.value |= flag
             else:
                 self.value &= ~flag

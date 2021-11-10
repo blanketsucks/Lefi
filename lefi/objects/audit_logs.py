@@ -4,7 +4,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    ClassVar,
     Dict,
     List,
     Optional,
@@ -13,7 +12,6 @@ from typing import (
     Union,
 )
 from functools import cached_property
-from enum import IntEnum
 
 from .enums import (
     AuditLogsEvent,
@@ -77,6 +75,7 @@ if TYPE_CHECKING:
 
     Change = Union[
         int,
+        bool,
         Dict[Union[Role, Member, Object], Permissions],
         List[Union[Role, PartialRole]],
         Channel,
@@ -203,27 +202,27 @@ def _handle_icon_hash(change: AuditLogChange, value: str) -> CDNAsset:
     return CDNAsset.from_guild_icon(entry._state, entry.guild.id, value)
 
 
-def _handle_avatar_hash(change: AuditLogChange, value: str):
+def _handle_avatar_hash(change: AuditLogChange, value: str) -> CDNAsset:
     entry = change.entry
     return CDNAsset.from_user_avatar(entry._state, entry.target_id, value)  # type: ignore
 
 
-def _handle_splash_hash(change: AuditLogChange, value: str):
+def _handle_splash_hash(change: AuditLogChange, value: str) -> CDNAsset:
     entry = change.entry
     return CDNAsset.from_guild_splash(entry._state, entry.guild.id, value)
 
 
-def _handle_banner_hash(change: AuditLogChange, value: str):
+def _handle_banner_hash(change: AuditLogChange, value: str) -> CDNAsset:
     entry = change.entry
     return CDNAsset.from_guild_banner(entry._state, entry.guild.id, value)
 
 
-def _handle_discovery_splash_hash(change: AuditLogChange, value: str):
+def _handle_discovery_splash_hash(change: AuditLogChange, value: str) -> CDNAsset:
     entry = change.entry
     return CDNAsset.from_guild_discovery_splash(entry._state, entry.guild.id, value)
 
 
-def _handle_value(change: AuditLogChange, value: Any) -> Any:
+def _handle_value(change: AuditLogChange, value: Any) -> Change:
     key = change._data["key"]
     handler = _handlers.get(key)
 

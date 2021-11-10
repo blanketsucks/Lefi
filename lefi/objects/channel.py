@@ -10,23 +10,22 @@ from typing import (
     Optional,
     Union,
 )
+import asyncio
+import datetime
 from functools import cached_property
 
-from .components import ActionRow
-from .embed import Embed
 from .enums import ChannelType, InviteTargetType
 from .permissions import Overwrite
-from .components import ActionRow
 from .flags import Permissions
-from .files import File
 from .invite import Invite
 from ..errors import VoiceException
-from ..utils import ChannelHistoryIterator, to_snowflake
+from ..utils import to_snowflake, grouper
 from ..voice import VoiceClient
 from .threads import Thread
 from .enums import ChannelType
 from .flags import Permissions
 from .permissions import Overwrite
+from .base import Messageable, BaseTextChannel
 
 if TYPE_CHECKING:
     from ..state import State
@@ -221,7 +220,7 @@ class Channel:
         return base
 
 
-class TextChannel(Channel):
+class TextChannel(Channel, BaseTextChannel):  # type: ignore
     """
     A class that represents a TextChannel.
     """
@@ -235,21 +234,6 @@ class TextChannel(Channel):
             data (dict): The data to create the channel from.
         """
         super().__init__(state, data, guild)
-
-    def history(self, **kwargs) -> ChannelHistoryIterator:
-        """
-        Makes an API call to grab messages from the channel.
-
-        Parameters:
-            **kwargs (Any): The option to pass to
-            [lefi.HTTPClient.get_channel_messages](./http.md#lefi.http.HTTPClient.get_channel_messages).
-
-        Returns:
-            A list of the fetched [lefi.Message](./message.md) instances.
-
-        """
-        coro = self._state.http.get_channel_messages(self.id, **kwargs)
-        return ChannelHistoryIterator(self._state, self, coro)
 
     async def edit(
         self,
@@ -407,128 +391,6 @@ class TextChannel(Channel):
         data = await self._state.http.list_private_archived_threads(channel_id=self.id)
 
         return self.guild._create_threads(data)
-
-    async def delete_messages(self, messages: Iterable[Message]) -> None:
-        """
-        Bulk deletes messages from the channel.
-
-        Parameters:
-            messages (Iterable[lefi.Message]): The list of messages to delete.
-
-        """
-        await self._state.http.bulk_delete_messages(
-            self.id, message_ids=[msg.id for msg in messages]
-        )
-
-    async def purge(
-        self,
-        *,
-        limit: int = 100,
-        check: Optional[Callable[[Message], bool]] = None,
-        around: Optional[int] = None,
-        before: Optional[int] = None,
-        after: Optional[int] = None,
-    ) -> List[Message]:
-        """
-        Purges messages from the channel.
-
-        Parameters:
-            limit (int): The maximum number of messages to delete.
-            check (Callable[[lefi.Message], bool]): A function to filter messages.
-            around (int): The time around which to search for messages to delete.
-            before (int): The time before which to search for messages to delete.
-            after (int): The time after which to search for messages to delete.
-
-        Returns:
-            A list of the deleted [lefi.Message](./message.md) instances.
-        """
-        to_delete = []
-        if not check:
-            check = lambda message: True
-
-        iterator = self.history(limit=limit, around=around, before=before, after=after)
-        async for message in iterator:
-            if check(message):
-                to_delete.append(message)
-
-        await self.delete_messages(to_delete)
-        return to_delete
-
-    async def send(
-        self,
-        content: Optional[str] = None,
-        *,
-        tts: bool = False,
-        embeds: Optional[List[Embed]] = None,
-        reference: Optional[Message] = None,
-        files: Optional[List[File]] = None,
-        rows: Optional[List[ActionRow]] = None,
-        **kwargs,
-    ) -> Message:
-        """
-        Sends a message to the channel.
-
-        Parameters:
-            content (Optional[str]): The content of the message.
-            embeds (Optional[List[lefi.Embed]]): The list of embeds to send with the message.
-            rows (Optional[List[ActionRow]]): The rows to send with the message.
-            **kwargs (Any): Extra options to pass to
-            [lefi.HTTPClient.send_message](./http.md#lefi.http.HTTPClient.send_message).
-
-        Returns:
-            The sent [lefi.Message](./message.md) instance.
-        """
-        embeds = [] if embeds is None else embeds
-        message_reference = None
-
-        if reference is not None:
-            message_reference = reference.to_reference()
-
-        data = await self._state.http.send_message(
-            channel_id=self.id,
-            content=content,
-            tts=tts,
-            embeds=[embed.to_dict() for embed in embeds],
-            message_reference=message_reference,
-            files=files,
-            components=[row.to_dict() for row in rows] if rows is not None else None,
-            **kwargs,
-        )
-
-        message = self._state.create_message(data, self)
-
-        if rows is not None and data.get("components"):
-            for row in rows:
-                for component in row.components:
-                    self._state._components[component.custom_id] = (
-                        component.callback,
-                        component,
-                    )
-
-        return message
-
-    async def fetch_message(self, message_id: int) -> Message:
-        """
-        Makes an API call to receive a message.
-
-        Parameters:
-            message_id (int): The ID of the message.
-
-        Returns:
-            The [lefi.Message](./message.md) instance corresponding to the ID if found.
-        """
-        data = await self._state.http.get_channel_message(self.id, message_id)
-        return self._state.create_message(data, self)
-
-    async def fetch_pins(self) -> List[Message]:
-        """
-        Fetches the pins of the channel.
-
-        Returns:
-            A list of [lefi.Message](./message.md) instances.
-        """
-        data = await self._state.http.get_pinned_messages(self.id)
-        return [self._state.create_message(m, self) for m in data]
 
     @property
     def topic(self) -> str:
@@ -779,7 +641,7 @@ class CategoryChannel(Channel):
         return await self.guild.create_voice_channel(name=name, parent=self, **kwargs)
 
 
-class DMChannel:
+class DMChannel(Messageable):
     """
     A class that represents a Users DMChannel.
 
@@ -802,51 +664,8 @@ class DMChannel:
     def __repr__(self) -> str:
         return f"<DMChannel id={self.id} type={self.type!r}>"
 
-    async def send(
-        self,
-        content: Optional[str] = None,
-        *,
-        embeds: Optional[List[Embed]] = None,
-        rows: Optional[List[ActionRow]] = None,
-        **kwargs,
-    ) -> Message:
-        """
-        Sends a message to the channel.
-
-        Parameters:
-            content (Optional[str]): The content of the message.
-            embeds (Optional[List[lefi.Embed]]): The list of embeds to send with the message.
-            rows (Optional[List[ActionRow]]): The rows to send with the message.
-            **kwargs (Any): Extra options to pass to
-            [lefi.HTTPClient.send_message](./http.md#lefi.http.HTTPClient.send_message).
-
-        Returns:
-            The sent [lefi.Message](./message.md) instance.
-        """
-        embeds = [] if embeds is None else embeds
-
-        data = await self._state.client.http.send_message(
-            channel_id=self.id,
-            content=content,
-            embeds=[embed.to_dict() for embed in embeds],
-            components=[row.to_dict() for row in rows] if rows is not None else None,
-            **kwargs,
-        )
-
-        message = self._state.create_message(data, self)
-
-        if rows is not None and data.get("components"):
-            for row in rows:
-                for component in row.components:
-                    self._state._components[component.custom_id] = (
-                        component.callback,
-                        component,
-                    )
-
-        return message
-
     @property
-    def id(self) -> int:
+    def id(self) -> int:  # type: ignore
         """
         The ID of the DMChannel.
         """

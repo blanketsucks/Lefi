@@ -1,21 +1,40 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Any, Coroutine, Dict, Generic, TypeVar, List
+import itertools
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Coroutine,
+    Dict,
+    Generic,
+    Iterable,
+    Iterator,
+    TypeVar,
+    List,
+)
 
 _T = TypeVar("_T")
 
 if TYPE_CHECKING:
-    from ..objects import Member, Guild, Message, TextChannel, AuditLogEntry, User
+    from ..objects import Member, Guild, Message, AuditLogEntry, User
+    from ..objects.base import Messageable
     from ..state import State
 
 
 __all__ = (
+    "grouper",
     "MemberIterator",
     "AsyncIterator",
     "ChannelHistoryIterator",
     "AuditLogIterator",
 )
+
+T = TypeVar("T")
+
+
+def grouper(n: int, iterable: Iterable[T]) -> Iterator[List[T]]:
+    return itertools.zip_longest(*[iter(iterable)] * n)
 
 
 class AsyncIterator(Generic[_T]):
@@ -82,7 +101,7 @@ class ChannelHistoryIterator(AsyncIterator["Message"]):
     def __init__(
         self,
         state: State,
-        channel: TextChannel,
+        channel: Messageable,
         coroutine: Coroutine[None, None, List[Any]],
     ) -> None:
         self.state = state

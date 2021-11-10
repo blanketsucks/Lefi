@@ -143,7 +143,7 @@ class VoiceWebSocketClient:
         struct.pack_into(">H", packet, 2, 70)
         struct.pack_into(">I", packet, 4, self.ssrc)
 
-        await self.client.protocol.sendto(packet, self.remote_addr)
+        await self.client.protocol.sendto(packet)
         data = await self.client.protocol.read()
 
         start = 4

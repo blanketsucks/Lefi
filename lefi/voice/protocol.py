@@ -76,10 +76,11 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
     def datagram_received(self, data: bytes, addr: Tuple[str, int]) -> None:
         self.queue.put_nowait(data)
 
-    async def sendto(self, data: bytes, addr: Tuple[str, int]) -> None:
+    async def sendto(self, data: bytes) -> None:
         if not hasattr(self, "transport"):
             return
 
+        addr = self.websocket.remote_addr
         self.transport.sendto(data, addr)
 
         with contextlib.suppress(ConnectionResetError):
@@ -164,14 +165,12 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         return encrypt(header, encoded)
 
     async def send_voice_packet(self, data: bytes) -> None:
-        addr = self.websocket.remote_addr
         self.increment("sequence", 1, 0xFFFF)
 
         packet = self.create_voice_packet(data)
-        await self.sendto(packet, addr)
+        await self.sendto(packet)
 
         self.increment("timestamp", 960, 0xFFFFFFFF)
 
     async def send_raw_voice_packet(self, data: bytes) -> None:
-        addr = self.websocket.remote_addr
-        await self.sendto(data, addr)
+        await self.sendto(data)

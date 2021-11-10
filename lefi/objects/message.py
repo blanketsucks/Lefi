@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
+import datetime
 
 from ..utils import Snowflake
 from .embed import Embed
@@ -213,6 +214,13 @@ class Message:
         The ID of the message.
         """
         return int(self._data["id"])
+
+    @property
+    def created_at(self) -> datetime.datetime:
+        """
+        The time the message was created at.
+        """
+        return datetime.datetime.fromisoformat(self._data["timestamp"])
 
     @property
     def channel(self) -> Channels:

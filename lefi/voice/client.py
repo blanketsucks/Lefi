@@ -92,6 +92,8 @@ class VoiceClient:
         self._received_server_update.clear()
         self._received_state_update.clear()
 
+        self.protocol.encoder.destroy()
+
     def is_connected(self) -> bool:
         """
         Wether the client is connected to the voice channel.
@@ -112,6 +114,7 @@ class VoiceClient:
 
         Parameters:
             stream (AudioStream): The audio stream to play.
+            volume (float): The volume to play the stream at.
 
         """
         if not self.is_connected():
@@ -124,33 +127,3 @@ class VoiceClient:
         player.set_volume(volume)
 
         return player.play()
-
-    def pause(self) -> None:
-        """
-        A shortcut for VoiceClient.player.pause().
-        If not player is playing, raises an error.
-
-        """
-        if not self.is_playing() or self._player is None:
-            raise VoiceException("Client is not playing")
-
-        self._player.pause()
-
-    def resume(self) -> None:
-        if not self.is_playing() or self._player is None:
-            raise VoiceException("Client is not playing")
-
-        self._player.resume()
-
-    async def stop(self) -> None:
-        if not self.is_playing() or self._player is None:
-            raise VoiceException("Client is not playing")
-
-        await self._player.stop()
-        self._player = None
-
-    def is_paused(self) -> bool:
-        if not self.is_playing() or self._player is None:
-            raise VoiceException("Client is not playing")
-
-        return self._player.is_paused()

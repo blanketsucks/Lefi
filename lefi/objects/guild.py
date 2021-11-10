@@ -31,7 +31,7 @@ from ..voice import VoiceState, VoiceClient, VoiceRegion
 from ..utils import MemberIterator, AuditLogIterator
 from .threads import Thread
 from .attachments import CDNAsset
-from .flags import Permissions
+from .flags import Permissions, SystemChannelFlags
 
 if TYPE_CHECKING:
     from ..state import State
@@ -148,7 +148,28 @@ class Guild:
             **kwargs,
         )
 
-    async def edit(self, **kwargs) -> Guild:
+    async def edit(
+        self,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        icon: Optional[bytes] = None,
+        banner: Optional[bytes] = None,
+        splash: Optional[bytes] = None,
+        discovery_splash: Optional[bytes] = None,
+        region: Optional[Union[str, VoiceRegion]] = None,
+        afk_channel: Optional[VoiceChannel] = None,
+        owner: Optional[Snowflake] = None,
+        afk_timeout: Optional[int] = None,
+        default_message_notifications: Optional[MessageNotificationLevel] = None,
+        verification_level: Optional[VerificationLevel] = None,
+        features: Optional[List[str]] = None,
+        system_channel: Optional[TextChannel] = None,
+        system_channel_flags: Optional[SystemChannelFlags] = None,
+        preferred_locale: Optional[str] = None,
+        rules_channel: Optional[TextChannel] = None,
+        public_updates_channel: Optional[TextChannel] = None,
+    ) -> Guild:
         """
         Edits the guild.
 
@@ -158,7 +179,39 @@ class Guild:
         Returns:
             The [Guild](./guild.md) after editing
         """
-        data = await self._state.http.modify_guild(self.id, **kwargs)
+        region = region.name if isinstance(region, VoiceRegion) else region
+        notif = (
+            default_message_notifications.value
+            if default_message_notifications
+            else None
+        )
+
+        data = await self._state.http.modify_guild(
+            guild_id=self.id,
+            name=name,
+            description=description,
+            icon=icon,
+            banner=banner,
+            splash=splash,
+            discovery_splash=discovery_splash,
+            region=region,
+            afk_channel=afk_channel.id if afk_channel else None,
+            owner_id=owner.id if owner else None,
+            afk_timeout=afk_timeout,
+            default_message_notifications=notif,
+            verification_level=verification_level.value if verification_level else None,
+            system_channel_id=system_channel.id if system_channel else None,
+            rules_channel_id=rules_channel.id if rules_channel else None,
+            public_updates_channel_id=public_updates_channel.id
+            if public_updates_channel
+            else None,
+            preferred_locale=preferred_locale,
+            features=features,
+            system_channel_flags=system_channel_flags.value
+            if system_channel_flags
+            else None,
+        )
+
         self._data = data
         return self
 
@@ -324,7 +377,11 @@ class Guild:
 
         """
         data = await self._state.http.get_guild_bans(self.id)
-        return [BanEntry(payload["user"], payload["reason"]) for payload in data]
+
+        return [
+            BanEntry(User(self._state, payload["user"]), payload["reason"])
+            for payload in data
+        ]
 
     async def fetch_ban(self, user: Snowflake) -> BanEntry:
         """
@@ -338,7 +395,9 @@ class Guild:
 
         """
         data = await self._state.http.get_guild_ban(self.id, user.id)
-        return BanEntry(data["user"], data["reason"])
+        user = User(self._state, data["user"])
+
+        return BanEntry(user, data["reason"])
 
     async def fetch_invites(self) -> List[Invite]:
         """
@@ -571,7 +630,7 @@ class Guild:
         channel: Optional[VoiceChannel] = None,
         self_mute: bool = False,
         self_deaf: bool = False,
-    ):
+    ) -> None:
         """
         Changes the guild's voice state.
 

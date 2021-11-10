@@ -38,6 +38,14 @@ class PyNaClNotFound(VoiceException):
     pass
 
 
+class OpusNotFound(VoiceException):
+    """
+    Raised whenever a user attempts to use voice without having the Opus library installed.
+    """
+
+    pass
+
+
 class HTTPException(ClientException):
     """
     Error representing an error received from the API.
