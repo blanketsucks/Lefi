@@ -87,7 +87,7 @@ class Message:
             message_id=self.id,
             content=content,
             embeds=[embed.to_dict() for embed in embeds],
-            components=[[row.to_dict()] for row in rows] if rows is not None else None,  # type: ignore
+            components=[row.to_dict() for row in rows] if rows is not None else None,
         )
 
         if rows is not None and data.get("components"):

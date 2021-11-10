@@ -145,7 +145,7 @@ class Interaction:
         payload = update_payload(
             {},
             content=content,
-            components=[[row.to_dict()] for row in rows] if rows is not None else None,
+            components=[row.to_dict() for row in rows] if rows is not None else None,
             embeds=[embed.to_dict() for embed in embeds],
             **kwargs,
         )
@@ -196,7 +196,7 @@ class Interaction:
         payload = update_payload(
             {},
             content=content,
-            components=[[row.to_dict()] for row in rows] if rows is not None else None,
+            components=[row.to_dict() for row in rows] if rows is not None else None,
             embeds=[embed.to_dict() for embed in embeds],
         )
 
@@ -273,7 +273,7 @@ class Interaction:
         payload = update_payload(
             {},
             content=content,
-            components=[[row.to_dict()] for row in rows] if rows is not None else None,
+            components=[row.to_dict() for row in rows] if rows is not None else None,
             embeds=[embed.to_dict() for embed in embeds],
         )
 
