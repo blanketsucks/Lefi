@@ -39,7 +39,7 @@ nav:
   - Getting-Started: getting-started.md
   - API-Reference:
     - Extensions:
-      Bot: API-Reference/exts/commands/bot.md
+      - Bot: API-Reference/exts/commands/bot.md
       - core:
         - API-Reference/exts/commands/core/parser.md
         - API-Reference/exts/commands/core/command.md
@@ -49,13 +49,13 @@ nav:
         - API-Reference/exts/commands/core/plugin.md
 
     - Interactions:
-      Interaction: API-Reference/interactions.md
+      - Interaction: API-Reference/interactions.md
 
     - Components:
-      - API-Reference/button.md
-      - API-Reference/selectmenu.md
-      - API-Reference/option.md
-      - API-Reference/actionrow.md
+      - Button: - API-Reference/button.md
+      - SelectMenu: - API-Reference/selectmenu.md
+      - Option: - API-Reference/option.md
+      - ActionRow: - API-Reference/actionrow.md
 
     - Client: API-Reference/client.md
     - HTTPClient: API-Reference/http.md
