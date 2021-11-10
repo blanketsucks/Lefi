@@ -39,7 +39,7 @@ nav:
   - Getting-Started: getting-started.md
   - API-Reference:
     - Extensions:
-      - API-Reference/commands/bot.md
+      Bot: API-Reference/exts/commands/bot.md
       - core:
         - API-Reference/exts/commands/core/parser.md
         - API-Reference/exts/commands/core/command.md
@@ -49,7 +49,7 @@ nav:
         - API-Reference/exts/commands/core/plugin.md
 
     - Interactions:
-      - API-Reference/interactions.md
+      Interaction: API-Reference/interactions.md
 
     - Components:
       - API-Reference/button.md
