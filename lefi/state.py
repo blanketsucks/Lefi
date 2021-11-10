@@ -34,6 +34,7 @@ from .objects import (
     User,
     VoiceChannel,
     InteractionType,
+    ComponentType,
 )
 
 if TYPE_CHECKING:
@@ -178,6 +179,10 @@ class State:
     async def parse_interaction_create(self, data: Dict) -> None:
         if component := self._components.get(data["data"]["custom_id"]):
             callback, instance = component
+
+            if int(data["type"]) == int(ComponentType.SELECTMENU):
+                instance.values = data["data"]["values"]  # type: ignore
+
             self.loop.create_task(
                 callback(
                     Interaction(self, data, type=InteractionType(data["type"])),

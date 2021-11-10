@@ -272,7 +272,7 @@ class TextChannel(Channel):
             channel_id=self.id,
             content=content,
             embeds=[embed.to_dict() for embed in embeds],
-            components=[row._to_dict()] if row is not None else None,
+            components=[row.to_dict()] if row is not None else None,
             **kwargs,
         )
 
@@ -450,7 +450,7 @@ class DMChannel:
             channel_id=self.id,
             content=content,
             embeds=[embed.to_dict() for embed in embeds],
-            components=[row._to_dict()] if row is not None else None,
+            components=[row.to_dict()] if row is not None else None,
             **kwargs,
         )
         return self._state.create_message(data, self)
