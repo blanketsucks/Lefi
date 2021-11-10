@@ -3,7 +3,17 @@ from __future__ import annotations
 import enum
 import functools
 import uuid
-from typing import TYPE_CHECKING, Callable, Coroutine, Dict, List, Optional, Union
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    Coroutine,
+    Dict,
+    List,
+    Optional,
+    Union,
+    Type,
+    Tuple,
+)
 
 from ..utils.payload import update_payload
 from .enums import ComponentStyle, ComponentType
@@ -18,6 +28,7 @@ __all__ = (
     "Button",
     "SelectMenu",
     "Option",
+    "button",
 )
 
 
@@ -64,7 +75,7 @@ class Button(Component):
         self.emoji: Optional[Emoji] = kwargs.get("emoji")
         self.url: Optional[str] = kwargs.get("url")
 
-    async def callback(self, interaction: Interaction, button: Button) -> None:
+    async def callback(self, interaction: Interaction, button: Component) -> None:
         raise NotImplementedError
 
     def to_dict(self) -> Dict:
@@ -175,7 +186,25 @@ class SelectMenu(Component):
         )
 
 
-class ActionRow(Component):
+class ActionRowMeta(type):
+    __components__: List[Component]
+
+    def __new__(
+        cls: Type[ActionRowMeta], name: str, bases: Tuple[Type, ...], attrs: Dict
+    ) -> ActionRowMeta:
+        components: List[Component] = []
+
+        for value in attrs.copy().values():
+            if isinstance(value, Component):
+                components.append(value)
+
+        attrs["__components__"] = components
+        return super().__new__(cls, name, bases, attrs)
+
+
+class ActionRow(Component, metaclass=ActionRowMeta):
+    __components__: List[Component]
+
     """
     Represents a message action row.
 
@@ -185,13 +214,19 @@ class ActionRow(Component):
 
     """
 
-    def __init__(self, components: List[Component]) -> None:
+    def __init__(self, components: Optional[List[Component]] = None) -> None:
         """
         Parameters:
             components (List[Component]): The list of components connected to the action row.
 
         """
-        self.components = components
+
+        if components is not None:
+            self.__components__.extend(components)
+
+    @property
+    def components(self) -> List[Component]:
+        return self.__components__
 
     def add(self, component: Component) -> None:
         """
@@ -208,3 +243,27 @@ class ActionRow(Component):
             "type": int(ComponentType.ACTIONROW),
             "components": [c.to_dict() for c in self.components],
         }
+
+
+def button(style: ComponentStyle, label: str, **kwargs) -> Callable[..., Button]:
+    """
+    A decorator used to create buttons.
+    This should be decorating the buttons callback.
+
+    Parameters:
+        style (ComponentStyle): The style of the button.
+        label (str): The label of the button.
+        **kwargs: Extra options to give to the button.
+
+    Returns:
+        The created Button instance.
+
+    """
+
+    def inner(func: Coroutine) -> Button:
+        button = Button(style, label, **kwargs)
+        button.callback = functools.partial(func, button)  # type: ignore
+
+        return button
+
+    return inner
