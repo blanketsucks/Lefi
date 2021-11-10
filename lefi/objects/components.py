@@ -10,6 +10,7 @@ from .enums import ComponentStyle, ComponentType
 
 if TYPE_CHECKING:
     from .emoji import Emoji
+    from .interactions import Interaction
 
 __all__ = (
     "ActionRow",
@@ -63,7 +64,7 @@ class Button(Component):
         self.emoji: Optional[Emoji] = kwargs.get("emoji")
         self.url: Optional[str] = kwargs.get("url")
 
-    async def callback(self, interaction, button) -> None:
+    async def callback(self, interaction: Interaction, button: Button) -> None:
         raise NotImplementedError
 
     def to_dict(self) -> Dict:
@@ -158,8 +159,8 @@ class SelectMenu(Component):
 
         self.values: List[str] = []
 
-    async def callback(self, interaction, select_menu) -> None:
-        await interaction.send_message(f"SELECTED: {select_menu.values}")
+    async def callback(self, interaction: Interaction, menu: SelectMenu) -> None:
+        raise NotImplementedError
 
     def to_dict(self) -> Dict:
         return update_payload(
