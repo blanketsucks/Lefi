@@ -8,7 +8,6 @@ from typing import (
     Any,
     Callable,
     Dict,
-    List,
     Optional,
     Tuple,
     Type,
@@ -181,13 +180,18 @@ class State:
             self, data, type=InteractionType(data["type"])
         )
 
-        if component := self._components.get(data["data"]["custom_id"]):
-            callback, instance = component
+        if interaction.type is InteractionType.COMPONENT:
+            if component := self._components.get(data["data"]["custom_id"]):
+                callback, instance = component
 
-            if int(data["data"]["component_type"]) == int(ComponentType.SELECTMENU):
-                instance.values = data["data"]["values"]  # type: ignore
+                if int(data["data"]["component_type"]) == int(ComponentType.SELECTMENU):
+                    instance.values = data["data"]["values"]  # type: ignore
 
-            self.loop.create_task(callback(interaction, instance))
+                await callback(interaction, instance)
+
+        elif interaction.type is InteractionType.COMMAND:
+            if command := self.client.application_commands.get(data["data"]["name"]):
+                await command.callback(interaction)
 
         self.dispatch("interaction_create", interaction)
 

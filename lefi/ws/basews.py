@@ -104,9 +104,10 @@ class BaseWebsocketClient:
             self.session_id = data["session_id"]
 
         if parser := getattr(self.client._state, f"parse_{event.lower()}", None):
-            return await parser(data)
-
-        self.client._state.dispatch("websocket_message", event, data)
+            try:
+                return await parser(data)
+            except Exception as error:
+                logger.exception(error)
 
     async def reconnect(self) -> None:
         """
@@ -119,7 +120,7 @@ class BaseWebsocketClient:
         await self.start()
 
     async def resume(self) -> None:
-        """;eval return 2+2
+        """
         Sends a resume payload to the websocket.
         """
         payload = {

@@ -14,3 +14,4 @@ from .permissions import *
 from .role import *
 from .template import *
 from .user import *
+from .command import *
