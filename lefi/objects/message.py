@@ -58,7 +58,7 @@ class Message:
         self._state = state
         self._data = data
 
-        self._pinned = data["pinned"]
+        self._pinned = data.get("pinned", False)
 
     def __repr__(self) -> str:
         return f"<Message id={self.id}>"

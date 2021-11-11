@@ -3,7 +3,7 @@ from abc import abstractmethod
 
 from typing import TYPE_CHECKING, Optional, List, ClassVar, Dict, Union
 
-import regex
+import re as regex
 
 from lefi.utils.payload import update_payload
 

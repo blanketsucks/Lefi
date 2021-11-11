@@ -187,6 +187,12 @@ class AudioPlayer:
         self._waiter = self.loop.create_task(self._play())
         return self
 
+    def is_playing(self) -> bool:
+        """
+        Checks if the stream is currently playing.
+        """
+        return self._waiter is not None and not self._waiter.done()
+
     async def stop(self) -> None:
         """
         Stops the player.
@@ -205,7 +211,10 @@ class AudioPlayer:
 
         """
         if self._waiter is not None:
-            await self._waiter
+            try:
+                await self._waiter
+            except asyncio.CancelledError:
+                pass
 
     def pause(self) -> AudioPlayer:
         """

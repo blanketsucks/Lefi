@@ -18,7 +18,6 @@ from ..errors import VoiceException
 from ..utils import to_snowflake
 from ..voice import VoiceClient
 from .threads import Thread
-from .enums import ChannelType
 from .base import Messageable, BaseTextChannel
 
 if TYPE_CHECKING:
@@ -565,7 +564,9 @@ class VoiceChannel(Channel):
         if voice.channel != self:
             raise VoiceException("Client not connected to the voice channel")
 
-        await voice.disconnect()
+        if voice.is_connected():
+            await voice.disconnect()
+
         self._state.remove_voice_client(self.guild.id)
 
     @property

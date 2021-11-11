@@ -106,7 +106,7 @@ class VoiceClient:
         Wether the client is playing.
 
         """
-        return self._player is not None
+        return self._player is not None and self._player.is_playing()
 
     def play(self, stream: AudioStream, *, volume: float = 1.0) -> AudioPlayer:
         """
