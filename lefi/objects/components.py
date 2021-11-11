@@ -1,4 +1,5 @@
 from __future__ import annotations
+from abc import abstractmethod
 
 import enum
 import functools
@@ -16,7 +17,7 @@ from typing import (
 )
 
 from ..utils.payload import update_payload
-from .enums import ComponentStyle, ComponentType
+from .enums import ButtonStyle, ComponentType
 
 if TYPE_CHECKING:
     from .emoji import Emoji
@@ -59,7 +60,7 @@ class Button(Component):
 
     """
 
-    def __init__(self, style: ComponentStyle, label: str, **kwargs) -> None:
+    def __init__(self, style: ButtonStyle, label: str, **kwargs) -> None:
         """
         Parameters:
             style (ComponentStyle): The style to use.
@@ -67,7 +68,7 @@ class Button(Component):
             callback (Coroutine): The callback to use.
 
         """
-        self.style: ComponentStyle = style
+        self.style: ButtonStyle = style
         self.label: str = label
 
         self.custom_id: str = kwargs.get("custom_id", uuid.uuid4().hex)
@@ -245,7 +246,7 @@ class ActionRow(Component, metaclass=ActionRowMeta):
         }
 
 
-def button(style: ComponentStyle, label: str, **kwargs) -> Callable[..., Button]:
+def button(style: ButtonStyle, label: str, **kwargs) -> Callable[..., Button]:
     """
     A decorator used to create buttons.
     This should be decorating the buttons callback.

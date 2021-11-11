@@ -25,6 +25,8 @@ class Interaction:
     """
 
     def __init__(self, state: State, data: Dict, type: InteractionType) -> None:
+        self._type = type
+
         self._state = state
         self._data = data
 
@@ -33,11 +35,15 @@ class Interaction:
         self._responded: bool = False
 
     @property
+    def data(self) -> Dict:
+        return self._data["data"]
+
+    @property
     def type(self) -> InteractionType:
         """
         The type of the interaction.
         """
-        return self.type
+        return self._type
 
     @property
     def token(self) -> str:
@@ -76,18 +82,24 @@ class Interaction:
         if self.message is not None:
             return self.message.channel
 
-        return self._state.get_channel(int(self._data["message"]["channel_id"]))
+        if self._data.get("message"):
+            return self._state.get_channel(int(self._data["message"]["channel_id"]))
+
+        return self._state.get_channel(int(self._data["channel_id"]))
 
     @property
-    def message(self) -> Message:
+    def message(self) -> Optional[Message]:
         """
         The message which invoked the interaction.
         """
-        if message := self._state.get_message(self._data["message"]["id"]):
-            return message
+        if message_data := self._data.get("message"):
+            if message := self._state.get_message(message_data["id"]):
+                return message
 
-        channel = self._state.get_channel(int(self._data["message"]["channel_id"]))
-        return self._state.create_message(self._data["message"], channel)
+            channel = self._state.get_channel(int(self._data["message"]["channel_id"]))
+            return self._state.create_message(self._data["message"], channel)
+
+        return None
 
     @property
     def user(self) -> Union[User, Member]:
@@ -104,7 +116,11 @@ class Interaction:
         """
         The guild where the interaction was created, if in one.
         """
-        return self.message.guild
+
+        if self.channel is not None:
+            return self.channel.guild
+
+        return self._state.get_guild(int(self._data["guild_id"]))
 
     @property
     def origin(self) -> Optional[Message]:

@@ -18,12 +18,33 @@ __all__ = (
     "PremiumType",
     "ChannelType",
     "OverwriteType",
-    "ComponentStyle",
+    "ButtonStyle",
     "ComponentType",
     "ActivityType",
     "InteractionType",
     "InteractionResponse",
+    "CommandType",
+    "CommandOptionType",
 )
+
+
+class CommandOptionType(IntEnum):
+    SUB_COMMAND = 1
+    SUB_COMMAND_GROUP = 2
+    STRING = 3
+    INTEGER = 4
+    BOOLEAN = 5
+    USER = 6
+    CHANNEL = 6
+    ROLE = 8
+    MENTIONABLE = 9
+    NUMBER = 10
+
+
+class CommandType(IntEnum):
+    CHAT = 1
+    USER = 2
+    MESSAGE = 3
 
 
 class InteractionType(IntEnum):
@@ -42,7 +63,7 @@ class InteractionResponse(IntEnum):
     AUTOCOMPLETE_RESULT = 8
 
 
-class ComponentStyle(IntEnum):
+class ButtonStyle(IntEnum):
     PRIMARY = 1
     SECONDARY = 2
     SUCCESS = 3

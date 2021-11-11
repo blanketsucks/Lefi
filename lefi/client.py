@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -27,6 +28,7 @@ from .objects import (
     TextChannel,
     User,
     VoiceChannel,
+    AppCommand,
 )
 from .state import Cache, State
 from .ws import Shard, WebSocketClient
@@ -77,6 +79,7 @@ class Client:
 
         self.user: User = None  # type: ignore
         self.shards: Optional[List[Shard]] = None
+        self.application_commands: Dict[str, AppCommand] = {}
 
     def _create_loop(self) -> asyncio.AbstractEventLoop:
         try:
@@ -197,6 +200,20 @@ class Client:
             callbacks = self.once_events.setdefault(name, [])
             callbacks.append(func)
             return func
+
+        return inner
+
+    def application_command(
+        self, name: str, description: Optional[str] = None, **kwargs
+    ) -> Callable[..., AppCommand]:
+        def inner(func: Coroutine) -> AppCommand:
+            command = AppCommand(name, description, client=self, **kwargs)
+            command.callback = func  # type: ignore
+
+            self.loop.create_task(command.register())
+
+            self.application_commands[command.name] = command
+            return command
 
         return inner
 

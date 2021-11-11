@@ -19,3 +19,4 @@ from .threads import *
 from .audit_logs import *
 from .attachments import *
 from .mentions import *
+from .command import *
