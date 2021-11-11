@@ -369,6 +369,20 @@ class Client:
         """
         return self._state.get_emoji(id)
 
+    async def fetch_user(self, user_id: int) -> User:
+        """
+        Fetches a user from the API.
+
+        Parameters:
+            user_id (int): The users ID.
+
+        Returns:
+            The [lefi.User](./user.md) instance fetched.
+
+        """
+        data = await self.http.get_user(user_id)
+        return self._state.add_user(data)
+
     async def fetch_invite(self, code: str, **kwargs) -> Invite:
         """
         Fetches an invite from the API.

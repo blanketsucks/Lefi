@@ -2442,6 +2442,9 @@ class HTTPClient:
             Route(f"/guilds/{guild_id}/stickers/{sticker_id}", guild_id=guild_id),
         )
 
+    async def get_user(self, user_id) -> Dict:
+        return await self.request("GET", Route(f"users/{user_id}"))
+
     async def get_current_user(self) -> Dict[str, Any]:
         """
         Makes an API call to get the current user.
