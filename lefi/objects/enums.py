@@ -18,7 +18,7 @@ __all__ = (
     "PremiumType",
     "ChannelType",
     "OverwriteType",
-    "ComponentStyle",
+    "ButtonStyle",
     "ComponentType",
     "InteractionType",
     "InteractionResponse",
@@ -41,7 +41,7 @@ class InteractionResponse(IntEnum):
     AUTOCOMPLETE_RESULT = 8
 
 
-class ComponentStyle(IntEnum):
+class ButtonStyle(IntEnum):
     PRIMARY = 1
     SECONDARY = 2
     SUCCESS = 3
