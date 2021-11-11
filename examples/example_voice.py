@@ -1,6 +1,7 @@
 from typing import Any, Dict, Optional, Tuple
 import youtube_dl
 import asyncio
+import os
 
 import lefi
 import lefi.voice  # make sure to have PyNaCl installed
@@ -142,7 +143,7 @@ class MusicPlugin(commands.Plugin):
 
 bot = commands.Bot(
     prefix="!",
-    token="NzYzNzc0NDgxNTU0NDczMDAx.X38mag.UqNrkFIizpRHssdADkygmHW_CDc",
+    token=os.getenv("DISCORD_TOKEN"),  # type: ignore
     intents=lefi.Intents.all(),
 )
 
