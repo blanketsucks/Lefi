@@ -3,15 +3,11 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Dict,
-    Iterable,
     List,
     Optional,
     Union,
 )
-import asyncio
-import datetime
 from functools import cached_property
 
 from .enums import ChannelType, InviteTargetType
@@ -19,12 +15,10 @@ from .permissions import Overwrite
 from .flags import Permissions
 from .invite import Invite
 from ..errors import VoiceException
-from ..utils import to_snowflake, grouper
+from ..utils import to_snowflake
 from ..voice import VoiceClient
 from .threads import Thread
 from .enums import ChannelType
-from .flags import Permissions
-from .permissions import Overwrite
 from .base import Messageable, BaseTextChannel
 
 if TYPE_CHECKING:

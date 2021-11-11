@@ -17,7 +17,7 @@ from typing import (
 _T = TypeVar("_T")
 
 if TYPE_CHECKING:
-    from ..objects import Member, Guild, Message, AuditLogEntry, User
+    from ..objects import Member, Guild, Message, User, AuditLogEntry
     from ..objects.base import Messageable
     from ..state import State
 
@@ -116,7 +116,7 @@ class ChannelHistoryIterator(AsyncIterator["Message"]):
             await self.queue.put(message)
 
 
-class AuditLogIterator(AsyncIterator["AuditLogEntry"]):
+class AuditLogIterator(AsyncIterator[AuditLogEntry]):
     def __init__(
         self,
         state: State,
@@ -129,7 +129,7 @@ class AuditLogIterator(AsyncIterator["AuditLogEntry"]):
         super().__init__(coroutine)
 
     async def _fill_queue(self) -> None:
-        from ..objects import AuditLogEntry
+        from ..objects import AuditLogEntry  # noqa: F811
 
         logs = await self.coroutine
 

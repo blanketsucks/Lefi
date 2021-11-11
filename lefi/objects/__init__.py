@@ -14,10 +14,8 @@ from .permissions import *
 from .role import *
 from .template import *
 from .user import *
-from .components import *
 from .files import *
 from .threads import *
-from .interactions import *
 from .audit_logs import *
 from .attachments import *
 from .mentions import *
