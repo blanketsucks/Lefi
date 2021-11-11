@@ -116,7 +116,7 @@ class AppCommand:
                 name=self.name,
                 description=self.description,
                 options=options,
-                type=self.type,
+                type=int(self.type),
                 default_permission=self.default_permission,
             )
 
