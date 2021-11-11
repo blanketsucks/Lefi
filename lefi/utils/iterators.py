@@ -116,7 +116,7 @@ class ChannelHistoryIterator(AsyncIterator["Message"]):
             await self.queue.put(message)
 
 
-class AuditLogIterator(AsyncIterator[AuditLogEntry]):
+class AuditLogIterator(AsyncIterator["AuditLogEntry"]):
     def __init__(
         self,
         state: State,
