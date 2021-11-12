@@ -15,8 +15,7 @@ from .role import *
 from .template import *
 from .user import *
 from .files import *
+from .attachments import *
 from .threads import *
 from .audit_logs import *
-from .attachments import *
 from .mentions import *
-from .command import *

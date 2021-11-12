@@ -191,7 +191,12 @@ class State:
 
         elif interaction.type is InteractionType.COMMAND:
             if command := self.client.application_commands.get(data["data"]["name"]):
-                await command.callback(interaction)
+                arguments = []
+
+                if options := data["data"].get("options"):
+                    arguments.extend(await command.parser.create_arguments(options))
+
+                await command.callback(interaction, *arguments)
 
         self.dispatch("interaction_create", interaction)
 

@@ -4,17 +4,17 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 from lefi.utils.payload import update_payload
 
-from .components import ActionRow
-from .embed import Embed
-from .member import Member
-from .enums import InteractionResponse, InteractionType
+from ..components import ActionRow
+from ..embed import Embed
+from ..member import Member
+from ..enums import InteractionResponse, InteractionType
 
 if TYPE_CHECKING:
-    from ..state import State
-    from .channel import Channel, DMChannel
-    from .guild import Guild
-    from .message import Message
-    from .user import User
+    from ..channel import Channel, DMChannel
+    from ..guild import Guild
+    from ..message import Message
+    from ..user import User
+    from ...state import State
 
 __all__ = ("Interaction",)
 
