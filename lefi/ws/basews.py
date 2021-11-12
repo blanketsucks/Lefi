@@ -38,13 +38,8 @@ class BaseWebsocketClient:
         self.heartbeat_delay: float = 0
 
     async def _get_gateway(self) -> Dict:
-        headers = {"Authorization": f"Bot {self.client.http.token}"}
-        session = self.client.http.session or await self.client.http._create_session()
-
-        resp = await session.request(
-            "GET", "https://discord.com/api/v9/gateway/bot", headers=headers
-        )
-        return await resp.json()
+        http = self.client.http
+        return await http.get_bot_gateway()
 
     async def start(self) -> None:
         """
@@ -60,6 +55,10 @@ class BaseWebsocketClient:
             asyncio.gather(self.start_heartbeat(), self.read_messages())
 
             handler.release()
+
+    async def close(self):
+        if self.websocket is not None:
+            await self.websocket.close()
 
     async def read_messages(self) -> None:
         """
@@ -148,6 +147,32 @@ class BaseWebsocketClient:
                     "$browser": "Lefi",
                     "$device": "Lefi",
                 },
+            },
+        }
+        await self.websocket.send_json(payload)
+
+    async def change_guild_voice_state(
+        self,
+        guild_id: int,
+        channel_id: Optional[int] = None,
+        self_mute: bool = False,
+        self_deaf: bool = False,
+    ) -> None:
+        """
+        Sends a guild_voice_state_update payload to the websocket.
+        Parameters:
+            guild_id (int): The guild ID to update.
+            channel_id (int): The voice channel ID to move to.
+            self_mute (bool): Whether or not to mute yourself.
+            self_deaf (bool): Whether or not to deafen yourself.
+        """
+        payload = {
+            "op": OpCodes.VOICE_STATE_UPDATE,
+            "d": {
+                "guild_id": guild_id,
+                "channel_id": channel_id,
+                "self_mute": self_mute,
+                "self_deaf": self_deaf,
             },
         }
         await self.websocket.send_json(payload)

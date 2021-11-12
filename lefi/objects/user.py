@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Dict, Optional
 from ..utils import Snowflake
 from .channel import DMChannel
 from .enums import PremiumType
+from .attachments import CDNAsset
 from .flags import UserFlags
 
 if TYPE_CHECKING:
@@ -75,11 +76,27 @@ class User(Snowflake):
         return self._data["username"]
 
     @property
-    def discriminator(self) -> str:
+    def discriminator(self) -> int:
         """
         The discriminator of the user.
         """
-        return self._data["discriminator"]
+        return int(self._data["discriminator"])
+
+    @property
+    def avatar(self) -> CDNAsset:
+        avatar_hash = self._data["avatar"]
+        if not avatar_hash:
+            return CDNAsset.from_default_user_avatar(self._state, self.discriminator)
+
+        return CDNAsset.from_user_avatar(self._state, self.id, avatar_hash)
+
+    @property
+    def banner(self) -> Optional[CDNAsset]:
+        banner_hash = self._data.get("banner")
+        if not banner_hash:
+            return None
+
+        return CDNAsset.from_user_banner(self._state, self.id, banner_hash)
 
     @property
     def id(self) -> int:  # type: ignore

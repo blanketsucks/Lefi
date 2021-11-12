@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING, Dict, List, Optional
 from ..utils import Snowflake
 from .flags import Permissions
 from .user import User
+from ..voice import VoiceState
+from .attachments import CDNAsset
 
 if TYPE_CHECKING:
     from ..state import State
@@ -131,6 +133,17 @@ class Member(User):
         await self.guild.unban(self)
 
     @property
+    def voice(self) -> Optional[VoiceState]:
+        """
+        Returns the voice state of the member.
+
+        Returns:
+            lefi.VoiceState: The voice state of the member.
+
+        """
+        return self.guild.get_voice_state(self.id)
+
+    @property
     def nick(self) -> Optional[str]:
         """
         The nickname of of member.
@@ -194,3 +207,13 @@ class Member(User):
             return Permissions.all()
 
         return base
+
+    @property
+    def guild_avatar(self) -> Optional[CDNAsset]:
+        guild_avatar_hash = self._member.get("avatar")
+        if not guild_avatar_hash:
+            return None
+
+        return CDNAsset.from_guild_member_avatar(
+            self._state, self.guild.id, self.id, guild_avatar_hash
+        )

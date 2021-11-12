@@ -28,6 +28,9 @@ class GuildTemplate:
         self._state = state
         self._data = data
 
+    def __repr__(self) -> str:
+        return f"<GuildTemplate code={self.code!r} name={self.name!r}>"
+
     @property
     def code(self) -> str:
         """

@@ -2,10 +2,43 @@ from __future__ import annotations
 
 from typing import Any, Dict, Union
 
-__all__ = ("HTTPException", "Unauthorized", "BadRequest", "Forbidden", "NotFound")
+__all__ = (
+    "ClientException",
+    "VoiceException",
+    "OpusNotFound",
+    "HTTPException",
+    "Unauthorized",
+    "BadRequest",
+    "Forbidden",
+    "NotFound",
+)
 
 
-class HTTPException(Exception):
+class ClientException(Exception):
+    """
+    Base class for all exceptions.
+    """
+
+    pass
+
+
+class VoiceException(ClientException):
+    """
+    Base class for all voice exceptions.
+    """
+
+    pass
+
+
+class OpusNotFound(VoiceException):
+    """
+    Raised whenever a user attempts to use voice without having the Opus library installed.
+    """
+
+    pass
+
+
+class HTTPException(ClientException):
     """
     Error representing an error received from the API.
 

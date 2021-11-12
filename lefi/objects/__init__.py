@@ -14,3 +14,8 @@ from .permissions import *
 from .role import *
 from .template import *
 from .user import *
+from .files import *
+from .attachments import *
+from .threads import *
+from .audit_logs import *
+from .mentions import *

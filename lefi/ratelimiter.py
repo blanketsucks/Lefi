@@ -145,4 +145,4 @@ class Ratelimiter:
         return self
 
     async def __aexit__(self, *_) -> None:
-        self.http.semaphores.pop(self.bucket)
+        self.http.semaphores.pop(self.bucket, None)

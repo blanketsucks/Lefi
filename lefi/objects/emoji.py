@@ -29,6 +29,9 @@ class Emoji:
         self._state = state
         self._guild = guild
 
+    def __repr__(self) -> str:
+        return f"<Emoji id={self.id} animated={self.animated}>"
+
     @property
     def guild(self) -> Guild:
         """

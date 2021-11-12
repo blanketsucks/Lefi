@@ -1,18 +1,15 @@
 from __future__ import annotations
 
 import asyncio
-import contextlib
-import datetime
-import io
 import json
 import logging
 from typing import Any, ClassVar, Dict, List, Optional, Union
-
 import aiohttp
 
-from .errors import BadRequest, Forbidden, HTTPException, NotFound, Unauthorized
+from .errors import BadRequest, Forbidden, NotFound, Unauthorized
 from .ratelimiter import Ratelimiter
 from .utils import bytes_to_data_uri, update_payload
+from .objects import File
 
 __all__ = (
     "HTTPClient",
@@ -101,6 +98,13 @@ class HTTPClient:
         """
         return aiohttp.ClientSession(loop=self.loop or loop)
 
+    async def close(self) -> None:
+        """
+        Closes the [aiohttp.ClientSession][] instance.
+
+        """
+        await self.session.close()
+
     async def request(self, method: str, route: Route, **kwargs) -> Any:
         """
         Makes a request to the discord API.
@@ -162,6 +166,20 @@ class HTTPClient:
         """
         return await self.session.ws_connect(url)
 
+    async def read_from_url(self, url: str) -> bytes:
+        """
+        A method which reads the data from a url.
+
+        Parameters:
+            url (str): The url to read from.
+
+        Returns:
+            The data read from the url.
+
+        """
+        async with self.session.get(url) as resp:
+            return await resp.read()
+
     async def login(self) -> None:
         """
         Checks to see if the token given is valid.
@@ -174,6 +192,59 @@ class HTTPClient:
             await self.get_current_user()
         except (Forbidden, Unauthorized):
             raise ValueError("Invalid token")
+
+    def build_file_form(self, file: File, index: Optional[int] = None) -> Dict:
+        """
+        Builds a form for a file upload.
+
+        Parameters:
+            file (lefi.File): The file to upload.
+            index (Optional[int]): The index of the file.
+
+        Returns:
+            A dict which can be used as a form for a file upload.
+
+        """
+        return {
+            "name": f"file-{index}" if index else "file",
+            "value": file,
+            "filename": file.filename,
+            "content_type": "application/octect-stream",
+        }
+
+    def form_helper(self, files: Optional[List[Optional[File]]] = None) -> List[Dict]:
+        """
+        A helper method which formats the files to be sent in a multipart/form-data request.
+
+        Parameters:
+            files (Optional[List[lefi.File]]): The files to send.
+
+        Returns:
+            A list which should contain the files.
+
+        """
+        form: List[Dict] = []
+
+        if not files:
+            return form
+
+        if len(files) == 1:
+            file = files[0]
+
+            if not file:
+                return form
+
+            form.append(self.build_file_form(file))
+            return form
+
+        for index, file in enumerate(files):
+            if not file:
+                continue
+
+            param = self.build_file_form(file, index)
+            form.append(param)
+
+        return form
 
     async def get_channel(self, channel_id: int) -> Dict[str, Any]:
         """
@@ -249,7 +320,7 @@ class HTTPClient:
         rtc_region: Optional[str] = None,
         video_quality_mode: Optional[int] = None,
         sync_permissions: Optional[bool] = None,
-        permissions_overwrites: Optional[List[Dict[str, Any]]] = None,
+        permission_overwrites: Optional[List[Dict[str, Any]]] = None,
     ) -> Dict[str, Any]:
         """
         Makes an API call to edit a voice channel.
@@ -278,13 +349,28 @@ class HTTPClient:
             rtc_region=rtc_region,
             video_quality_mode=video_quality_mode,
             sync_permissions=sync_permissions,
-            permissions_overwrites=permissions_overwrites,
+            permissions_overwrites=permission_overwrites,
         )
 
         return await self.request(
             "PATCH",
             Route(f"/channels/{channel_id}", channel_id=channel_id),
             json=payload,
+        )
+
+    async def delete_channel(self, channel_id: int) -> Dict[str, Any]:
+        """
+        Makes an API call to delete a channel.
+
+        Parameters:
+            channel_id (int): The ID representing the channel to delete.
+
+        Returns:
+            The data received from the API after making the call.
+
+        """
+        return await self.request(
+            "DELETE", Route(f"/channels/{channel_id}", channel_id=channel_id)
         )
 
     async def get_channel_messages(
@@ -353,7 +439,7 @@ class HTTPClient:
         message_reference: Optional[Dict[str, Any]] = None,
         components: Optional[List[Dict[str, Any]]] = None,
         sticker_ids: Optional[List[int]] = None,
-        files: Optional[List[io.BufferedIOBase]] = None,
+        files: Optional[List[File]] = None,
     ) -> Dict[str, Any]:
         """
         Makes an API call to send a message.
@@ -372,19 +458,7 @@ class HTTPClient:
 
         """
         payload = {"tts": tts}
-
-        files = files or []
-        form = []
-
-        for index, file in enumerate(files):
-            form.append(
-                {
-                    "name": f"file-{index}",
-                    "value": file,
-                    "filename": getattr(file, "name", None),
-                    "content_type": "application/octect-stream",
-                }
-            )
+        form = self.form_helper(files)  # type: ignore
 
         update_payload(
             payload,
@@ -778,7 +852,7 @@ class HTTPClient:
             "POST", Route(f"/channels/{channel_id}/typing", channel_id=channel_id)
         )
 
-    async def get_pinned_messages(self, channel_id: int) -> Dict[str, Any]:
+    async def get_pinned_messages(self, channel_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the pinned messages of a channel.
 
@@ -828,7 +902,12 @@ class HTTPClient:
         )
 
     async def start_thread_with_message(
-        self, channel_id: int, message_id: int, *, name: str, auto_archive_duration: int
+        self,
+        channel_id: int,
+        message_id: int,
+        *,
+        name: str,
+        auto_archive_duration: Optional[int] = None,
     ) -> Dict[str, Any]:
         """
         Makes an API call to start a thread with a message.
@@ -843,7 +922,9 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        payload = {"name": name, "auto_archive_duration": auto_archive_duration}
+        payload = update_payload(
+            {}, name=name, auto_archive_duration=auto_archive_duration
+        )
         return await self.request(
             "POST",
             Route(
@@ -858,7 +939,7 @@ class HTTPClient:
         channel_id: int,
         *,
         name: str,
-        auto_archive_duration: int,
+        auto_archive_duration: Optional[int] = None,
         type: Optional[int] = None,
         invitable: Optional[bool] = None,
     ) -> Dict[str, Any]:
@@ -876,8 +957,13 @@ class HTTPClient:
             The data received from the API after making the call.
 
         """
-        payload = {"name": name, "auto_archive_duration": auto_archive_duration}
-        update_payload(payload, type=type, invitable=invitable)
+        payload = update_payload(
+            {},
+            name=name,
+            auto_archive_duration=auto_archive_duration,
+            type=type,
+            invitable=invitable,
+        )
 
         return await self.request(
             "POST",
@@ -959,7 +1045,7 @@ class HTTPClient:
             ),
         )
 
-    async def list_thread_members(self, channel_id: int) -> Dict[str, Any]:
+    async def list_thread_members(self, channel_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get all of the members of a thread.
 
@@ -1009,7 +1095,7 @@ class HTTPClient:
         *,
         before: Optional[int] = None,
         limit: Optional[int] = None,
-    ):
+    ) -> Dict[str, Any]:
         """
         Makes an API call which list all the private archived threads in the channel.
 
@@ -1459,9 +1545,32 @@ class HTTPClient:
             "GET", Route(f"/guilds/{guild_id}/members/{member_id}", guild_id=guild_id)
         )
 
-    async def list_guild_members(
-        self, guild_id: int, *, limit: int = 1, after: int = 0
+    async def get_guild_audit_log(
+        self,
+        guild_id: int,
+        *,
+        user_id: Optional[int] = None,
+        action_type: Optional[int] = None,
+        before: Optional[int] = None,
+        limit: Optional[int] = None,
     ) -> Dict[str, Any]:
+        params = update_payload(
+            {},
+            user_id=user_id,
+            action_type=action_type,
+            before=before,
+            limit=limit,
+        )
+
+        return await self.request(
+            "GET",
+            Route(f"/guilds/{guild_id}/audit-logs", guild_id=guild_id),
+            params=params,
+        )
+
+    async def list_guild_members(
+        self, guild_id: int, *, limit: int = 1, after: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
         """
         Makes an API call to get a guild's members.
 
@@ -1472,7 +1581,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        params = {"limit": limit, "after": after}
+        params = update_payload({}, limit=limit, after=after)
         return await self.request(
             "GET",
             Route(f"/guilds/{guild_id}/members", guild_id=guild_id),
@@ -1722,7 +1831,7 @@ class HTTPClient:
             "DELETE", Route(f"/guilds/{guild_id}/bans/{user_id}"), guild_id=guild_id
         )
 
-    async def get_guild_roles(self, guild_id: int) -> Dict[str, Any]:
+    async def get_guild_roles(self, guild_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the roles of a guild.
 
@@ -1881,7 +1990,7 @@ class HTTPClient:
         days: int = 7,
         compute_prune_count: bool = True,
         include_roles: Optional[List[int]] = None,
-    ):
+    ) -> Dict[str, Any]:
         """
         Makes an API call to begin pruning a guild.
 
@@ -1900,11 +2009,11 @@ class HTTPClient:
         if include_roles is not None:
             payload["include_roles"] = ",".join(map(str, include_roles))
 
-        await self.request(
+        return await self.request(
             "POST", Route(f"/guilds/{guild_id}/prune", guild_id=guild_id), json=payload
         )
 
-    async def get_guild_voice_regions(self, guild_id: int) -> Dict[str, Any]:
+    async def get_guild_voice_regions(self, guild_id: int) -> List[Dict[str, Any]]:
         """
         Makes an API call to get the voice regions in a guild.
 
@@ -2730,7 +2839,7 @@ class HTTPClient:
         username: Optional[str] = None,
         avatar_url: Optional[str] = None,
         tts: Optional[bool] = None,
-        file: Optional[io.BufferedIOBase] = None,
+        file: Optional[File] = None,
         embeds: Optional[List[Dict[str, Any]]] = None,
         allowed_mentions: Optional[Dict[str, Any]] = None,
         componenets: Optional[List[Dict[str, Any]]] = None,
@@ -2747,7 +2856,7 @@ class HTTPClient:
             username (Optional[str]): The username of the webhook.
             avatar_url (Optional[str]): The avatar url of the webhook.
             tts (Optional[bool]): Whether the message should be TTS.
-            file (Optional[io.BufferedIOBase]): The file to upload.
+            file (Optional[File]): The file to upload.
             embeds (Optional[List[Dict[str, Any]]]): The embeds to send.
             allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions.
             componenets (Optional[List[Dict[str, Any]]]): The components to send.
@@ -2758,7 +2867,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        form = []
+        form = self.form_helper([file])
         payload = update_payload(
             {},
             content=content,
@@ -2771,16 +2880,6 @@ class HTTPClient:
         )
 
         params = update_payload({}, wait=wait, thread_id=thread_id)
-
-        if file:
-            form.append(
-                {
-                    "name": "file",
-                    "value": file,
-                    "filename": getattr(file, "name", None),
-                    "content_type": "application/octect-stream",
-                }
-            )
 
         return await self.request(
             "POST",
@@ -2826,7 +2925,7 @@ class HTTPClient:
         *,
         content: Optional[str] = None,
         embeds: Optional[List[Dict[str, Any]]] = None,
-        file: Optional[io.BufferedIOBase] = None,
+        file: Optional[File] = None,
         allowed_mentions: Optional[Dict[str, Any]] = None,
         componenets: Optional[List[Dict[str, Any]]] = None,
         attachments: Optional[List[Dict[str, Any]]] = None,
@@ -2840,7 +2939,7 @@ class HTTPClient:
             message_id (int): The ID of the message.
             content (Optional[str]): The content of the message.
             embeds (Optional[List[Dict[str, Any]]]): The embeds to send.
-            file (Optional[io.BufferedIOBase]): The file to upload.
+            file (Optional[File]): The file to upload.
             allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions.
             componenets (Optional[List[Dict[str, Any]]]): The components to send.
             attachments (Optional[List[Dict[str, Any]]]): The attachments to send.
@@ -2849,7 +2948,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        form = []
+        form = self.form_helper([file])
         payload = update_payload(
             {},
             content=content,
@@ -2858,16 +2957,6 @@ class HTTPClient:
             componenets=componenets,
             attachments=attachments,
         )
-
-        if file:
-            form.append(
-                {
-                    "name": "file",
-                    "value": file,
-                    "filename": getattr(file, "name", None),
-                    "content_type": "application/octect-stream",
-                }
-            )
 
         return await self.request(
             "PATCH",
@@ -3381,7 +3470,7 @@ class HTTPClient:
         *,
         content: Optional[str] = None,
         embeds: Optional[List[Dict[str, Any]]] = None,
-        file: Optional[io.BufferedIOBase] = None,
+        file: Optional[File] = None,
         allowed_mentions: Optional[Dict[str, Any]] = None,
         componenets: Optional[List[Dict[str, Any]]] = None,
         attachments: Optional[List[Dict[str, Any]]] = None,
@@ -3394,7 +3483,7 @@ class HTTPClient:
             interaction_token (str): The token of the interaction.
             content (Optional[str]): The content of the response.
             embeds (Optional[List[Dict[str, Any]]]): The embeds of the response.
-            file (Optional[io.BufferedIOBase]): The file of the response.
+            file (Optional[File]): The file of the response.
             allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions of the response.
             componenets (Optional[List[Dict[str, Any]]]): The components of the response.
             attachments (Optional[List[Dict[str, Any]]]): The attachments of the response.
@@ -3403,7 +3492,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        form = []
+        form = self.form_helper([file])
         payload = update_payload(
             {},
             content=content,
@@ -3412,16 +3501,6 @@ class HTTPClient:
             componenets=componenets,
             attachments=attachments,
         )
-
-        if file:
-            form.append(
-                {
-                    "name": "file",
-                    "value": file,
-                    "filename": getattr(file, "name", None),
-                    "content_type": "application/octect-stream",
-                }
-            )
 
         return await self.request(
             "PATCH",
@@ -3456,7 +3535,7 @@ class HTTPClient:
         *,
         content: Optional[str] = None,
         embeds: Optional[List[Dict[str, Any]]] = None,
-        file: Optional[io.BufferedIOBase] = None,
+        file: Optional[File] = None,
         allowed_mentions: Optional[Dict[str, Any]] = None,
         componenets: Optional[List[Dict[str, Any]]] = None,
         attachments: Optional[List[Dict[str, Any]]] = None,
@@ -3470,7 +3549,7 @@ class HTTPClient:
             interaction_token (str): The token of the interaction.
             content (Optional[str]): The content of the response.
             embeds (Optional[List[Dict[str, Any]]]): The embeds of the response.
-            file (Optional[io.BufferedIOBase]): The file of the response.
+            file (Optional[File]): The file of the response.
             allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions of the response.
             componenets (Optional[List[Dict[str, Any]]]): The components of the response.
             attachments (Optional[List[Dict[str, Any]]]): The attachments of the response.
@@ -3480,7 +3559,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        form = []
+        form = self.form_helper([file])
         payload = update_payload(
             {},
             content=content,
@@ -3490,16 +3569,6 @@ class HTTPClient:
             attachments=attachments,
             flags=flags,
         )
-
-        if file:
-            form.append(
-                {
-                    "name": "file",
-                    "value": file,
-                    "filename": getattr(file, "name", None),
-                    "content_type": "application/octect-stream",
-                }
-            )
 
         return await self.request(
             "POST",
@@ -3538,7 +3607,7 @@ class HTTPClient:
         *,
         content: Optional[str] = None,
         embeds: Optional[List[Dict[str, Any]]] = None,
-        file: Optional[io.BufferedIOBase] = None,
+        file: Optional[File] = None,
         allowed_mentions: Optional[Dict[str, Any]] = None,
         componenets: Optional[List[Dict[str, Any]]] = None,
         attachments: Optional[List[Dict[str, Any]]] = None,
@@ -3552,7 +3621,7 @@ class HTTPClient:
             message_id (int): The ID of the message.
             content (Optional[str]): The content of the response.
             embeds (Optional[List[Dict[str, Any]]]): The embeds of the response.
-            file (Optional[io.BufferedIOBase]): The file of the response.
+            file (Optional[File]): The file of the response.
             allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions of the response.
             componenets (Optional[List[Dict[str, Any]]]): The components of the response.
             attachments (Optional[List[Dict[str, Any]]]): The attachments of the response.
@@ -3561,7 +3630,7 @@ class HTTPClient:
             The data returned from the API.
 
         """
-        form = []
+        form = self.form_helper([file])
         payload = update_payload(
             {},
             content=content,
@@ -3570,16 +3639,6 @@ class HTTPClient:
             componenets=componenets,
             attachments=attachments,
         )
-
-        if file:
-            form.append(
-                {
-                    "name": "file",
-                    "value": file,
-                    "filename": getattr(file, "name", None),
-                    "content_type": "application/octect-stream",
-                }
-            )
 
         return await self.request(
             "PATCH",

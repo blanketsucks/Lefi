@@ -1,21 +1,62 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Dict, List, Optional, Type
+from typing import TYPE_CHECKING, Dict, List, Optional, Type, Protocol, Any
 
 from ..utils.payload import update_payload
+
+if TYPE_CHECKING:
+
+    class _EmbedItem(Protocol):
+        data: Dict[str, Any]
+
+    class EmbedFooter(_EmbedItem):
+        text: str
+        icon_url: Optional[str]
+
+    class EmbedAuthor(_EmbedItem):
+        name: str
+        url: Optional[str]
+        icon_url: Optional[str]
+
+    class EmbedProvider(_EmbedItem):
+        name: Optional[str]
+        url: Optional[str]
+
+    class EmbedVideo(_EmbedItem):
+        url: str
+        height: Optional[int]
+        width: Optional[int]
+
+    class EmbedImage(_EmbedItem):
+        url: str
+        height: Optional[int]
+        width: Optional[int]
+
+    class EmbedThumbnail(_EmbedItem):
+        url: str
+        height: Optional[int]
+        width: Optional[int]
+
+    class EmbedField(_EmbedItem):
+        name: str
+        value: str
+        inline: bool
+
 
 __all__ = ("Embed",)
 
 
 class EmbedItem:
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         self.data = kwargs
+        self.__dict__.update(kwargs)
 
 
 class Embed:
     """
     Represents a discord embed.
+
     """
 
     def __init__(self, **kwargs) -> None:
@@ -124,7 +165,7 @@ class Embed:
         self._data["url"] = url
 
     @property
-    def timestamp(self) -> Optional[datetime.datetime]:
+    def timestamp(self) -> Optional[str]:
         """
         The embed's timestamp.
         """
@@ -142,7 +183,7 @@ class Embed:
             timestamp (datetime.datetime): The datetime.datetime object to use.
 
         """
-        self._data["timestamp"] = timestamp.isoformat()
+        self._data["timestamp"] = timestamp
 
     @property
     def color(self) -> Optional[int]:
@@ -163,7 +204,7 @@ class Embed:
         self._data["color"] = color
 
     @property
-    def footer(self) -> Optional[EmbedItem]:
+    def footer(self) -> Optional[EmbedFooter]:
         """
         The embed's footer.
         """
@@ -181,7 +222,7 @@ class Embed:
         self._data["footer"] = EmbedItem(text=text, icon_url=icon_url)
 
     @property
-    def image(self) -> Optional[EmbedItem]:
+    def image(self) -> Optional[EmbedImage]:
         """
         The embed's image.
         """
@@ -202,7 +243,7 @@ class Embed:
         self._data["image"] = EmbedItem(url=url, height=height, width=width)
 
     @property
-    def thumbnail(self) -> Optional[EmbedItem]:
+    def thumbnail(self) -> Optional[EmbedThumbnail]:
         """
         The embed's thumbnail.
         """
@@ -223,7 +264,7 @@ class Embed:
         self._data["thumbnail"] = EmbedItem(url=url, height=height, width=width)
 
     @property
-    def video(self) -> Optional[EmbedItem]:
+    def video(self) -> Optional[EmbedVideo]:
         """
         The embed's video.
         """
@@ -244,7 +285,7 @@ class Embed:
         self._data["thumbnail"] = EmbedItem(url=url, height=height, width=width)
 
     @property
-    def provider(self) -> Optional[EmbedItem]:
+    def provider(self) -> Optional[EmbedProvider]:
         """
         The embed's provider.
         """
@@ -264,7 +305,7 @@ class Embed:
         self._data["thumbnail"] = EmbedItem(name=name, url=url)
 
     @property
-    def author(self) -> Optional[EmbedItem]:
+    def author(self) -> Optional[EmbedAuthor]:
         """
         The embed's author.
         """
@@ -285,7 +326,7 @@ class Embed:
         self._data["author"] = EmbedItem(name=name, url=url, icon_url=icon_url)
 
     @property
-    def fields(self) -> Optional[List[EmbedItem]]:
+    def fields(self) -> Optional[List[EmbedField]]:
         """
         The embed's fields.
         """

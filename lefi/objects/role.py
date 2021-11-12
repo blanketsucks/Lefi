@@ -9,7 +9,34 @@ if TYPE_CHECKING:
     from ..state import State
     from .guild import Guild
 
-__all__ = ("Role",)
+__all__ = ("Role", "PartialRole")
+
+
+class PartialRole(Snowflake):
+    def __init__(self, data: Dict, guild: Guild):
+        self._data = data
+        self._guild = guild
+
+    @property
+    def guild(self) -> Guild:
+        """
+        Returns the guild the role is in.
+        """
+        return self._guild
+
+    @property
+    def name(self) -> str:
+        """
+        Returns the name of the role.
+        """
+        return self._data["name"]
+
+    @property
+    def id(self) -> int:  # type: ignore
+        """
+        Returns the id of the role.
+        """
+        return int(self._data["id"])
 
 
 class Role(Snowflake):
@@ -33,6 +60,9 @@ class Role(Snowflake):
         self._data = data
         self._guild = guild
 
+    def __repr__(self) -> str:
+        return f"<Role id={self.id} name={self.name!r} position={self.position}>"
+
     async def delete(self) -> None:
         """
         Deletes the role from its guild.
@@ -46,7 +76,7 @@ class Role(Snowflake):
         permissions: Optional[Permissions] = None,
         color: Optional[int] = None,
         hoist: Optional[bool] = None,
-        mentionable: Optional[bool] = None
+        mentionable: Optional[bool] = None,
     ) -> Role:
         """
         Edits the role.

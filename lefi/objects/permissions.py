@@ -22,6 +22,9 @@ class Overwrite:
         """
         self._data = data
 
+    def __repr__(self) -> str:
+        return f"<Overwrite id={self.id}>"
+
     @property
     def id(self) -> int:
         """

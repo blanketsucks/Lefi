@@ -27,6 +27,9 @@ class IntegrationAccount:
         """
         self._data = data
 
+    def __repr__(self) -> str:
+        return f"<IntegrationAccount id={self.id!r} name={self.name!r}>"
+
     @property
     def id(self) -> str:
         """
@@ -57,6 +60,9 @@ class IntegrationApplication:
         """
         self._state = state
         self._data = data
+
+    def __repr__(self) -> str:
+        return f"<IntegrationApplication id={self.id} name={self.name!r}>"
 
     @property
     def id(self) -> int:
@@ -121,6 +127,9 @@ class Integration:
         self._state = state
         self._data = data
         self._guild = guild
+
+    def __repr__(self) -> str:
+        return f"<Integration id={self.id} name={self.name!r} enabled={self.enabled}>"
 
     @property
     def guild(self) -> Guild:

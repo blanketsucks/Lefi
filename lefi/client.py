@@ -32,6 +32,7 @@ from .objects import (
 )
 from .state import Cache, State
 from .ws import Shard, WebSocketClient
+from .voice import VoiceClient
 
 if TYPE_CHECKING:
     from .objects import Intents
@@ -56,8 +57,8 @@ class Client:
         token: str,
         *,
         intents: Intents = None,
-        shard_ids: Optional[List[int]] = None,
         sharded: bool = False,
+        shard_ids: Optional[List[int]] = None,
         loop: Optional[asyncio.AbstractEventLoop] = None,
     ) -> None:
         """
@@ -226,15 +227,18 @@ class Client:
         """
         Closes the ClientSession and the websocket connection. Essentially closing the client.
         """
-        await self.http.session.close()
+        await self.http.close()
+
+        for voice in self.voice_clients:
+            await voice.disconnect()
 
         if self.shards:
             for shard in self.shards:
-                await shard.websocket.close()
+                await shard.close()
+        else:
+            await self.ws.close()
 
-            return None
-
-        await self.ws.websocket.close()
+        return None
 
     def run(self) -> None:
         """
@@ -299,6 +303,36 @@ class Client:
 
         futures.append((future, check))
         return await asyncio.wait_for(future, timeout=timeout)
+
+    @property
+    def guilds(self) -> List[Guild]:
+        """
+        The list of guilds the client is in.
+        """
+        return list(self._state._guilds.values())
+
+    @property
+    def channels(
+        self,
+    ) -> List[Union[TextChannel, VoiceChannel, CategoryChannel, DMChannel, Channel]]:
+        """
+        The list of channels the client can see.
+        """
+        return list(self._state._channels.values())
+
+    @property
+    def users(self) -> List[User]:
+        """
+        The list of users that the client can see.
+        """
+        return list(self._state._users.values())
+
+    @property
+    def voice_clients(self) -> List[VoiceClient]:
+        """
+        The list of voice clients the client has.
+        """
+        return list(self._state._voice_clients.values())
 
     def get_message(self, id: int) -> Optional[Message]:
         """

@@ -29,10 +29,17 @@ class WebSocketClient(BaseWebsocketClient):
         self.shard_count = len(shard_ids) if shard_ids is not None else 0
         self.sharded: bool = sharded
         self.shard_ids = shard_ids
+        self.sharded = sharded
 
     async def start(self) -> None:
         data = await self._get_gateway()
+
+        if self.sharded and not self.shard_count:
+            self.shard_count = data["shards"]
+            self.shard_ids = list(range(self.shard_count))
+
         max_concurrency: int = data["session_start_limit"]["max_concurrency"]
+        url = data["url"]
 
         if self.sharded and not self.shard_count:
             self.shard_ids = list(range(data["shards"]))
@@ -44,11 +51,11 @@ class WebSocketClient(BaseWebsocketClient):
                 self.client.shards = shards
 
                 for shard in shards:
-                    await shard.start()
+                    await shard.start(url, max_concurrency)
 
                 return None
 
-            self.websocket = await self.client.http.ws_connect(data["url"])
+            self.websocket = await self.client.http.ws_connect(url)
 
             await self.identify()
             asyncio.gather(self.start_heartbeat(), self.read_messages())

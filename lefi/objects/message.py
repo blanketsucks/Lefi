@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
+import datetime
 
 from ..utils import Snowflake
 from .embed import Embed
+from .threads import Thread
+from .attachments import Attachment
 from .components import ActionRow
 
 if TYPE_CHECKING:
@@ -54,6 +57,8 @@ class Message:
         self._channel = channel
         self._state = state
         self._data = data
+
+        self._pinned = data.get("pinned", False)
 
     def __repr__(self) -> str:
         return f"<Message id={self.id}>"
@@ -142,6 +147,20 @@ class Message:
             user_id=user.id if user is not None else user,
         )
 
+    async def pin(self) -> None:
+        """
+        Pins the message.
+        """
+        await self._state.http.pin_message(self.channel.id, self.id)
+        self._pinned = True
+
+    async def unpin(self) -> None:
+        """
+        Unpins the message.
+        """
+        await self._state.http.unpin_message(self.channel.id, self.id)
+        self._pinned = False
+
     async def delete(self) -> None:
         """
         Deletes the message.
@@ -149,12 +168,59 @@ class Message:
         await self._state.http.delete_message(self.channel.id, self.id)
         self._state._messages.pop(self.id, None)
 
+    async def create_thread(
+        self, *, name: str, auto_archive_duration: Optional[int] = None
+    ) -> Thread:
+        """
+        Creates a thread from the message.
+
+        Parameters:
+            name (str): The name of the thread.
+            auto_archive_duration (Optional[int]): The amount of time to archive the thread.
+
+        Returns:
+            The created thread.
+
+        """
+        if not self.guild:
+            raise TypeError("Cannot a create thread in a DM channel.")
+
+        if auto_archive_duration is not None:
+            if auto_archive_duration not in (60, 1440, 4320, 10080):
+                raise ValueError(
+                    "auto_archive_duration must be 60, 1440, 4320 or 10080"
+                )
+
+        data = await self._state.http.start_thread_with_message(
+            channel_id=self.channel.id,
+            message_id=self.id,
+            name=name,
+            auto_archive_duration=auto_archive_duration,
+        )
+
+        return Thread(self._state, self.guild, data)
+
+    def to_reference(self) -> Dict:
+        payload = {"message_id": self.id, "channel_id": self.channel.id}
+
+        if self.guild:
+            payload["guild_id"] = self.guild.id
+
+        return payload
+
     @property
     def id(self) -> int:
         """
         The ID of the message.
         """
         return int(self._data["id"])
+
+    @property
+    def created_at(self) -> datetime.datetime:
+        """
+        The time the message was created at.
+        """
+        return datetime.datetime.fromisoformat(self._data["timestamp"])
 
     @property
     def channel(self) -> Channels:
@@ -189,3 +255,21 @@ class Message:
             return author
         else:
             return self._state.add_user(self._data["author"])
+
+    @property
+    def embeds(self) -> List[Embed]:
+        return [Embed.from_dict(embed) for embed in self._data["embeds"]]
+
+    @property
+    def attachments(self) -> List[Attachment]:
+        return [
+            Attachment(self._state, attachment)
+            for attachment in self._data["attachments"]
+        ]
+
+    @property
+    def pinned(self) -> bool:
+        """
+        Whether the message is pinned.
+        """
+        return self._pinned

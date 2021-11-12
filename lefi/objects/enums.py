@@ -20,6 +20,7 @@ __all__ = (
     "OverwriteType",
     "ButtonStyle",
     "ComponentType",
+    "ActivityType",
     "InteractionType",
     "InteractionResponse",
     "CommandType",
@@ -89,10 +90,10 @@ class AuditLogsEvent(IntEnum):
     MEMBER_BAN_ADD = 22
     MEMBER_BAN_REMOVE = 23
     MEMBER_UPDATE = 24
-    MEMBER_ROLE_UPDATE = 5
-    MEMBER_MOVE = 6
-    MEMBER_DISCONNECT = 7
-    BOT_ADD = 8
+    MEMBER_ROLE_UPDATE = 25
+    MEMBER_MOVE = 26
+    MEMBER_DISCONNECT = 27
+    BOT_ADD = 28
     ROLE_CREATE = 30
     ROLE_UPDATE = 31
     ROLE_DELETE = 32
@@ -230,3 +231,13 @@ class PremiumType(IntEnum):
 class OverwriteType(Enum):
     ROLE = "role"
     MEMBER = "member"
+
+
+class ActivityType(IntEnum):
+    UNKNOWN = -1
+    PLAYING = 0
+    STREAMING = 1
+    LISTENING = 2
+    WATCHING = 3
+    CUSTOM = 4
+    COMPETING = 5
