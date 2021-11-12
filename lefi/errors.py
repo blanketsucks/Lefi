@@ -5,7 +5,7 @@ from typing import Any, Dict, Union
 __all__ = (
     "ClientException",
     "VoiceException",
-    "PyNaClNotFound",
+    "OpusNotFound",
     "HTTPException",
     "Unauthorized",
     "BadRequest",
@@ -25,14 +25,6 @@ class ClientException(Exception):
 class VoiceException(ClientException):
     """
     Base class for all voice exceptions.
-    """
-
-    pass
-
-
-class PyNaClNotFound(VoiceException):
-    """
-    Raised whenever a user attempts to use voice without having the PyNaCl library installed.
     """
 
     pass

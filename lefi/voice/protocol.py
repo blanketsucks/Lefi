@@ -12,13 +12,7 @@ from typing import (
     cast,
 )
 import struct
-
-try:
-    import nacl.secret
-except ImportError:
-    has_nacl = False
-else:
-    has_nacl = True
+import nacl.secret
 
 from . import _opus
 from .wsclient import VoiceWebSocketClient

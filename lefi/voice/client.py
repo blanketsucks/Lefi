@@ -3,9 +3,9 @@ from __future__ import annotations
 import asyncio
 from typing import TYPE_CHECKING, Optional, Dict
 
-from ..errors import PyNaClNotFound, VoiceException
+from ..errors import VoiceException
 from .wsclient import VoiceWebSocketClient
-from .protocol import VoiceProtocol, has_nacl
+from .protocol import VoiceProtocol
 from .player import AudioPlayer, AudioStream
 
 if TYPE_CHECKING:
@@ -20,9 +20,6 @@ class VoiceClient:
     """
 
     def __init__(self, state: State, channel: VoiceChannel) -> None:
-        if not has_nacl:
-            raise PyNaClNotFound("PyNaCl is required for voice")
-
         self._state = state
         self._received_state_update = asyncio.Event()
         self._player: Optional[AudioPlayer] = None
