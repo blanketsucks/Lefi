@@ -1,0 +1,3993 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A discord API wrapper focused on clean code, and usability">
+      
+      
+      
+        <meta name="author" content="an-dyy">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
+    
+    
+      
+        <title>Channel - Lefi</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a57b2b03.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="purple">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+      <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#lefi.objects.channel.channel" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Lefi" class="md-header__button md-logo" aria-label="Lefi" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Lefi
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Channel
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/an-dyy/Lefi/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    an-dyy/Lefi
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../getting-started/" class="md-tabs__link">
+      Getting-Started
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exts/commands/bot/" class="md-tabs__link md-tabs__link--active">
+        API-Reference
+      </a>
+    </li>
+  
+
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Lefi" class="md-nav__button md-logo" aria-label="Lefi" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Lefi
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/an-dyy/Lefi/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    an-dyy/Lefi
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        Getting-Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          API-Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API-Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          API-Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1">
+          Extensions
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Extensions" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          Extensions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/bot/" class="md-nav__link">
+        Bot
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_2" type="checkbox" id="__nav_3_1_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_2">
+          core
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="core" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/core/parser/" class="md-nav__link">
+        Parser
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/core/command/" class="md-nav__link">
+        Command
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/core/context/" class="md-nav__link">
+        Context
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/core/cooldown/" class="md-nav__link">
+        Cooldown
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/core/handler/" class="md-nav__link">
+        Handler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/core/plugin/" class="md-nav__link">
+        Plugin
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2">
+          Interactions
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Interactions" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          Interactions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/" class="md-nav__link">
+        Interaction
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_3">
+          Components
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Components" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          Components
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../button/" class="md-nav__link">
+        Button
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../selectmenu/" class="md-nav__link">
+        SelectMenu
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../option/" class="md-nav__link">
+        Option
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../actionrow/" class="md-nav__link">
+        ActionRow
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../client/" class="md-nav__link">
+        Client
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../http/" class="md-nav__link">
+        HTTPClient
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../state/" class="md-nav__link">
+        State
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Channel
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Channel
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel" class="md-nav__link">
+    lefi.objects.channel.channel
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel" class="md-nav__link">
+    Channel
+  </a>
+  
+    <nav class="md-nav" aria-label="Channel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.guild" class="md-nav__link">
+    guild
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.id" class="md-nav__link">
+    id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.name" class="md-nav__link">
+    name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.type" class="md-nav__link">
+    type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.nsfw" class="md-nav__link">
+    nsfw
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.position" class="md-nav__link">
+    position
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.overwrites" class="md-nav__link">
+    overwrites
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.delete" class="md-nav__link">
+    delete()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.edit_permissions" class="md-nav__link">
+    edit_permissions()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.delete_permission" class="md-nav__link">
+    delete_permission()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.overwrites_for" class="md-nav__link">
+    overwrites_for()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.permissions_for" class="md-nav__link">
+    permissions_for()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.DMChannel" class="md-nav__link">
+    DMChannel
+  </a>
+  
+    <nav class="md-nav" aria-label="DMChannel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.DMChannel.id" class="md-nav__link">
+    id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.DMChannel.last_message" class="md-nav__link">
+    last_message
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.DMChannel.type" class="md-nav__link">
+    type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.DMChannel.receipients" class="md-nav__link">
+    receipients
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.DMChannel.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel" class="md-nav__link">
+    TextChannel
+  </a>
+  
+    <nav class="md-nav" aria-label="TextChannel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.topic" class="md-nav__link">
+    topic
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.last_message" class="md-nav__link">
+    last_message
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.rate_limit_per_user" class="md-nav__link">
+    rate_limit_per_user
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.default_auto_archive_duration" class="md-nav__link">
+    default_auto_archive_duration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.parent_id" class="md-nav__link">
+    parent_id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.parent" class="md-nav__link">
+    parent
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.category" class="md-nav__link">
+    category
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.edit" class="md-nav__link">
+    edit()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.create_invite" class="md-nav__link">
+    create_invite()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.trigger_typing" class="md-nav__link">
+    trigger_typing()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.create_thread" class="md-nav__link">
+    create_thread()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.fetch_archived_threads" class="md-nav__link">
+    fetch_archived_threads()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.fetch_joined_private_archived_threads" class="md-nav__link">
+    fetch_joined_private_archived_threads()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel" class="md-nav__link">
+    VoiceChannel
+  </a>
+  
+    <nav class="md-nav" aria-label="VoiceChannel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.user_limit" class="md-nav__link">
+    user_limit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.bitrate" class="md-nav__link">
+    bitrate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.rtc_region" class="md-nav__link">
+    rtc_region
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.parent_id" class="md-nav__link">
+    parent_id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.parent" class="md-nav__link">
+    parent
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.category" class="md-nav__link">
+    category
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.members" class="md-nav__link">
+    members
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.create_invite" class="md-nav__link">
+    create_invite()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.edit" class="md-nav__link">
+    edit()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.connect" class="md-nav__link">
+    connect()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.disconnect" class="md-nav__link">
+    disconnect()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guild/" class="md-nav__link">
+        Guild
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../member/" class="md-nav__link">
+        Member
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user/" class="md-nav__link">
+        User
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../message/" class="md-nav__link">
+        Message
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overwrite/" class="md-nav__link">
+        Overwrite
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../role/" class="md-nav__link">
+        Role
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../embed/" class="md-nav__link">
+        Embed
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cache/" class="md-nav__link">
+        Cache
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errors/" class="md-nav__link">
+        Errors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../emoji/" class="md-nav__link">
+        Emoji
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integration/" class="md-nav__link">
+        Integration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../invite/" class="md-nav__link">
+        Invite
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../template/" class="md-nav__link">
+        Template
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../banentry/" class="md-nav__link">
+        BanEntry
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel" class="md-nav__link">
+    lefi.objects.channel.channel
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel" class="md-nav__link">
+    Channel
+  </a>
+  
+    <nav class="md-nav" aria-label="Channel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.guild" class="md-nav__link">
+    guild
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.id" class="md-nav__link">
+    id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.name" class="md-nav__link">
+    name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.type" class="md-nav__link">
+    type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.nsfw" class="md-nav__link">
+    nsfw
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.position" class="md-nav__link">
+    position
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.overwrites" class="md-nav__link">
+    overwrites
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.delete" class="md-nav__link">
+    delete()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.edit_permissions" class="md-nav__link">
+    edit_permissions()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.delete_permission" class="md-nav__link">
+    delete_permission()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.overwrites_for" class="md-nav__link">
+    overwrites_for()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.Channel.permissions_for" class="md-nav__link">
+    permissions_for()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.DMChannel" class="md-nav__link">
+    DMChannel
+  </a>
+  
+    <nav class="md-nav" aria-label="DMChannel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.DMChannel.id" class="md-nav__link">
+    id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.DMChannel.last_message" class="md-nav__link">
+    last_message
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.DMChannel.type" class="md-nav__link">
+    type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.DMChannel.receipients" class="md-nav__link">
+    receipients
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.DMChannel.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel" class="md-nav__link">
+    TextChannel
+  </a>
+  
+    <nav class="md-nav" aria-label="TextChannel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.topic" class="md-nav__link">
+    topic
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.last_message" class="md-nav__link">
+    last_message
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.rate_limit_per_user" class="md-nav__link">
+    rate_limit_per_user
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.default_auto_archive_duration" class="md-nav__link">
+    default_auto_archive_duration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.parent_id" class="md-nav__link">
+    parent_id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.parent" class="md-nav__link">
+    parent
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.category" class="md-nav__link">
+    category
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.edit" class="md-nav__link">
+    edit()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.create_invite" class="md-nav__link">
+    create_invite()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.trigger_typing" class="md-nav__link">
+    trigger_typing()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.create_thread" class="md-nav__link">
+    create_thread()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.fetch_archived_threads" class="md-nav__link">
+    fetch_archived_threads()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.TextChannel.fetch_joined_private_archived_threads" class="md-nav__link">
+    fetch_joined_private_archived_threads()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel" class="md-nav__link">
+    VoiceChannel
+  </a>
+  
+    <nav class="md-nav" aria-label="VoiceChannel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.user_limit" class="md-nav__link">
+    user_limit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.bitrate" class="md-nav__link">
+    bitrate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.rtc_region" class="md-nav__link">
+    rtc_region
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.parent_id" class="md-nav__link">
+    parent_id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.parent" class="md-nav__link">
+    parent
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.category" class="md-nav__link">
+    category
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.members" class="md-nav__link">
+    members
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.create_invite" class="md-nav__link">
+    create_invite()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.edit" class="md-nav__link">
+    edit()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.connect" class="md-nav__link">
+    connect()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lefi.objects.channel.channel.VoiceChannel.disconnect" class="md-nav__link">
+    disconnect()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/an-dyy/Lefi/edit/master/docs/API-Reference/channel.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  <h1>Channel</h1>
+                
+                <div class="doc doc-object doc-module">
+
+<a id="lefi.objects.channel.channel"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="lefi.objects.channel.channel.Channel" class="doc doc-heading">
+        <code>
+Channel        </code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>A class representing a discord channel.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.guild" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">guild</span><span class="p">:</span> <span class="n">Guild</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>A <a href="../guild/">lefi.Guild</a> instance which the channel belongs to.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.id" class="doc doc-heading">
+<code class="highlight language-python"><span class="nb">id</span><span class="p">:</span> <span class="nb">int</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The channels id.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.name" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">name</span><span class="p">:</span> <span class="nb">str</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The channels name.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.type" class="doc doc-heading">
+<code class="highlight language-python"><span class="nb">type</span><span class="p">:</span> <span class="n">ChannelType</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The type of the channel.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.nsfw" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">nsfw</span><span class="p">:</span> <span class="nb">bool</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Whether or not the channel is marked as NSFW.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.position" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">position</span><span class="p">:</span> <span class="nb">int</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The position of the channel.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.overwrites" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">overwrites</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="n">Role</span><span class="p">],</span> <span class="n">Overwrite</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>A list of <a href="../overwrite/">lefi.Overwrite</a>s for the channel.</p>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">guild</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates a new Channel from the given data.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>state</code></td>
+        <td><code>lefi.State</code></td>
+        <td><p>The <a href="../state/">State</a> of the client.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>dict</code></td>
+        <td><p>The data to create the channel from.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">guild</span><span class="p">:</span> <span class="n">Guild</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new Channel from the given data.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        state (lefi.State): The [State](./state.md) of the client.</span>
+<span class="sd">        data (dict): The data to create the channel from.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">state</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_guild</span> <span class="o">=</span> <span class="n">guild</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_overwrites</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="n">Role</span><span class="p">],</span> <span class="n">Overwrite</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.delete" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Deletes the channel.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes the channel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">delete_channel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.edit_permissions" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">edit_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="o">**</span><span class="n">permissions</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Edits the permissions for the given target.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>target</code></td>
+        <td><code>lefi.Role or lefi.Member</code></td>
+        <td><p>The target to edit the permissions for.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>**permissions</code></td>
+        <td><code>bool</code></td>
+        <td><p>The permissions to set.</p></td>
+        <td><code>{}</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">edit_permissions</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Role</span><span class="p">,</span> <span class="n">Member</span><span class="p">],</span> <span class="o">**</span><span class="n">permissions</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Edits the permissions for the given target.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        target (lefi.Role or lefi.Member): The target to edit the permissions for.</span>
+<span class="sd">        **permissions (bool): The permissions to set.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="p">(</span><span class="n">Role</span><span class="p">,</span> <span class="n">Member</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;target must be either a Role or Member&quot;</span><span class="p">)</span>
+
+    <span class="n">perms</span> <span class="o">=</span> <span class="n">Permissions</span><span class="p">(</span><span class="o">**</span><span class="n">permissions</span><span class="p">)</span>
+
+    <span class="n">allow</span><span class="p">,</span> <span class="n">deny</span> <span class="o">=</span> <span class="n">perms</span><span class="o">.</span><span class="n">to_overwrite_pair</span><span class="p">()</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Role</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span>
+
+    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">edit_channel_permissions</span><span class="p">(</span>
+        <span class="n">channel_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">overwrite_id</span><span class="o">=</span><span class="n">target</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">allow</span><span class="o">=</span><span class="n">allow</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="n">deny</span><span class="o">=</span><span class="n">deny</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.delete_permission" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">delete_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Deletes the permission for the given target.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>target</code></td>
+        <td><code>lefi.Member or lefi.Role</code></td>
+        <td><p>The target to delete the permission for.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="n">Role</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes the permission for the given target.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        target (lefi.Member or lefi.Role): The target to delete the permission for.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="p">(</span><span class="n">Member</span><span class="p">,</span> <span class="n">Role</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;target must be either a Member or Role&quot;</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">delete_channel_permissions</span><span class="p">(</span>
+        <span class="n">channel_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">overwrite_id</span><span class="o">=</span><span class="n">target</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_overwrites</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.overwrites_for" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">overwrites_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Returns the <a href="../overwrite/">lefi.Overwrite</a> for the given target.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">overwrites_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="n">Role</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Overwrite</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the [lefi.Overwrite](./overwrite.md) for the given target.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overwrites</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.Channel.permissions_for" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">permissions_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Returns the permissions for the given target.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>target</code></td>
+        <td><code>lefi.Member or lefi.Role</code></td>
+        <td><p>The target to get the permissions for.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Permissions</code></td>
+      <td><p>The <a href="">Permission</a>s for the target.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">permissions_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="n">Role</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Permissions</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the permissions for the given target.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        target (lefi.Member or lefi.Role): The target to get the permissions for.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [Permission]()s for the target.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">permissions</span>
+
+    <span class="k">if</span> <span class="n">base</span> <span class="o">&amp;</span> <span class="n">Permissions</span><span class="o">.</span><span class="n">administrator</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Permissions</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="n">everyone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrites_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">default_role</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">everyone</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">base</span> <span class="o">|=</span> <span class="n">everyone</span><span class="o">.</span><span class="n">allow</span>
+        <span class="n">base</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">everyone</span><span class="o">.</span><span class="n">deny</span>
+
+    <span class="n">allow</span> <span class="o">=</span> <span class="n">Permissions</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">deny</span> <span class="o">=</span> <span class="n">Permissions</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Member</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">roles</span><span class="p">:</span>
+            <span class="n">overwrite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrites_for</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">overwrite</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">allow</span> <span class="o">|=</span> <span class="n">overwrite</span><span class="o">.</span><span class="n">allow</span>
+                <span class="n">deny</span> <span class="o">|=</span> <span class="n">overwrite</span><span class="o">.</span><span class="n">deny</span>
+
+        <span class="n">base</span> <span class="o">|=</span> <span class="n">allow</span>
+        <span class="n">base</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">deny</span>
+
+        <span class="n">member_overwrite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrites_for</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">member_overwrite</span><span class="p">:</span>
+            <span class="n">base</span> <span class="o">|=</span> <span class="n">member_overwrite</span><span class="o">.</span><span class="n">allow</span>
+            <span class="n">base</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">member_overwrite</span><span class="o">.</span><span class="n">deny</span>
+
+        <span class="k">return</span> <span class="n">base</span>
+
+    <span class="k">return</span> <span class="n">base</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="lefi.objects.channel.channel.DMChannel" class="doc doc-heading">
+        <code>
+DMChannel            (<span title="lefi.objects.base.Messageable">Messageable</span>)
+        </code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>A class that represents a Users DMChannel.</p>
+
+<p><strong>Attributes:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>guild</code></td>
+        <td><code>lefi.Guild</code></td>
+        <td><p>The <a href="../guild/">Guild</a> the channel is in.</p></td>
+      </tr>
+  </tbody>
+</table>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.DMChannel.id" class="doc doc-heading">
+<code class="highlight language-python"><span class="nb">id</span><span class="p">:</span> <span class="nb">int</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The ID of the DMChannel.</p>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.DMChannel.last_message" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">last_message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Message</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The last <a href="../message/">lefi.Message</a> instance sent in the channel.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.DMChannel.type" class="doc doc-heading">
+<code class="highlight language-python"><span class="nb">type</span><span class="p">:</span> <span class="nb">int</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The type of the channel.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.DMChannel.receipients" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">receipients</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">User</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>A list of <a href="../user/">lefi.User</a> instances which are the recipients.</p>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.DMChannel.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates a new DMChannel from the given data.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>state</code></td>
+        <td><code>lefi.State</code></td>
+        <td><p>The <a href="../state/">State</a> of the client.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>dict</code></td>
+        <td><p>The data to create the channel from.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new DMChannel from the given data.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        state (lefi.State): The [State](./state.md) of the client.</span>
+<span class="sd">        data (dict): The data to create the channel from.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">state</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">guild</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="lefi.objects.channel.channel.TextChannel" class="doc doc-heading">
+        <code>
+TextChannel            (<span title="lefi.objects.channel.Channel">Channel</span>, <span title="lefi.objects.base.BaseTextChannel">BaseTextChannel</span>)
+        </code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>A class that represents a TextChannel.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.topic" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">topic</span><span class="p">:</span> <span class="nb">str</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The topic of the channel.</p>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.last_message" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">last_message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Message</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The last <a href="../message/">lefi.Message</a> instance sent in the channel.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.rate_limit_per_user" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">rate_limit_per_user</span><span class="p">:</span> <span class="nb">int</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The amount of time needed before another message can be sent in the channel.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.default_auto_archive_duration" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">default_auto_archive_duration</span><span class="p">:</span> <span class="nb">int</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The amount of time it takes to archive a thread inside of the channel.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.parent_id" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parent_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The ID of the parent channel.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.parent" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CategoryChannel</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The channels parent.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.category" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CategoryChannel</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>An alias of <code>parent</code></p>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">guild</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates a new TextChannel from the given data.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>state</code></td>
+        <td><code>lefi.State</code></td>
+        <td><p>The <a href="../state/">State</a> of the client.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>dict</code></td>
+        <td><p>The data to create the channel from.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">guild</span><span class="p">:</span> <span class="n">Guild</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new TextChannel from the given data.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        state (lefi.State): The [State](./state.md) of the client.</span>
+<span class="sd">        data (dict): The data to create the channel from.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">guild</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.edit" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">edit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">topic</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsfw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">slowmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrites</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Edits the channel.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>**kwargs</code></td>
+        <td><code>Any</code></td>
+        <td><p>The options to pass to</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>TextChannel</code></td>
+      <td><p>The lefi.TextChannel instance after editting.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">edit</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ChannelType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">position</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">topic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">nsfw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">slowmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">overwrites</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="n">Role</span><span class="p">],</span> <span class="n">Permissions</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TextChannel</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Edits the channel.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        **kwargs (Any): The options to pass to</span>
+<span class="sd">        [lefi.HTTPClient.edit_text_channel](./http.md#lefi.http.HTTPClient.edit_text_channel).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The lefi.TextChannel instance after editting.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">permission_overwrites</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">_make_permission_overwrites</span><span class="p">(</span><span class="n">overwrites</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">edit_text_channel</span><span class="p">(</span>
+        <span class="n">channel_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">type</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span>
+        <span class="n">topic</span><span class="o">=</span><span class="n">topic</span><span class="p">,</span>
+        <span class="n">nsfw</span><span class="o">=</span><span class="n">nsfw</span><span class="p">,</span>
+        <span class="n">rate_limit_per_user</span><span class="o">=</span><span class="n">slowmode</span><span class="p">,</span>
+        <span class="n">permission_overwrites</span><span class="o">=</span><span class="n">permission_overwrites</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="k">return</span> <span class="bp">self</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.create_invite" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_invite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_age</span><span class="o">=</span><span class="mi">86400</span><span class="p">,</span> <span class="n">max_uses</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">temporary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates an invite for the channel.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>max_age</code></td>
+        <td><code>int</code></td>
+        <td><p>The max age of the invite.</p></td>
+        <td><code>86400</code></td>
+      </tr>
+      <tr>
+        <td><code>max_uses</code></td>
+        <td><code>int</code></td>
+        <td><p>The max uses of the invite.</p></td>
+        <td><code>0</code></td>
+      </tr>
+      <tr>
+        <td><code>temporary</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether or not the invite is temporary.</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>unique</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether or not the invite is unique.</p></td>
+        <td><code>False</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Invite</code></td>
+      <td><p>The <a href="../invite/">lefi.Invite</a> instance.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_invite</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">max_age</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">86400</span><span class="p">,</span>
+    <span class="n">max_uses</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">temporary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Invite</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an invite for the channel.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        max_age (int): The max age of the invite.</span>
+<span class="sd">        max_uses (int): The max uses of the invite.</span>
+<span class="sd">        temporary (bool): Whether or not the invite is temporary.</span>
+<span class="sd">        unique (bool): Whether or not the invite is unique.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.Invite](./invite.md) instance.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">create_channel_invite</span><span class="p">(</span>
+        <span class="n">channel_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">max_age</span><span class="o">=</span><span class="n">max_age</span><span class="p">,</span>
+        <span class="n">max_uses</span><span class="o">=</span><span class="n">max_uses</span><span class="p">,</span>
+        <span class="n">temporary</span><span class="o">=</span><span class="n">temporary</span><span class="p">,</span>
+        <span class="n">unique</span><span class="o">=</span><span class="n">unique</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Invite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.trigger_typing" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">trigger_typing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Triggers typing in this text channel.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">trigger_typing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Triggers typing in this text channel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">trigger_typing</span><span class="p">(</span><span class="n">channel_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.create_thread" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">auto_archive_duration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">invitable</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates a thread in this text channel.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>name</code></td>
+        <td><code>str</code></td>
+        <td><p>The name of the thread.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>auto_archive_duration</code></td>
+        <td><code>int</code></td>
+        <td><p>The duration of the thread.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>type</code></td>
+        <td><code>lefi.ChannelType</code></td>
+        <td><p>The type of the thread.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>invitable</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether or not the thread is invitable.</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Thread</code></td>
+      <td><p>The <a href="./thread.md">lefi.Thread</a> instance.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_thread</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">auto_archive_duration</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ChannelType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">invitable</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Thread</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a thread in this text channel.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        name (str): The name of the thread.</span>
+<span class="sd">        auto_archive_duration (int): The duration of the thread.</span>
+<span class="sd">        type (lefi.ChannelType): The type of the thread.</span>
+<span class="sd">        invitable (bool): Whether or not the thread is invitable.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.Thread](./thread.md) instance.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">auto_archive_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">auto_archive_duration</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">1440</span><span class="p">,</span> <span class="mi">4320</span><span class="p">,</span> <span class="mi">10080</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;auto_archive_duration must be 60, 1440, 4320 or 10080&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">:</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">PRIVATE_THREAD</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">start_thread_without_message</span><span class="p">(</span>
+        <span class="n">channel_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">auto_archive_duration</span><span class="o">=</span><span class="n">auto_archive_duration</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="n">invitable</span><span class="o">=</span><span class="n">invitable</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Thread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.fetch_archived_threads" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">fetch_archived_threads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">public</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Fetches archived threads in this text channel.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>public</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether or not to fetch public threads.</p></td>
+        <td><code>True</code></td>
+      </tr>
+      <tr>
+        <td><code>before</code></td>
+        <td><code>int</code></td>
+        <td><p>The timestamp to fetch threads before.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>limit</code></td>
+        <td><code>int</code></td>
+        <td><p>The limit of the messages to fetch.</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>List[Thread]</code></td>
+      <td><p>A list of <a href="./thread.md">lefi.Thread</a> instances.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_archived_threads</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">before</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Thread</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches archived threads in this text channel.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        public (bool): Whether or not to fetch public threads.</span>
+<span class="sd">        before (int): The timestamp to fetch threads before.</span>
+<span class="sd">        limit (int): The limit of the messages to fetch.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A list of [lefi.Thread](./thread.md) instances.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">public</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">list_public_archived_threads</span><span class="p">(</span>
+            <span class="n">channel_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">list_private_archived_threads</span><span class="p">(</span>
+            <span class="n">channel_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">_create_threads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.TextChannel.fetch_joined_private_archived_threads" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">fetch_joined_private_archived_threads</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Fetches joined private archived threads in this text channel.</p>
+
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>List[Thread]</code></td>
+      <td><p>A list of <a href="./thread.md">lefi.Thread</a> instances.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_joined_private_archived_threads</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Thread</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches joined private archived threads in this text channel.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A list of [lefi.Thread](./thread.md) instances.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">list_private_archived_threads</span><span class="p">(</span><span class="n">channel_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">_create_threads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="lefi.objects.channel.channel.VoiceChannel" class="doc doc-heading">
+        <code>
+VoiceChannel            (<span title="lefi.objects.channel.Channel">Channel</span>)
+        </code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Represents a VoiceChannel.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.VoiceChannel.user_limit" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">user_limit</span><span class="p">:</span> <span class="nb">int</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The user limit of the voice channel.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.VoiceChannel.bitrate" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">bitrate</span><span class="p">:</span> <span class="nb">int</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The bitrate of the voice channel.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.VoiceChannel.rtc_region" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">rtc_region</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>THe rtc region of the voice channel.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.VoiceChannel.parent_id" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parent_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The ID of the parent channel.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.VoiceChannel.parent" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CategoryChannel</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The channels parent.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.VoiceChannel.category" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CategoryChannel</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>An alias of <code>parent</code></p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="lefi.objects.channel.channel.VoiceChannel.members" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">members</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Member</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-cached"><code>cached</code></small>
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-writable"><code>writable</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>The members in the voice channel.</p>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.VoiceChannel.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">guild</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates a new VoiceChannel from the given data.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>state</code></td>
+        <td><code>lefi.State</code></td>
+        <td><p>The <a href="../state/">State</a> of the client.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>dict</code></td>
+        <td><p>The data to create the channel from.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>guild</code></td>
+        <td><code>lefi.Guild</code></td>
+        <td><p>The <a href="../guild/">Guild</a> the channel belongs to.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">guild</span><span class="p">:</span> <span class="n">Guild</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new VoiceChannel from the given data.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        state (lefi.State): The [State](./state.md) of the client.</span>
+<span class="sd">        data (dict): The data to create the channel from.</span>
+<span class="sd">        guild (lefi.Guild): The [Guild](./guild.md) the channel belongs to.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">guild</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.VoiceChannel.create_invite" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_invite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_age</span><span class="o">=</span><span class="mi">86400</span><span class="p">,</span> <span class="n">max_uses</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">temporary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_application_id</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates an invite for the channel.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>max_age</code></td>
+        <td><code>int</code></td>
+        <td><p>The max age of the invite.</p></td>
+        <td><code>86400</code></td>
+      </tr>
+      <tr>
+        <td><code>max_uses</code></td>
+        <td><code>int</code></td>
+        <td><p>The max uses of the invite.</p></td>
+        <td><code>0</code></td>
+      </tr>
+      <tr>
+        <td><code>temporary</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether or not the invite is temporary.</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>unique</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether or not the invite is unique.</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>target_type</code></td>
+        <td><code>Optional[lefi.InviteTargetType]</code></td>
+        <td><p>The target type of the invite.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>target_user</code></td>
+        <td><code>Optional[lefi.User]</code></td>
+        <td><p>The target user of the invite.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>target_application_id</code></td>
+        <td><code>Optional[int]</code></td>
+        <td><p>The target application ID of the invite.</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Invite</code></td>
+      <td><p>The <a href="../invite/">lefi.Invite</a> instance.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_invite</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">max_age</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">86400</span><span class="p">,</span>
+    <span class="n">max_uses</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">temporary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">target_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">InviteTargetType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">target_user</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">target_application_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Invite</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an invite for the channel.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        max_age (int): The max age of the invite.</span>
+<span class="sd">        max_uses (int): The max uses of the invite.</span>
+<span class="sd">        temporary (bool): Whether or not the invite is temporary.</span>
+<span class="sd">        unique (bool): Whether or not the invite is unique.</span>
+<span class="sd">        target_type (Optional[lefi.InviteTargetType]): The target type of the invite.</span>
+<span class="sd">        target_user (Optional[lefi.User]): The target user of the invite.</span>
+<span class="sd">        target_application_id (Optional[int]): The target application ID of the invite.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.Invite](./invite.md) instance.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">create_channel_invite</span><span class="p">(</span>
+        <span class="n">channel_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">max_age</span><span class="o">=</span><span class="n">max_age</span><span class="p">,</span>
+        <span class="n">max_uses</span><span class="o">=</span><span class="n">max_uses</span><span class="p">,</span>
+        <span class="n">temporary</span><span class="o">=</span><span class="n">temporary</span><span class="p">,</span>
+        <span class="n">unique</span><span class="o">=</span><span class="n">unique</span><span class="p">,</span>
+        <span class="n">target_type</span><span class="o">=</span><span class="n">target_type</span><span class="p">,</span>
+        <span class="n">target_user_id</span><span class="o">=</span><span class="n">target_user</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">target_user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">target_application_id</span><span class="o">=</span><span class="n">target_application_id</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Invite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.VoiceChannel.edit" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">edit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bitrate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rtc_region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">video_quality_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sync_permissions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrites</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Edits the channel.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>**kwargs</code></td>
+        <td><code>Any</code></td>
+        <td><p>The options to pass to</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>VoiceChannel</code></td>
+      <td><p>The lefi.VoiceChannel instance after editting.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">edit</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">position</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">bitrate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">user_limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">rtc_region</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">video_quality_mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">sync_permissions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">overwrites</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="n">Role</span><span class="p">],</span> <span class="n">Permissions</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VoiceChannel</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Edits the channel.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        **kwargs (Any): The options to pass to</span>
+<span class="sd">        [lefi.HTTPClient.edit_voice_channel](./http.md#lefi.http.HTTPClient.edit_voice_channel).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The lefi.VoiceChannel instance after editting.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">permission_overwrites</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">_make_permission_overwrites</span><span class="p">(</span><span class="n">overwrites</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">edit_voice_channel</span><span class="p">(</span>
+        <span class="n">channel_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span>
+        <span class="n">bitrate</span><span class="o">=</span><span class="n">bitrate</span><span class="p">,</span>
+        <span class="n">user_limit</span><span class="o">=</span><span class="n">user_limit</span><span class="p">,</span>
+        <span class="n">rtc_region</span><span class="o">=</span><span class="n">rtc_region</span><span class="p">,</span>
+        <span class="n">video_quality_mode</span><span class="o">=</span><span class="n">video_quality_mode</span><span class="p">,</span>
+        <span class="n">sync_permissions</span><span class="o">=</span><span class="n">sync_permissions</span><span class="p">,</span>
+        <span class="n">permission_overwrites</span><span class="o">=</span><span class="n">permission_overwrites</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="k">return</span> <span class="bp">self</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.VoiceChannel.connect" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Connects to this voice channel and returns the created voice client.</p>
+
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>VoiceClient</code></td>
+      <td><p>The [lefi.VoiceClient][] instance.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VoiceClient</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Connects to this voice channel and returns the created voice client.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.VoiceClient][] instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">voice_client</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">VoiceException</span><span class="p">(</span><span class="s2">&quot;Client Already connected to a voice channel.&quot;</span><span class="p">)</span>
+
+    <span class="n">voice</span> <span class="o">=</span> <span class="n">VoiceClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">add_voice_client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">voice</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">voice</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">voice</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="lefi.objects.channel.channel.VoiceChannel.disconnect" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Disconnects the voice client from the channel.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>lefi/objects/channel.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Disconnects the voice client from the channel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">voice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">get_voice_client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">voice</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">VoiceException</span><span class="p">(</span><span class="s2">&quot;Client not connected to a voice channel&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">voice</span><span class="o">.</span><span class="n">channel</span> <span class="o">!=</span> <span class="bp">self</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">VoiceException</span><span class="p">(</span><span class="s2">&quot;Client not connected to the voice channel&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">voice</span><span class="o">.</span><span class="n">is_connected</span><span class="p">():</span>
+        <span class="k">await</span> <span class="n">voice</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">remove_voice_client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../state/" class="md-footer__link md-footer__link--prev" aria-label="Previous: State" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              State
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../guild/" class="md-footer__link md-footer__link--next" aria-label="Next: Guild" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Guild
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["search.highlight", "search.sharing", "navigation.top", "navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.b1047164.min.js"></script>
+      
+    
+  </body>
+</html>

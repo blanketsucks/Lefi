@@ -1,0 +1,4122 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A discord API wrapper focused on clean code, and usability">
+      
+      
+      
+        <meta name="author" content="an-dyy">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
+    
+    
+      
+        <title>State - Lefi</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a57b2b03.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="purple">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+      <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#lefi.state.State" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Lefi" class="md-header__button md-logo" aria-label="Lefi" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Lefi
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              State
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/an-dyy/Lefi/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    an-dyy/Lefi
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../getting-started/" class="md-tabs__link">
+      Getting-Started
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exts/commands/bot/" class="md-tabs__link md-tabs__link--active">
+        API-Reference
+      </a>
+    </li>
+  
+
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Lefi" class="md-nav__button md-logo" aria-label="Lefi" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Lefi
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/an-dyy/Lefi/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    an-dyy/Lefi
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        Getting-Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          API-Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API-Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          API-Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1">
+          Extensions
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Extensions" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          Extensions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/bot/" class="md-nav__link">
+        Bot
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_2" type="checkbox" id="__nav_3_1_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_2">
+          core
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="core" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/core/parser/" class="md-nav__link">
+        Parser
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/core/command/" class="md-nav__link">
+        Command
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/core/context/" class="md-nav__link">
+        Context
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/core/cooldown/" class="md-nav__link">
+        Cooldown
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/core/handler/" class="md-nav__link">
+        Handler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exts/commands/core/plugin/" class="md-nav__link">
+        Plugin
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2">
+          Interactions
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Interactions" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          Interactions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/" class="md-nav__link">
+        Interaction
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_3">
+          Components
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Components" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          Components
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../button/" class="md-nav__link">
+        Button
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../selectmenu/" class="md-nav__link">
+        SelectMenu
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../option/" class="md-nav__link">
+        Option
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../actionrow/" class="md-nav__link">
+        ActionRow
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../client/" class="md-nav__link">
+        Client
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../http/" class="md-nav__link">
+        HTTPClient
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          State
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        State
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State" class="md-nav__link">
+    lefi.state.State
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.dispatch" class="md-nav__link">
+    dispatch()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_ready" class="md-nav__link">
+    parse_ready()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_guild_create" class="md-nav__link">
+    parse_guild_create()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_guild_update" class="md-nav__link">
+    parse_guild_update()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_guild_delete" class="md-nav__link">
+    parse_guild_delete()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_message_create" class="md-nav__link">
+    parse_message_create()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_message_delete" class="md-nav__link">
+    parse_message_delete()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_message_update" class="md-nav__link">
+    parse_message_update()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_channel_create" class="md-nav__link">
+    parse_channel_create()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_channel_update" class="md-nav__link">
+    parse_channel_update()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_channel_delete" class="md-nav__link">
+    parse_channel_delete()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_voice_state_update" class="md-nav__link">
+    parse_voice_state_update()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_thread_create" class="md-nav__link">
+    parse_thread_create()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_thread_update" class="md-nav__link">
+    parse_thread_update()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_thread_delete" class="md-nav__link">
+    parse_thread_delete()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_thread_list_sync" class="md-nav__link">
+    parse_thread_list_sync()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_thread_members_update" class="md-nav__link">
+    parse_thread_members_update()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.get_message" class="md-nav__link">
+    get_message()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.get_user" class="md-nav__link">
+    get_user()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.add_user" class="md-nav__link">
+    add_user()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.get_guild" class="md-nav__link">
+    get_guild()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.get_channel" class="md-nav__link">
+    get_channel()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.get_emoji" class="md-nav__link">
+    get_emoji()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_message" class="md-nav__link">
+    create_message()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_channel" class="md-nav__link">
+    create_channel()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_guild_channels" class="md-nav__link">
+    create_guild_channels()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_guild_members" class="md-nav__link">
+    create_guild_members()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_guild_roles" class="md-nav__link">
+    create_guild_roles()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_guild_emojis" class="md-nav__link">
+    create_guild_emojis()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_guild_voice_states" class="md-nav__link">
+    create_guild_voice_states()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_overwrites" class="md-nav__link">
+    create_overwrites()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.add_voice_client" class="md-nav__link">
+    add_voice_client()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.get_voice_client" class="md-nav__link">
+    get_voice_client()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.remove_voice_client" class="md-nav__link">
+    remove_voice_client()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../channel/" class="md-nav__link">
+        Channel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guild/" class="md-nav__link">
+        Guild
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../member/" class="md-nav__link">
+        Member
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user/" class="md-nav__link">
+        User
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../message/" class="md-nav__link">
+        Message
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overwrite/" class="md-nav__link">
+        Overwrite
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../role/" class="md-nav__link">
+        Role
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../embed/" class="md-nav__link">
+        Embed
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cache/" class="md-nav__link">
+        Cache
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errors/" class="md-nav__link">
+        Errors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../emoji/" class="md-nav__link">
+        Emoji
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integration/" class="md-nav__link">
+        Integration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../invite/" class="md-nav__link">
+        Invite
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../template/" class="md-nav__link">
+        Template
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../banentry/" class="md-nav__link">
+        BanEntry
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State" class="md-nav__link">
+    lefi.state.State
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.dispatch" class="md-nav__link">
+    dispatch()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_ready" class="md-nav__link">
+    parse_ready()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_guild_create" class="md-nav__link">
+    parse_guild_create()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_guild_update" class="md-nav__link">
+    parse_guild_update()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_guild_delete" class="md-nav__link">
+    parse_guild_delete()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_message_create" class="md-nav__link">
+    parse_message_create()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_message_delete" class="md-nav__link">
+    parse_message_delete()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_message_update" class="md-nav__link">
+    parse_message_update()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_channel_create" class="md-nav__link">
+    parse_channel_create()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_channel_update" class="md-nav__link">
+    parse_channel_update()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_channel_delete" class="md-nav__link">
+    parse_channel_delete()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_voice_state_update" class="md-nav__link">
+    parse_voice_state_update()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_thread_create" class="md-nav__link">
+    parse_thread_create()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_thread_update" class="md-nav__link">
+    parse_thread_update()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_thread_delete" class="md-nav__link">
+    parse_thread_delete()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_thread_list_sync" class="md-nav__link">
+    parse_thread_list_sync()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.parse_thread_members_update" class="md-nav__link">
+    parse_thread_members_update()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.get_message" class="md-nav__link">
+    get_message()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.get_user" class="md-nav__link">
+    get_user()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.add_user" class="md-nav__link">
+    add_user()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.get_guild" class="md-nav__link">
+    get_guild()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.get_channel" class="md-nav__link">
+    get_channel()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.get_emoji" class="md-nav__link">
+    get_emoji()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_message" class="md-nav__link">
+    create_message()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_channel" class="md-nav__link">
+    create_channel()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_guild_channels" class="md-nav__link">
+    create_guild_channels()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_guild_members" class="md-nav__link">
+    create_guild_members()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_guild_roles" class="md-nav__link">
+    create_guild_roles()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_guild_emojis" class="md-nav__link">
+    create_guild_emojis()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_guild_voice_states" class="md-nav__link">
+    create_guild_voice_states()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.create_overwrites" class="md-nav__link">
+    create_overwrites()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.add_voice_client" class="md-nav__link">
+    add_voice_client()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.get_voice_client" class="md-nav__link">
+    get_voice_client()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lefi.state.State.remove_voice_client" class="md-nav__link">
+    remove_voice_client()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/an-dyy/Lefi/edit/master/docs/API-Reference/state.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  <h1>State</h1>
+                
+                <div class="doc doc-object doc-class">
+
+<a id="lefi.state.State"></a>
+    <div class="doc doc-contents first">
+
+      <p>A class which represents the connection state between the client and discord.</p>
+
+<p><strong>Attributes:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>client</code></td>
+        <td><code>lefi.Client</code></td>
+        <td><p>The <a href="../client/">lefi.Client</a> instance being used.</p></td>
+      </tr>
+      <tr>
+        <td><code>loop</code></td>
+        <td><code>asyncio.AbstractEventLoop</code></td>
+        <td><p>The asyncio.AbstractEventLoop being used.</p></td>
+      </tr>
+      <tr>
+        <td><code>http</code></td>
+        <td><code>lefi.HTTPClient</code></td>
+        <td><p>The <a href="../http/">lefi.HTTPClient</a> handling requests</p></td>
+      </tr>
+  </tbody>
+</table>      <div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>This class is used internally. <strong>It is not meant to called directly</strong></p>
+</div>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">loop</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>client</code></td>
+        <td><code>lefi.Client</code></td>
+        <td><p>The <a href="../client/">Client</a> being used.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>loop</code></td>
+        <td><code>asyncio.AbstractEventLoop</code></td>
+        <td><p>The asyncio.AbstractEventLoop being used.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">Client</span><span class="p">,</span> <span class="n">loop</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        client (lefi.Client): The [Client](./client.md) being used.</span>
+<span class="sd">        loop (asyncio.AbstractEventLoop): The asyncio.AbstractEventLoop being used.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">client</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="n">loop</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">http</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">http</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_messages</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">[</span><span class="n">Message</span><span class="p">](</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_users</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">[</span><span class="n">User</span><span class="p">]()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_guilds</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">[</span><span class="n">Guild</span><span class="p">]()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_emojis</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">[</span><span class="n">Emoji</span><span class="p">]()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_components</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Component</span><span class="p">]]()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">[</span>
+        <span class="n">Union</span><span class="p">[</span><span class="n">TextChannel</span><span class="p">,</span> <span class="n">DMChannel</span><span class="p">,</span> <span class="n">VoiceChannel</span><span class="p">,</span> <span class="n">CategoryChannel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">]</span>
+    <span class="p">]()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_emojis</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">[</span><span class="n">Emoji</span><span class="p">]()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_voice_clients</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">[</span><span class="n">VoiceClient</span><span class="p">]()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.dispatch" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="o">*</span><span class="n">payload</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Dispatches data to callbacks registered to events after parsing is finished.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>event</code></td>
+        <td><code>str</code></td>
+        <td><p>The name of the event to dispatch to.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>*payload</code></td>
+        <td><code>Any</code></td>
+        <td><p>The data after parsing is finished.</p></td>
+        <td><code>()</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">payload</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dispatches data to callbacks registered to events after parsing is finished.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        event (str): The name of the event to dispatch to.</span>
+<span class="sd">        *payload (Any): The data after parsing is finished.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">events</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+    <span class="n">futures</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="p">[])</span>
+
+    <span class="k">if</span> <span class="n">callbacks</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">once_events</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">callback</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">callbacks</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="n">payload</span><span class="p">))</span>
+            <span class="n">callbacks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="k">return</span>
+
+    <span class="k">for</span> <span class="n">future</span><span class="p">,</span> <span class="n">check</span> <span class="ow">in</span> <span class="n">futures</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">check</span><span class="p">(</span><span class="o">*</span><span class="n">payload</span><span class="p">):</span>
+            <span class="n">future</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="o">*</span><span class="n">payload</span><span class="p">)</span>
+            <span class="n">futures</span><span class="o">.</span><span class="n">remove</span><span class="p">((</span><span class="n">future</span><span class="p">,</span> <span class="n">check</span><span class="p">))</span>
+
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">events</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="n">events</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="n">payload</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_ready" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses the <code>READY</code> event. Creates a User then dispatches it afterwards.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses the `READY` event. Creates a User then dispatches it afterwards.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_user</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+
+    <span class="k">if</span> <span class="n">shard</span> <span class="o">:=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;shard&quot;</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CONNECTED: SHARD ID: </span><span class="si">{</span><span class="n">shard</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CONNECTED: CLIENT ID: </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;ready&quot;</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_guild_create" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_guild_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>GUILD_CREATE</code> event. Creates a Guild then caches it, as well as dispatching it afterwards.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_guild_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `GUILD_CREATE` event. Creates a Guild then caches it, as well as dispatching it afterwards.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">guild</span> <span class="o">=</span> <span class="n">Guild</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">create_guild_channels</span><span class="p">(</span><span class="n">guild</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">create_guild_roles</span><span class="p">(</span><span class="n">guild</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">create_guild_members</span><span class="p">(</span><span class="n">guild</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">create_guild_voice_states</span><span class="p">(</span><span class="n">guild</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_guilds</span><span class="p">[</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">guild</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;guild_create&quot;</span><span class="p">,</span> <span class="n">guild</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_guild_update" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_guild_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>GUILD_UPDATE</code> event. Updates a Guild then dispatches it afterwards.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_guild_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `GUILD_UPDATE` event. Updates a Guild then dispatches it afterwards.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">guild</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_guild</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">guild</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">before</span><span class="p">,</span> <span class="n">after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_guild</span><span class="p">(</span><span class="n">guild</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;guild_update&quot;</span><span class="p">,</span> <span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_guild_delete" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_guild_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>GUILD_DELETE</code> event. Deletes a Guild then dispatches it afterwards.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_guild_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `GUILD_DELETE` event. Deletes a Guild then dispatches it afterwards.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">guild</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_guild</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">guild</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;guild_delete&quot;</span><span class="p">,</span> <span class="n">guild</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_guilds</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_message_create" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_message_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>MESSAGE_CREATE</code> event. Creates a Message then caches it, as well as dispatching it afterwards.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_message_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `MESSAGE_CREATE` event. Creates a Message then caches it, as well as dispatching it afterwards.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">add_user</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;author&quot;</span><span class="p">])</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;channel_id&quot;</span><span class="p">]))</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_messages</span><span class="p">[</span><span class="n">message</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">message</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;message_create&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_message_delete" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_message_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>MESSAGE_DELETE</code> event. Retrieves the message from cache if possible.
+Else it dispatches a <code>DeletedMessage</code>.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_message_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `MESSAGE_DELETE` event. Retrieves the message from cache if possible.</span>
+<span class="sd">    Else it dispatches a `DeletedMessage`.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">deleted</span> <span class="o">=</span> <span class="n">DeletedMessage</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">deleted</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_messages</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">deleted</span>  <span class="c1"># type: ignore</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;message_delete&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_message_update" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_message_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>MESSAGE_UPDATE</code> event. Dispatches <code>before</code> and <code>after</code>.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_message_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `MESSAGE_UPDATE` event. Dispatches `before` and `after`.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_channel</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;channel_id&quot;</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">channel</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_message</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">before</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_message</span><span class="p">(</span><span class="n">after</span><span class="o">.</span><span class="n">id</span><span class="p">)):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get_channel_message</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">after</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_message</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_messages</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">before</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_messages</span><span class="p">[</span><span class="n">after</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">after</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;message_update&quot;</span><span class="p">,</span> <span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_channel_create" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_channel_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>CHANNEL_CREATE</code> event. Creates a Channel then caches it, as well as dispatching it afterwards.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_channel_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `CHANNEL_CREATE` event. Creates a Channel then caches it, as well as dispatching it afterwards.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">guild_id</span> <span class="o">:=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;guild_id&quot;</span><span class="p">):</span>
+        <span class="n">guild</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_guild</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">guild_id</span><span class="p">))</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_channel</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">guild</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_channel</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span><span class="p">[</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">channel</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;channel_create&quot;</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_channel_update" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_channel_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>CHANNEL_UPDATE</code> event. Dispatches <code>before</code> and <code>after</code>.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_channel_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `CHANNEL_UPDATE` event. Dispatches `before` and `after`.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_channel</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">channel</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">before</span><span class="p">,</span> <span class="n">after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_channel</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;channel_update&quot;</span><span class="p">,</span> <span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_channel_delete" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_channel_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>CHANNEL_DELETE</code> event. Dispatches the deleted channel.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_channel_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `CHANNEL_DELETE` event. Dispatches the deleted channel.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_channel</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;channel_delete&quot;</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_voice_state_update" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_voice_state_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>VOICE_STATE_UPDATE</code> event. Creates a VoiceState then caches it, as well as dispatching it afterwards.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_voice_state_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `VOICE_STATE_UPDATE` event. Creates a VoiceState then caches it, as well as dispatching it afterwards.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">after</span> <span class="o">=</span> <span class="n">VoiceState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">after</span><span class="o">.</span><span class="n">guild</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">after</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="n">voice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_voice_client</span><span class="p">(</span><span class="n">after</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">voice</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">voice</span><span class="o">.</span><span class="n">voice_state_update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">before</span> <span class="o">=</span> <span class="n">after</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">get_voice_state</span><span class="p">(</span><span class="n">after</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">before</span><span class="p">:</span>
+            <span class="n">after</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">_voice_states</span><span class="p">[</span><span class="n">after</span><span class="o">.</span><span class="n">user_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">after</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">after</span><span class="o">.</span><span class="n">channel</span><span class="p">:</span>
+                <span class="n">after</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">_voice_states</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">after</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">before</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">after</span><span class="o">.</span><span class="n">_data</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;voice_state_update&quot;</span><span class="p">,</span> <span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_thread_create" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_thread_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>THREAD_CREATE</code> event. Creates a Thread then caches it, as well as dispatching it afterwards.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_thread_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `THREAD_CREATE` event. Creates a Thread then caches it, as well as dispatching it afterwards.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">guild_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;guild_id&quot;</span><span class="p">])</span>
+    <span class="n">guild</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_guild</span><span class="p">(</span><span class="n">guild_id</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">guild</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">guild</span><span class="o">.</span><span class="n">_threads</span><span class="p">[</span><span class="n">thread</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">thread</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;thread_create&quot;</span><span class="p">,</span> <span class="n">thread</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_thread_update" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_thread_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>THREAD_UPDATE</code> event. Dispatches <code>before</code> and <code>after</code>.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_thread_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `THREAD_UPDATE` event. Dispatches `before` and `after`.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">guild_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;guild_id&quot;</span><span class="p">])</span>
+    <span class="n">guild</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_guild</span><span class="p">(</span><span class="n">guild_id</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">guild</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">thread_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+    <span class="n">thread</span> <span class="o">=</span> <span class="n">guild</span><span class="o">.</span><span class="n">get_thread</span><span class="p">(</span><span class="n">thread_id</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">thread</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">before</span><span class="p">,</span> <span class="n">after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_thread</span><span class="p">(</span><span class="n">thread</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;thread_update&quot;</span><span class="p">,</span> <span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_thread_delete" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_thread_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>THREAD_DELETE</code> event. Dispatches the deleted thread.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_thread_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `THREAD_DELETE` event. Dispatches the deleted thread.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">guild_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;guild_id&quot;</span><span class="p">])</span>
+    <span class="n">guild</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_guild</span><span class="p">(</span><span class="n">guild_id</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">guild</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">thread_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+    <span class="n">thread</span> <span class="o">=</span> <span class="n">guild</span><span class="o">.</span><span class="n">get_thread</span><span class="p">(</span><span class="n">thread_id</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">thread</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">guild</span><span class="o">.</span><span class="n">_threads</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">thread</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;thread_delete&quot;</span><span class="p">,</span> <span class="n">thread</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_thread_list_sync" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_thread_list_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>THREAD_LIST_SYNC</code> event.
+Dispatches the created threads under <code>THREAD_CREATE</code> and the removed ones under <code>THREAD_DELETE</code>.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_thread_list_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `THREAD_LIST_SYNC` event.</span>
+<span class="sd">    Dispatches the created threads under `THREAD_CREATE` and the removed ones under `THREAD_DELETE`.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">guild</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_guild</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;guild_id&quot;</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">guild</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">channel_ids</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;channel_ids&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">channel_ids</span><span class="p">:</span>
+        <span class="n">previous</span> <span class="o">=</span> <span class="n">guild</span><span class="o">.</span><span class="n">_threads</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">guild</span><span class="o">.</span><span class="n">_threads</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">previous</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">guild</span><span class="o">.</span><span class="n">_threads</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">parent_id</span> <span class="ow">in</span> <span class="n">channel_ids</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">thread_id</span> <span class="ow">in</span> <span class="n">previous</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">guild</span><span class="o">.</span><span class="n">_threads</span><span class="p">[</span><span class="n">thread_id</span><span class="p">]</span>
+
+    <span class="n">threads</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]):</span> <span class="n">Thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;threads&quot;</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="p">}</span>
+    <span class="n">guild</span><span class="o">.</span><span class="n">_threads</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">threads</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;members&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+        <span class="n">thread</span> <span class="o">=</span> <span class="n">threads</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">member</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">thread</span><span class="p">:</span>
+            <span class="n">thread</span><span class="o">.</span><span class="n">_create_member</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;thread_create&quot;</span><span class="p">,</span> <span class="n">thread</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">previous</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;thread_delete&quot;</span><span class="p">,</span> <span class="n">thread</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.parse_thread_members_update" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_thread_members_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-async"><code>async</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Parses <code>THREAD_MEMBERS_UPDATE</code> event.
+Dispatches the added thread members under <code>thread_member_add</code> and the removed ones
+under <code>thread_member_remove</code>.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The raw data.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">parse_thread_members_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses `THREAD_MEMBERS_UPDATE` event.</span>
+<span class="sd">    Dispatches the added thread members under `thread_member_add` and the removed ones</span>
+<span class="sd">    under `thread_member_remove`.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The raw data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">guild</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_guild</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;guild_id&quot;</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">guild</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">thread</span> <span class="o">=</span> <span class="n">guild</span><span class="o">.</span><span class="n">get_thread</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">thread</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">new</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ThreadMember</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">ThreadMember</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">thread</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;added_members&quot;</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="p">]</span>
+    <span class="n">removed</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;removed_member_ids&quot;</span><span class="p">,</span> <span class="p">[])]</span>
+
+    <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
+        <span class="n">thread</span><span class="o">.</span><span class="n">_members</span><span class="p">[</span><span class="n">member</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">member</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;thread_member_add&quot;</span><span class="p">,</span> <span class="n">member</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">member_id</span> <span class="ow">in</span> <span class="n">removed</span><span class="p">:</span>
+        <span class="n">member</span> <span class="o">=</span> <span class="n">thread</span><span class="o">.</span><span class="n">_members</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">member_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="k">if</span> <span class="n">member</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;thread_member_remove&quot;</span><span class="p">,</span> <span class="n">member</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.get_message" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message_id</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Grabs a message from the cache.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>message_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the message.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Optional[Message]</code></td>
+      <td><p>The <a href="../message/">lefi.Message</a> insance corresponding to the ID if found.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Message</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Grabs a message from the cache.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        message_id (int): The ID of the message.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.Message](./message.md) insance corresponding to the ID if found.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">message_id</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.get_user" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Grabs a user from the cache.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>user_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the user.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Optional[User]</code></td>
+      <td><p>The <a href="../user/">lefi.User</a> instance corresponding to the ID if found.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">User</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Grabs a user from the cache.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        user_id (int): The ID of the user.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.User](./user.md) instance corresponding to the ID if found.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_users</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.add_user" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">add_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates a user then caches it.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The data of the user.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>User</code></td>
+      <td><p>The created <a href="../user/">lefi.User</a> instance.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">add_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a user then caches it.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The data of the user.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The created [lefi.User](./user.md) instance.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_users</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span>
+    <span class="k">return</span> <span class="n">user</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.get_guild" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_guild</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild_id</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Grabs a guild from the cache.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>guild_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the guild.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Optional[Guild]</code></td>
+      <td><p>The <a href="../guild/">lefi.Guild</a> instance corresponding to the ID if found.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_guild</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Guild</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Grabs a guild from the cache.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        guild_id (int): The ID of the guild.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.Guild](./guild.md) instance corresponding to the ID if found.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guilds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">guild_id</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.get_channel" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Grabs a channel from the cache.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the channel.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Optional[Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]]</code></td>
+      <td><p>The [lefi.Channel][] instance corresponding to the ID if found.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_channel</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span>
+    <span class="n">Union</span><span class="p">[</span><span class="n">TextChannel</span><span class="p">,</span> <span class="n">DMChannel</span><span class="p">,</span> <span class="n">VoiceChannel</span><span class="p">,</span> <span class="n">CategoryChannel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">]</span>
+<span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Grabs a channel from the cache.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel_id (int): The ID of the channel.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.Channel][] instance corresponding to the ID if found.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">channel_id</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.get_emoji" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_emoji</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">emoji_id</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Grabs an emoji from the cache.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>emoji_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the emoji.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Optional[Emoji]</code></td>
+      <td><p>The <a href="../emoji/">lefi.Emoji</a> instance corresponding to the ID if found.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_emoji</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">emoji_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Emoji</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Grabs an emoji from the cache.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        emoji_id (int): The ID of the emoji.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.Emoji](./emoji.md) instance corresponding to the ID if found.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emojis</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">emoji_id</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.create_message" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates a Message instance.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The data of the message.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>channel</code></td>
+        <td><code>Any</code></td>
+        <td><p>The <a href="../channel/">Channel</a> of the message.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Message</code></td>
+      <td><p>The created <a href="../message/">lefi.Message</a> instance.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a Message instance.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The data of the message.</span>
+<span class="sd">        channel (Any): The [Channel](./channel.md) of the message.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The created [lefi.Message](./message.md) instance.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.create_channel" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates a Channel instance.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The data of the channel.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>*args</code></td>
+        <td><code>Any</code></td>
+        <td><p>Extra arguments to pass to the channels constructor.</p></td>
+        <td><code>()</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Union[TextChannel, VoiceChannel, CategoryChannel, Channel]</code></td>
+      <td><p>The created <a href="../channel/">lefi.Channel</a> instance.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_channel</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">TextChannel</span><span class="p">,</span> <span class="n">VoiceChannel</span><span class="p">,</span> <span class="n">CategoryChannel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a Channel instance.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        data (Dict): The data of the channel.</span>
+<span class="sd">        *args (Any): Extra arguments to pass to the channels constructor.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The created [lefi.Channel](./channel.md) instance.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CHANNEL_MAPPING</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]),</span> <span class="n">Channel</span><span class="p">)</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">create_overwrites</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">channel</span>  <span class="c1"># type: ignore</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.create_guild_channels" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_guild_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates the channels of a guild.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>guild</code></td>
+        <td><code>lefi.Guild</code></td>
+        <td><p>The <a href="../guild/">Guild</a> which to create the channels for.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The data of the channels.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Guild</code></td>
+      <td><p>The <a href="../guild/">lefi.Guild</a> instance passed in.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_guild_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild</span><span class="p">:</span> <span class="n">Guild</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Guild</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the channels of a guild.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        guild (lefi.Guild): The [Guild](./guild.md) which to create the channels for.</span>
+<span class="sd">        data (Dict): The data of the channels.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.Guild](./guild.md) instance passed in.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;channels&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">guild</span>
+
+    <span class="n">channels</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]):</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_channel</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">guild</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">payload</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;channels&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">channels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">channel</span>
+
+    <span class="n">guild</span><span class="o">.</span><span class="n">_channels</span> <span class="o">=</span> <span class="n">channels</span>
+    <span class="k">return</span> <span class="n">guild</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.create_guild_members" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_guild_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates the members of a guild.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>guild</code></td>
+        <td><code>lefi.Guild</code></td>
+        <td><p>The <a href="../guild/">Guild</a> which to create the channels for.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The data of the members.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Guild</code></td>
+      <td><p>The <a href="../guild/">lefi.Guild</a> instance passed in.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_guild_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild</span><span class="p">:</span> <span class="n">Guild</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Guild</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the members of a guild.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        guild (lefi.Guild): The [Guild](./guild.md) which to create the channels for.</span>
+<span class="sd">        data (Dict): The data of the members.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.Guild](./guild.md) instance passed in.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;members&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">guild</span>
+
+    <span class="n">members</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Member</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">member_data</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;members&quot;</span><span class="p">]:</span>
+        <span class="n">member</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_member</span><span class="p">(</span><span class="n">member_data</span><span class="p">,</span> <span class="n">guild</span><span class="p">)</span>
+        <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">member</span>
+
+    <span class="n">guild</span><span class="o">.</span><span class="n">_members</span> <span class="o">=</span> <span class="n">members</span>
+    <span class="k">return</span> <span class="n">guild</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.create_guild_roles" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_guild_roles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates the roles of a guild.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>guild</code></td>
+        <td><code>lefi.Guild</code></td>
+        <td><p>The <a href="../guild/">Guild</a> which to create the channels for.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The data of the roles.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Guild</code></td>
+      <td><p>The <a href="../guild/#lefi.objects.guild.Guild">lefi.Guild</a> instance passed in.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_guild_roles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild</span><span class="p">:</span> <span class="n">Guild</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Guild</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the roles of a guild.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        guild (lefi.Guild): The [Guild](./guild.md) which to create the channels for.</span>
+<span class="sd">        data (Dict): The data of the roles.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.Guild][] instance passed in.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;roles&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">guild</span>
+
+    <span class="n">roles</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]):</span> <span class="n">Role</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">guild</span><span class="p">)</span> <span class="k">for</span> <span class="n">payload</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;roles&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+    <span class="n">guild</span><span class="o">.</span><span class="n">_roles</span> <span class="o">=</span> <span class="n">roles</span>
+    <span class="k">return</span> <span class="n">guild</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.create_guild_emojis" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_guild_emojis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates the emojis of a guild.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>guild</code></td>
+        <td><code>lefi.Guild</code></td>
+        <td><p>The <a href="../guild/">Guild</a> which to create the emojis for.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The data of the emojis.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Guild</code></td>
+      <td><p>The <a href="../guild/#lefi.objects.guild.Guild">lefi.Guild</a> instance passed in.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_guild_emojis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild</span><span class="p">:</span> <span class="n">Guild</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Guild</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the emojis of a guild.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        guild (lefi.Guild): The [Guild](./guild.md) which to create the emojis for.</span>
+<span class="sd">        data (Dict): The data of the emojis.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.Guild][] instance passed in.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;emojis&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">guild</span>
+
+    <span class="n">emojis</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]):</span> <span class="n">Emoji</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">guild</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">payload</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;emojis&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">emoji</span> <span class="ow">in</span> <span class="n">emojis</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_emojis</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">emoji</span>
+
+    <span class="n">guild</span><span class="o">.</span><span class="n">_emojis</span> <span class="o">=</span> <span class="n">emojis</span>
+    <span class="k">return</span> <span class="n">guild</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.create_guild_voice_states" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_guild_voice_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates the voice states of a guild.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>guild</code></td>
+        <td><code>lefi.Guild</code></td>
+        <td><p>The guild which to create the voice states for.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>data</code></td>
+        <td><code>Dict</code></td>
+        <td><p>The data of the voice states.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Guild</code></td>
+      <td><p>The <a href="../guild/#lefi.objects.guild.Guild">lefi.Guild</a> instance passed in.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_guild_voice_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild</span><span class="p">:</span> <span class="n">Guild</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Guild</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the voice states of a guild.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        guild (lefi.Guild): The guild which to create the voice states for.</span>
+<span class="sd">        data (Dict): The data of the voice states.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.Guild][] instance passed in.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">voice_states</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">]):</span> <span class="n">VoiceState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">payload</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;voice_states&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="n">guild</span><span class="o">.</span><span class="n">_voice_states</span> <span class="o">=</span> <span class="n">voice_states</span>
+    <span class="k">return</span> <span class="n">guild</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.create_overwrites" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_overwrites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates the overwrites of a channel.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>channel</code></td>
+        <td><code>lefi.Channel</code></td>
+        <td><p>The <a href="../channel/">Channel</a> which to create the overwrites for.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_overwrites</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">channel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TextChannel</span><span class="p">,</span> <span class="n">DMChannel</span><span class="p">,</span> <span class="n">VoiceChannel</span><span class="p">,</span> <span class="n">CategoryChannel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the overwrites of a channel.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        channel (lefi.Channel): The [Channel](./channel.md) which to create the overwrites for.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">DMChannel</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="s2">&quot;permission_overwrites&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">channel</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">overwrites</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Overwrite</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">channel</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;permission_overwrites&quot;</span><span class="p">]</span>
+    <span class="p">]</span>
+    <span class="n">ows</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Member</span><span class="p">,</span> <span class="n">Role</span><span class="p">],</span> <span class="n">Overwrite</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">overwrite</span> <span class="ow">in</span> <span class="n">overwrites</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">overwrite</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">OverwriteType</span><span class="o">.</span><span class="n">MEMBER</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">get_member</span><span class="p">(</span><span class="n">overwrite</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">get_role</span><span class="p">(</span><span class="n">overwrite</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+        <span class="n">ows</span><span class="p">[</span><span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="n">overwrite</span>  <span class="c1"># type: ignore</span>
+
+    <span class="n">channel</span><span class="o">.</span><span class="n">_overwrites</span> <span class="o">=</span> <span class="n">ows</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.add_voice_client" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">add_voice_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild_id</span><span class="p">,</span> <span class="n">voice_client</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Adds a voice client to the cache.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>guild_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the guild.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>voice_client</code></td>
+        <td><code>lefi.VoiceClient</code></td>
+        <td><p>The voice client to add.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">add_voice_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">voice_client</span><span class="p">:</span> <span class="n">VoiceClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a voice client to the cache.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        guild_id (int): The ID of the guild.</span>
+<span class="sd">        voice_client (lefi.VoiceClient): The voice client to add.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_voice_clients</span><span class="p">[</span><span class="n">guild_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">voice_client</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.get_voice_client" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_voice_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild_id</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Grabs a voice client from the cache.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>guild_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the guild.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Optional[VoiceClient]</code></td>
+      <td><p>The [lefi.VoiceClient][] instance corresponding to the ID if found.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_voice_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VoiceClient</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Grabs a voice client from the cache.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        guild_id (int): The ID of the guild.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The [lefi.VoiceClient][] instance corresponding to the ID if found.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_voice_clients</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">guild_id</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="lefi.state.State.remove_voice_client" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">remove_voice_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild_id</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Removes a voice client from the cache.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>guild_id</code></td>
+        <td><code>int</code></td>
+        <td><p>The ID of the guild.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>lefi/state.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">remove_voice_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guild_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes a voice client from the cache.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        guild_id (int): The ID of the guild.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_voice_clients</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">guild_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../http/" class="md-footer__link md-footer__link--prev" aria-label="Previous: HTTPClient" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              HTTPClient
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../channel/" class="md-footer__link md-footer__link--next" aria-label="Next: Channel" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Channel
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["search.highlight", "search.sharing", "navigation.top", "navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.b1047164.min.js"></script>
+      
+    
+  </body>
+</html>
