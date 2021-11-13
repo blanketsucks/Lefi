@@ -15,6 +15,7 @@ include = ["LICENSE"]
 python = "^3.9"
 aiohttp = "^3.7.4"
 PyNaCl = "^1.4.0"
+Sphinx = "^4.3.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.2"
