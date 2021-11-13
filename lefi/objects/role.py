@@ -89,7 +89,7 @@ class Role(Snowflake):
             mentionable (Optional[bool]): Whether or not the role is mentionable.
 
         Returns:
-            The role after editting.
+            The role after editing.
 
         """
         data = await self._state.http.modify_guild_role(
