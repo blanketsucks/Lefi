@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import inspect
 
-from typing import TYPE_CHECKING, List, Dict, Any, Tuple, Callable
+from typing import TYPE_CHECKING, List, Dict, Any, Tuple
 
 from .converters import Converter
 
