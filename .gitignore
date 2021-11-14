@@ -3,5 +3,5 @@ test.py
 poetry.lock
 .mypy_cache/
 .pytest_cache/
-docs/_build/
+.docs/_build/
 dist/

@@ -41,15 +41,48 @@ __all__ = ("Client",)
 
 
 class Client:
-    """
+    """The class used to communicate with the discord API and its gateway.
     A class used to communicate with the discord API and its gateway.
 
-    Attributes:
-        pub_key (Optional[str]): The client's public key. Used when handling interactions over HTTP.
-        loop (asyncio.AbstractEventLoop): The event loop which is being used.
-        http (lefi.HTTPClient): The [HTTPClient](./http.md) to use for handling requests to the API.
-        ws (lefi.WebSocketClient): The [WebSocketClient](./wsclient.md) which handles the gateway.
+    Parameters
+    ----------
+    token: :class:`str`
+        The token used for authorization to the discord API.
+    intents: :class:`.Intents`
+        The intents to IDENTIFY with, this will determine which events you receive.
+    sharded: :class:`bool`
+        Whether or not the client should be sharded. If no shard_ids are passed
+        the amount of shards will be determined by the discord API.
+        Defaults to False if not passed.
+    shard_ids: Optional[List[:class:`int`]]
+        The shard IDs to use when sharding the client.
+    loop: Optional[:class:`asyncio.AbstractEventLoop`]
+        The :class:`asyncio.AbstractEventLoop` to use. If no loop is passed then the
+        library will set a new event loop.
 
+    Attributes
+    ----------
+    loop: :class:`asyncio.AbstractEventLoop`
+        The event loop to use.
+    http: :class:`.HTTPClient`
+        The HTTPClient to use for API calls. This class handles both requesting ratelimiting.
+
+        .. warning::
+            This is used internally and should not be called directly on.
+
+    ws: :class:`.WebSocketClient`
+        The internal websocket which listens to the gateway.
+
+        .. warning::
+            This is only used internally and any changes to this class can break everything.
+
+    user: :class:`.User`
+        The :class:`.User` representing the client's discord user.
+    shards: Optional[List[:class:`.Shard`]]
+        A list of shards the connected to the client.
+        This is set if the client is sharded. Otherwise it will be None.
+    application_commands: List[:class:`.AppCommand`]
+        A list of application commands connected to the client.
     """
 
     def __init__(
@@ -61,13 +94,6 @@ class Client:
         shard_ids: Optional[List[int]] = None,
         loop: Optional[asyncio.AbstractEventLoop] = None,
     ) -> None:
-        """
-        Parameters:
-            token (str): The clients token, used for authorization (logging in, etc...) This is required.
-            intents (Optional[lefi.Intents]): The intents to be used for the client.
-            loop (Optional[asyncio.AbstractEventLoop]): The loop to use.
-
-        """
         self.loop: asyncio.AbstractEventLoop = loop or self._create_loop()
         self.http: HTTPClient = HTTPClient(token, self.loop)
         self._state: State = State(self, self.loop)
@@ -96,13 +122,21 @@ class Client:
         event_name: Optional[str],
         overwrite: bool = False,
     ) -> None:
-        """
-        Registers listener, basically connecting an event to a callback.
+        """Registers listeners, connecting an event to a callback.
 
-        Parameters:
-            func (Callable[..., Coroutine]): The callback to register for an event.
-            event_name (Optional[str]): The event to register, if None it will pass the decorated functions name.
+        Parameters
+        ----------
+        func: Callable[..., Coroutine]
+            The callback of the event. This will be ran everytime the event is dispatched.
+        event_name: :class:`str`
+            The name of the event to register.
+        overwrite: :class:`bool`
+            Whether or not to overwrite previous callbacks registered to this event.
 
+        Raises
+        ------
+        :exc:`TypeError`
+            The callback being added is not a Coroutine.
         """
         name = event_name or func.__name__
         if not inspect.iscoroutinefunction(func):
@@ -123,30 +157,26 @@ class Client:
     def on(
         self, event_name: Optional[str] = None, overwrite: bool = False
     ) -> Callable[..., Callable[..., Coroutine]]:
-        """
-        A decorator that registers the decorated function to an event.
+        """A decorator that registers the decorated function to an event.
 
-        Parameters:
-            event_name (Optional[str]): The event to register.
-            overwrite (bool): Whether or not to clear every callback except for the current one being registered.
+        Parameters
+        ----------
+        event_name: Optional[:class:`str`]
+            The event which to register the callback under. Defaults to the
+            functions name if no event name is passed.
+        overwrite: :class:`bool`
+            Whether or not to overwrite the events previous callbacks.
 
-        Note:
-            The function being decorated must be a coroutine.
-            Multiple functions can be decorated with the same event.
-            Although you will need to pass the event name and give functions different names.
-            And if no event name is passed it defaults to the functions name.
+        Examples
+        --------
+        Registering an event callback ::
 
-        Returns:
-            The decorated function after registering it as a listener.
-
-        Example:
-            ```py
             @client.on("message_create")
             async def on_message(message: lefi.Message) -> None:
-                await message.channel.send("Got your message!")
-            ```
+                await message.channel.send(f"Received a message from {message.author}")
 
-            ```py
+        Registering two event callbacks ::
+
             @client.on("message_create")
             async def on_message(message: lefi.Message) -> None:
                 await message.channel.send("Got your message!")
@@ -154,8 +184,13 @@ class Client:
             @client.on("message_create")
             async def on_message2(message: lefi.Message) -> None:
                 print(message.content)
-            ```
+            @client.on("message_create")
 
+
+        Returns
+        -------
+        :class:`Coroutine`
+            The decorated function.
         """
 
         def inner(func: Callable[..., Coroutine]) -> Callable[..., Coroutine]:
@@ -167,29 +202,37 @@ class Client:
     def once(
         self, event_name: Optional[str] = None
     ) -> Callable[..., Callable[..., Coroutine]]:
-        """
-        A decorator that registers the decorated function to an event.
-        Similar to [lefi.Client.on][] but also cuts itself off the event after firing once.
-        Meaning it will only run once.
+        """A decorator that registers one time callbacks.
 
-        Parameters:
-            event_name (Optional[str]): The event to register.
+        Similar to :meth:`on` it registers a callback to an event, but also
+        after an event is dispatched the callback will be cutoff and thus running only once per lifetime.
 
-        Note:
-            Functions must be coroutines.
-            Multiple functions can be decorated with this that have the same event.
-            Functions decorated with [lefi.Client.once][] take precedence over the regular events.
+        .. note::
 
-        Returns:
-            The decorated function after registering it as a listener.
+            events decorated with this method take precedence over regular events.
 
-        Example:
-            ```py
+        Parameters
+        ----------
+        event_name: Optional[:class:`str`]
+            The name of the vent to register the callback to.
+
+        Examples
+        --------
+        Registering a one-time event callback ::
+
             @client.once("ready")
-            async def on_ready(client_user: lefi.User) -> None:
-                print(f"logged in as {client_user.username}")
-            ```
+            async def on_ready(user: lefi.User) -> None:
+                print(f"Logged in as {user.id}")
 
+        Raises
+        ------
+        :exc:`TypeError`
+            The callback being added is not a :class:`Coroutine`
+
+        Returns
+        -------
+        :class:`Coroutine`
+            The decorated function.
         """
 
         def inner(func: Callable[..., Coroutine]) -> Callable[..., Coroutine]:
@@ -206,6 +249,25 @@ class Client:
     def application_command(
         self, name: str, description: Optional[str] = None, **kwargs
     ) -> Callable[..., AppCommand]:
+        """A decorator which adds an application command.
+
+        This decorator added an application command. Currently only supporting
+        slash commands. The function being decorator will be called when this command is invoked.
+
+        Parameters
+        ----------
+        name: :class:`str`
+            The name of the command
+        description: Optional[:class:`str`]
+            The description of the command
+        **kwargs: Any
+            Extra arguments to create the command with.
+
+        Returns
+        -------
+        :class:`lefi.AppCommand`
+            The created application command.
+        """
         def inner(func: Coroutine) -> AppCommand:
             command = AppCommand(name, description, client=self, **kwargs)
             command.callback = func  # type: ignore
@@ -218,14 +280,12 @@ class Client:
         return inner
 
     async def connect(self) -> None:
-        """
-        A method which starts the connection to the gateway.
+        """Starts the connection between the client and the gateway.
         """
         await self.ws.start()
 
     async def close(self) -> None:
-        """
-        Closes the ClientSession and the websocket connection. Essentially closing the client.
+        """Closes the :aiohttp:`ClientSession` and the websocket connection. Essentially closing the client.
         """
         await self.http.close()
 
@@ -241,8 +301,7 @@ class Client:
         return None
 
     def run(self) -> None:
-        """
-        A blocking version of `lefi.Client.run`
+        """A blocking version of :meth:`start`
         """
         try:
             self.loop.run_until_complete(self.start())
@@ -251,15 +310,19 @@ class Client:
             self.loop.run_until_complete(self.close())
 
     async def login(self) -> None:
-        """
-        A method which "logs" in with the token to make sure it is valid.
-        This is to make sure that proper authorization has been passed.
+        """A method which attempts to login
+        This is done to verify if the token is valid.
+
+        Raises
+        ------
+        :exc:`ValueError`
+            The token is invalid.
         """
         await self.http.login()
 
     async def start(self) -> None:
-        """
-        A method which calls [lefi.Client.login][] and [lefi.Client.connect][] in that order.
+        """An async method which starts the connection to the API.
+        Calls :meth:`login` and :meth:`connect` in that order.
         """
         await self.login()
         await self.connect()
@@ -267,33 +330,26 @@ class Client:
     async def wait_for(
         self, event: str, *, check: Callable[..., bool] = None, timeout: float = None
     ) -> Any:
-        """
-        Waits for an event to be dispatched that passes the check.
+        """A method which waits for an event to be dispatched.
 
-        Parameters:
-            event (str): The event to wait for.
-            check (Callable[..., bool]): A function that takes the same args as the event, and returns a bool.
-            timeout (float): The time to wait before stopping.
+        This method will wait until the specified event is dispatched
+        and if the passed check returns truthy.
 
-        Returns:
-            The return from a callback that matches with the event you are waiting for.
+        Parameters
+        ----------
+        event: :class:`str`
+            The name of the event to wait for
+        check: Callable[..., :class:`bool`]
+            The check that needs to be passed. Defaults to always return True
+            if not passed to the method.
+        timeout: :class:`float`
+            The amount of time in seconds to wait before canceling
 
-        Note:
-            The check has to take in the same args as the event.
-            If no check is passed, everything will complete the check.
 
-        Example:
-            ```py
-            @client.on("message_create")
-            async def on_message(message: lefi.Message) -> None:
-                if message.content == "wait for next!":
-                    next_message = await client.wait_for(
-                        "message_create",
-                        check=lambda msg: msg.author.id == 270700034985558017
-                    )
-                await message.channel.send(f"got your message! `{next_message.content}`")
-            ```
-
+        Returns
+        ------
+        Any
+            The parameters of the event which the client was waiting for
         """
         future = self.loop.create_future()
         futures = self.futures.setdefault(event, [])
@@ -306,155 +362,205 @@ class Client:
 
     @property
     def guilds(self) -> List[Guild]:
-        """
-        The list of guilds the client is in.
+        """List[:class:`lefi.Guild`] The list of guilds the client is in.
         """
         return list(self._state._guilds.values())
 
     @property
-    def channels(
-        self,
-    ) -> List[Union[TextChannel, VoiceChannel, CategoryChannel, DMChannel, Channel]]:
-        """
-        The list of channels the client can see.
+    def channels(self) -> List[Union[Channel, DMChannel]]:
+        """List[Union[:class:`Channel`, :class:`DMChannel`]] The list of channels the client can see.
         """
         return list(self._state._channels.values())
 
     @property
     def users(self) -> List[User]:
-        """
-        The list of users that the client can see.
+        """List[:class:`lefi.User`] The list of users that the client can see.
         """
         return list(self._state._users.values())
 
     @property
     def voice_clients(self) -> List[VoiceClient]:
-        """
-        The list of voice clients the client has.
+        """List[:class:`lefi.VoiceClient`] The list of voice clients the client has.
         """
         return list(self._state._voice_clients.values())
 
     def get_message(self, id: int) -> Optional[Message]:
-        """
-        Grabs a [lefi.Message](./message.md) instance if cached.
+        """A method which grabs a message from the cache.
 
-        Parameters:
-            id (int): The message's ID.
+        Grabs a :class:`lefi.Message` in the cache corresponding to the passed in id.
+        If the message isn't found in the cache this method will return None.
 
-        Returns:
-            The [lefi.Message](./message.md) instance related to the ID. Else None if not found.
+        Parameters
+        ----------
+        id: :class:`int`
+            The message's ID
 
+        Returns
+        -------
+        Optional[:class:`lefi.Message`]
+            The message instance if cached.
         """
         return self._state.get_message(id)
 
     def get_guild(self, id: int) -> Optional[Guild]:
-        """
-        Grabs a [lefi.Guild](./guild.md) instance if cached.
+        """A method which grabs a guild from the cache.
 
-        Parameters:
-            id (int): The guild's ID.
+        Grabs a :class:`lefi.Guild` in the cache corresponding to the passed in id.
+        If the guild isn't found in the cache this method will return None.
 
-        Returns:
-            The [lefi.Guild](./guild.md) instance related to the ID. Else None if not found
+        Parameters
+        ----------
+        id: :class:`int`
+            The guild's ID
 
+        Returns
+        -------
+        Optional[:class:`lefi.Guild`]
+            The guild instance if cached.
         """
         return self._state.get_guild(id)
 
-    def get_channel(
-        self, id: int
-    ) -> Optional[
-        Union[TextChannel, VoiceChannel, DMChannel, CategoryChannel, Channel]
-    ]:
-        """
-        Grabs a [lefi.Channel](./channel.md) instance if cached.
+    def get_channel(self, id: int) -> Optional[Union[Channel, DMChannel]]:
+        """A method which grabs a channel from the cache.
 
-        Parameters:
-            id (int): The channel's ID.
+        Grabs a :class:`lefi.Channel` or a :class:`lefi.DMChannel` in the cache
+        corresponding to the passed in id. If the channel isn't found in the cache
+        this method will return None.
 
-        Returns:
-            The [lefi.Channel](./channel.md) instance related to the ID. Else None if not found
+        Parameters
+        ----------
+        id: :class:`int`
+            The channel's ID
 
+        Returns
+        -------
+        Optional[Union[:class:`lefi.Channel`, :class:`lefi.DMChannel`]]
+            The channel instance if cached.
         """
         return self._state.get_channel(id)
 
     def get_user(self, id: int) -> Optional[User]:
-        """
-        Grabs a [lefi.User](./user.md) instance if cached.
+        """A method which grabs a user from the cache.
 
-        Parameters:
-            id (int): The user's ID.
+        Grabs a :class:`lefi.User` in the cache corresponding to the passed in id.
+        If the channel isn't found in the cache this method will return None.
 
-        Returns:
-            The [lefi.User](./user.md) instance related to the ID. Else None if not found
+        Parameters
+        ----------
+        id: :class:`int`
+            The user's ID
 
+        Returns
+        -------
+        Optional[:class:`lefi.User`]
+            The user instance if cached.
         """
         return self._state.get_user(id)
 
     def get_emoji(self, id: int) -> Optional[Emoji]:
-        """
-        Grabs a [lefi.Emoji](./emoji.md) instance if cached.
+        """A method which grabs an emoji from the cache.
 
-        Parameters:
-            id (int): The emoji's ID.
+        Grabs a :class:`lefi.Emoji` in the cache corresponding to the passed in id.
+        If the emoji isn't found in the cache this method will return None.
 
-        Returns:
-            The [lefi.Emoji](./emoji.md) instance related to the ID. Else None if not found
+        Parameters
+        ----------
+        id: :class:`int`
+            The emoji's ID
 
+        Returns
+        -------
+        Optional[:class:`lefi.Emoji`]
+            The emoji instance if cached.
         """
         return self._state.get_emoji(id)
 
     async def fetch_user(self, user_id: int) -> User:
-        """
-        Fetches a user from the API.
+        """A method which makes an API call to fetch a user.
 
-        Parameters:
-            user_id (int): The users ID.
+        This method does an API call to fetch a user corresponding to the id passed in.
 
-        Returns:
-            The [lefi.User](./user.md) instance fetched.
+        .. note ::
 
+            This should only really be used when the corresponding `get_` method returns None.
+
+        Parameters
+        ----------
+        user_id: :class:`int`
+            The user's ID
+
+        Returns
+        -------
+        :class:`lefi.User`
+            The fetched user.
         """
         data = await self.http.get_user(user_id)
         return self._state.add_user(data)
 
     async def fetch_invite(self, code: str, **kwargs) -> Invite:
-        """
-        Fetches an invite from the API.
+        """A method which makes an API call to fetch an invite.
 
-        Parameters:
-            code (str): The invite code.
+        This method does an API call to fetch an invite corresponding to the code passed in.
 
-        Returns:
-            The [lefi.Invite](./invite.md) instance related to the code.
+        .. note ::
 
+            This should only really be used when the corresponding `get_` method returns None.
+
+        Parameters
+        ----------
+        code: :class:`str`
+            The invite's code
+        **kwargs: Any
+            Any extra options to pass to :meth:`lefi.HTTPClient.get_invite`
+
+        Returns
+        -------
+        :class:`lefi.Invite`
+            The fetched invite.
         """
         data = await self.http.get_invite(code, **kwargs)
         return Invite(data=data, state=self._state)
 
     async def fetch_guild(self, guild_id: int) -> Guild:
-        """
-        Fetches a guild from the API.
+        """A method which makes an API call to fetch a guild.
 
-        Parameters:
-            guild_id (int): The guild's ID.
+        This method does an API call to fetch a guild corresponding to the id passed in.
 
-        Returns:
-            The [lefi.Guild](./guild.md) instance related to the ID.
+        .. note ::
 
+            This should only really be used when the corresponding `get_` method returns None.
+
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The guild's ID
+
+        Returns
+        -------
+        :class:`lefi.Guild`
+            The fetched guild.
         """
         data = await self.http.get_guild(guild_id)
         return Guild(data=data, state=self._state)
 
     async def fetch_template(self, code: str) -> GuildTemplate:
-        """
-        Fetches a template from the API.
+        """A method which makes an API call to fetch a guild template.
 
-        Parameters:
-            code (str): The template code.
+        This method does an API call to fetch a guild template corresponding to the code passed in.
 
-        Returns:
-            The [lefi.GuildTemplate](./template.md) instance related to the code.
+        .. note ::
 
+            This should only really be used when the corresponding `get_` method returns None.
+
+        Parameters
+        ----------
+        code: :class:`str`
+            The guild template's code
+
+        Returns
+        -------
+        :class:`lefi.GuildTemplate`
+            The fetched guild template.
         """
         data = await self.http.get_guild_template(code)
         return GuildTemplate(data=data, state=self._state)
