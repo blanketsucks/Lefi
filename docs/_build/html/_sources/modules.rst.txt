@@ -1,7 +1,0 @@
-Lefi
-====
-
-.. toctree::
-   :maxdepth: 4
-
-   ..lefi
