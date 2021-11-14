@@ -48,14 +48,17 @@ class Client:
     ----------
     token: :class:`str`
         The token used for authorization to the discord API.
+
     intents: :class:`.Intents`
         The intents to IDENTIFY with, this will determine which events you receive.
+
     sharded: :class:`bool`
         Whether or not the client should be sharded. If no shard_ids are passed
-        the amount of shards will be determined by the discord API.
-        Defaults to False if not passed.
+        the amount of shards will be determined by the discord API. Defaults to False if not passed.
+
     shard_ids: Optional[List[:class:`int`]]
         The shard IDs to use when sharding the client.
+
     loop: Optional[:class:`asyncio.AbstractEventLoop`]
         The :class:`asyncio.AbstractEventLoop` to use. If no loop is passed then the
         library will set a new event loop.
@@ -64,6 +67,7 @@ class Client:
     ----------
     loop: :class:`asyncio.AbstractEventLoop`
         The event loop to use.
+
     http: :class:`.HTTPClient`
         The HTTPClient to use for API calls. This class handles both requesting ratelimiting.
 
@@ -78,9 +82,11 @@ class Client:
 
     user: :class:`.User`
         The :class:`.User` representing the client's discord user.
+
     shards: Optional[List[:class:`.Shard`]]
         A list of shards the connected to the client.
         This is set if the client is sharded. Otherwise it will be None.
+
     application_commands: List[:class:`.AppCommand`]
         A list of application commands connected to the client.
     """
@@ -128,8 +134,10 @@ class Client:
         ----------
         func: Callable[..., Coroutine]
             The callback of the event. This will be ran everytime the event is dispatched.
+
         event_name: :class:`str`
             The name of the event to register.
+
         overwrite: :class:`bool`
             Whether or not to overwrite previous callbacks registered to this event.
 
@@ -164,6 +172,7 @@ class Client:
         event_name: Optional[:class:`str`]
             The event which to register the callback under. Defaults to the
             functions name if no event name is passed.
+
         overwrite: :class:`bool`
             Whether or not to overwrite the events previous callbacks.
 
@@ -258,8 +267,10 @@ class Client:
         ----------
         name: :class:`str`
             The name of the command
+
         description: Optional[:class:`str`]
             The description of the command
+
         **kwargs: Any
             Extra arguments to create the command with.
 
@@ -268,6 +279,7 @@ class Client:
         :class:`lefi.AppCommand`
             The created application command.
         """
+
         def inner(func: Coroutine) -> AppCommand:
             command = AppCommand(name, description, client=self, **kwargs)
             command.callback = func  # type: ignore
@@ -281,11 +293,16 @@ class Client:
 
     async def connect(self) -> None:
         """Starts the connection between the client and the gateway.
+
+        Unless completely sure, you should run :meth:`login` before call this.
+        That would ensure that the token passed is valid and allow for authorization.
         """
         await self.ws.start()
 
     async def close(self) -> None:
-        """Closes the :class:`aiohttp.ClientSession` and the websocket connection. Essentially closing the client.
+        """Closes the :class:`aiohttp.ClientSession` and the websocket connection.
+
+        This method essentially closing the client.
         """
         await self.http.close()
 
@@ -301,8 +318,7 @@ class Client:
         return None
 
     def run(self) -> None:
-        """A blocking version of :meth:`start`
-        """
+        """A blocking version of :meth:`start`"""
         try:
             self.loop.run_until_complete(self.start())
             self.loop.run_forever()
@@ -339,12 +355,13 @@ class Client:
         ----------
         event: :class:`str`
             The name of the event to wait for
+
         check: Callable[..., :class:`bool`]
             The check that needs to be passed. Defaults to always return True
             if not passed to the method.
+
         timeout: :class:`float`
             The amount of time in seconds to wait before canceling
-
 
         Returns
         ------
@@ -362,26 +379,22 @@ class Client:
 
     @property
     def guilds(self) -> List[Guild]:
-        """List[:class:`lefi.Guild`] The list of guilds the client is in.
-        """
+        """List[:class:`lefi.Guild`] The list of guilds the client is in."""
         return list(self._state._guilds.values())
 
     @property
     def channels(self) -> List[Union[Channel, DMChannel]]:
-        """List[Union[:class:`Channel`, :class:`DMChannel`]] The list of channels the client can see.
-        """
+        """List[Union[:class:`Channel`, :class:`DMChannel`]] The list of channels the client can see."""
         return list(self._state._channels.values())
 
     @property
     def users(self) -> List[User]:
-        """List[:class:`lefi.User`] The list of users that the client can see.
-        """
+        """List[:class:`lefi.User`] The list of users that the client can see."""
         return list(self._state._users.values())
 
     @property
     def voice_clients(self) -> List[VoiceClient]:
-        """List[:class:`lefi.VoiceClient`] The list of voice clients the client has.
-        """
+        """List[:class:`lefi.VoiceClient`] The list of voice clients the client has."""
         return list(self._state._voice_clients.values())
 
     def get_message(self, id: int) -> Optional[Message]:
@@ -510,6 +523,7 @@ class Client:
         ----------
         code: :class:`str`
             The invite's code
+
         **kwargs: Any
             Any extra options to pass to :meth:`lefi.HTTPClient.get_invite`
 
