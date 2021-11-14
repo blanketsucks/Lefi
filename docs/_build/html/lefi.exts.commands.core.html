@@ -1,125 +1,431 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>lefi.exts.commands.core package &#8212; Lefi 0.2.3 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lefi.exts.commands.core package &mdash; Lefi 0.2.3a documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
 
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
-
-          <div class="body" role="main">
-            
-  <section id="lefi-exts-commands-core-package">
-<h1>lefi.exts.commands.core package<a class="headerlink" href="#lefi-exts-commands-core-package" title="Permalink to this headline">¶</a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="lefi-exts-commands-core-command-module">
-<h2>lefi.exts.commands.core.command module<a class="headerlink" href="#lefi-exts-commands-core-command-module" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="lefi-exts-commands-core-context-module">
-<h2>lefi.exts.commands.core.context module<a class="headerlink" href="#lefi-exts-commands-core-context-module" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="lefi-exts-commands-core-cooldowns-module">
-<h2>lefi.exts.commands.core.cooldowns module<a class="headerlink" href="#lefi-exts-commands-core-cooldowns-module" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="lefi-exts-commands-core-handler-module">
-<h2>lefi.exts.commands.core.handler module<a class="headerlink" href="#lefi-exts-commands-core-handler-module" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="lefi-exts-commands-core-parser-module">
-<h2>lefi.exts.commands.core.parser module<a class="headerlink" href="#lefi-exts-commands-core-parser-module" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="lefi-exts-commands-core-plugin-module">
-<h2>lefi.exts.commands.core.plugin module<a class="headerlink" href="#lefi-exts-commands-core-plugin-module" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
-</section>
-</section>
-
-
-          </div>
-          
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">Lefi</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  </ul></li>
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Lefi
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">lefi.exts.commands.core package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-lefi.exts.commands.core.command">lefi.exts.commands.core.command module</a></li>
+<li><a class="reference internal" href="#module-lefi.exts.commands.core.context">lefi.exts.commands.core.context module</a></li>
+<li><a class="reference internal" href="#module-lefi.exts.commands.core.cooldowns">lefi.exts.commands.core.cooldowns module</a></li>
+<li><a class="reference internal" href="#module-lefi.exts.commands.core.handler">lefi.exts.commands.core.handler module</a></li>
+<li><a class="reference internal" href="#module-lefi.exts.commands.core.parser">lefi.exts.commands.core.parser module</a></li>
+<li><a class="reference internal" href="#module-lefi.exts.commands.core.plugin">lefi.exts.commands.core.plugin module</a></li>
+<li><a class="reference internal" href="#module-lefi.exts.commands.core">Module contents</a></li>
+</ul>
+</li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2021, Andy.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/lefi.exts.commands.core.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
+    </nav>
 
-    
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Lefi</a>
+      </nav>
 
-    
-  </body>
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>lefi.exts.commands.core package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/lefi.exts.commands.core.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lefi-exts-commands-core-package">
+<h1>lefi.exts.commands.core package<a class="headerlink" href="#lefi-exts-commands-core-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-lefi.exts.commands.core.command">
+<span id="lefi-exts-commands-core-command-module"></span><h2>lefi.exts.commands.core.command module<a class="headerlink" href="#module-lefi.exts.commands.core.command" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.command.Command">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Coroutine</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lefi.exts.commands.core.command.Command" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A class representing a Command.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>checks (List[Callable[…, bool]]): A list of checks to be run before the command is executed.
+parent (Optional[Plugin]): The parent plugin of the command.
+cooldown (Cooldown): The cooldown of the command.
+callback (Callable[…, Coroutine]): The callback of the command.
+name (str): The name of the command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.command.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#lefi.exts.commands.core.command.Command" title="lefi.exts.commands.core.command.Command"><span class="pre">lefi.exts.commands.core.command.Command</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Coroutine</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lefi.exts.commands.core.command.check" title="Permalink to this definition"></a></dt>
+<dd><p>A decorator to add a check to a command.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>check (Callable[…, bool]): The check to be added.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The command with the check added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.command.command">
+<span class="sig-name descname"><span class="pre">command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#lefi.exts.commands.core.command.Command" title="lefi.exts.commands.core.command.Command"><span class="pre">lefi.exts.commands.core.command.Command</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lefi.exts.commands.core.command.command" title="Permalink to this definition"></a></dt>
+<dd><p>A decorator to add a command to a plugin.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>name (Optional[str]): The name of the command.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The command with the plugin added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.command.cooldown">
+<span class="sig-name descname"><span class="pre">cooldown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uses</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#lefi.exts.commands.core.cooldowns.CooldownType" title="lefi.exts.commands.core.cooldowns.CooldownType"><span class="pre">lefi.exts.commands.core.cooldowns.CooldownType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#lefi.exts.commands.core.command.Command" title="lefi.exts.commands.core.command.Command"><span class="pre">lefi.exts.commands.core.command.Command</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Coroutine</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lefi.exts.commands.core.command.cooldown" title="Permalink to this definition"></a></dt>
+<dd><p>A decorator to add a cooldown to a command.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>uses (int): The amount of uses the cooldown has.
+time (float): The time the cooldown lasts.
+type (CooldownType): The type of the cooldown.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The command with the cooldown added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-lefi.exts.commands.core.context">
+<span id="lefi-exts-commands-core-context-module"></span><h2>lefi.exts.commands.core.context module<a class="headerlink" href="#module-lefi.exts.commands.core.context" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.context.Context">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StringParser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Bot</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lefi.exts.commands.core.context.Context" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>The Context of a command.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>command (Command): The [Command](./command.md) that was called.
+parser (StringParser): The [Parser](./parser.md) that was used to parse the command.
+bot (Bot): The [Bot](../bot.md) that is running the command.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.context.Context.author">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">author</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">User</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Member</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#lefi.exts.commands.core.context.Context.author" title="Permalink to this definition"></a></dt>
+<dd><p>The author of the message.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.context.Context.channel">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">channel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Channel</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DMChannel</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#lefi.exts.commands.core.context.Context.channel" title="Permalink to this definition"></a></dt>
+<dd><p>The [Channel](../../channel.md) that the message was sent in.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.context.Context.guild">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">guild</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Guild</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#lefi.exts.commands.core.context.Context.guild" title="Permalink to this definition"></a></dt>
+<dd><p>The [Guild](../../guild.md) that the message was sent in.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.context.Context.message">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Message</span></em><a class="headerlink" href="#lefi.exts.commands.core.context.Context.message" title="Permalink to this definition"></a></dt>
+<dd><p>The [Message](../../message.md) that was sent.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.context.Context.send">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Message</span></span></span><a class="headerlink" href="#lefi.exts.commands.core.context.Context.send" title="Permalink to this definition"></a></dt>
+<dd><p>Send a message to the channel.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>args: The arguments to pass when sending the message
+kwargs: The keyword arguments to pass to the message.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Message: The [Message](../../message.md) that was sent.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.context.Context.valid">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#lefi.exts.commands.core.context.Context.valid" title="Permalink to this definition"></a></dt>
+<dd><p>Whether or not the context is valid.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-lefi.exts.commands.core.cooldowns">
+<span id="lefi-exts-commands-core-cooldowns-module"></span><h2>lefi.exts.commands.core.cooldowns module<a class="headerlink" href="#module-lefi.exts.commands.core.cooldowns" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.cooldowns.Cooldown">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Cooldown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#lefi.exts.commands.core.cooldowns.CooldownType" title="lefi.exts.commands.core.cooldowns.CooldownType"><span class="pre">lefi.exts.commands.core.cooldowns.CooldownType</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lefi.exts.commands.core.cooldowns.Cooldown" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A class that represents a Cooldown.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>amount (int): The amount of uses.
+time (float): The amount of time until the cooldown resets.
+type (CooldownType): The type of cooldown.
+members_cooldowns_cache (Cache[Dict[int, CooldownData]]): The cache for member cooldowns.
+cooldowns_cache (Cache[CooldownData]): The cache for cooldowns.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.cooldowns.Cooldown.delete_cooldown">
+<span class="sig-name descname"><span class="pre">delete_cooldown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lefi.exts.commands.core.cooldowns.Cooldown.delete_cooldown" title="Permalink to this definition"></a></dt>
+<dd><p>Deletes the cooldown for the command.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>message (Message): The [Message](../../message.md) that triggered the command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.cooldowns.Cooldown.get_cooldown_id">
+<span class="sig-name descname"><span class="pre">get_cooldown_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lefi.exts.commands.core.cooldowns.Cooldown.get_cooldown_id" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the cooldown id for the command.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>message (Message): The [Message]() that triggered the command.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The cooldown id for the command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.cooldowns.Cooldown.get_cooldown_reset">
+<span class="sig-name descname"><span class="pre">get_cooldown_reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">CooldownData</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lefi.exts.commands.core.cooldowns.Cooldown.get_cooldown_reset" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the cooldown reset for the command.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>message (Message): The [Message]() that triggered the command.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The [CooldownData]() for the command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.cooldowns.Cooldown.set_cooldown_time">
+<span class="sig-name descname"><span class="pre">set_cooldown_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lefi.exts.commands.core.cooldowns.Cooldown.set_cooldown_time" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the cooldown time for the command.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>message (Message): The [Message]() that triggered the command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.cooldowns.CooldownType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CooldownType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lefi.exts.commands.core.cooldowns.CooldownType" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.cooldowns.CooldownType.guild">
+<span class="sig-name descname"><span class="pre">guild</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{0.guild.id}'</span></em><a class="headerlink" href="#lefi.exts.commands.core.cooldowns.CooldownType.guild" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.cooldowns.CooldownType.member">
+<span class="sig-name descname"><span class="pre">member</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{0.guild.id},</span> <span class="pre">{0.author.id}'</span></em><a class="headerlink" href="#lefi.exts.commands.core.cooldowns.CooldownType.member" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.cooldowns.CooldownType.user">
+<span class="sig-name descname"><span class="pre">user</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{0.author.id}'</span></em><a class="headerlink" href="#lefi.exts.commands.core.cooldowns.CooldownType.user" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-lefi.exts.commands.core.handler">
+<span id="lefi-exts-commands-core-handler-module"></span><h2>lefi.exts.commands.core.handler module<a class="headerlink" href="#module-lefi.exts.commands.core.handler" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.handler.Handler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#lefi.exts.commands.core.context.Context" title="lefi.exts.commands.core.context.Context"><span class="pre">lefi.exts.commands.core.context.Context</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lefi.exts.commands.core.handler.Handler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A class representing a Handler.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.handler.Handler.invoke">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">invoke</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#lefi.exts.commands.core.handler.Handler.invoke" title="Permalink to this definition"></a></dt>
+<dd><p>Invoke the command.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The return value of the command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-lefi.exts.commands.core.parser">
+<span id="lefi-exts-commands-core-parser-module"></span><h2>lefi.exts.commands.core.parser module<a class="headerlink" href="#module-lefi.exts.commands.core.parser" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.parser.StringParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StringParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lefi.exts.commands.core.parser.StringParser" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A class representing a StringParser.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>command_name (Optional[str]): The name of the command.
+command (Optional[Command]): The [Command](./command.md) object.
+arguments (List[str]): The arguments of the command.
+content (str): The content of the command.
+prefix (Union[Tuple[str], str]): The prefix of the command.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.parser.StringParser.convert">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/inspect.html#inspect.Parameter" title="(in Python v3.10)"><span class="pre">inspect.Parameter</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#lefi.exts.commands.core.parser.StringParser.convert" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.parser.StringParser.find_command">
+<span class="sig-name descname"><span class="pre">find_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lefi.exts.commands.core.parser.StringParser.find_command" title="Permalink to this definition"></a></dt>
+<dd><p>Find the command.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The command name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.parser.StringParser.invoked_with">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">invoked_with</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#lefi.exts.commands.core.parser.StringParser.invoked_with" title="Permalink to this definition"></a></dt>
+<dd><p>The prefix the command was invoked with.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The prefix.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.parser.StringParser.invoker">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">invoker</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#lefi.exts.commands.core.command.Command" title="lefi.exts.commands.core.command.Command"><span class="pre">lefi.exts.commands.core.command.Command</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#lefi.exts.commands.core.parser.StringParser.invoker" title="Permalink to this definition"></a></dt>
+<dd><p>Get the invoker.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The invoker [Command](./command.md).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.parser.StringParser.parse_arguments">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_arguments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lefi.exts.commands.core.parser.StringParser.parse_arguments" title="Permalink to this definition"></a></dt>
+<dd><p>Parse the arguments.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The arguments and the keyword-arguments.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.parser.StringParser.parse_prefix">
+<span class="sig-name descname"><span class="pre">parse_prefix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lefi.exts.commands.core.parser.StringParser.parse_prefix" title="Permalink to this definition"></a></dt>
+<dd><p>Parse the prefix.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The prefix.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-lefi.exts.commands.core.plugin">
+<span id="lefi-exts-commands-core-plugin-module"></span><h2>lefi.exts.commands.core.plugin module<a class="headerlink" href="#module-lefi.exts.commands.core.plugin" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.plugin.Plugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Bot</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lefi.exts.commands.core.plugin.Plugin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.plugin.Plugin.commands">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">commands</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#lefi.exts.commands.core.command.Command" title="lefi.exts.commands.core.command.Command"><span class="pre">lefi.exts.commands.core.command.Command</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#lefi.exts.commands.core.plugin.Plugin.commands" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.plugin.Plugin.listeners">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">listeners</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Coroutine</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#lefi.exts.commands.core.plugin.Plugin.listeners" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lefi.exts.commands.core.plugin.Plugin.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#lefi.exts.commands.core.plugin.Plugin.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-lefi.exts.commands.core">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lefi.exts.commands.core" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Andy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>

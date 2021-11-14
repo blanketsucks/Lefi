@@ -1,7 +1,7 @@
-lefi
+Lefi
 ====
 
 .. toctree::
    :maxdepth: 4
 
-   lefi
+   ..lefi
