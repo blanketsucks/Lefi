@@ -3,15 +3,19 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Lefi's documentation!
-================================
+Lefi
+====
+A discord API wrapper focused on clean code, and usability
+
+Features
+~~~~~~~~
+* `Asynchronous` - Almost everything is async except for few unavoidable ones.
+* `Object oriented` - Allows for easy usage
+* `Ratelimit handling` - Our ratelimiter uses semaphores, allowing for concurrent requests.
+
 API-Reference
 -------------
-:doc:`API-Reference <./api-reference>`
+.. toctree::
+    :maxdepth: 1
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    api-reference

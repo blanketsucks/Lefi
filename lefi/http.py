@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-import json
-import logging
-from typing import Any, ClassVar, Dict, List, Optional, Union
 import aiohttp
+
+import logging
+import json
+
+from typing import Any, ClassVar, Dict, List, Optional, Union
 
 from .errors import BadRequest, Forbidden, NotFound, Unauthorized
 from .ratelimiter import Ratelimiter
@@ -22,6 +24,35 @@ BASE: str = "https://discord.com/api/v9"
 
 
 class Route:
+    """A class representing an endpoint.
+
+    This class is used to handle ratelimit buckets.
+
+    Parameters
+    ----------
+    path: :class:`str`
+        The path of the endpoint
+    **kwargs: Any
+        Major parameters to pass for the endpoint
+
+    Attributes
+    ----------
+    params: :class:`dict`
+        The kwargs passed to the constructor
+    path: :class:`str`
+        The endpoint path.
+    channel_id: Optional[:class:`int`]
+        The channel_id being used in the endpoint if there is any
+    guild_id: Optional[:class:`int`]
+        The guild_id being used in the endpoint if there is any
+    webhook_id: Optional[:class:`int`]
+        The webhook_id being used in the endpoint if there is any
+    webhook_token: Optional[:class:`str`]
+        The webhook_token being used in the endpoint if there is any
+    lock: :class:`asyncio.Lock`
+        The internal lock to use for ratelimiting. This is acquired when
+        the bucket is depleted.
+    """
     def __init__(self, path: str, **kwargs) -> None:
         self.params: Dict = kwargs
         self.path: str = path
@@ -35,24 +66,32 @@ class Route:
 
     @property
     def url(self) -> str:
+        """The final url of the route."""
         return f"{BASE+self.path}"
 
     @property
     def bucket(self) -> str:
+        """The bucket of the route."""
         return f"{self.channel_id}:{self.guild_id}:{self.webhook_id}:{self.path}"
 
 
 class HTTPClient:
-    """
-    A class used to send and handle requests to the discord API.
+    """A class used to handle API calling and ratelimits to the API.
 
-    Attributes:
-        token (str): The clients token, used for authorization.
-        loop (asyncio.AbstractEventLoop): The [asyncio.AbstractEventLoop][] being used.
-        session (aiohttp.ClientSession): The [aiohttp.ClientSession][] to use for sending requests.
+    .. warning ::
+        
+        This class is only used internally, this should not and is not
+        meant to be called on directly.
 
-    Danger:
-        This class is used internally, **this is not intended to be called directly**.
+    Parameters
+    ----------
+    token: :class:`str`
+        The token to use for authorization
+    loop: :class:`asyncio.AbstractEventLoop`
+        The loop to use
+
+    Attributes
+    ----------
 
     """
 
@@ -64,13 +103,6 @@ class HTTPClient:
     }
 
     def __init__(self, token: str, loop: asyncio.AbstractEventLoop) -> None:
-        """
-        Parameters:
-            token (str): The token to use for authorzation.
-            loop (asyncio.AbstractEventLoop): The [asyncio.AbstractEventLoop][] to use.
-            session (aiohttp.ClientSession): The [aiohttp.ClientSession][] to use for sending requests.
-
-        """
         self.token: str = token
         self.loop: asyncio.AbstractEventLoop = loop
         self.session: aiohttp.ClientSession = None  # type: ignore

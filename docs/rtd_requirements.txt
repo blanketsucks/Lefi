@@ -3,4 +3,5 @@ mkdocs >="1.2.2"
 mkdocs-material >= "7.3.2"
 aiohttp >= "3.7.4"
 PyNaCl >= "1.4.0"
-sphinx-rtd-theme >= "1.0.0"
+furo >= "2021.11.12"
+
