@@ -328,7 +328,7 @@ class Client:
 
         Raises
         ------
-        :exc:`ValueError`
+        :exc:`.Unauthorized`
             The token is invalid.
         """
         await self.http.login()

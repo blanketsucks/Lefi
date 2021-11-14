@@ -26,12 +26,15 @@ BASE: str = "https://discord.com/api/v9"
 class Route:
     """A class representing an endpoint.
 
-    This class is used to handle ratelimit buckets.
+    This class is used to handle ratelimit buckets. The kwargs passed
+    to this class should be for the major parameters of the endpoint.
+    This is used to make a "bucket" which is later used in the ratelimiter.
 
     Parameters
     ----------
     path: :class:`str`
         The path of the endpoint
+
     **kwargs: Any
         Major parameters to pass for the endpoint
 
@@ -39,22 +42,29 @@ class Route:
     ----------
     params: :class:`dict`
         The kwargs passed to the constructor
+
     path: :class:`str`
         The endpoint path.
+
     channel_id: Optional[:class:`int`]
         The channel_id being used in the endpoint if there is any
+
     guild_id: Optional[:class:`int`]
         The guild_id being used in the endpoint if there is any
+
     webhook_id: Optional[:class:`int`]
         The webhook_id being used in the endpoint if there is any
+
     webhook_token: Optional[:class:`str`]
         The webhook_token being used in the endpoint if there is any
+
     lock: :class:`asyncio.Lock`
         The internal lock to use for ratelimiting. This is acquired when
         the bucket is depleted.
     """
+
     def __init__(self, path: str, **kwargs) -> None:
-        self.params: Dict = kwargs
+        self.params: dict = kwargs
         self.path: str = path
 
         self.channel_id: Optional[int] = kwargs.get("channel_id")
@@ -79,7 +89,7 @@ class HTTPClient:
     """A class used to handle API calling and ratelimits to the API.
 
     .. warning ::
-        
+
         This class is only used internally, this should not and is not
         meant to be called on directly.
 
@@ -92,7 +102,18 @@ class HTTPClient:
 
     Attributes
     ----------
+    token: :class:`str`
+        The token to use for authorization
 
+    loop: :class:`asyncio.AbstractEventLoop`
+        The loop to use
+
+    session: :class:`aiohttp.ClientSession`
+        The client session to use for making requests
+
+    semaphores: Dict[str, :class:`asyncio.Semaphore`]
+        A mapping of buckets and semaphores. This is used for
+        concurrent requests without getting ratelimited.
     """
 
     ERRORS: ClassVar[Dict[int, Any]] = {
@@ -110,6 +131,22 @@ class HTTPClient:
 
     @staticmethod
     async def json_or_text(resp: aiohttp.ClientResponse) -> Union[dict, str]:
+        """A method which returns a response's text or json.
+
+        This is a utility method, to return a :class:`aiohttp.ClientResponse`'s
+        text or json.
+
+        Parameters
+        ----------
+        resp: :class:`aiohttp.ClientResponse`
+            The client response returned from a request.
+
+        Returns
+        -------
+        Union[:class:`dict`, :class:`str`]
+            The data/text returned from :meth:`aiohttp.ClientResponse.json` or
+            :meth:`aiohttp.ClientResponse.text`
+        """
         try:
             return await resp.json()
         except aiohttp.ContentTypeError:
@@ -118,40 +155,54 @@ class HTTPClient:
     async def _create_session(
         self, loop: asyncio.AbstractEventLoop = None
     ) -> aiohttp.ClientSession:
-        """
-        Creates the session to use if one wasn't given during construction.
+        """A method which creates the internal :class:`aiohttp.ClientSession`
 
-        Parameters:
-            loop (asyncio.AbstractEventLoop): The [asyncio.AbstractEventLoop][] to use for the session.
+        This method is used to create the internal :class:`aiohttp.ClientSession` that
+        is used for making every API call currently supported.
 
-        Returns:
-            The created [aiohttp.ClientSession][] instance.
+        Parameters
+        ----------
+        loop: :class:`asyncio.AbstractEventLoop`
+            The loop to use for the client session
 
+        Returns
+        -------
+        :class:`aiohttp.ClientSession`
+            The created client session.
         """
         return aiohttp.ClientSession(loop=self.loop or loop)
 
     async def close(self) -> None:
-        """
-        Closes the [aiohttp.ClientSession][] instance.
-
-        """
+        """A method which closes the internal :class:`aiohttp.ClientSession`"""
         await self.session.close()
 
     async def request(self, method: str, route: Route, **kwargs) -> Any:
-        """
-        Makes a request to the discord API.
+        """A method which is used to make requests to the API.
 
-        Parameters:
-            method (str): The method for the request.
-            route (lefi.Route): The endpoint which to send the request to.
-            **kwargs (Any): Any extra options to pass to [aiohttp.ClientSession.request][]
+        This method is used to make API calls internally throughout the wrapper.
+        This method calls upon the ratelimiter to ensure that the client will not get ratelimited
+        as easily.
 
-        Returns:
-            The data returned from the request.
+        Parameters
+        ----------
+        method: :class:`str`
+            The method to request with. E.g `POST` and `GET`
 
-        Raises:
-            [lefi.errors.HTTPException][] if any error was received from the request.
+        route: :class:`lefi.Route`
+            The route to make a request from
 
+        **kwargs: Any
+            Extra kwargs to pass when making the request. E.g `json = ...`
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request
+
+        Returns
+        -------
+        Any
+            The return data of the request
         """
 
         if self.session is None or self.session.closed:
@@ -178,63 +229,101 @@ class HTTPClient:
         ) as handler:
             return await handler.request()
 
-    async def get_bot_gateway(self) -> Dict:
-        """
-        A method which gets the gateway url.
+    async def get_bot_gateway(self) -> dict:
+        """A method which makes an API call to get bot's gateway.
 
-        Returns:
-            A dict which should contain the url.
+        This method is used to make an API call to the get the bot's gateway information.
+        This is used for getting information such as, how many shards the bot should use and
+        The max concurrency.
 
+        This calls the ``/gateway/bot`` endpoint.
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong during the request
+
+        Returns
+        -------
+        :class:`dict`
+            The return data from the request.
         """
         return await self.request("GET", Route("/gateway/bot"))
 
     async def ws_connect(self, url: str) -> aiohttp.ClientWebSocketResponse:
-        """
-        A method which attempts to connect to the websocket.
+        """A method which is used to connect to the websocket.
 
-        Returns:
-            A [aiohttp.ClientWebSocketResponse][] instance.
+        This method connects to the gateway/websocket url. This is used to create the
+        internal websocket for all of the websocket clients in this wrapper.
 
+        Parameters
+        ----------
+        url: :class:`str`
+            The websocket/gateway url to connect to
+
+        Returns
+        -------
+        :class:`aiohttp.ClientWebSocketResponse`
+            The websocket after connection is established.
         """
         return await self.session.ws_connect(url)
 
     async def read_from_url(self, url: str) -> bytes:
-        """
-        A method which reads the data from a url.
+        """A method to read the data from a url.
 
-        Parameters:
-            url (str): The url to read from.
+        This method is mostly here as a utility method, used in some places.
 
-        Returns:
+        Parameters
+        ----------
+        url: :class:`str`
+            The url to read the data from
+
+        Raises
+        ------
+        :exc:`aiohttp.ClientResponseError`
+            Raised when the url cannot be read.
+
+        Returns
+        -------
+        :class:`bytes`
             The data read from the url.
-
         """
         async with self.session.get(url) as resp:
             return await resp.read()
 
     async def login(self) -> None:
-        """
-        Checks to see if the token given is valid.
+        """A method which is used to validate the token.
 
-        Raises:
-            ValueError if an invalid token was passed.
+        This method is used to simulate logging in. It's used to check
+        if the authorization token is valid by requesting ``/users/@me``
 
+        Raises
+        ------
+        :exc:`.Unauthorized`
+            The token is not valid.
         """
         try:
             await self.get_current_user()
         except (Forbidden, Unauthorized):
-            raise ValueError("Invalid token")
+            raise Unauthorized("Invalid token")
 
-    def build_file_form(self, file: File, index: Optional[int] = None) -> Dict:
-        """
-        Builds a form for a file upload.
+    def build_file_form(self, file: File, index: Optional[int] = None) -> dict:
+        """A method which builds a form.
 
-        Parameters:
-            file (lefi.File): The file to upload.
-            index (Optional[int]): The index of the file.
+        This method builds a form which is used for file uploads.
 
-        Returns:
-            A dict which can be used as a form for a file upload.
+        Parameters
+        ----------
+        file: :class:`.File`
+            The file to upload
+
+        index: Optional[:class:`int`]
+            The index of the file
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the form.
 
         """
         return {
@@ -244,18 +333,22 @@ class HTTPClient:
             "content_type": "application/octect-stream",
         }
 
-    def form_helper(self, files: Optional[List[Optional[File]]] = None) -> List[Dict]:
+    def form_helper(self, files: Optional[List[Optional[File]]] = None) -> List[dict]:
+        """A helper method which formats the files to be sent.
+
+        This helper method is used to send files in a multipart/form-data request
+
+        Parameters
+        ----------
+        files: Optional[Optional[List[:class:`.File`]]]
+            A list of :class:`.File`'s to format
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of formatted forms
         """
-        A helper method which formats the files to be sent in a multipart/form-data request.
-
-        Parameters:
-            files (Optional[List[lefi.File]]): The files to send.
-
-        Returns:
-            A list which should contain the files.
-
-        """
-        form: List[Dict] = []
+        form: List[dict] = []
 
         if not files:
             return form
@@ -278,16 +371,36 @@ class HTTPClient:
 
         return form
 
-    async def get_channel(self, channel_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get a channel.
+    async def get_channel(self, channel_id: int) -> dict:
+        """A method which makes an API call to fetch a channel.
 
-        Parameters:
-            channel_id (int): The channel's ID.
+        This method makes a request to ``channels/channel_id`` to fetch
+        a the channel corresponding to the passed in id.
 
-        Returns:
-            A dict representing the channel.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to fetch
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong during the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have the permissions to
+            fetch this channel.
+
+        :exc:`.BadRequest`
+            Somehow you messed up the payload.
+
+        :exc:`.NotFound`
+            The ID passed isn't valid.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the fetched channel.
         """
         return await self.request(
             "GET", Route(f"/channels/{channel_id}", channel_id=channel_id)
@@ -303,26 +416,58 @@ class HTTPClient:
         topic: Optional[str] = None,
         nsfw: Optional[bool] = None,
         rate_limit_per_user: Optional[int] = None,
-        permission_overwrites: Optional[List[Dict[str, Any]]] = None,
+        permission_overwrites: Optional[List[dict]] = None,
         default_auto_archive_duration: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to edit a text channel.
+    ) -> dict:
+        """A method which makes an API call to edit a channel.
 
-        Parameters:
-            channel_id (int): The channel id representing the channel to edit.
-            name (Optional[str]): The new name for the channel.
-            type (Optional[int]): The new type for the channel.
-            position (Optional[int]): The new position for the channel.
-            topic (Optional[str]): The new topic for the channel.
-            nsfw (Optional[bool]): Whether or not the channel should be NSFW.
-            rate_limit_per_user (Optional[int]): The new slowmode of the channel.
-            permissions_overwrites (Optional[List[Dict[str, Any]]]): The new permission overwrites for the channel.
-            default_auto_archive_duration (Optional[List[Dict[str, Any]]]): New time for threads to auto archive.
+        This method calls ``POST channels/channel_id`` to edit the channel
+        This is used internally in some places such as :meth:`.TextChannel.edit`
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to edit
 
+        name: Optional[:class:`str`]
+            The new name to give the channel
+
+        type: Optional[:class:`int`]
+            The new type to give the channel
+
+        position: Optional[:class:`int`]
+            The new position of the channel
+
+        topic: Optional[:class:`str`]
+            The new topic of the channel
+
+        nsfw: Optional[:class:`bool`]
+            Whether or not the channel should be identified as NSFW
+
+        rate_limit_per_user: Optional[:class:`int`]
+            The new slowmode of the channel.
+
+        permissions_overwrites: Optional[List[:class:`dict`]]
+            A list of new permissions ovewrites for the channel
+
+        default_auto_archive_duration: Optional[:class:`int`]
+            How long in seconds it should take before a thread automatically archives itself
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something messed up when making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        :exc:`.Forbidden`
+            You client doesn't have permissions to edit this channel.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the channel after modifying it.
         """
         payload = update_payload(
             {},
@@ -352,25 +497,57 @@ class HTTPClient:
         rtc_region: Optional[str] = None,
         video_quality_mode: Optional[int] = None,
         sync_permissions: Optional[bool] = None,
-        permission_overwrites: Optional[List[Dict[str, Any]]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to edit a voice channel.
+        permission_overwrites: Optional[List[dict]] = None,
+    ) -> dict:
+        """A method which makes an API call to edit a channel.
 
-        Parameters:
-            channel_id (int): The ID representing the voice channel to edit.
-            name (Optional[str]): The new name to give the channel.
-            position (Optional[int]): The new position of the channel.
-            bitrate (Optional[int]): The new bitrate of the channel.
-            user_limit (Optional[int]): The new user limit of the channel.
-            rtc_region (Optional[str]): The new rtc region of the channel.
-            video_quality_mode (Optional[int]): The new video quality of the channel.
-            sync_permissions (Optional[bool]): Whether or not to sync the permissions.
-            permissions_overwrites (Optional[List[Dict[str, Any]]]): The new permissions ovewrites for the channel.
+        This method calls ``POST channels/channel_id`` to edit the voice channel
+        This is used internally in some places such as :meth:`.VoiceChannel.edit`
 
-        Returns:
-            The data received from the API after the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to edit
 
+        name: Optional[:class:`str`]
+            The new name to give the channel
+
+        position: Optional[:class:`int`]
+            The new position of the channel
+
+        bitrate: Optional[:class:`int`]
+            The new bitrate of the voice channel
+
+        user_limit: Optional[:class:`int`]
+            How many users to allow in the voice channel at any given time
+
+        rtc_region: Optional[:class:`str`]
+            The rtc region of the voice channel.
+
+        video_quality_mode: Optional[:class:`int`]
+            The video quality inside of the voice channel
+
+        sync_permissions: Optional[:class:`bool`]
+            Whether or not the channel should be synced to its parent's permissions
+
+        permissions_overwrites: Optional[List[:class:`dict`]]
+            A list of new permissions ovewrites for the channel
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something messed up when making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        :exc:`.Forbidden`
+            You client doesn't have permissions to edit this channel.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the channel after modifying it.
         """
         payload = update_payload(
             {},
@@ -390,16 +567,27 @@ class HTTPClient:
             json=payload,
         )
 
-    async def delete_channel(self, channel_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to delete a channel.
+    async def delete_channel(self, channel_id: int) -> None:
+        """A method which makes an API call to delete a channel.
 
-        Parameters:
-            channel_id (int): The ID representing the channel to delete.
+        This method calls ``DELETE /channels/channel_id`` this method
+        is used internally in some places, such as :meth:`.TextChannel.delete`.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to delete
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            The channel ID is invalid, or the channel was deleted already.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete this channel.
         """
         return await self.request(
             "DELETE", Route(f"/channels/{channel_id}", channel_id=channel_id)
@@ -413,20 +601,41 @@ class HTTPClient:
         before: Optional[int] = None,
         after: Optional[int] = None,
         limit: int = 50,
-    ) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get a list of messages in a channel.
-        Only returns messages within the range of the parameters passed.
+    ) -> List[dict]:
+        """A method which makes an API call to get the channel's message history
 
-        Parameters:
-            channel_id (int): The ID representing the channel.
-            around (Optional[int]): Gets messages around this message ID.
-            before (Optional[int]): Gets messages before this message ID.
-            after (Optional[int]): Gets messages after this message ID.
-            limit (int): THe amount of messages to grab.
+        This method is used to fetch a list of messages in the channel specified.
+        This method calls ``GET /channels/channel_id/messages``.
 
-        Returns:
-            The data received after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to get the messages from
+
+        around: Optional[:class:`int`]
+            Gets messages around this message ID
+
+        before: Optional[:class:`int`]
+            Gets messages before this message ID
+
+        after: Optional[:class:`int`]
+            Gets messages after this message ID
+
+        limit: :class:`int`
+            The max amount of messages to return
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making this request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to view this channel's history.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing message objects.
 
         """
         params = {"limit": limit}
@@ -439,19 +648,35 @@ class HTTPClient:
             params=params,
         )
 
-    async def get_channel_message(
-        self, channel_id: int, message_id: int
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get a specific message by ID.
+    async def get_channel_message(self, channel_id: int, message_id: int) -> dict:
+        """A method which makes an API call to get a message.
 
-        Parameters:
-            channel_id (int): The channel ID which the message is in.
-            message_id (int): The messages ID.
+        This method is used to fetch a message from the API using its ID and the channel's ID.
+        This is used internally in some places, such as :meth:`.TextChannel.fetch_message`
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to fetch the message from
 
+        message_id: :class:`int`
+            The id of the message to fetch
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making this request.
+
+        :exc:`.NotFound`
+            The message was not found.
+
+        :exc:`.Forbidden`
+            Your client doesn't have the permissions to fetch this message.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the fetched message.
         """
         return await self.request(
             "GET",
@@ -466,28 +691,59 @@ class HTTPClient:
         content: Optional[str] = None,
         *,
         tts: bool = False,
-        embeds: Optional[List[Dict[str, Any]]] = None,
-        allowed_mentions: Optional[Dict[str, Any]] = None,
-        message_reference: Optional[Dict[str, Any]] = None,
-        components: Optional[List[Dict[str, Any]]] = None,
+        embeds: Optional[List[dict]] = None,
+        allowed_mentions: Optional[dict] = None,
+        message_reference: Optional[dict] = None,
+        components: Optional[List[dict]] = None,
         sticker_ids: Optional[List[int]] = None,
         files: Optional[List[File]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to send a message.
+    ) -> dict:
+        """A method which makes an API call to send a message.
 
-        Parameters:
-            channel_id (int): The ID of the channel which to send the message in.
-            content (Optional[str]): The content of the message.
-            tts (bool): Whether or not to send the message with text-to-speech.
-            embeds (Optional[List[Dict[str, Any]]]): The list of embeds to send.
-            message_reference (Optional[Dict[str, Any]]): The messages to reference when sending the message.
-            components (Optional[List[Dict[str, Any]]]): The components to attach to the message.
-            sticker_ids (Optional[List[int]]): The stickers to send with the message.
+        This method is used to send messages. This is used in :meth:`.TextChannel.send` and
+        :meth:`.DMChannel.send`.
 
-        Note:
-            Max embeds that can sent at a time is 10.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to send the messsage in
 
+        content: Optional[:class:`str`]
+            The content of the message
+
+        tts: :class:`bool`
+            If the message should be sent with text-to-speech
+
+        embeds: Optional[List[:class:`dict`]]
+            A list of embeds to send the message with. Only 10 embeds can be sent at a time
+
+        allowed_mentions: Optional[:class:`dict`]
+            A dict representing the allowed mentions of message to send
+
+        message_reference: Optional[:class:`dict`]
+            A dict representing the message to reference
+
+        components: Optional[List[dict]]
+            A list of message components to send
+
+        sticker_ids: Optional[List[:class:`int`]]
+            A list id's of stickers to send
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making this request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to send this message.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the sent message object
         """
         payload = {"tts": tts}
         form = self.form_helper(files)  # type: ignore
@@ -509,19 +765,32 @@ class HTTPClient:
             form=form,
         )
 
-    async def crosspost_message(
-        self, channel_id: int, message_id: int
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to crosspost a message.
+    async def crosspost_message(self, channel_id: int, message_id: int) -> dict:
+        """A method which makes an API call to crosspost a message.add()
 
-        Parameters:
-            channel_id (int): The ID of the channel to crosspost to.
-            message_id (int): The ID of the message which to crosspost.
+        This method makes an API call to crosspost the message in a news channel
+        to following channels.
 
-        Returns:
-            The data received after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the news channel to crosspost from
 
+        message_id: :class:`int`
+            The id of the message to crosspost
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            Either the channel id or the message id is invalid.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing a message object.
         """
         return await self.request(
             "POST",
@@ -531,18 +800,34 @@ class HTTPClient:
             ),
         )
 
-    async def create_reaction(self, channel_id: int, message_id: int, emoji: str):
-        """
-        Makes an API call to add a reaction to a message.
+    async def create_reaction(
+        self, channel_id: int, message_id: int, emoji: str
+    ) -> None:
+        """A method which makes an API call to add a reaction.
 
-        Parameters:
-            channel_id (int): The ID of the channel which the target message is in.
-            message_id (int): The ID of the message which to add the reaction to.
-            emoji (str): The emoji which to add.
+        This method makes an API call to add a reaction to the message specified.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the message's channel
 
+        message_id: :class:`int`
+            The id of the message
+
+        emoji: :class:`str`
+            The emoji to add to the message
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            Either the channel_id, message_id, or the emoji wasn't valid.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to add reactions to this message.
         """
         return await self.request(
             "PUT",
@@ -559,28 +844,40 @@ class HTTPClient:
         emoji: str,
         user_id: Optional[int] = None,
     ) -> None:
+        """A method which makes an API call to delete a reaction.
+
+        This method makes an API call to delete a reaction from the specified message.
+        If no user_id is passed then the client will delete its own reaction.
+
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the message's channel
+
+        message_id: :class:`int`
+            The id of the message
+
+        emoji: :class:`str`
+            The emoji to remove
+
+        user_id: Optional[:class:`int`]
+            The id of the user to remove the reaction from
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            Either the channel_id, message_id, emoji, or user_id is invalid.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
         """
-        Makes an API call to delete a reaction.
+        base_path = f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}"
+        final_path = base_path + f"/{user_id}" if user_id else base_path + "/@me"
 
-        Parameters:
-            channel_id (int): The ID of the channel which the target message is in.
-            message_id (int): The ID of the message.
-            emoji (str): The emoji to remove from the message's reactions.
-            user_id (Optional[int]): The ID of the user to remove from the reactions.
-
-        Returns:
-            The data received from the API after making the call.
-
-        Note:
-            If no user_id is given it will delete the client's reaction.
-
-        """
-        if user_id is not None:
-            path = f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/{user_id}"
-        else:
-            path = f"/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me"
-
-        await self.request("DELETE", Route(path, channel_id=channel_id))
+        await self.request("DELETE", Route(final_path, channel_id=channel_id))
 
     async def get_reactions(
         self,
@@ -590,20 +887,43 @@ class HTTPClient:
         *,
         after: Optional[int] = None,
         limit: int = 25,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get a list of users who reacted to a message..
+    ) -> dict:
+        """A method to make an API call to get all the reactions of a message
 
-        Parameters:
-            channel_id (int): The ID of the channel which the target message is in.
-            message_id (int): The ID of the message.
-            emoji (str): The emoji from which to grab users from.
-            after (int): Grab users after this user ID.
-            limit (int): The max amount of users to grab.
+        This method makes an API call to get the reactions of the specified message.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the message's channel
 
+        message_id: :class:`int`
+            The id of the message
+
+        emoji: :class:`str`
+            The emoji to get
+
+        after: Optional[:class:`int`]
+            Grabs users after this users id
+
+        limit: :class:`int`
+            The max amount of reactions to get
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            Either the channel_id, message_id, emoji is invalid.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing a user who reacted.
         """
         params = {"limit": limit}
         update_payload(params, after=after)
@@ -618,18 +938,32 @@ class HTTPClient:
 
     async def delete_all_reactions(
         self, channel_id: int, message_id: int, emoji: str
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to remove all reactions of a message.
+    ) -> None:
+        """A method which makes an API call to delete all reactions of a message.
 
-        Parameters:
-            channel_id (int): The channel which the target message is in.
-            message_id (int): The ID of the message.
-            emoji (str): The reaction to remove.
+        This method makes an API call to delete all the reactions of the specified message.
 
-        Returns:
-            The data received from the API After making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the message's channel
 
+        message_id: :class:`int`
+            The id of the message
+
+        emoji: :class:`str`
+            The emoji to remove from the message
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            Either the channel_id, message_id or the emoji was invalid.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete all reactions.
         """
         return await self.request(
             "DELETE",
@@ -645,35 +979,60 @@ class HTTPClient:
         message_id: int,
         *,
         content: Optional[str] = None,
-        embeds: Optional[List[Dict[str, Any]]] = None,
-        flags: Optional[int] = None,
-        allowed_mentions: Optional[Dict[str, Any]] = None,
-        attachments: Optional[List[Dict[str, Any]]] = None,
-        components: Optional[List[Dict[str, Any]]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to edit a message.
+        embeds: Optional[List[dict]] = None,
+        allowed_mentions: Optional[dict] = None,
+        attachments: Optional[List[dict]] = None,
+        components: Optional[List[dict]] = None,
+    ) -> dict:
+        """A method which makes an API call to send a message.
 
-        Parameters:
-            channel_id (int): The ID of the channel which the target message is in.
-            message_id (int): The ID of the message.
-            content (Optional[str]): The new content of the message.
-            embeds (Optional[List[Dict[str, Any]]]): The new embeds of the message.
-            flags (Optional[int]): The new flags of the message.
-            allowed_mentions (Optional[int]): The new allowed mentions of the message.
-            attachments (Optional[List[Dict[str, Any]]]): The new attachments of the message.
-            components (Optional[List[Dict[str, Any]]]): The new components of the message.
+        This method is used to send messages. This is used in :meth:`.TextChannel.send` and
+        :meth:`.DMChannel.send`.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to send the messsage in
 
+        message_id: :class:`int`
+            The id of the message to edit
+
+        content: Optional[:class:`str`]
+            The content to edit the message with
+
+        embeds: Optional[List[:class:`dict`]]
+            A list of embeds to edit the message with. Only 10 embeds can be sent at a time
+
+        allowed_mentions: Optional[:class:`dict`]
+            A dict representing the allowed mentions to edit with
+
+        attachments: Optional[List[:class:`dict`]]
+            A list of attachments to edit the message with
+
+        components: Optional[List[dict]]
+            A list of message components to edit the message with
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making this request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to edit this message.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the editted message object
         """
         payload: dict = {}
         update_payload(
             payload,
             content=content,
             embeds=embeds,
-            flags=flags,
             allowed_mentions=allowed_mentions,
             attachments=attachments,
             components=components,
@@ -686,17 +1045,29 @@ class HTTPClient:
             json=payload,
         )
 
-    async def delete_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to delete a message.
+    async def delete_message(self, channel_id: int, message_id: int) -> None:
+        """A method which makes an API call to delete a message.
 
-        Parameters:
-            channel_id (int): The ID of the channel which the message is in.
-            message_id (int): The ID Of the message.
+        This method makes an API call to delete the specified message.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the message's channel
 
+        message_id: :class:`int`
+            The id of the message
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            The message id is invalid or the specified message was deleted already.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete this message.
         """
         return await self.request(
             "DELETE",
@@ -707,17 +1078,30 @@ class HTTPClient:
 
     async def bulk_delete_messages(
         self, channel_id: int, message_ids: List[int]
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to delete multiple messages.
+    ) -> None:
+        """A method which makes an API call to bulk delete messages
 
-        Parameters:
-            channel_id (int): The ID of the channel which the message is in.
-            message_ids (List[int]): The list of ID's representing messages of which to delete.
+        A method which makes an API call to bulk delete the list of specified messages.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the messages channel
 
+        message_ids: List[:class:`int`]
+            The list of ids of messages to delete
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc`.BadRequest`
+            Either duplicate ids were given or one or more messages were
+            older than two weeks.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete messages.
         """
         payload = {"messages": message_ids}
         return await self.request(
@@ -736,20 +1120,36 @@ class HTTPClient:
         allow: Optional[int] = None,
         deny: Optional[int] = None,
         type: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to edit a channels permissions.
+    ) -> None:
+        """A method which makes an API to edit a channels overwrites
 
-        Parameters:
-            channel_id (int): The ID of the channel.
-            overwrite_id (int): The ID of the overwrite.
-            allow (Optional[int]): The bitwise value of all allowed permissions.
-            deny (Optional[int]): The bitwise value of all denied permissison.
-            type (Optional[int]): The type, 0 being a role and 1 being a member.
+        This method makes an API call to edit the channels overwrites for the specified
+        overwrite id. This can be a members's id or a role's.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel where the overwrite is in.
 
+        overwrite_id: :class:`int`
+            The id of the overwrite to edit
+
+        allow: Optional[:class:`int`]
+            The bitwise value of all allowed permissions
+
+        deny: Optional[:class:`int`]
+            The bitwise value of all disallowed permissions
+
+        type: Optional[:class:`int`]
+            The type of the target. 0 for a role and 1 for a member
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your clien't doesn't have permissions to edit this overwrite.
         """
         payload: dict = {}
         update_payload(payload, allow=allow, deny=deny, type=type)
@@ -765,17 +1165,26 @@ class HTTPClient:
 
     async def delete_channel_permissions(
         self, channel_id: int, overwrite_id: int
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to delete an overwrite from a channel.
+    ) -> None:
+        """A method which makes an API call to delete an overwrite from the channel.
 
-        Parameters:
-            channel_id (int): The ID of the channel.
-            overwrite_id (int): The ID of the overwrite.
+        This method calls the API to delete the specified overwrite from the channel.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel where the overwrite is in
 
+        overwrite_id: :class:`int`
+            The id of the overwrite
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete the overwrite.
         """
         return await self.request(
             "DELETE",
@@ -785,16 +1194,28 @@ class HTTPClient:
             ),
         )
 
-    async def get_channel_invites(self, channel_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get a channels invites.
+    async def get_channel_invites(self, channel_id: int) -> List[dict]:
+        """A method which makes an API call to get a channels invites.
 
-        Parameters:
-            channel_id (int): The ID of the channel.
+        This method makes an API call to get the invites of a specified channel.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to fetch invites from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc`.Forbidden`
+            Your client doesn't have permissions to get this channel invites.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts that represents invites.
         """
         return await self.request(
             "GET", Route(f"/channels/{channel_id}/invites", channel_id=channel_id)
@@ -812,22 +1233,49 @@ class HTTPClient:
         target_user_id: Optional[int] = None,
         target_application_id: Optional[int] = None,
     ) -> Dict[str, Any]:
-        """
-        Makes an API call to create an invite.
+        """A method which makes an API call to create an invite.
 
-        Parameters:
-            channel_id (int): The ID of the channel.
-            max_age (int): The max age of the invite.
-            max_uses (int): The max uses of the invite. 0 if unlimited.
-            temporary (bool): Whether or not the invite is temporary.
-            unique (bool): Whether or not the invite is unique.
-            target_type (Optional[int]): The type of the invite. For voice channels.
-            target_user_id (Optional[int]): The ID of the user whose stream to invite to. For voice channels.
-            target_application_id (Optional[int]): The ID of embedded application to invite from. For target type 2.
+        This method makes an API call to create an invite on the specified channel.
+        If no max_age is passed it defaults to 24 hours. And max_uses defaults to 0
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to create the invite in
 
+        max_age: :class:`int`
+            The max age of the invite before expiring
+
+        max_uses: :class:`int`
+            The amount of times the invite can be used before going invalid
+
+        temporary: :class:`bool`
+            If the invite should grant temporary membership
+
+        unique: :class:`bool`
+            If the invite should be unique, used for one time use invites
+
+        target_type: Optional[:class:`int`]
+            The type of the invite. For voice channels
+
+        target_user_id: Optional[:class:`int`]
+            The id of the user whose stream to invite to. For voice channels
+
+        target_application_id: Optional[:class:`int`]
+            The id of embedded application to invite from. For target type 2
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to create an invite.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing an invite object.
         """
         payload = {
             "max_age": max_age,
