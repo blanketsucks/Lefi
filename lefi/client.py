@@ -285,7 +285,7 @@ class Client:
         await self.ws.start()
 
     async def close(self) -> None:
-        """Closes the :aiohttp:`ClientSession` and the websocket connection. Essentially closing the client.
+        """Closes the :class:`aiohttp.ClientSession` and the websocket connection. Essentially closing the client.
         """
         await self.http.close()
 

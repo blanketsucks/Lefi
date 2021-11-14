@@ -34,6 +34,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.napoleon',
+    'sphinx.ext.extlinks',
 ]
 
 autodoc_member_order = 'bysource'
@@ -64,5 +65,5 @@ add_module_names = False
 
 intersphinx_mapping = {
   'python': ('https://docs.python.org/3', None),
-  'aiohttp': ('https://docs.aiohttp.org/en/stable/', None),
+  'aiohttp': ('https://docs.aiohttp.org/en/latest/', None),
 }
