@@ -2579,22 +2579,47 @@ class HTTPClient:
         roles: Optional[List[int]] = None,
         mute: Optional[bool] = None,
         deaf: Optional[bool] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to add a member to a guild.
+    ) -> Optional[dict]:
+        """A method which adds a member to the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            member_id (int): The ID of the member.
-            access_token (str): An oauth2 access token.
-            nick (Optional[str]): The nickname of the member.
-            roles (Optional[List[int]]): The roles of the member.
-            mute (Optional[bool]): Whether the member is muted.
-            deaf (Optional[bool]): Whether the member is deafened.
+        This method makes an API call to add a member to the guild.
+        This only works if you have a valid oauth2 access token with a
+        ``guilds.join`` scope.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild which to add the member to
 
+        member_id: :class:`int`
+            The id of the member to add
+
+        access_token: :class:`str`
+            The oauth2 access token to use
+
+        nick: Optional[:class:`str`]
+            The nickname to give the user
+
+        roles: Optional[List[:class:`int`]]
+            A list of role ids to give to the member once
+            they are added to the guild
+
+        mute: Optional[:class:`bool`]
+            If the member should be muted or not
+
+        deaf: Optional[:class:`bool`]
+            If the member should be deafened or not
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        Optional[:class:`dict`]
+            A dict representing the member if they aren't already
+            in the guild.
         """
         payload = update_payload(
             {}, access_token=access_token, nick=nick, roles=roles, mute=mute, deaf=deaf
@@ -2615,21 +2640,47 @@ class HTTPClient:
         mute: Optional[bool] = None,
         deaf: Optional[bool] = None,
         channel_id: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to edit a member in a guild.
+    ) -> dict:
+        """A method which edits a guild member.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            member_id (int): The ID of the member.
-            nick (Optional[str]): The nickname of the member.
-            roles (Optional[List[int]]): The roles of the member.
-            mute (Optional[bool]): Whether the member is muted.
-            deaf (Optional[bool]): Whether the member is deafened.
+        This method makes an API call to edit a member in a guild.
+        If the channel_id is None this will disconnect the user from voice.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the member is
 
+        member_id: :class:`int`
+            The id of the member to edit
+
+        nick: Optional[:class:`str`]
+            The nickname to give the member
+
+        roles: Optional[List[:class:`int`]]
+            A list of roles to modify the member with
+
+        mute: Optional[:class:`bool`]
+            If the member should be muted or not
+
+        deaf: Optional[:class:`bool`]
+            If the member should be deafened or not
+
+        channel_id: Optional[:class:`int`]
+            The channel to move the member to
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to edit this member
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the member after modifying.
         """
         payload = update_payload(
             {}, nick=nick, roles=roles, mute=mute, deaf=deaf, channel_id=channel_id
@@ -2640,17 +2691,26 @@ class HTTPClient:
             json=payload,
         )
 
-    async def edit_current_member(self, guild_id: int, *, nick: Optional[str] = None):
-        """
-        Makes an API call to edit the current userin a guild.
+    async def edit_current_member(
+        self, guild_id: int, *, nick: Optional[str] = None
+    ) -> None:
+        """A method which edits your client's member.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            nick (Optional[str]): The nickname of the member.
+        This method makes an API call to edit the member of the current logged in
+        user's nickname.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the member is in
 
+        nick: Optional[:class:`str`]
+            The nickname to give the member
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         payload = update_payload({}, nick=nick)
         return await self.request(
@@ -2659,18 +2719,34 @@ class HTTPClient:
             json=payload,
         )
 
-    async def add_guild_member_role(self, guild_id: int, member_id: int, role_id: int):
-        """
-        Makes an API call to add a role to a member in a guild.
+    async def add_guild_member_role(
+        self, guild_id: int, member_id: int, role_id: int
+    ) -> None:
+        """This method adds a role to a member
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            member_id (int): The ID of the member.
-            role_id (int): The ID of the role.
+        This method makes an API call to add a role to a member in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the member is
 
+        member_id: :class:`int`
+            The id of the member which to add the role to
+
+        role_id: :class:`int`
+            The id of the role to add
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to add roles to this member.
+
+        :exc:`.NotFound`
+            The role id was invalid.
         """
         return await self.request(
             "PUT",
@@ -2682,18 +2758,29 @@ class HTTPClient:
 
     async def remove_guild_member_role(
         self, guild_id: int, member_id: int, role_id: int
-    ):
-        """
-        Makes an API call to remove a role from a member in a guild.
+    ) -> None:
+        """A method which removes a members role.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            member_id (int): The ID of the member.
-            role_id (int): The ID of the role.
+        This method makes an API call to remove a role from a member in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the member is in
 
+        member_id: :class:`int`
+            The id of the member to remove the role from
+
+        role_id: :class:`int`
+            The id of the role to remove
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to remove this members role.
         """
         return await self.request(
             "DELETE",
@@ -2703,17 +2790,26 @@ class HTTPClient:
             ),
         )
 
-    async def remove_guild_member(self, guild_id: int, member_id: int):
-        """
-        Makes an API call to remove a member from a guild.
+    async def remove_guild_member(self, guild_id: int, member_id: int) -> None:
+        """This method kicks a member from the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            member_id (int): The ID of the member.
+        This method makes an API call to remove a member from a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the member is
 
+        member_id: :class:`int`
+            The id of the member to kick
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making this request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to kick this member.
         """
         return await self.request(
             "DELETE",
@@ -2721,32 +2817,55 @@ class HTTPClient:
             guild_id=guild_id,
         )
 
-    async def get_guild_bans(self, guild_id: int) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get the bans of a guild.
+    async def get_guild_bans(self, guild_id: int) -> List[dict]:
+        """Gets a list of bans in a guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get the bans of a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing a ban object.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/bans"), guild_id=guild_id
         )
 
-    async def get_guild_ban(self, guild_id: int, user_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get the ban of a user in a guild.
+    async def get_guild_ban(self, guild_id: int, user_id: int) -> dict:
+        """A method which fetches a user ban from the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            user_id (int): The ID of the user.
+        This method makes an API call to get the ban of a user in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        user_id: :class:`int`
+            The id of the user to fetch the ban from
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            No ban could be found for the specified user
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing a ban object.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/bans/{user_id}"), guild_id=guild_id
@@ -2754,18 +2873,29 @@ class HTTPClient:
 
     async def create_guild_ban(
         self, guild_id: int, user_id: int, *, delete_message_days: int = 0
-    ):
-        """
-        Makes an API call to ban a user in a guild.
+    ) -> None:
+        """This method bans a user from the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            user_id (int): The ID of the user.
-            delete_message_days (int): The number of days to delete messages for.
+        This method makes an API call to ban a user in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to ban the user from
 
+        user_id: :class:`int`
+            The id of the user to ban
+
+        delete_message_days: :class:`int`
+            Number of days to delete message from
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to ban this user.
         """
         payload = {"delete_message_days": delete_message_days}
         return await self.request(
@@ -2774,32 +2904,47 @@ class HTTPClient:
             json=payload,
         )
 
-    async def remove_guild_ban(self, guild_id: int, user_id: int):
-        """
-        Makes an API call to unban a user in a guild.
+    async def remove_guild_ban(self, guild_id: int, user_id: int) -> None:
+        """A method which unbans a user from the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            user_id (int): The ID of the user.
+        This method makes an API call to unban a user in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to unban the user from
 
+        user_id: :class:`int`
+            The id of the user to unban
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         return await self.request(
             "DELETE", Route(f"/guilds/{guild_id}/bans/{user_id}"), guild_id=guild_id
         )
 
-    async def get_guild_roles(self, guild_id: int) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get the roles of a guild.
+    async def get_guild_roles(self, guild_id: int) -> List[dict]:
+        """A method which fetches a list of the guild's roles.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get the roles of a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing a role.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/roles"), guild_id=guild_id
@@ -2816,23 +2961,52 @@ class HTTPClient:
         mentionable: bool = False,
         icon: Optional[bytes] = None,
         unicode_emoji: Optional[str] = None,
-    ) -> Dict[str, Any]:
-        """
+    ) -> dict:
+        """A method which ceates a role.
+
         Makes an API call to create a role in a guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            name (Optional[str]): The name of the role.
-            permissions (Optional[int]): The permissions of the role.
-            color (Optional[int]): The color of the role.
-            hoist (bool): Whether the role is hoisted.
-            mentionable (bool): Whether the role is mentionable.
-            icon (Optional[str]): The icon of the role.
-            unicode_emoji (Optional[str]): The unicode emoji of the role.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to add the role in
 
-        Returns:
-            The data returned from the API.
+        name: Optional[:class:`str`]
+            The name of the role
 
+        permissions: Optional[:class:`int`]
+            The permissions of the role
+
+        color: Optional[:class:`int`]
+            The color of the role
+
+        hoist: :class:`bool`
+            If the role should be hoisted or not
+
+        mentionable: :class:`bool`
+            If the role should be mentionable
+
+        icon: Optional[:class:`bytes`]
+            The icon for the role. This is allowed when the guild has ``ROLE_ICONS``
+
+        unicode_emoji: Optiona[:class:`str`]
+            The emoji for the role. This is allowed the the guild has ``ROLE_ICONS``
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to create this role.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the created role.
         """
         payload = update_payload(
             {},
@@ -2864,24 +3038,52 @@ class HTTPClient:
         mentionable: Optional[bool] = None,
         icon: Optional[bytes] = None,
         unicode_emoji: Optional[str] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to modify a role in a guild.
+    ) -> dict:
+        """A method which edits a guild's role.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            role_id (int): The ID of the role.
-            name (Optional[str]): The name of the role.
-            permissions (Optional[int]): The permissions of the role.
-            color (Optional[int]): The color of the role.
-            hoist (Optional[bool]): Whether the role is hoisted.
-            mentionable (Optional[bool]): Whether the role is mentionable.
-            icon (Optional[str]): The icon of the role.
-            unicode_emoji (Optional[str]): The unicode emoji of the role.
+        Makes an API call to edit a role in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild which the role is in
 
+        name: Optional[:class:`str`]
+            The new name of the role
+
+        permissions: Optional[:class:`int`]
+            The new permissions of the role
+
+        color: Optional[:class:`int`]
+            The new color of the role
+
+        hoist: :class:`bool`
+            If the role should be hoisted or not
+
+        mentionable: :class:`bool`
+            If the role should be mentionable
+
+        icon: Optional[:class:`bytes`]
+            The new icon for the role. This is allowed when the guild has ``ROLE_ICONS``
+
+        unicode_emoji: Optiona[:class:`str`]
+            The new emoji for the role. This is allowed the the guild has ``ROLE_ICONS``
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to edit this role.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified role.
         """
         payload = update_payload(
             {},
@@ -2903,17 +3105,29 @@ class HTTPClient:
             json=payload,
         )
 
-    async def delete_guild_role(self, guild_id: int, role_id: int):
-        """
-        Makes an API call to delete a role in a guild.
+    async def delete_guild_role(self, guild_id: int, role_id: int) -> None:
+        """This method deletes a role from the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            role_id (int): The ID of the role.
+        This method makes an API call to delete a role in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild which to remove the role from
 
+        role_id: :class:`int`
+            The id of the role to remove
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete this role.
+
+        :exc:`.NotFound`
+            The role id was invalid or already deleted.
         """
         return await self.request(
             "DELETE", Route(f"/guilds/{guild_id}/roles/{role_id}"), guild_id=guild_id
