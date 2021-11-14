@@ -17,7 +17,6 @@ from typing import (
 
 from .http import HTTPClient
 from .objects import (
-    CategoryChannel,
     Channel,
     DMChannel,
     Emoji,
@@ -25,9 +24,7 @@ from .objects import (
     GuildTemplate,
     Invite,
     Message,
-    TextChannel,
     User,
-    VoiceChannel,
     AppCommand,
 )
 from .state import Cache, State
@@ -276,7 +273,7 @@ class Client:
 
         Returns
         -------
-        :class:`lefi.AppCommand`
+        :class:`.AppCommand`
             The created application command.
         """
 
@@ -379,28 +376,28 @@ class Client:
 
     @property
     def guilds(self) -> List[Guild]:
-        """List[:class:`lefi.Guild`] The list of guilds the client is in."""
+        """List[:class:`.Guild`] The list of guilds the client is in."""
         return list(self._state._guilds.values())
 
     @property
     def channels(self) -> List[Union[Channel, DMChannel]]:
-        """List[Union[:class:`Channel`, :class:`DMChannel`]] The list of channels the client can see."""
+        """List[Union[:class:`.Channel`, :class:`.DMChannel`]] The list of channels the client can see."""
         return list(self._state._channels.values())
 
     @property
     def users(self) -> List[User]:
-        """List[:class:`lefi.User`] The list of users that the client can see."""
+        """List[:class:`.User`] The list of users that the client can see."""
         return list(self._state._users.values())
 
     @property
     def voice_clients(self) -> List[VoiceClient]:
-        """List[:class:`lefi.VoiceClient`] The list of voice clients the client has."""
+        """List[:class:`.VoiceClient`] The list of voice clients the client has."""
         return list(self._state._voice_clients.values())
 
     def get_message(self, id: int) -> Optional[Message]:
         """A method which grabs a message from the cache.
 
-        Grabs a :class:`lefi.Message` in the cache corresponding to the passed in id.
+        Grabs a :class:`.Message` in the cache corresponding to the passed in id.
         If the message isn't found in the cache this method will return None.
 
         Parameters
@@ -410,7 +407,7 @@ class Client:
 
         Returns
         -------
-        Optional[:class:`lefi.Message`]
+        Optional[:class:`.Message`]
             The message instance if cached.
         """
         return self._state.get_message(id)
@@ -418,7 +415,7 @@ class Client:
     def get_guild(self, id: int) -> Optional[Guild]:
         """A method which grabs a guild from the cache.
 
-        Grabs a :class:`lefi.Guild` in the cache corresponding to the passed in id.
+        Grabs a :class:`.Guild` in the cache corresponding to the passed in id.
         If the guild isn't found in the cache this method will return None.
 
         Parameters
@@ -428,7 +425,7 @@ class Client:
 
         Returns
         -------
-        Optional[:class:`lefi.Guild`]
+        Optional[:class:`.Guild`]
             The guild instance if cached.
         """
         return self._state.get_guild(id)
@@ -436,7 +433,7 @@ class Client:
     def get_channel(self, id: int) -> Optional[Union[Channel, DMChannel]]:
         """A method which grabs a channel from the cache.
 
-        Grabs a :class:`lefi.Channel` or a :class:`lefi.DMChannel` in the cache
+        Grabs a :class:`.Channel` or a :class:`.DMChannel` in the cache
         corresponding to the passed in id. If the channel isn't found in the cache
         this method will return None.
 
@@ -447,7 +444,7 @@ class Client:
 
         Returns
         -------
-        Optional[Union[:class:`lefi.Channel`, :class:`lefi.DMChannel`]]
+        Optional[Union[:class:`.Channel`, :class`.DMChannel`]]
             The channel instance if cached.
         """
         return self._state.get_channel(id)
@@ -455,7 +452,7 @@ class Client:
     def get_user(self, id: int) -> Optional[User]:
         """A method which grabs a user from the cache.
 
-        Grabs a :class:`lefi.User` in the cache corresponding to the passed in id.
+        Grabs a :class:`.User` in the cache corresponding to the passed in id.
         If the channel isn't found in the cache this method will return None.
 
         Parameters
@@ -465,7 +462,7 @@ class Client:
 
         Returns
         -------
-        Optional[:class:`lefi.User`]
+        Optional[:class:`.User`]
             The user instance if cached.
         """
         return self._state.get_user(id)
@@ -473,7 +470,7 @@ class Client:
     def get_emoji(self, id: int) -> Optional[Emoji]:
         """A method which grabs an emoji from the cache.
 
-        Grabs a :class:`lefi.Emoji` in the cache corresponding to the passed in id.
+        Grabs a :class:`.Emoji` in the cache corresponding to the passed in id.
         If the emoji isn't found in the cache this method will return None.
 
         Parameters
@@ -483,7 +480,7 @@ class Client:
 
         Returns
         -------
-        Optional[:class:`lefi.Emoji`]
+        Optional[:class:`.Emoji`]
             The emoji instance if cached.
         """
         return self._state.get_emoji(id)
@@ -504,13 +501,15 @@ class Client:
 
         Returns
         -------
-        :class:`lefi.User`
+        :class:`.User`
             The fetched user.
         """
         data = await self.http.get_user(user_id)
         return self._state.add_user(data)
 
-    async def fetch_invite(self, code: str, **kwargs) -> Invite:
+    async def fetch_invite(
+        self, code: str, *, with_counts: bool = False, with_expiration: bool = False
+    ) -> Invite:
         """A method which makes an API call to fetch an invite.
 
         This method does an API call to fetch an invite corresponding to the code passed in.
@@ -524,15 +523,20 @@ class Client:
         code: :class:`str`
             The invite's code
 
-        **kwargs: Any
-            Any extra options to pass to :meth:`lefi.HTTPClient.get_invite`
+        with_counts: :class:`bool`
+            If the invite being fetched should include invite's count
+
+        with_expiration: :class:`bool`
+            If the invite being fetched should include invit'es expiration
 
         Returns
         -------
-        :class:`lefi.Invite`
+        :class:`.Invite`
             The fetched invite.
         """
-        data = await self.http.get_invite(code, **kwargs)
+        data = await self.http.get_invite(
+            code, with_counts=with_counts, with_expiration=with_expiration
+        )
         return Invite(data=data, state=self._state)
 
     async def fetch_guild(self, guild_id: int) -> Guild:
@@ -551,7 +555,7 @@ class Client:
 
         Returns
         -------
-        :class:`lefi.Guild`
+        :class:`.Guild`
             The fetched guild.
         """
         data = await self.http.get_guild(guild_id)
@@ -573,7 +577,7 @@ class Client:
 
         Returns
         -------
-        :class:`lefi.GuildTemplate`
+        :class:`.GuildTemplate`
             The fetched guild template.
         """
         data = await self.http.get_guild_template(code)
