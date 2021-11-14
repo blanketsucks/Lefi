@@ -188,7 +188,7 @@ class HTTPClient:
         method: :class:`str`
             The method to request with. E.g `POST` and `GET`
 
-        route: :class:`lefi.Route`
+        route: :class:`.Route`
             The route to make a request from
 
         **kwargs: Any
@@ -1298,17 +1298,32 @@ class HTTPClient:
 
     async def follow_news_channel(
         self, channel_id: int, webhook_channel_id: int
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to follow a news channel to send messages to a target channel.
+    ) -> dict:
+        """A method which makes an API call to follow a news channel.
 
-        Parameters:
-            channel_id (int): The ID Of the channel.
-            webhook_channel_id (int): The target channel.
+        This method makes an API call which makes the client follow the
+        specified news channel.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the news channel
 
+        webhook_channel_id: :class:`int`
+            The target channel id to send the messages to
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to do this.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing a followed channel.
         """
         payload = {"webhook_channel_id": webhook_channel_id}
         return await self.request(
@@ -1317,64 +1332,107 @@ class HTTPClient:
             json=payload,
         )
 
-    async def trigger_typing(self, channel_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to trigger typing.
+    async def trigger_typing(self, channel_id: int) -> None:
+        """A method which makes the client start typing.
 
-        Parameters:
-            channel_id (int): The ID of the channel which to trigger typing in.
+        This method makes and API call to make the client start typing
+        in the specified channel.
 
-        Returns:
-            The data received from the API After making the call.
+        .. note::
 
+            You generally shouldn't use this unless your doing an action
+            which requires some computation time.
+
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel where you want to start typig
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         return await self.request(
             "POST", Route(f"/channels/{channel_id}/typing", channel_id=channel_id)
         )
 
-    async def get_pinned_messages(self, channel_id: int) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get the pinned messages of a channel.
+    async def get_pinned_messages(self, channel_id: int) -> List[dict]:
+        """A method which makes an API call to get a channel's pinned messages.
 
-        Parameters:
-            channel_id (int): The ID of the channel which to grab pinned messages from.
+        A method which makes an API call to get a channel's pinned messages.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to get the messages from
 
+        Raises
+        ------
+        :exc:`.Forbidden`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing message objects.
         """
         return await self.request(
             "GET", Route(f"/channels/{channel_id}/pins", channel_id=channel_id)
         )
 
-    async def pin_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to pin a message.
+    async def pin_message(self, channel_id: int, message_id: int) -> None:
+        """A method which makes an API call to ping a message.
 
-        Parameters:
-            channel_id (int): The ID of the channel where the message is.
-            message_id (int): The ID of the message.
+        This method makes an API call which pins the specified message inside
+        of the passed in channel. This is used in :meth:`.Message.pin`
 
-        Returns:
-            The data received from the API after making the call.
+        .. note::
 
+            Max amount of pins in a channel is capped at 50
+
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel where the message is
+
+        message_id: :class:`int`
+            The id of the message to pin
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to pin this message.
         """
         return await self.request(
             "PUT",
             Route(f"/channels/{channel_id}/pins/{message_id}", channel_id=channel_id),
         )
 
-    async def unpin_message(self, channel_id: int, message_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to unpin a message.
+    async def unpin_message(self, channel_id: int, message_id: int) -> None:
+        """A method which makes an API call to unpin a message.
 
-        Parameters:
-            channel_id (int): The ID Of the channel where the message is.
-            message_id (int): The ID of the message.
+        This method makes an API call to unpin the passed in message from
+        the specified channel. This is used in :meth:`.Message.unpin`
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel where the message is in
 
+        message_id: :class:`int`
+            The id of the message to unpin
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to unpin this message.
         """
         return await self.request(
             "DELETE",
@@ -1388,19 +1446,41 @@ class HTTPClient:
         *,
         name: str,
         auto_archive_duration: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to start a thread with a message.
+    ) -> dict:
+        """A method which makes an API call to start a thread.
 
-        Parameters:
-            channel_id (int): The ID of the channel which the message is in.
-            message_id (int): The ID Of the message.
-            name (str): The name of the thread.
-            auto_archive_duration (int): The time it takes to auto archive the thread.
+        This method makes an API call to start a thread with a message.
+        This is used in :meth:`.Message.create_thread`.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel where the message is
 
+        message_id: :class:`int`
+            The message's id
+
+        name: :class:`str`
+            The name of the thread
+
+        auto_archive_duration: Optional[:class:`int`]
+            How long it takes before the thread automatically archives
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to do this.
+
+        :exc:`.BadRequest`
+            You messed up the payload somehow.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the newly created thread channel.
         """
         payload = update_payload(
             {}, name=name, auto_archive_duration=auto_archive_duration
@@ -1422,20 +1502,44 @@ class HTTPClient:
         auto_archive_duration: Optional[int] = None,
         type: Optional[int] = None,
         invitable: Optional[bool] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to start a thread without a message.
+    ) -> dict:
+        """A method which makes an API call to start a thread.
 
-        Parameters:
-            channel_id (int): The ID of the channel where the thread will be created.
-            name (str): The name of the thread.
-            auto_archive_duration (int): The time it takes to auto archive the thread.
-            type (int): The type of the thread to create.
-            invitable (bool): Whether or not members can invite other members to the thread. Only in private threads.
+        This method makes an API call to start a thread without a message.
+        This is used in :meth:`.TextChannel.create_thread`.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel where to create the thread from
 
+        name: :class:`str`
+            The name of the thread
+
+        auto_archive_duration: Optional[:class:`int`]
+            How long it takes before the thread automatically archives
+
+        type: Optional[:class:`int`]
+            The type of the thread
+
+        invitable: Optional[:class:`bool`]
+            If the thread should allow non-moderators to add people
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to do this.
+
+        :exc:`.BadRequest`
+            You messed up the payload somehow.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the newly created thread channel.
         """
         payload = update_payload(
             {},
@@ -1451,90 +1555,125 @@ class HTTPClient:
             json=payload,
         )
 
-    async def join_thread(self, channel_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call which makes the client join the given thread.
+    async def join_thread(self, channel_id: int) -> None:
+        """Makes an API call which makes the client join the given thread.
 
-        Parameters:
-            channel_id (int): The ID of the thread.
+        This method makes an API call which makes the client join the passed in
+        thread. This is used in :meth:`.Thread.join`
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the thread to join
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         return await self.request(
             "PUT",
             Route(f"/channels/{channel_id}/thread-members/@me", channel_id=channel_id),
         )
 
-    async def add_thread_member(self, channel_id: int, user_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call which adds another member to the thread.
+    async def add_thread_member(self, channel_id: int, member_id: int) -> None:
+        """A method which adds a member to the specified thread
 
-        Parameters:
-            channel_id (int): The ID of the thread.
-            user_id (int): The ID of the user to add.
+        This method makes an API call to add a member to the specified
+        thread. You must be able to send messages in the thread and the thread
+        cannot be archived in order to do this.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the thread channel
 
+        member_id: :class:`int`
+            The id of the member to add
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         return await self.request(
             "PUT",
             Route(
-                f"/channels/{channel_id}/thread-members/{user_id}",
+                f"/channels/{channel_id}/thread-members/{member_id}",
                 channel_id=channel_id,
             ),
         )
 
-    async def leave_thread(self, channel_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call which makes the client leave the thread.
+    async def leave_thread(self, channel_id: int) -> None:
+        """A method hwich makes the client leave a thread.
 
-        Parameters:
-            channel_id (int): The ID of the thread.
+        This method makes an API call which makes the client leave
+        the specified thread channel.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the thread channel to leave
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         return await self.request(
             "DELETE",
             Route(f"/channels/{channel_id}/thread-members/@me", channel_id=channel_id),
         )
 
-    async def remove_thread_member(
-        self, channel_id: int, user_id: int
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call which removes a member from the thread.
+    async def remove_thread_member(self, channel_id: int, member_id: int) -> None:
+        """A method which removes a member from the thread.
 
-        Parameters:
-            channel_id (int): The ID of the thread.
-            user_id (int): The ID of the user to remove.
+        This method makes an API call to remove the specified member from a thread.
 
-        Returns:
-            The data received from the API after making the call
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the thread channel to remove from
 
+        member_id: :class:`int`
+            The id of the member to remove
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to remove this member.
         """
         return await self.request(
             "DELETE",
             Route(
-                f"/channels/{channel_id}/thread-members/{user_id}",
+                f"/channels/{channel_id}/thread-members/{member_id}",
                 channel_id=channel_id,
             ),
         )
 
-    async def list_thread_members(self, channel_id: int) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get all of the members of a thread.
+    async def list_thread_members(self, channel_id: int) -> List[dict]:
+        """A method which gets a thread channel's members.
 
-        Parameters:
-            channel_id (int): The ID of the thread.
+        A method which makes an API call to get a list of all
+        members inside of a thread channel.
 
-        Returns:
-            The data received from the API after making the call
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the thread channel
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing a thread member.
         """
         return await self.request(
             "GET",
@@ -1547,18 +1686,35 @@ class HTTPClient:
         *,
         before: Optional[int] = None,
         limit: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call which list all the public archived threads in the channel.
+    ) -> dict:
+        """A method which gets all public archived threads.
 
-        Parameters:
-            channel_id (int): The ID of the channel which the threads are inside of.
-            before (Optional[int]): Grab threads before this time.
-            limit (Optional[int]): The amount of threads to grab.
+        This method makes an API call which list all the public archived
+        threads in the channel. This is used in :meth:`.TextChannel.fetch_archived_threads`
 
-        Returns:
-            The data received from the API after making the call
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel where to fetch from
 
+        before: Optional[:class:`int`]
+            Grab threads before this ISO8601 timestamp
+
+        limit: Optional[:class:`int`]
+            The max amount of threads to return
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to do this.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict which contains a list of members and archive threads.
         """
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
@@ -1575,18 +1731,35 @@ class HTTPClient:
         *,
         before: Optional[int] = None,
         limit: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call which list all the private archived threads in the channel.
+    ) -> dict:
+        """A method which gets all private archived threads.
 
-        Parameters:
-            channel_id (int): The ID of the channel which the threads are inside of.
-            before (Optional[int]): Grab threads before this time.
-            limit (Optional[int]): The amount of threads to grab.
+        This method makes an API call which list all the private archived
+        threads in the channel. This is used in :meth:`.TextChannel.fetch_archived_threads`
 
-        Returns:
-            The data received from the API after making the call
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel where to fetch from
 
+        before: Optional[:class:`int`]
+            Grab threads before this ISO8601 timestamp
+
+        limit: Optional[:class:`int`]
+            The max amount of threads to return
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to do this.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict which contains a list of members and archive threads.
         """
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
@@ -1604,18 +1777,35 @@ class HTTPClient:
         *,
         before: Optional[int] = None,
         limit: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call which list all the private archived threads in the channel which the client has joined.
+    ) -> dict:
+        """A method which gets all joined private archived threads.
 
-        Parameters:
-            channel_id (int): The ID of the channel which the threads are inside of.
-            before (Optional[int]): Grab threads before this time.
-            limit (Optional[int]): The amount of threads to grab.
+        This method makes an API call which list all the joined private
+        archived threads in the channel.
 
-        Returns:
-            The data received from the API after making the call
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel where to fetch from
 
+        before: Optional[:class:`int`]
+            Grab threads before this ISO8601 timestamp
+
+        limit: Optional[:class:`int`]
+            The max amount of threads to return
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to do this.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict which contains a list of members and archive threads.
         """
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
@@ -1627,32 +1817,52 @@ class HTTPClient:
             params=params,
         )
 
-    async def list_guild_emojis(self, guild_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get a list of the guilds emojis.
+    async def list_guild_emojis(self, guild_id: int) -> List[dict]:
+        """A method which lists the guild's emojis.
 
-        Parameters:
-            guild_id (int): The ID of the guild to grab from.
+        This method makes an API call to get a list of the guilds emojis.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing emojis.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/emojis", guild_id=guild_id)
         )
 
-    async def get_guild_emoji(self, guild_id: int, emoji_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get an emoji from the guild.
+    async def get_guild_emoji(self, guild_id: int, emoji_id: int) -> dict:
+        """A method which gets an emoji from a guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild to grab from.
-            emoji_id (int): The ID of the emoji to get.
+        This method makes an API call to get an emoji from the guild.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        emoji_id: :class:`int`
+            The emoji's id
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the emoji.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id)
@@ -1665,19 +1875,41 @@ class HTTPClient:
         name: str,
         image: bytes,
         roles: Optional[List[int]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to create an emoji.
+    ) -> dict:
+        """A method which makes an emoji in a guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild to create the emoji in.
-            name (str): The name of the emoji.
-            image (str): The image of the emoji.
-            roles (Optional[List[int]]): The list of roles that can use this emoji.
+        A method whick makes an API call to create an emoji inside
+        of a guild.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where to make the emoji in
 
+        name: :class:`str`
+            The name of the emoji
+
+        image: :class:`bytes`
+            The image of the emoji
+
+        roles: Optional[List[:class:`int`]]
+            A list of roles allowed to use this emoji
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to create this emoji.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the created emoji.
         """
         payload = {
             "name": name,
@@ -1698,19 +1930,40 @@ class HTTPClient:
         *,
         name: str,
         roles: Optional[List[int]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to edit an emoji.
+    ) -> dict:
+        """A method which edits a guild emoji.
 
-        Parameters:
-            guild_id (int): The ID of the guild where the emoji is.
-            emoji_id (int): The ID of the emoji.
-            name (str): The new name of the emoji.
-            roles (Optional[List[int]]): The new list of roles that can use this emoji.
+        This method makes an API call to edit an emoji.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the emoji is in
 
+        emoji_id: :class:`int`
+            The id of the emoji to edit
+
+        name: :class:`str`
+            The new name of the emoji
+
+        roles: Optional[List[:class:`int`]]
+            A list of new roles which can use this emoji
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to edit this emoji.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            The updated emoji object
         """
         payload = {"name": name}
         update_payload(payload, roles=roles)
@@ -1721,17 +1974,26 @@ class HTTPClient:
             json=payload,
         )
 
-    async def delete_guild_emoji(self, guild_id: int, emoji_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call which deletes an emoji.
+    async def delete_guild_emoji(self, guild_id: int, emoji_id: int) -> None:
+        """A method which deletes an emoji from the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild where the emoji is in.
-            emoji_id (int): The ID of the emoji to delete.
+        This method makes an API call which deletes an emoji.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the emoji is in
 
+        emoji_id: :class:`int`
+            The id of the emoji
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete this emoji.
         """
         return await self.request(
             "DELETE", Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id)
@@ -1746,33 +2008,69 @@ class HTTPClient:
         verification_level: Optional[int] = None,
         default_message_notifications: Optional[int] = None,
         explicit_content_filter: Optional[int] = None,
-        roles: Optional[List[Dict[str, Any]]] = None,
-        channels: Optional[List[Dict[str, Any]]] = None,
+        roles: Optional[List[dict]] = None,
+        channels: Optional[List[dict]] = None,
         afk_channel: Optional[int] = None,
         afk_timeout: Optional[int] = None,
         system_channel_id: Optional[int] = None,
         system_channel_flags: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to create a guild.
+    ) -> dict:
+        """A method which creates a guild.
 
-        Parameters:
-            name (str): The name of the guild.
-            region (Optional[str]): The region of the guild.
-            icon (Optional[str]): The icon of the guild.
-            verification_level (Optional[int]): The verification level of the guild.
-            default_message_notifications (Optional[int]): The default message notifications of the guild.
-            explicit_content_filter (Optional[int]): The explicit content filter of the guild.
-            roles (Optional[List[Dict[str, Any]]]): The list of roles to create.
-            channels (Optional[List[Dict[str, Any]]]]): The list of channels to create.
-            afk_channel (Optional[int]): The ID of the AFK channel.
-            afk_timeout (Optional[int]): The AFK timeout of the guild.
-            system_channel_id (Optional[int]): The ID of the system channel.
-            system_channel_flags (Optional[int]): The flags of the system channel.
+        This method makes an API call to create a guild.
 
-        Returns:
-            The data received from the API after making the call.
+        .. note::
 
+            This endpoint can only be used for bots in less
+            than 10 guilds.
+
+        Parameters
+        ----------
+        name: :class:`str`
+            The name of the guild
+
+        region: Optional[:class:`str`]
+            The region of the guild
+
+        icon: Optional[:class:`bytes`]
+            The icon of the guild
+
+        verification_level: [:class:`int`]
+            The verification level of the guild
+
+        default_message_notifications: Optional[:class:`int`]
+            The default message notification level
+
+        explicit_content_filter: Optiona[:class:`int`]
+            The explicit content filter filter of the guild
+
+        roles: Optional[List[:class:`dict`]]
+            A list of roles to make the guild with
+
+        channels: Optional[List[:class:`dict`]]
+            A list of channels to make the guild with
+
+        afk_channel: Optional[:class:`int`]
+            The afk channel of the guild
+
+        afk_timeout: Optional[:class:`int`]
+            The afk timeout in seconds
+
+        system_channel_id: Optional[:class:`int`]
+            The channel id for where to send system messages
+
+        system_channel_flags: Optional[:class:`int`]
+            The system channel flags
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the newly created guild object.
         """
         payload = update_payload(
             {},
@@ -1795,34 +2093,57 @@ class HTTPClient:
 
         return await self.request("POST", Route("/guilds"), json=payload)
 
-    async def get_guild(
-        self, guild_id: int, *, with_counts: bool = False
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get a guild.
+    async def get_guild(self, guild_id: int, *, with_counts: bool = False) -> dict:
+        """A method which fetches a guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild to get.
+        A method which makes an API call to get a guild corresponding
+        to the passed in id.
 
-        Returns:
-            The data received from the API after making the call.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch
 
+        with_counts: :class:`int`
+            If the API should return approximate member count and presence count
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            The guild id passed is invalid.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the guild object.
         """
         params = {"with_counts": with_counts}
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}", guild_id=guild_id), params=params
         )
 
-    async def get_guild_preview(self, guild_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get a guild's preview.
+    async def get_guild_preview(self, guild_id: int) -> dict:
+        """A method which fetches the guild's preview.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        A method which makes an API call to get a guild's preview.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the guild's preview
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/preview", guild_id=guild_id)
@@ -1851,33 +2172,57 @@ class HTTPClient:
         features: Optional[List[str]] = None,
         description: Optional[str] = None,
     ):
-        """
-        Makes an API call to modify a guild.
+        """A method which edits a guild.
+
+        This method makes an API call to edit a guild.
 
         Parameters
-            guild_id (int): The ID of the guild to edit.
-            name (Optional[str]): The name of the guild.
-            region (Optional[str]): The region of the guild.
-            verification_level (Optional[int]): The verification level of the guild.
-            default_message_notifications (Optional[int]): The default message notifications of the guild.
-            afk_channel (Optional[int]): The AFK channel of the guild.
-            afk_timeout (Optional[int]): The AFK timeout of the guild.
-            icon (Optional[str]): The icon of the guild.
-            owner_id (Optional[int]): The ID of the owner of the guild.
-            splash (Optional[str]): The splash of the guild.
-            discovery_splash (Optional[str]): The discovery splash of the guild.
-            banner (Optional[str]): The banner of the guild.
-            system_channel_id (Optional[int]): The ID of the system channel of the guild.
-            system_channel_flags (Optional[int]): The flags of the system channel of the guild.
-            rules_channel_id (Optional[int]): The ID of the rules channel of the guild.
-            public_updates_channel_id (Optional[int]): The ID of the public updates channel of the guild.
-            preferred_locale (Optional[str]): The preferred locale of the guild.
-            features (Optional[List[str]]): The features of the guild.
-            description (Optional[str]): The description of the guild.
+        ----------
+        name: :class:`str`
+            The name of the guild
 
-        Returns:
-            The data returned from the API.
+        region: Optional[:class:`str`]
+            The region of the guild
 
+        icon: Optional[:class:`bytes`]
+            The icon of the guild
+
+        verification_level: [:class:`int`]
+            The verification level of the guild
+
+        default_message_notifications: Optional[:class:`int`]
+            The default message notification level
+
+        explicit_content_filter: Optiona[:class:`int`]
+            The explicit content filter filter of the guild
+
+        roles: Optional[List[:class:`dict`]]
+            A list of roles to make the guild with
+
+        channels: Optional[List[:class:`dict`]]
+            A list of channels to make the guild with
+
+        afk_channel: Optional[:class:`int`]
+            The afk channel of the guild
+
+        afk_timeout: Optional[:class:`int`]
+            The afk timeout in seconds
+
+        system_channel_id: Optional[:class:`int`]
+            The channel id for where to send system messages
+
+        system_channel_flags: Optional[:class:`int`]
+            The system channel flags
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified guild object.
         """
         payload = update_payload(
             {},
@@ -1917,26 +2262,44 @@ class HTTPClient:
             "PATCH", Route(f"/guilds/{guild_id}", guild_id=guild_id), json=payload
         )
 
-    async def delete_guild(self, guild_id: int):
-        """
-        Makes an API call to delete a guild.
+    async def delete_guild(self, guild_id: int) -> None:
+        """A method which deletes a guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild to delete.
+        This method makes an API call to delete a guild.
+        The client must be the owner of the guild.
 
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to delete
+
+        Raises
+        ------
+        :class:`.HTTPException`
+            Something went wrong while making the request.
         """
         await self.request("DELETE", Route(f"/guilds/{guild_id}", guild_id=guild_id))
 
-    async def get_guild_channels(self, guild_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get a guild's channels.
+    async def get_guild_channels(self, guild_id: int) -> List[dict]:
+        """A method which grabs the channels of a guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get a guild's channels.
+        This API call does not include thread channels.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing channels.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/channels", guild_id=guild_id)
@@ -1952,28 +2315,59 @@ class HTTPClient:
         bitrate: Optional[int] = None,
         user_limit: Optional[int] = None,
         position: Optional[int] = None,
-        permission_overwrites: Optional[List[Dict[str, Any]]] = None,
+        permission_overwrites: Optional[List[dict]] = None,
         parent_id: Optional[int] = None,
         nsfw: Optional[bool] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to create a channel in a guild.
+    ) -> dict:
+        """A method which creates a guild channel.
+
+        This method makes an API call to create a channel in a guild.
 
         Parameters
-            guild_id (int): The ID of the guild.
-            name (str): The name of the channel.
-            type (Optional[int]): The type of the channel.
-            topic (Optional[str]): The topic of the channel.
-            bitrate (Optional[int]): The bitrate of the channel.
-            user_limit (Optional[int]): The user limit of the channel.
-            position (Optional[int]): The position of the channel.
-            permission_overwrites (Optional[List[Dict[str, Any]]]): The permission overwrites of the channel.
-            parent_id (Optional[int]): The ID of the parent of the channel.
-            nsfw (Optional[bool]): Whether the channel is NSFW.
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the channel should be in
 
-        Returns:
-            The data returned from the API.
+        name: :class:`str`
+            The name of the channel
 
+        type: Optional[:class:`int`]
+            The type of channel to create
+
+        topic: Optional[:class:`str`]
+            The topic of the channel
+
+        bitrate: Optional[:class:`int`]
+            The bitrate of the channel. Used if its a voice channel
+
+        user_limit: Optional[:class:`int`]
+            The max amount of users that can be in the channel. This is used for voice
+            channels
+
+        position: Optional[:class:`int`]
+            The position of the channel
+
+        permission_overwrites: Optional[List[:class:`dict`]]
+            A list of permission overwrites for the channel
+
+        parent_id: Optional[:class:`int`]
+            The parent channel's id
+
+        nsfw: Optional[:class:`bool`]
+            If the channel should be marked as NSFW
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to create this channel.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the newly created channel.
         """
         payload = update_payload(
             {},
@@ -1994,32 +2388,56 @@ class HTTPClient:
             json=payload,
         )
 
-    async def list_active_threads(self, guild_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get a guild's active threads.
+    async def list_active_threads(self, guild_id: int) -> dict:
+        """A method which list all active threads in a guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get a guild's active threads.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict which contains a list of thread channels and a list
+            of thread member objects.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/threads/active", guild_id=guild_id)
         )
 
     async def get_guild_member(self, guild_id: int, member_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get a guild member.
+        """A method which fetches a member from a guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            member_id (int): The ID of the member.
+        This method makes an API call to get a guild member.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from.
 
+        member_id: :class:`int`
+            The member to fetch
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            The member id was invalid.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the member object.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/members/{member_id}", guild_id=guild_id)
@@ -2033,7 +2451,39 @@ class HTTPClient:
         action_type: Optional[int] = None,
         before: Optional[int] = None,
         limit: Optional[int] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict:
+        """A method which fetches an audit log.
+
+        This method makes an API call to get an audit log
+        from the specified guild.
+
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
+
+        user_id: Optional[:class:`int`]
+            The user to filter for
+
+        action_type: Optional[:class:`int`]
+            The action type to filter for
+
+        before: Optional[:class:`int`]
+            filter before this entry id
+
+        limit: Optional[:class:`int`]
+            The max amount of entries to return
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing an audit log
+        """
         params = update_payload(
             {},
             user_id=user_id,
@@ -2050,16 +2500,31 @@ class HTTPClient:
 
     async def list_guild_members(
         self, guild_id: int, *, limit: int = 1, after: Optional[int] = None
-    ) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get a guild's members.
+    ) -> List[dict]:
+        """This method fetches a list of members.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get a list of the guild's members.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        limit: :class:`int`
+            The max amount of members to return
+
+        after: Optional[:class:`int`]
+            List members after this member's id
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of member objects fetched.
         """
         params = update_payload({}, limit=limit, after=after)
         return await self.request(
@@ -2070,18 +2535,32 @@ class HTTPClient:
 
     async def search_guild_members(
         self, guild_id: int, *, query: str, limit: int = 1
-    ) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to search a guild's members.
+    ) -> List[dict]:
+        """This method searches the guild's members.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            query (str): The query to search for.
-            limit (Optional[int]): The number of members to return.
+        This method makes an API call to search a guild's members
+        corresponding to the query passed.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        query: :class:`str`
+            The username or nickname to search for
+
+        limit: :class:`int`
+            The max amount of members to return
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing a member object.
         """
         params = {"limit": limit, "query": query}
         return await self.request(

@@ -168,16 +168,18 @@ class Thread(BaseTextChannel):
         """
         await self._state.http.leave_thread(channel_id=self.id)
 
-    async def add_user(self, user: User) -> None:
+    async def add_member(self, member: Member) -> None:
         """
         Adds a user to this thread.
 
         Parameters:
             user (lefi.User): The user to add.
         """
-        await self._state.http.add_thread_member(channel_id=self.id, user_id=user.id)
+        await self._state.http.add_thread_member(
+            channel_id=self.id, member_id=member.id
+        )
 
-    async def remove_user(self, user: User) -> None:
+    async def remove_member(self, member: Member) -> None:
         """
         Removes a user from this thread.
 
@@ -185,7 +187,9 @@ class Thread(BaseTextChannel):
             user (lefi.User): The user to remove.
 
         """
-        await self._state.http.remove_thread_member(channel_id=self.id, user_id=user.id)
+        await self._state.http.remove_thread_member(
+            channel_id=self.id, member_id=member.id
+        )
 
     async def fetch_members(self) -> List[ThreadMember]:
         """
