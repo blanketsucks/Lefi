@@ -55,18 +55,24 @@ logger = logging.getLogger(__name__)
 
 
 class Cache(collections.OrderedDict[Union[int, str], T]):
-    """
-    A class which acts as a cache for objects.
+    """A class which acts as a cache for objects.
 
-    Attributes:
-        maxlen (Optional[int]): The max amount the cache can hold.
+    This cache can be constructed with a maxlen, at which then
+    it will act as a :class:`collections.deque`, popping left once the amount
+    of elements reach the max length.
+
+    Parameters
+    ----------
+    maxlen: Optional[:class:`int`]
+        The max amount of elements allowed inside of the cache
+
+    Attributes
+    ----------
+    maxlen: Optiona[:class:`int`]
+        The cache's max element amount
     """
 
-    def __init__(self, maxlen: Optional[int] = None, *args, **kwargs):
-        """
-        Parameters:
-            maxlen (Optional[int]): The max amount the cache can hold.
-        """
+    def __init__(self, maxlen: Optional[int] = None, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.maxlen: Optional[int] = maxlen
         self._max: int = 0
@@ -83,16 +89,53 @@ class Cache(collections.OrderedDict[Union[int, str], T]):
 
 
 class State:
-    """
-    A class which represents the connection state between the client and discord.
+    """A class which represents the connection state between the client and discord.
 
-    Attributes:
-        client (lefi.Client): The [lefi.Client](./client.md) instance being used.
-        loop (asyncio.AbstractEventLoop): The asyncio.AbstractEventLoop being used.
-        http (lefi.HTTPClient): The [lefi.HTTPClient](./http.md) handling requests
+    .. warning::
 
-    Danger:
-        This class is used internally. **It is not meant to called directly**
+        This class is only used internally and isn't mean to be used directly.
+        Any changes here could break literally everything.
+
+    Parameters
+    ----------
+    client: :class:`.Client`
+        The client which is currently connected to the API
+
+    loop: :class:`asyncio.AbstractEventLoop`
+        The loop to use
+
+    Attributes
+    ----------
+    client: :class:`.Client`
+        The client which is currently connected to the API
+
+    loop: :class:`asyncio.AbstractEventLoop`
+        The loop being used
+
+    http: :class:`.HTTPClient`
+        The HTTPClient being used by the client
+
+    _messages: :class:`.Cache`
+        The client's internal message cache. The maxlen of this cache
+        is set to ``1000``
+
+    _users: :class:`.Cache`
+        The client's internal user cache
+
+    _guilds: :class:`.Cache`
+        The client's interal guild cache
+
+        _components: :class:`.Cache`
+        The client's internal components cache
+
+    _channels: :class:`.Cache`
+        The client's internal channel cache
+
+    _emojis: :class:`.Cache`
+        The client's internal emoji cache
+
+    _voice_clients: :class:`.Cache`
+        The client's internal voice client cache
 
     """
 
@@ -114,12 +157,6 @@ class State:
     }
 
     def __init__(self, client: Client, loop: asyncio.AbstractEventLoop) -> None:
-        """
-        Parameters:
-            client (lefi.Client): The [Client](./client.md) being used.
-            loop (asyncio.AbstractEventLoop): The asyncio.AbstractEventLoop being used.
-
-        """
         self.client = client
         self.loop = loop
         self.http = client.http
@@ -136,9 +173,26 @@ class State:
 
     @property
     def user(self) -> User:
+        """:class:`.User` The current client's user."""
         return self.client.user
 
     def get_websocket(self, guild_id: int) -> BaseWebsocketClient:
+        """Grabs the :class:`.BaseWebsocketClient` from a guild.
+
+        This method grabs the :class:`.BaseWebsocketClient` that is connected
+        to the passed in guild id. This is used for getting the websocket client when
+        the client is sharded.
+
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild
+
+        Returns
+        -------
+        :class:`.BaseWebsocketClient`
+            The websocket client corresponding to the guild.
+        """
         if not self.client.shards:
             return self.client.ws
 
@@ -146,13 +200,19 @@ class State:
         return self.client.shards[shard_id]
 
     def dispatch(self, event: str, *payload: Any) -> None:
-        """
-        Dispatches data to callbacks registered to events after parsing is finished.
+        """Dispatches events received from the gateway.
 
-        Parameters:
-            event (str): The name of the event to dispatch to.
-            *payload (Any): The data after parsing is finished.
+        This method dispatches events received from the gateway,
+        essentially calling all registered event callbacks for the
+        corresponding events.
 
+        Parameters
+        ----------
+        event: :class:`str`
+            The name of the event being dispatched
+
+        *payload: List[Any]
+            A list of parsed data to pass when calling event callbacks
         """
         events: Optional[dict] = self.client.events.get(event)
         futures = self.client.futures.get(event, [])
@@ -175,7 +235,18 @@ class State:
             for callback in events.values():
                 self.loop.create_task(callback(*payload))
 
-    async def parse_interaction_create(self, data: Dict) -> None:
+    async def parse_interaction_create(self, data: dict) -> None:
+        """Parses the ``INTERACTION_CREATE`` event.
+
+        This method parses the raw data received from the ``INTERACTION_CREATE``
+        event once received from the gateway. This handles application commands and message components.
+        This calls :meth:`.State.dispatch` with one payload being interaction (:class:`.Interaction`)
+
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
+        """
         interaction: Interaction = Interaction(
             self, data, type=InteractionType(data["type"])
         )
@@ -200,13 +271,17 @@ class State:
 
         self.dispatch("interaction_create", interaction)
 
-    async def parse_ready(self, data: Dict) -> None:
-        """
-        Parses the `READY` event. Creates a User then dispatches it afterwards.
+    async def parse_ready(self, data: dict) -> None:
+        """Parses the ``READY`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``READY`` event
+        once received from the gateway. This calls :meth:`.State.dispatch` with one
+        payload being user (:class:`.User`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         user = self.add_user(data["user"])
         self.client.user = user
@@ -218,13 +293,17 @@ class State:
 
         self.dispatch("ready", user)
 
-    async def parse_guild_create(self, data: Dict) -> None:
-        """
-        Parses `GUILD_CREATE` event. Creates a Guild then caches it, as well as dispatching it afterwards.
+    async def parse_guild_create(self, data: dict) -> None:
+        """Parses the ``GUILD_CREATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_CREATE`` event once received
+        from the gateway. This method creates the :class:`.Guild` object then caches it. This method
+        calls :meth:`.State.dispatch` with one payload being guild (:class:`.Guild`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = Guild(self, data)
 
@@ -236,13 +315,18 @@ class State:
         self._guilds[guild.id] = guild
         self.dispatch("guild_create", guild)
 
-    async def parse_guild_update(self, data: Dict) -> None:
-        """
-        Parses `GUILD_UPDATE` event. Updates a Guild then dispatches it afterwards.
+    async def parse_guild_update(self, data: dict) -> None:
+        """Parses the ``GUILD_UPDATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_UPDATE`` event once received
+        from the gateway. This method updates the guild object if it was previously cached. This
+        method calls :meth:`.State.dispatch` with two payloads one being before (:class:`.Guild`) and
+        after (:class:`.Guild`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["id"]))
         if not guild:
@@ -251,28 +335,34 @@ class State:
         before, after = self.update_guild(guild, data)
         self.dispatch("guild_update", before, after)
 
-    async def parse_guild_delete(self, data: Dict) -> None:
-        """
-        Parses `GUILD_DELETE` event. Deletes a Guild then dispatches it afterwards.
+    async def parse_guild_delete(self, data: dict) -> None:
+        """Parses the ``GUILD_DELETE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_DELETE`` event once received
+        from the gateway. This method removes the *"dead"* guild from the internal cache.
+        This method calls :meth:`.State.dispatch` with one payload being guild (:class:`.Guild`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
-        guild = self.get_guild(int(data["id"]))
-        if not guild:
-            return
+        if guild := self.get_guild(int(data["id"])):
+            self._guilds.pop(guild.id)
 
         self.dispatch("guild_delete", guild)
-        self._guilds.pop(guild.id)
 
-    async def parse_message_create(self, data: Dict) -> None:
-        """
-        Parses `MESSAGE_CREATE` event. Creates a Message then caches it, as well as dispatching it afterwards.
+    async def parse_message_create(self, data: dict) -> None:
+        """Parses the ``MESSAGE_CREATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``MESSAGE_CREATE`` event once received
+        from the gateway. This method creates a new :class:`.Message` object and caches it along with the author.
+        This method calls :meth:`.State.dispatch` with one payload being message (:class:`.Message`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         self.add_user(data["author"])
         channel = self._channels.get(int(data["channel_id"]))
@@ -281,14 +371,18 @@ class State:
         self._messages[message.id] = message
         self.dispatch("message_create", message)
 
-    async def parse_message_delete(self, data: Dict) -> None:
-        """
-        Parses `MESSAGE_DELETE` event. Retrieves the message from cache if possible.
-        Else it dispatches a `DeletedMessage`.
+    async def parse_message_delete(self, data: dict) -> None:
+        """Parses the ``MESSAGE_DELETE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``MESSAGE_DELETE`` event once received
+        from the gateway. This method creates creates a :class:`.DeletedMessage` object if the deleted
+        message wasn't in the internal cache. This method calls :meth:`.State.dispatch` with one payload
+        being message (Union[:class:`.DeletedMessage`, :class:`.Message`])
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         deleted = DeletedMessage(data)
         message = self._messages.get(deleted.id)

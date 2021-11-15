@@ -63,3 +63,18 @@ Ratelimiter
 ~~~~~~~~~~~
 .. autoclass:: lefi.ratelimiter.Ratelimiter
     :members:
+
+Gateway
+-------
+
+Cache
+~~~~~
+.. autoclass:: lefi.state.Cache
+    :members:
+    :show-inheritance:
+    :inherited-members:
+
+State
+~~~~~
+.. autoclass:: lefi.state.State
+    :members:
