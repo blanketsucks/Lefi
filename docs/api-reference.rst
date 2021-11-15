@@ -53,3 +53,8 @@ HTTPClient
 
 .. autoclass:: lefi.http.HTTPClient
     :members:
+
+Ratelimiter
+-----------
+.. autoclass:: lefi.ratelimiter.Ratelimiter
+    :members:
