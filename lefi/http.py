@@ -3135,18 +3135,34 @@ class HTTPClient:
 
     async def get_guild_prune_count(
         self, guild_id: int, *, days: int = 7, include_roles: Optional[List[int]] = None
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get the number of members to prune in a guild.
+    ) -> dict:
+        """This method gets the amount of members to prune.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            days (int): The number of days to count.
-            include_roles (Optional[List[int]]): The IDs of the roles to include.
+        This method makes an API call to get the number of members to prune in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to get the count from
 
+        days: :class:`int`
+            The numbers of days to count prune for
+
+        include_roles: Optional[List[:class:`int`]]
+            Roles to include with the prune count
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to do this.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict with the prune count.
         """
         payload = {"days": str(days)}
         if include_roles is not None:
@@ -3161,21 +3177,39 @@ class HTTPClient:
         guild_id: int,
         *,
         days: int = 7,
-        compute_prune_count: bool = True,
+        compute_prune_count: bool = False,
         include_roles: Optional[List[int]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to begin pruning a guild.
+    ) -> Optional[dict]:
+        """A method which starts the pruning of a guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            days (int): The number of days to count.
-            compute_prune_count (bool): Whether to compute the prune count.
-            include_roles (Optional[List[int]]): The IDs of the roles to include.
+        This method makes an API call to begin pruning a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to start pruning in
 
+        days: :class:`int`
+            The number of days to prune
+
+        compute_prune_count: :class:`bool`
+            If the pruned count should be returned from the request
+
+        include_roles: Optional[List[:class:`int`]]
+            A list of role ids to include in the pruning
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to do this.
+
+        Returns
+        -------
+        Optional[:class:`dict`]
+            A dict containing the prune count if ``compute_prune_count`` is set to True.
         """
         payload = {"days": str(days), "compute_prune_count": compute_prune_count}
 
@@ -3186,59 +3220,97 @@ class HTTPClient:
             "POST", Route(f"/guilds/{guild_id}/prune", guild_id=guild_id), json=payload
         )
 
-    async def get_guild_voice_regions(self, guild_id: int) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get the voice regions in a guild.
+    async def get_guild_voice_regions(self, guild_id: int) -> List[dict]:
+        """Fetches a list of voice region objects for the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get the voice regions of a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of voice regions for the guild.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/regions"), guild_id=guild_id
         )
 
-    async def get_guild_invites(self, guild_id: int) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get the invites in a guild.
+    async def get_guild_invites(self, guild_id: int) -> List[dict]:
+        """Fetches a list of invites from the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get the invites in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing an invite objects.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/invites"), guild_id=guild_id
         )
 
-    async def get_guild_integrations(self, guild_id: int) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get the integrations in a guild.
+    async def get_guild_integrations(self, guild_id: int) -> List[dict]:
+        """Fetches a list of integrations in the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get the integrations in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing integration objects.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/integrations"), guild_id=guild_id
         )
 
-    async def delete_guild_integration(self, guild_id: int, integration_id: int):
-        """
-        Makes an API call to delete an integration in a guild.
+    async def delete_guild_integration(
+        self, guild_id: int, integration_id: int
+    ) -> None:
+        """Deletes an integration from the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            integration_id (int): The ID of the integration.
+        This method makes an API call to delete an integration in a guild.
 
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to delete the integration from
+
+        integration_id: :class:`int`
+            The id of the integration to delete
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         return await self.request(
             "DELETE",
@@ -3247,46 +3319,73 @@ class HTTPClient:
             ),
         )
 
-    async def get_guild_widget_settings(self, guild_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get the widget settings in a guild.
+    async def get_guild_widget_settings(self, guild_id: int) -> dict:
+        """Fetches the guild's widget settings.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get the widget settings in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing a guild widget object.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/widget"), guild_id=guild_id
         )
 
-    async def get_guild_widget(self, guild_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get the widget in a guild.
+    async def get_guild_widget(self, guild_id: int) -> dict:
+        """Gets a guild widget for the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get the widget in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to make a widget from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing a guild widget.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/widget.json"), guild_id=guild_id
         )
 
-    async def get_guild_vanity_url(self, guild_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get the vanity URL in a guild.
+    async def get_guild_vanity_url(self, guild_id: int) -> dict:
+        """Gets a guild's vanity url.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get the vanity URL in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to get the vanity url from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing an invite.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/vanity-url"), guild_id=guild_id
@@ -3294,17 +3393,20 @@ class HTTPClient:
 
     async def get_guild_widget_image(
         self, guild_id: int, *, style: Optional[str] = None
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get the widget image in a guild.
+    ) -> bytes:
+        """Gets a guild's widget image.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            style (Optional[str]): The style of the image.
+        This method makes an API call to get the widget image in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        style: Optional[:class:`str`]
+            The style of image to return
 
+        Returns
+        -------
+        :class:`bytes`
+            A png which is the widget image returned.
         """
         payload = {"style": style or "shield"}
 
@@ -3314,16 +3416,25 @@ class HTTPClient:
             json=payload,
         )
 
-    async def get_guild_welcome_screen(self, guild_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get the welcome screen in a guild.
+    async def get_guild_welcome_screen(self, guild_id: int) -> dict:
+        """Gets a guild's welcome screen.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get the welcome screen in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id to fetch the welcome screen from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing a welcome screen object.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/welcome-screen"), guild_id=guild_id
@@ -3336,19 +3447,34 @@ class HTTPClient:
         enabled: Optional[bool] = None,
         description: Optional[str] = None,
         welcome_channels: Optional[List[int]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to modify the welcome screen in a guild.
+    ) -> dict:
+        """Modifies the guild's welcome screen.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            enabled (Optional[bool]): Whether the welcome screen is enabled.
-            description (Optional[str]): The welcome screen description.
-            welcome_channels (Optional[List[int]]): The IDs of the welcome channels.
+        This method makes an API call to modify the welcome screen in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the welcome screen is in
 
+        enabled: Optional[:class:`bool`]
+            If the welcome screen should be enabed or not
+
+        description: Optional[:class:`str`]
+            The new description of the welcome screen
+
+        welcome_channels: Optional[List[:class:`int`]]
+            The new list of welcome screen channels
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified welcome screen object.
         """
         payload = update_payload(
             {},
@@ -3363,16 +3489,28 @@ class HTTPClient:
             json=payload,
         )
 
-    async def get_guild_template(self, code: str) -> Dict[str, Any]:
-        """
-        Makes an API call to get a guild template.
+    async def get_guild_template(self, code: str) -> dict:
+        """Fetches a guild template.
 
-        Parameters:
-            code (str): The code of the template.
+        This method makes an API call to get a guild template.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        code: :class:`str`
+            The code of the guild template
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            The code was invalid.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing a guild template object.
         """
         return await self.request("GET", Route(f"/guilds/templates/{code}"))
 
@@ -3382,18 +3520,35 @@ class HTTPClient:
         *,
         name: str,
         icon: Optional[bytes] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to create a guild from a template.
+    ) -> dict:
+        """Creates a guild from a guild template.
 
-        Parameters:
-            code (str): The code of the template.
-            name (str): The name of the guild.
-            icon (Optional[str]): The icon of the guild.
+        This method makes an API call to create a guild from a template.
 
-        Returns:
-            The data returned from the API.
+        .. note::
 
+            This endpoint can only be used by bots that are in less than 10 guilds.
+
+        Parameters
+        ----------
+        code: :class:`str`
+            The code of the guild template
+
+        name: :class:`str`
+            The name of the guild
+
+        icon: Optional[:class:`bytes`]
+            The icon to set for the guild
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the newly created guild object.
         """
         payload = update_payload({}, name=name, icon=icon)
 
@@ -3404,16 +3559,25 @@ class HTTPClient:
             "POST", Route(f"/guilds/templates/{code}"), json=payload
         )
 
-    async def get_guild_templates(self, guild_id: int) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get the templates in a guild.
+    async def get_guild_templates(self, guild_id: int) -> List[dict]:
+        """Fetches a list of the guild's templates.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get the templates in a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing guild template objects.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/templates", guild_id=guild_id)
@@ -3425,18 +3589,34 @@ class HTTPClient:
         *,
         name: str,
         description: Optional[str] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to create a template for a guild.
+    ) -> dict:
+        """Makes a guild template object.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            name (str): The name of the template.
-            description (Optional[str]): The description of the template.
+        This method makes an API call to create a template for a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to create the template from
 
+        name: :class:`str`
+            The name of the template
+
+        description: Optional[:class:`str`]
+            A description for the template
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to create this template.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the newly created guild template object.
         """
         payload = update_payload({}, name=name, description=description)
 
@@ -3446,17 +3626,31 @@ class HTTPClient:
             json=payload,
         )
 
-    async def sync_guild_template(self, guild_id: int, code: str) -> Dict[str, Any]:
-        """
-        Makes an API call to sync a template for a guild guild.
+    async def sync_guild_template(self, guild_id: int, code: str) -> dict:
+        """Syncs a template to the guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            code (str): The code of the template.
+        This method makes an API call to sync a template to a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to sync the template to
 
+        code: :class:`str`
+            The code of the template to sync
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to do this.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the synced guild template object.
         """
         return await self.request(
             "POST",
@@ -3470,19 +3664,37 @@ class HTTPClient:
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to modify a template for a guild.
+    ) -> dict:
+        """Modifies a guild template object.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            code (str): The code of the template.
-            name (Optional[str]): The name of the template.
-            description (Optional[str]): The description of the template.
+        This method makes an API call to modify a template for a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the template is
 
+        code: :class:`str`
+            The code of the template to modify
+
+        name: :class:`str`
+            The new name of the template
+
+        description: Optional[:class:`str`]
+            The new description for the template
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to modify this template.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified guild template object.
         """
         payload = update_payload({}, name=name, description=description)
 
@@ -3492,17 +3704,31 @@ class HTTPClient:
             json=payload,
         )
 
-    async def delete_guild_template(self, guild_id: int, code: str) -> Dict[str, Any]:
-        """
-        Makes an API call to delete a template for a guild.
+    async def delete_guild_template(self, guild_id: int, code: str) -> dict:
+        """Deletes a guild template.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            code (str): The code of the template.
+        This method makes an API call to delete a template for a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the template is
 
+        code: :class:`str`
+            The code of the template to delete
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete this guild template.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the deleted guild template object.
         """
         return await self.request(
             "DELETE", Route(f"/guilds/{guild_id}/templates/{code}", guild_id=guild_id)
@@ -3510,50 +3736,95 @@ class HTTPClient:
 
     async def get_invite(
         self, code: str, *, with_counts: bool = False, with_expiration: bool = False
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get an invite.
+    ) -> dict:
+        """Fetches an invite from the guild.
 
-        Parameters:
-            code (str): The code of the invite.
-            with_counts (bool): Whether to include the invite counts.
-            with_expiration (bool): Whether to include the invite expiration.
+        This method makes an API call to get an invite.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        code: :class:`str`
+            The code of the invite to fetch for
 
+        with_counts: :class:`bool`
+            If the return data should include approximate user count
+
+        with_expiration: :class:`bool`
+            If the return data should include the expiration date
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            The invite code is invalid.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the invite object fetched.
         """
         params = {"with_counts": with_counts, "with_expiration": with_expiration}
 
         return await self.request("GET", Route(f"/invites/{code}"), params=params)
 
-    async def delete_invite(self, code: str) -> Dict[str, Any]:
-        """
-        Makes an API call to delete an invite.
+    async def delete_invite(self, code: str) -> dict:
+        """Deletes an invite
 
-        Parameters:
-            code (str): The code of the invite.
+        This method makes an API call to delete an invite.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        code: :class:`str`
+            The code of the invite
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete this invite.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the deleted invite object.
         """
         return await self.request("DELETE", Route(f"/invites/{code}"))
 
     async def create_stage_instance(
         self, *, channel_id: int, topic: str, privacy_level: Optional[int] = None
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to create a stage instance.
+    ) -> dict:
+        """Makes a stage instance associated with a stage channel.
 
-        Parameters:
-            channel_id (int): The ID of the channel.
-            topic (str): The topic of the stage instance.
-            privacy_level (Optional[int]): The privacy level of the stage instance.
+        This method makes an API call to create a stage instance connected
+        to a stage channel.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The stage channel's id
 
+        topic: :class:`str`
+            The topic of the stage instance
+
+        privacy_level: Optional[:class:`int`]
+            The privacy level of the stage instance
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client cannot create a stage instance.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the newly created stage instance.
         """
         payload = update_payload(
             {}, channel_id=channel_id, topic=topic, privacy_level=privacy_level
@@ -3563,16 +3834,25 @@ class HTTPClient:
             "POST", Route("/stage-instances", channel_id=channel_id), json=payload
         )
 
-    async def get_stage_instance(self, channel_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get a stage instance.
+    async def get_stage_instance(self, channel_id: int) -> dict:
+        """Fetches a stage instance.
 
-        Parameters:
-            channel_id (int): The ID of the channel.
+        This method makes an API call to get a stage instance.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the stage channel to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the fetched stage instance object.
         """
         return await self.request(
             "GET", Route(f"/stage-instances/{channel_id}", channel_id=channel_id)
@@ -3584,18 +3864,35 @@ class HTTPClient:
         *,
         topic: Optional[str] = None,
         privacy_level: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to modify a stage instance.
+    ) -> dict:
+        """Modifies a stage instance associated with a stage channel.
 
-        Parameters:
-            channel_id (int): The ID of the channel.
-            topic (Optional[str]): The topic of the stage instance.
-            privacy_level (Optional[int]): The privacy level of the stage instance.
+        This method makes an API call to modify a stage instance connected
+        to a stage channel.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The stage channel's id
 
+        topic: :class:`str`
+            The new topic of the stage instance
+
+        privacy_level: Optional[:class:`int`]
+            The new privacy level of the stage instance
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client cannot modify this stage instance.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified stage instance.
         """
         payload = update_payload({}, topic=topic, privacy_level=privacy_level)
 
@@ -3605,70 +3902,110 @@ class HTTPClient:
             json=payload,
         )
 
-    async def delete_stage_instance(self, channel_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to delete a stage instance.
+    async def delete_stage_instance(self, channel_id: int) -> dict:
+        """Deletes a stage instance.
 
-        Parameters:
-            channel_id (int): The ID of the channel.
+        This method makes an API call to delete a stage instance.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         return await self.request(
             "DELETE", Route(f"/stage-instances/{channel_id}"), channel_id=channel_id
         )
 
-    async def get_sticker(self, sticker_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get a sticker.
+    async def get_sticker(self, sticker_id: int) -> dict:
+        """Fetch a sticker object.
 
-        Parameters:
-            sticker_id (int): The ID of the sticker.
+        This method makes an API call to get a sticker.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        sticker_id: :class:`int`
+            The id of the sticker to fetch
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the fetched sticker object.
         """
         return await self.request("GET", Route(f"/stickers/{sticker_id}"))
 
-    async def list_nitro_sticker_packs(self) -> Dict[str, Any]:
-        """
-        Makes an API call to list nitro sticker packs.
+    async def list_nitro_sticker_packs(self) -> List[dict]:
+        """Fetches a list of nitro sticker packs.
 
-        Returns:
-            The data returned from the API.
+        This method makes an API call to list sticker packs that nitro users can use.
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of nitro sticker pack objects
         """
         return await self.request("GET", Route("/sticker-packs"))
 
-    async def list_guild_stickers(self, guild_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to list stickers for a guild.
+    async def list_guild_stickers(self, guild_id: int) -> List[dict]:
+        """Fetches a list of guild stickers.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to list stickers for a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing guild stickers.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/stickers", guild_id=guild_id)
         )
 
-    async def get_guild_sticker(self, guild_id: int, sticker_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get a sticker for a guild.
+    async def get_guild_sticker(self, guild_id: int, sticker_id: int) -> dict:
+        """Fetches a guild sticker
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            sticker_id (int): The ID of the sticker.
+        This method makes an API call to get a sticker for a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        sticker_id: :class:`int`
+            The id of the sticker to fetch for
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the fetched sticker object.
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/stickers/{sticker_id}", guild_id=guild_id)
@@ -3682,20 +4019,40 @@ class HTTPClient:
         name: Optional[str] = None,
         description: Optional[str] = None,
         tags: Optional[str] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to modify a sticker for a guild.
+    ) -> dict:
+        """Modifies a guild sticker.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            sticker_id (int): The ID of the sticker.
-            name (Optional[str]): The name of the sticker.
-            description (Optional[str]): The description of the sticker.
-            tags (Optional[str]): The tags of the sticker.
+        This method makes an API call to modify a sticker for a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the sticker is in
 
+        sticker_id: :class:`int`
+            The id of the sticker to edit
+
+        name: Optional[:class:`str`]
+            The new name of the sticker
+
+        description: Optional[:class:`str`]
+            The new description of the sticker
+
+        tags: Optional[:class:`str`]
+            The new tags of the sticker
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to edit this sticker
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified sticker object.
         """
         payload = update_payload({}, name=name, description=description, tags=tags)
 
@@ -3705,51 +4062,98 @@ class HTTPClient:
             json=payload,
         )
 
-    async def delete_guild_sticker(
-        self, guild_id: int, sticker_id: int
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to delete a sticker for a guild.
+    async def delete_guild_sticker(self, guild_id: int, sticker_id: int) -> None:
+        """Deletes a guild sticker.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            sticker_id (int): The ID of the sticker.
+        This method makes an API call to delete a sticker for a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild where the sticker is in
 
+        sticker_id: :class:`int`
+            The id of the sticker to delete
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete this sticker.
         """
         return await self.request(
             "DELETE",
             Route(f"/guilds/{guild_id}/stickers/{sticker_id}", guild_id=guild_id),
         )
 
-    async def get_user(self, user_id) -> Dict:
+    async def get_user(self, user_id: int) -> dict:
+        """Fetches a user.
+
+        This method makes an API call to fetch a user.
+
+        Parameters
+        ----------
+        user_id: :class:`int`
+            The id of the user to fetch
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the fetched user object.
+        """
         return await self.request("GET", Route(f"users/{user_id}"))
 
-    async def get_current_user(self) -> Dict[str, Any]:
-        """
-        Makes an API call to get the current user.
+    async def get_current_user(self) -> dict:
+        """Fetches the current authorized user.
 
-        Returns:
-            The data returned from the API.
+        This method makes an API call to get the current user.
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the user object of the current user.
         """
         return await self.request("GET", Route("/users/@me"))
 
     async def modify_current_user(
         self, *, username: Optional[str] = None, avatar: Optional[bytes] = None
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to modify the current user.
+    ) -> dict:
+        """Modifies the current authorized user.
 
-        Parameters:
-            username (Optional[str]): The username of the user.
-            avatar (Optional[str]): The avatar of the user.
+        This method makes an API call to modify the current user.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        username: Optional[:class:`str`]
+            The new username for the user
 
+        avatar: Optional[:class:`bytes`]
+            The new avatar for the user
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified user object.
         """
         payload = update_payload({}, username=username, avatar=avatar)
 
@@ -3758,49 +4162,88 @@ class HTTPClient:
 
         return await self.request("PATCH", Route("/users/@me"), json=payload)
 
-    async def get_current_user_guilds(self) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get the current user's guilds.
+    async def get_current_user_guilds(self) -> List[dict]:
+        """Fetches all guilds that the current user is in.
 
-        Returns:
-            The data returned from the API.
+        This method makes an API call to get the current user's guilds.
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts that represent guild objects.
         """
         return await self.request("GET", Route("/users/@me/guilds"))
 
-    async def leave_guild(self, guild_id: int):
-        """
-        Makes an API call to leave a guild.
+    async def leave_guild(self, guild_id: int) -> None:
+        """Leaves a guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to leave a guild.
 
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to leave
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.NotFound`
+            The guild id was invalid.
         """
         await self.request(
             "DELETE", Route(f"/users/@me/guilds/{guild_id}", guild_id=guild_id)
         )
 
-    async def create_dm_channel(self, recipient_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call which creates a DM channel to a user.
+    async def create_dm_channel(self, recipient_id: int) -> dict:
+        """Creates a DM channel to a user.
 
-        Parameters:
-            recipient_id (int): The ID of the user which to open the DM channel to.
+        This method makes an API call which creates a DM channel to a user.
 
-        Returns:
-            The data received from the API after making the call.
+        .. warning::
 
+            You should not use this endpoint to DM everyone in a server about something.
+            DMs should generally be initiated by a user action. If you open a significant
+            amount of DMs too quickly, your bot may be rate limited or blocked from opening new ones.
+
+        Parameters
+        ----------
+        recipient_id: :class:`int`
+            The id of the user to create the DM channel to
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the created DM channel object.
         """
         payload = {"recipient_id": recipient_id}
         return await self.request("POST", Route("/users/@me/channels"), json=payload)
 
-    async def list_voice_regions(self) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to list voice regions.
+    async def list_voice_regions(self) -> List[dict]:
+        """Fetches voice regions.
 
-        Returns:
-            The data returned from the API.
+        This method makes an API call to list voice regions.
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing voice region objects
         """
         return await self.request("GET", Route("/voice/regions"))
 
@@ -3810,18 +4253,31 @@ class HTTPClient:
         *,
         name: str,
         avatar: Optional[bytes] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to create a webhook.
+    ) -> dict:
+        """Creates a webhook.
 
-        Parameters:
-            channel_id (int): The ID of the channel to create the webhook in.
-            name (str): The name of the webhook.
-            avatar (Optional[bytes]): The avatar of the webhook.
+        This method makes an API call to create a webhook.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The channel id to create the webhook in
 
+        name: :class:`str`
+            The name of the webhook
+
+        avatar: Optional[:class:`bytes`]
+            The avatar of the webhook
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the created webhook object.
         """
         payload = {
             "name": name,
@@ -3834,64 +4290,100 @@ class HTTPClient:
             json=payload,
         )
 
-    async def get_channel_webhooks(self, channel_id: int) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get the webhooks for a channel.
+    async def get_channel_webhooks(self, channel_id: int) -> List[dict]:
+        """Fetches the webhook of a channel.
 
-        Parameters:
-            channel_id (int): The ID of the channel.
+        This method makes an API call to get the webhooks for a channel.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing webhook objects
         """
         return await self.request(
             "GET", Route(f"/channels/{channel_id}/webhooks", channel_id=channel_id)
         )
 
-    async def get_guild_webhooks(self, guild_id: int) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get the webhooks for a guild.
+    async def get_guild_webhooks(self, guild_id: int) -> List[dict]:
+        """Fetches all webhooks of a guild.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get the webhooks for a guild.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to fetch from
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing webhook objects
         """
         return await self.request(
             "GET", Route(f"/guilds/{guild_id}/webhooks", guild_id=guild_id)
         )
 
-    async def get_webhook(self, webhook_id: int) -> Dict[str, Any]:
-        """
-        Makes an API call to get a webhook.
+    async def get_webhook(self, webhook_id: int) -> dict:
+        """Fetches a webhook.
 
-        Parameters:
-            webhook_id (int): The ID of the webhook.
+        This method makes an API call to get a webhook.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        webhook_id: :class:`int`
+            The id of the webhook to fetch
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the fetched webhook object.
         """
         return await self.request(
             "GET", Route(f"/webhooks/{webhook_id}", webhook_id=webhook_id)
         )
 
-    async def get_webhook_with_token(
-        self, webhook_id: int, webhook_token: str
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get a webhook with a token.
+    async def get_webhook_with_token(self, webhook_id: int, webhook_token: str) -> dict:
+        """Fetches a webhook without needing authorization.
 
-        Parameters:
-            webhook_id (int): The ID of the webhook.
-            webhook_token (str): The token of the webhook.
+        This method makes an API call to get a webhook.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        webhook_id: :class:`int`
+            The id of the webhook to fetch
 
+        webhook_token: :class:`str`
+            The webhook token
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the fetched webhook object.
         """
         return await self.request(
             "GET",
@@ -3909,19 +4401,34 @@ class HTTPClient:
         name: Optional[str] = None,
         avatar: Optional[bytes] = None,
         channel_id: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to modify a webhook.
+    ) -> dict:
+        """Modifies a webhook.
 
-        Parameters:
-            webhook_id (int): The ID of the webhook.
-            name (Optional[str]): The name of the webhook.
-            avatar (Optional[bytes]): The avatar of the webhook.
-            channel_id (Optional[int]): The ID of the channel to move the webhook to.
+        This method makes an API call to create a webhook.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        webhook_id: :class:`int`
+            The id of the webhook
 
+        name: Optional[:class:`str`]
+            The new name of the webhook
+
+        avatar: Optional[:class:`bytes`]
+            The new avatar of the webhook
+
+        channel_id: Optional[:class:`int`]
+            The id of the new channel where the webhook is in
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified webhook object.
         """
         payload = update_payload({}, name=name, avatar=avatar, channel_id=channel_id)
 
@@ -3942,15 +4449,33 @@ class HTTPClient:
         name: Optional[str] = None,
         avatar: Optional[bytes] = None,
     ):
-        """
-        Makes an API call to modify a webhook with a token.
+        """Modifies a webhook with token.
 
-        Parameters:
-            webhook_id (int): The ID of the webhook.
-            webhook_token (str): The token of the webhook.
-            name (Optional[str]): The name of the webhook.
-            avatar (Optional[bytes]): The avatar of the webhook.
+        This method makes an API call to create a webhook.
 
+        Parameters
+        ----------
+        webhook_id: :class:`int`
+            The id of the webhook to modify
+
+        webhook_token: :class:`str`
+            The webhook's token
+
+        name: :class:`str`
+            The new name of the webhook
+
+        avatar: Optional[:class:`bytes`]
+            The new avatar of the webhook
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified webhook object.
         """
         payload = update_payload(
             {},
@@ -3972,12 +4497,22 @@ class HTTPClient:
         )
 
     async def delete_webhook(self, webhook_id: int) -> None:
-        """
-        Makes an API call to delete a webhook.
+        """Deletes a webhook.
 
-        Parameters:
-            webhook_id (int): The ID of the webhook.
+        This method makes an API call to delete a webhook.
 
+        Parameters
+        ----------
+        webhook_id: :class:`int`
+            The id of the webhook to delete
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete this webhook.
         """
         await self.request(
             "DELETE", Route(f"/webhooks/{webhook_id}", webhook_id=webhook_id)
@@ -3986,13 +4521,25 @@ class HTTPClient:
     async def delete_webhook_with_token(
         self, webhook_id: int, webhook_token: str
     ) -> None:
-        """
-        Makes an API call to delete a webhook with a token.
+        """Deletes a webhook with token.
 
-        Parameters:
-            webhook_id (int): The ID of the webhook.
-            webhook_token (str): The token of the webhook.
+        This method makes an API call to delete a webhook.
 
+        Parameters
+        ----------
+        webhook_id: :class:`int`
+            The id of the webhook to delete
+
+        webhook_token: :class:`str`
+            The webhook's token
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete this webhook.
         """
         await self.request(
             "DELETE",
@@ -4013,32 +4560,62 @@ class HTTPClient:
         avatar_url: Optional[str] = None,
         tts: Optional[bool] = None,
         file: Optional[File] = None,
-        embeds: Optional[List[Dict[str, Any]]] = None,
-        allowed_mentions: Optional[Dict[str, Any]] = None,
-        componenets: Optional[List[Dict[str, Any]]] = None,
+        embeds: Optional[List[dict]] = None,
+        allowed_mentions: Optional[dict] = None,
+        componenets: Optional[List[dict]] = None,
         wait: Optional[bool] = None,
         thread_id: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to execute a webhook.
+    ) -> None:
+        """Executes a webhook.
 
-        Parameters:
-            webhook_id (int): The ID of the webhook.
-            webhook_token (str): The token of the webhook.
-            content (Optional[str]): The content of the message.
-            username (Optional[str]): The username of the webhook.
-            avatar_url (Optional[str]): The avatar url of the webhook.
-            tts (Optional[bool]): Whether the message should be TTS.
-            file (Optional[File]): The file to upload.
-            embeds (Optional[List[Dict[str, Any]]]): The embeds to send.
-            allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions.
-            componenets (Optional[List[Dict[str, Any]]]): The components to send.
-            wait (Optional[bool]): Whether to wait for server confirmation  before response.
-            thread_id (Optional[int]): The ID of the thread to post to.
+        This method makes an API call to execute a webhook.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        webhook_id: :class:`int`
+            The id of the webhook
 
+        webhook_token: :class:`str`
+            The webhook's token
+
+        content: Optional[:class:`str`]
+            The content to send the webhook
+
+        username: Optional[:class:`str`]
+            The username of the webhook
+
+        avatar_url: Optional[:class:`str`]
+            The avatar url of the webhook
+
+        tts: Optional[:class:`bool`]
+            If the message should be sent with text-to-speech
+
+        file: Optional[:class:`.File`]
+            A :class:`.File` to send with the message
+
+        embeds: Optional[List[dict]]
+            A list of embed objects to send with the message
+
+        allowed_mentions: Optional[dict]
+            The allowed mentions of the message
+
+        componenets: Optional[List[dict]]
+            A list of message component objects
+
+        wait: Optional[:class:`bool`]
+            If the API should wait for confirmation sent
+            confirmation before returning a response
+
+        thread_id: Optional[:class:`int`]
+            The id of the thread to send to
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
         """
         form = self.form_helper([file])
         payload = update_payload(
@@ -4068,18 +4645,31 @@ class HTTPClient:
 
     async def get_webhook_message(
         self, webhook_id: int, webhook_token: str, message_id: int
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get a webhook message.
+    ) -> dict:
+        """Fetches a webhook message.
 
-        Parameters:
-            webhook_id (int): The ID of the webhook.
-            webhook_token (str): The token of the webhook.
-            message_id (int): The ID of the message.
+        This method makes an API call to get a webhook message.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        webhook_id: :class:`int`
+            The id of the webhook
 
+        webhook_token: :class:`str`
+            The webhook's token
+
+        message_id: :class:`int`
+            The id of the message to fetch
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the fetched message
         """
         return await self.request(
             "GET",
@@ -4102,24 +4692,49 @@ class HTTPClient:
         allowed_mentions: Optional[Dict[str, Any]] = None,
         componenets: Optional[List[Dict[str, Any]]] = None,
         attachments: Optional[List[Dict[str, Any]]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to edit a webhook message.
+    ) -> dict:
+        """Executes a webhook.
 
-        Parameters:
-            webhook_id (int): The ID of the webhook.
-            webhook_token (str): The token of the webhook.
-            message_id (int): The ID of the message.
-            content (Optional[str]): The content of the message.
-            embeds (Optional[List[Dict[str, Any]]]): The embeds to send.
-            file (Optional[File]): The file to upload.
-            allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions.
-            componenets (Optional[List[Dict[str, Any]]]): The components to send.
-            attachments (Optional[List[Dict[str, Any]]]): The attachments to send.
+        This method makes an API call to execute a webhook.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        webhook_id: :class:`int`
+            The id of the webhook
 
+        webhook_token: :class:`str`
+            The webhook's token
+
+        message_id: :class:`int`
+            The id of the message to edit
+
+        content: Optional[:class:`str`]
+            The new content to send the webhook
+
+        file: Optional[:class:`.File`]
+            A new :class:`.File` to send with the message
+
+        embeds: Optional[List[dict]]
+            A new list of embed objects to send with the message
+
+        allowed_mentions: Optional[dict]
+            The new allowed mentions of the message
+
+        componenets: Optional[List[dict]]
+            A new list of message component objects
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified message.
         """
         form = self.form_helper([file])
         payload = update_payload(
@@ -4144,18 +4759,26 @@ class HTTPClient:
 
     async def delete_webhook_message(
         self, webhook_id: int, webhook_token: str, message_id: int
-    ):
-        """
-        Makes an API call to delete a webhook message.
+    ) -> None:
+        """Deletes a webhook message.
 
-        Parameters:
-            webhook_id (int): The ID of the webhook.
-            webhook_token (str): The token of the webhook.
-            message_id (int): The ID of the message.
+        This method makes an API call to delete a webhook message.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        webhook_id: :class:`int`
+            The id of the webhoook
 
+        webhook_token: :class:`str`
+            The webhook's token
+
+        message_id: :class:`int`
+            The id of the message to delete
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         return await self.request(
             "DELETE",
@@ -4166,18 +4789,26 @@ class HTTPClient:
             ),
         )
 
-    async def get_global_application_commands(
-        self, application_id: int
-    ) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get global application commands.
+    async def get_global_application_commands(self, application_id: int) -> List[dict]:
+        """Fetches all global application commands.
 
-        Parameters:
-            application_id (int): The ID of the application.
+        This method does an API call to fetch a list of all
+        global application commands for the client.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of global application command objects
         """
         return await self.request(
             "GET", Route(f"/applications/{application_id}/commands")
@@ -4189,24 +4820,51 @@ class HTTPClient:
         *,
         name: str,
         description: str,
-        options: Optional[List[Dict[str, Any]]] = None,
+        options: Optional[List[dict]] = None,
         default_permission: bool = True,
         type: int = 1,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to create a global application command.
+    ) -> dict:
+        """Creates a global application command.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            name (str): The name of the command.
-            description (str): The description of the command.
-            options (Optional[List[Dict[str, Any]]]): The options of the command.
-            default_permission (bool): Whether the command is enabled by default.
-            type (int): The type of the command.
+        This method makes an API call to create a global application command.
 
-        Returns:
-            The data returned from the API.
+        .. note::
 
+            It can take up to 1 hour for global commands to register for
+            every guild.
+
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
+
+        name: :class:`str`
+            The name of the application command
+
+        description: :class:`str`
+            The description of the application command
+
+        options: Optional[List[:class:`dict`]]
+            A list of options for the application command
+
+        default_permission: :class:`bool`
+            If the command should be enabled on guild add
+
+        type: :class:`int`
+            The type of application command
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the newly created application command.
         """
         payload = update_payload(
             {},
@@ -4223,17 +4881,28 @@ class HTTPClient:
 
     async def get_global_application_command(
         self, application_id: int, command_id: int
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get a global application command.
+    ) -> dict:
+        """Fetches a global application command.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            command_id (int): The ID of the command.
+        This method makes an API call to get a global application command.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        command_id: :class:`int`
+            The id of the command to fetch
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the fetched global application command.
         """
         return await self.request(
             "GET", Route(f"/applications/{application_id}/commands/{command_id}")
@@ -4246,23 +4915,50 @@ class HTTPClient:
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        options: Optional[List[Dict[str, Any]]] = None,
+        options: Optional[List[dict]] = None,
         default_permission: Optional[bool] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to edit a global application command.
+    ) -> dict:
+        """Modifies a global application command.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            command_id (int): The ID of the command.
-            name (Optional[str]): The name of the command.
-            description (Optional[str]): The description of the command.
-            options (Optional[List[Dict[str, Any]]]): The options of the command.
-            default_permission (Optional[bool]): Whether the command is enabled by default.
+        This method makes an API call to modify a global application command.
 
-        Returns:
-            The data returned from the API.
+        .. note::
 
+            It can take up to 1 hour for global commands to register for
+            every guild.
+
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
+
+        command_id: :class:`int`
+            The id of the command
+
+        name: :class:`str`
+            The new name of the application command
+
+        description: :class:`str`
+            The new description of the application command
+
+        options: Optional[List[:class:`dict`]]
+            A new list of options for the application command
+
+        default_permission: :class:`bool`
+            If the command should be enabled on guild add
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified application command.
         """
         payload = update_payload(
             {},
@@ -4281,31 +4977,55 @@ class HTTPClient:
     async def delete_global_application_command(
         self, application_id: int, command_id: int
     ) -> None:
-        """
-        Makes an API call to delete a global application command.
+        """Deletes a global application command.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            command_id (int): The ID of the command.
+        This method makes an API call to delete a global application command.
 
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
+
+        command_id: :class:`int`
+            The id of the command to delete
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         await self.request(
             "DELETE", Route(f"/applications/{application_id}/commands/{command_id}")
         )
 
     async def bulk_overwrite_global_application_commands(
-        self, application_id: int, *, commands: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to bulk overwrite global application commands.
+        self, application_id: int, *, commands: List[dict]
+    ) -> List[dict]:
+        """Bulk overwrites the current global application commands.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            commands (List[Dict[str, Any]]): The commands to overwrite.
+        This method makes an API call to bulk overwrite global application commands.
 
-        Returns:
-            The data returned from the API.
+        .. note::
 
+            It can take up to 1 hour to register for every guild.
+
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
+
+        commands: List[:class:`dict`]
+            A list of application commands to overwrite the current ones with.
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing application commands.
         """
         return await self.request(
             "PUT", Route(f"/applications/{application_id}/commands"), json=commands
@@ -4313,17 +5033,28 @@ class HTTPClient:
 
     async def get_guild_application_commands(
         self, application_id: int, guild_id: int
-    ) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get guild application commands.
+    ) -> List[dict]:
+        """Fetches a list of application commands from a guild.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            guild_id (int): The ID of the guild.
+        This method makes an API call to get guild application commands.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        guild_id: :class:`int`
+            The id of the guild to fetch from
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing application command objects.
         """
         return await self.request(
             "GET",
@@ -4340,24 +5071,49 @@ class HTTPClient:
         *,
         name: str,
         description: str,
-        options: Optional[List[Dict[str, Any]]] = None,
+        options: Optional[List[dict]] = None,
         default_permission: bool = True,
         type: int = 1,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to create a guild application command.
+    ) -> dict:
+        """Creates an application command for a guild.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            name (str): The name of the command.
-            description (str): The description of the command.
-            options (Optional[List[Dict[str, Any]]]): The options of the command.
-            default_permission (bool): Whether the command is enabled by default.
-            type (int): The type of the command.
+        This method makes an API call to create a guild application command.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        guild_id: :class:`int`
+            The id of the guild where the command will be added
+
+        name: :class:`str`
+            The name of the command
+
+        description: :class:`str`
+            The description of the command
+
+        options: Optional[List[:class:`dict`]]
+            The options of the application command
+
+        default_permission: :class:`bool`
+            If the application command should be enabled on guild add
+
+        type: :class:`int`
+            The application command type
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the created application command.
         """
         payload = update_payload(
             {},
@@ -4379,18 +5135,31 @@ class HTTPClient:
 
     async def get_guild_application_command(
         self, application_id: int, guild_id: int, command_id: int
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get a guild application command.
+    ) -> dict:
+        """Fetches a guild's application command.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            guild_id (int): The ID of the guild.
-            command_id (int): The ID of the command.
+        This method makes an API call to get a guild application command.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        guild_id: :class:`int`
+            The id of the guild to fetch from
+
+        command_id: :class:`int`
+            The command's id
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the fetched application command.
         """
         return await self.request(
             "GET",
@@ -4410,22 +5179,46 @@ class HTTPClient:
         description: Optional[str] = None,
         options: Optional[List[Dict[str, Any]]] = None,
         default_permission: Optional[bool] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to edit a guild application command.
+    ) -> dict:
+        """Modifies a guild's application command.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            guild_id (int): The ID of the guild.
-            command_id (int): The ID of the command.
-            name (Optional[str]): The name of the command.
-            description (Optional[str]): The description of the command.
-            options (Optional[List[Dict[str, Any]]]): The options of the command.
-            default_permission (Optional[bool]): Whether the command is enabled by default.
+        This method makes an API call to edit a guild application command.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        guild_id: :class:`int`
+            The id of the guild where the command will be added
+
+        command_id: :class:`int`
+            The command's id
+
+        name: :class:`str`
+            The new name of the command
+
+        description: :class:`str`
+            The new description of the command
+
+        options: Optional[List[:class:`dict`]]
+            The new options of the application command
+
+        default_permission: :class:`bool`
+            If the application command should be enabled on guild add
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified application command.
         """
         payload = update_payload(
             {},
@@ -4446,15 +5239,27 @@ class HTTPClient:
 
     async def delete_guild_application_command(
         self, application_id: int, guild_id: int, command_id: int
-    ):
-        """
-        Makes an API call to delete a guild application command.
+    ) -> None:
+        """Deletes a guild's application command.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            guild_id (int): The ID of the guild.
-            command_id (int): The ID of the command.
+        This method makes an API call to delete a guild's
+        application command.
 
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application_command
+
+        guild_id: :class:`int`
+            The id of the guild to delete the command from
+
+        command_id: :class:`int`
+            The command's id
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         await self.request(
             "DELETE",
@@ -4465,19 +5270,32 @@ class HTTPClient:
         )
 
     async def bulk_overwrite_guild_application_commands(
-        self, application_id: int, guild_id: int, *, commands: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
-        """
+        self, application_id: int, guild_id: int, *, commands: List[dict]
+    ) -> List[dict]:
+        """Bulk overwrite guild application commands.
+
         Makes an API call to bulk overwrite guild application commands.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            guild_id (int): The ID of the guild.
-            commands (List[Dict[str, Any]]): The commands to overwrite.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
-        Returns:
-            The data returned from the API.
+        guild_id: :class:`int`
+            The id of the guild from which to overwrite
 
+        commands: List[:class:`dict`]
+            A list of application commands to overwrite the current ones with.
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing application commands.
         """
         return await self.request(
             "PUT",
@@ -4490,18 +5308,28 @@ class HTTPClient:
 
     async def get_guild_application_command_permissions(
         self, application_id: int, guild_id: int
-    ) -> List[Dict[str, Any]]:
-        """
-        Makes an API call to get guild application command permissions.
+    ) -> List[dict]:
+        """Fetches a list of guild application command permissions objects.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            guild_id (int): The ID of the guild.
-            command_id (int): The ID of the command.
+        This method makes an API call to get guild application command permissions.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        guild_id: :class:`int`
+            The id of the guild to fetch from
+
+        Raises
+        -------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing guild application command permissions objects.
         """
         return await self.request(
             "GET",
@@ -4513,18 +5341,31 @@ class HTTPClient:
 
     async def get_application_command_permissions(
         self, application_id: int, guild_id: int, command_id: int
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get application command permissions.
+    ) -> dict:
+        """Fetches a specific application command's permissions.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            guild_id (int): The ID of the guild.
-            command_id (int): The ID of the command.
+        This method makes an API call to get an application command permissions.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        guild_id: :class:`int`
+            The id of the guild to fetch from
+
+        command_id: :class:`int`
+            The command's id
+
+        Raises
+        -------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing an application command's permissions.
         """
         return await self.request(
             "GET",
@@ -4540,20 +5381,39 @@ class HTTPClient:
         guild_id: int,
         command_id: int,
         *,
-        permissions: List[Dict[str, Any]],
-    ):
-        """
-        Makes an API call to edit application command permissions.
+        permissions: List[dict],
+    ) -> dict:
+        """Edits a specific application command's permissions.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            guild_id (int): The ID of the guild.
-            command_id (int): The ID of the command.
-            permissions (List[Dict[str, Any]]): The permissions to edit.
+        This method makes an API call to edit application command permissions.
 
-        Returns:
-            The data returned from the API.
+        .. note::
 
+            You can only have 10 command permissions overwrites.
+
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
+
+        guild_id: :class:`int`
+            The id of the guild where the command is in
+
+        command_id: :class:`int`
+            The command's id
+
+        permissions: List[:class:`dict`]
+            A list of application command permissions objects.
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing an application command's permissions.
         """
         payload = {"permissions": permissions}
         return await self.request(
@@ -4566,19 +5426,36 @@ class HTTPClient:
         )
 
     async def batch_edit_application_command_permissions(
-        self, application_id: int, guild_id: int, *, permissions: List[Dict[str, Any]]
-    ):
-        """
-        Makes an API call to batch edit application command permissions.
+        self, application_id: int, guild_id: int, *, permissions: List[dict]
+    ) -> List[dict]:
+        """Batch edit guild application commands permissions.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            guild_id (int): The ID of the guild.
-            permissions (List[Dict[str, Any]]): The permissions to edit.
+        This method makes an API call to edit all guild application commands permissions.
 
-        Returns:
-            The data returned from the API.
+        .. note::
 
+            You can only have 10 command permissions overwrites per command.
+
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
+
+        guild_id: :class:`int`
+            The id of the guild where the command is in
+
+        permissions: List[:class:`dict`]
+            A list of application command permissions objects.
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`dict`]
+            A list of dicts representing an application command's permissions.
         """
         return await self.request(
             "PATCH",
@@ -4595,20 +5472,38 @@ class HTTPClient:
         interaction_token: str,
         *,
         type: int,
-        data: Optional[Dict[str, Any]] = None,
+        data: Optional[dict] = None,
     ) -> Dict[str, Any]:
-        """
-        Makes an API call to create an interaction response.
+        """Creates an interaction response.
 
-        Parameters:
-            interaction_id (int): The ID of the interaction.
-            interaction_token (str): The token of the interaction.
-            type (int): The type of the response.
-            data (Optional[Dict[str, Any]]): The data of the response.
+        This method makes an API call to create an interaction response.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        interaction_id: :class:`int`
+            The id of the interaction which to respond to
 
+        interaction_token: :class:`str`
+            The interaction's token
+
+        type: :class:`int`
+            The type of response to create
+
+        data: Optional[:class:`dict`]
+            The data to pass to the interaction response
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the interaction response created.
         """
         payload = update_payload({}, type=type, data=data)
         return await self.request(
@@ -4619,17 +5514,29 @@ class HTTPClient:
 
     async def get_original_interaction_response(
         self, application_id: int, interaction_token: str
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get the original interaction response.
+    ) -> dict:
+        """Fetches the original interaction response.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            interaction_token (str): The token of the interaction.
+        This method makes an API call to get the original interaction response.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        interaction_token: :class:`str`
+            The token of the interaction which to get the original
+            response from
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the original interaction response.
         """
         return await self.request(
             "GET",
@@ -4642,28 +5549,54 @@ class HTTPClient:
         interaction_token: str,
         *,
         content: Optional[str] = None,
-        embeds: Optional[List[Dict[str, Any]]] = None,
+        embeds: Optional[List[dict]] = None,
         file: Optional[File] = None,
-        allowed_mentions: Optional[Dict[str, Any]] = None,
-        componenets: Optional[List[Dict[str, Any]]] = None,
-        attachments: Optional[List[Dict[str, Any]]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to edit the original interaction response.
+        allowed_mentions: Optional[dict] = None,
+        componenets: Optional[List[dict]] = None,
+        attachments: Optional[List[dict]] = None,
+    ) -> dict:
+        """Edits an interaction's original interaction response.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            interaction_token (str): The token of the interaction.
-            content (Optional[str]): The content of the response.
-            embeds (Optional[List[Dict[str, Any]]]): The embeds of the response.
-            file (Optional[File]): The file of the response.
-            allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions of the response.
-            componenets (Optional[List[Dict[str, Any]]]): The components of the response.
-            attachments (Optional[List[Dict[str, Any]]]): The attachments of the response.
+        This method makes an API call to edit the original interaction response.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        interaction_token: :class:`str`
+            The token of the interaction
+
+        content: Optional[:class:`str`]
+            The new content of the response
+
+        embeds: Optional[List[:class:`dict`]]
+            A new list of embeds
+
+        file: Optional[:class:`.File`]
+            A new file for the interaction response
+
+        allowed_mentions: Optional[:class:`dict`]
+            The allowed mentions of the response
+
+        componenets: Optional[List[:class:`dict`]]
+            The new message components
+
+        attachments: Optional[List[:class:`dict`]]
+            A list of new attachments
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the updated response.
         """
         form = self.form_helper([file])
         payload = update_payload(
@@ -4684,17 +5617,23 @@ class HTTPClient:
 
     async def delete_original_interaction_response(
         self, application_id: int, interaction_token: str
-    ):
-        """
-        Makes an API call to delete the original interaction response.
+    ) -> None:
+        """Deletes an interaction's original response.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            interaction_token (str): The token of the interaction.
+        This method makes an API call to delete the original interaction response.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        interaction_token: :class:`str`
+            The interaction's token
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         await self.request(
             "DELETE",
@@ -4707,30 +5646,55 @@ class HTTPClient:
         interaction_token: str,
         *,
         content: Optional[str] = None,
-        embeds: Optional[List[Dict[str, Any]]] = None,
+        embeds: Optional[List[dict]] = None,
         file: Optional[File] = None,
-        allowed_mentions: Optional[Dict[str, Any]] = None,
-        componenets: Optional[List[Dict[str, Any]]] = None,
-        attachments: Optional[List[Dict[str, Any]]] = None,
+        allowed_mentions: Optional[dict] = None,
+        componenets: Optional[List[dict]] = None,
+        attachments: Optional[List[dict]] = None,
         flags: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to create a followup message.
+    ) -> dict:
+        """Creates an interaction followup message.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            interaction_token (str): The token of the interaction.
-            content (Optional[str]): The content of the response.
-            embeds (Optional[List[Dict[str, Any]]]): The embeds of the response.
-            file (Optional[File]): The file of the response.
-            allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions of the response.
-            componenets (Optional[List[Dict[str, Any]]]): The components of the response.
-            attachments (Optional[List[Dict[str, Any]]]): The attachments of the response.
-            flags (Optional[int]): The flags of the response.
+        This method makes an API call to create a followup message.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        interaction_token: :class:`str`
+            The token of the interaction
+
+        content: Optional[:class:`str`]
+            The content of the followup message
+
+        embeds: Optional[List[:class:`dict`]]
+            A list of embeds to send with the message
+
+        file: Optional[:class:`.File`]
+            A file to send with the followup message
+
+        allowed_mentions: Optional[:class:`dict`]
+            The allowed mentions of the followup message
+
+        componenets: Optional[List[:class:`dict`]]
+            The followup message's components
+
+        attachments: Optional[List[:class:`dict`]]
+            A list of attachments for the followup message
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the created followup message.
         """
         form = self.form_helper([file])
         payload = update_payload(
@@ -4752,18 +5716,31 @@ class HTTPClient:
 
     async def get_followup_message(
         self, application_id: int, interaction_token: str, message_id: int
-    ) -> Dict[str, Any]:
-        """
-        Makes an API call to get a followup message.
+    ) -> dict:
+        """Fetches an interaction followup message.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            interaction_token (str): The token of the interaction.
-            message_id (int): The ID of the message.
+        This method makes an API call to get a followup message.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        interaction_token: :class:`str`
+            The interaction's token
+
+        message_id: :class:`int`
+            The followup message's id
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while m aking the request.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the fetched followup message.
         """
         return await self.request(
             "GET",
@@ -4779,29 +5756,57 @@ class HTTPClient:
         message_id: int,
         *,
         content: Optional[str] = None,
-        embeds: Optional[List[Dict[str, Any]]] = None,
+        embeds: Optional[List[dict]] = None,
         file: Optional[File] = None,
-        allowed_mentions: Optional[Dict[str, Any]] = None,
-        componenets: Optional[List[Dict[str, Any]]] = None,
-        attachments: Optional[List[Dict[str, Any]]] = None,
+        allowed_mentions: Optional[dict] = None,
+        componenets: Optional[List[dict]] = None,
+        attachments: Optional[List[dict]] = None,
     ) -> Dict[str, Any]:
-        """
-        Makes an API call to edit a followup message.
+        """Edits an interaction's followup message.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            interaction_token (str): The token of the interaction.
-            message_id (int): The ID of the message.
-            content (Optional[str]): The content of the response.
-            embeds (Optional[List[Dict[str, Any]]]): The embeds of the response.
-            file (Optional[File]): The file of the response.
-            allowed_mentions (Optional[Dict[str, Any]]): The allowed mentions of the response.
-            componenets (Optional[List[Dict[str, Any]]]): The components of the response.
-            attachments (Optional[List[Dict[str, Any]]]): The attachments of the response.
+        This method makes an API call to edit a followup message.
 
-        Returns:
-            The data returned from the API.
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
 
+        interaction_token: :class:`str`
+            The token of the interaction
+
+        message_id: :class:`int`
+            The id of the followup message
+
+        content: Optional[:class:`str`]
+            The new content of the followup message
+
+        embeds: Optional[List[:class:`dict`]]
+            A new list of embeds to send with the message
+
+        file: Optional[:class:`.File`]
+            A new file to send with the followup message
+
+        allowed_mentions: Optional[:class:`dict`]
+            The new allowed mentions of the followup message
+
+        componenets: Optional[List[:class:`dict`]]
+            The followup message's new components
+
+        attachments: Optional[List[:class:`dict`]]
+            A new list of attachments for the followup message
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.BadRequest`
+            You somehow messed up the payload.
+
+        Returns
+        -------
+        :class:`dict`
+            A dict representing the modified followup message.
         """
         form = self.form_helper([file])
         payload = update_payload(
@@ -4824,15 +5829,26 @@ class HTTPClient:
 
     async def delete_followup_message(
         self, application_id: int, interaction_token: str, message_id: int
-    ):
-        """
-        Makes an API call to delete a followup message.
+    ) -> None:
+        """Deletes an interaction's followup message.
 
-        Parameters:
-            application_id (int): The ID of the application.
-            interaction_token (str): The token of the interaction.
-            message_id (int): The ID of the message.
+        This method makes an API call to delete a followup message.
 
+        Parameters
+        ----------
+        application_id: :class:`int`
+            The client's application id
+
+        interaction_token: :class:`str`
+            The interaction's token
+
+        message_id: :class:`int`
+            The followup message's id
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         await self.request(
             "DELETE",
