@@ -46,15 +46,20 @@ HTTP errors
 Internal API-Reference
 ======================
 
-HTTPClient
-----------
+REST
+----
+
+Route
+~~~~~
 .. autoclass:: lefi.http.Route
     :members:
 
+HTTPClient
+~~~~~~~~~~
 .. autoclass:: lefi.http.HTTPClient
     :members:
 
 Ratelimiter
------------
+~~~~~~~~~~~
 .. autoclass:: lefi.ratelimiter.Ratelimiter
     :members:
