@@ -6,6 +6,22 @@ __all__ = ("OpCodes",)
 
 
 class OpCodes(enum.IntFlag):
+    """OpCode enums
+
+    Attributes
+    ----------
+    DISPATCH: :class:`int`
+    HEARTBEAT: :class:`int`
+    IDENTIFY: :class:`int`
+    PRESENCE_UPDATE: :class:`int`
+    VOICE_STATE_UPDATE: :class:`int`
+    RESUME: :class:`int`
+    REQUEST_GUILD_MEMBERS: :class:`int`
+    INVALID_SESSION: :class:`int`
+    HELLO: :class:`int`
+    HEARTBEAT_ACK: :class:`int`
+    """
+
     DISPATCH = 0
     HEARTBEAT = 1
     IDENTIFY = 2

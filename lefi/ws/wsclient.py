@@ -18,6 +18,26 @@ logger = logging.getLogger(__name__)
 
 
 class WebSocketClient(BaseWebsocketClient):
+    """A middle man websocket client.
+
+    This websocket client decides whether or not to create
+    a sharded websocket client or to use the base websocket client.
+
+    Parameters
+    ----------
+    client: :class:`.Client`
+        The current client being connected
+
+    intents: Optional[:class:`.Intents`]
+        The intents to IDENTIFY with
+
+    shard_ids: Optional[List[int]]
+        A list of shard ids to use
+
+    sharded: :class:`bool`
+        If the client is sharded or not
+    """
+
     def __init__(
         self,
         client: Client,
@@ -32,7 +52,7 @@ class WebSocketClient(BaseWebsocketClient):
         self.sharded = sharded
 
     async def start(self) -> None:
-        data = await self._get_gateway()
+        data = await self.client.http.get_bot_gateway()
 
         if self.sharded and not self.shard_count:
             self.shard_count = data["shards"]

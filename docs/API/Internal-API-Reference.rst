@@ -22,6 +22,26 @@ Ratelimiter
 Gateway
 -------
 
+Websocket clients
+~~~~~~~~~~~~~~~~~
+
+Base websocket client
+^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: lefi.ws.basews.BaseWebsocketClient
+    :members:
+
+Sharded websocket client
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: lefi.ws.shard.Shard
+    :members:
+    :inherited-members:
+
+Websocket client
+^^^^^^^^^^^^^^^^
+.. autoclass:: lefi.ws.wsclient.WebSocketClient
+    :members:
+    :inherited-members:
+
 Cache
 ~~~~~
 .. autoclass:: lefi.state.Cache
@@ -33,3 +53,14 @@ State
 ~~~~~
 .. autoclass:: lefi.state.State
     :members:
+
+Max concurreny Ratelimiter
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autoclass:: lefi.ws.ratelimiter.Ratelimiter
+   :members:
+
+OpCodes
+~~~~~~~
+.. autoclass:: lefi.ws.opcodes.OpCodes
+    :members:
+    :inherited-members:
