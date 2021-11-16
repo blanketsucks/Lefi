@@ -17,14 +17,12 @@ Features
 Introduction
 ~~~~~~~~~~~~
 .. toctree::
-    :maxdepth: 4
-
-    getting-started
+    Getting started <Manuals/Getting-started>
 
 API-Reference
 -------------
 .. toctree::
     :maxdepth: 1
 
-    api-reference
-    internals
+    Public API-Reference <API/Public-API-Reference>
+    Internal API-Reference <API/Internal-API-Reference>
