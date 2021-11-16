@@ -28,6 +28,7 @@ html_static_path = ["_static"]
 html_theme = "furo"
 html_theme_options = {
     "navigation_with_keys": True,
+    "announcement": "<a href='https://discord.com/invite/QPFXzFbqrK'>Join the discord!</a>",
 }
 
 pygments_style = "native"
