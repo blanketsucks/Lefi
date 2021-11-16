@@ -13,6 +13,14 @@ Features
 * `Object oriented` - Allows for easy usage
 * `Ratelimit handling` - Our ratelimiter uses semaphores, allowing for concurrent requests.
 
+
+Introduction
+~~~~~~~~~~~~
+.. toctree::
+    :maxdepth: 4
+
+    getting-started
+
 API-Reference
 -------------
 .. toctree::
