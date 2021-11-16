@@ -43,6 +43,7 @@ from .voice import VoiceClient, VoiceState
 if TYPE_CHECKING:
     from .client import Client
     from .ws import BaseWebsocketClient
+    from .objects.base import Messageable
 
 __all__ = (
     "State",
@@ -114,29 +115,6 @@ class State:
 
     http: :class:`.HTTPClient`
         The HTTPClient being used by the client
-
-    _messages: :class:`.Cache`
-        The client's internal message cache. The maxlen of this cache
-        is set to ``1000``
-
-    _users: :class:`.Cache`
-        The client's internal user cache
-
-    _guilds: :class:`.Cache`
-        The client's interal guild cache
-
-        _components: :class:`.Cache`
-        The client's internal components cache
-
-    _channels: :class:`.Cache`
-        The client's internal channel cache
-
-    _emojis: :class:`.Cache`
-        The client's internal emoji cache
-
-    _voice_clients: :class:`.Cache`
-        The client's internal voice client cache
-
     """
 
     CHANNEL_MAPPING: Dict[
@@ -165,16 +143,48 @@ class State:
         self._guilds = Cache[Guild]()
         self._emojis = Cache[Emoji]()
         self._components = Cache[Tuple[Callable, Component]]()
-        self._channels = Cache[
-            Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
-        ]()
-        self._emojis = Cache[Emoji]()
+        self._channels = Cache[Union[Channel, DMChannel]]()
         self._voice_clients = Cache[VoiceClient]()
 
     @property
     def user(self) -> User:
-        """:class:`.User` The current client's user."""
+        """The current client's user."""
         return self.client.user
+
+    @property
+    def messages(self) -> Cache[Message]:
+        """The internal message cache."""
+        return self._messages
+
+    @property
+    def users(self) -> Cache[User]:
+        """The interal user cache."""
+        return self._users
+
+    @property
+    def guilds(self) -> Cache[Guild]:
+        """The internal guild cache."""
+        return self._guilds
+
+    @property
+    def emojis(self) -> Cache[Emoji]:
+        """The internal emoji cache."""
+        return self._emojis
+
+    @property
+    def components(self) -> Cache[Tuple[Callable, Component]]:
+        """The internal components cache."""
+        return self._components
+
+    @property
+    def channels(self) -> Cache[Union[Channel, DMChannel]]:
+        """The internal channels cache."""
+        return self._channels
+
+    @property
+    def voice_clients(self) -> Cache[VoiceClient]:
+        """The internal voice client cache."""
+        return self._voice_clients
 
     def get_websocket(self, guild_id: int) -> BaseWebsocketClient:
         """Grabs the :class:`.BaseWebsocketClient` from a guild.
@@ -209,10 +219,10 @@ class State:
         Parameters
         ----------
         event: :class:`str`
-            The name of the event being dispatched
+            The name of the event to dispatch
 
-        *payload: List[Any]
-            A list of parsed data to pass when calling event callbacks
+        payload: Any
+            The payload(s) to pass when calling callbacks
         """
         events: Optional[dict] = self.client.events.get(event)
         futures = self.client.futures.get(event, [])
@@ -394,13 +404,17 @@ class State:
 
         self.dispatch("message_delete", message)
 
-    async def parse_message_update(self, data: Dict) -> None:
-        """
-        Parses `MESSAGE_UPDATE` event. Dispatches `before` and `after`.
+    async def parse_message_update(self, data: dict) -> None:
+        """Parses the ``MESSAGE_UPDATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``MESSAGE_UPDATE`` event once received
+        from the gateway. This method updates the message if it was previously cached. This method calls
+        :meth:`.State.dispatch` with two payloads before (:class:`.Message`) and after (:class:`.Message`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         channel = self.get_channel(int(data["channel_id"]))
         if not channel:
@@ -417,13 +431,17 @@ class State:
         self._messages[after.id] = after
         self.dispatch("message_update", before, after)
 
-    async def parse_channel_create(self, data: Dict) -> None:
-        """
-        Parses `CHANNEL_CREATE` event. Creates a Channel then caches it, as well as dispatching it afterwards.
+    async def parse_channel_create(self, data: dict) -> None:
+        """Parses the ``CHANNEL_CREATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``CHANNEL_CREATE`` event once received
+        from the gateway. This method creates a channel object then adds it to the internal cache.
+        This method calls :meth:`.State.dispatch` with one payload channel (:class:`.Channel`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         if guild_id := data.get("guild_id"):
             guild = self.get_guild(int(guild_id))
@@ -434,13 +452,17 @@ class State:
         self._channels[channel.id] = channel
         self.dispatch("channel_create", channel)
 
-    async def parse_channel_update(self, data: Dict) -> None:
-        """
-        Parses `CHANNEL_UPDATE` event. Dispatches `before` and `after`.
+    async def parse_channel_update(self, data: dict) -> None:
+        """Parses the ``CHANNEL_UPDATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``CHANNEL_UPDATE`` event once received
+        from the gateway. This method updates the channel if previously cached. This method calls
+        :meth:`.State.dispatch` with two payloads before (:class:`.Channel`) and after (:class:`.Channel`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         channel = self.get_channel(int(data["id"]))
         if not channel:
@@ -449,26 +471,34 @@ class State:
         before, after = self.update_channel(channel, data)  # type: ignore
         self.dispatch("channel_update", before, after)
 
-    async def parse_channel_delete(self, data: Dict) -> None:
-        """
-        Parses `CHANNEL_DELETE` event. Dispatches the deleted channel.
+    async def parse_channel_delete(self, data: dict) -> None:
+        """Parses the ``CHANNEL_DELETE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``CHANNEL_DELETE`` event once received
+        from the gateway. This method removes the *"dead"* channel form the cache. This method calls
+        :meth:`.State.dispatch` with one payload channel (:class:`.Channel`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         channel = self.get_channel(int(data["id"]))
         self._channels.pop(channel.id)  # type: ignore
 
         self.dispatch("channel_delete", channel)
 
-    async def parse_voice_state_update(self, data: Dict) -> None:
-        """
-        Parses `VOICE_STATE_UPDATE` event. Creates a VoiceState then caches it, as well as dispatching it afterwards.
+    async def parse_voice_state_update(self, data: dict) -> None:
+        """Parses the ``VOICE_STATE_UPDATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``VOICE_STATE_UPDATE`` event once received
+        from the gateway. This method updates the previous voice state if cached. This method calls
+        :meth:`.State.dispatch` with two payloads before (:class:`.VoiceState`) after (:class:`.VoiceState`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         after = VoiceState(self, data)
 
@@ -489,20 +519,34 @@ class State:
 
             self.dispatch("voice_state_update", before, after)
 
-    async def parse_voice_server_update(self, data: Dict):
+    async def parse_voice_server_update(self, data: dict) -> None:
+        """Parses the ``VOICE_STATE_UPDATE`` event.
+
+        This method parses the raw data from the ``VOICE_STATE_UPDATE`` event once received
+        from the gateway. This method does not dispatch anything.
+
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
+        """
         guild_id = int(data["guild_id"])
         voice = self.get_voice_client(guild_id)
 
         if voice:
             await voice.voice_server_update(data)
 
-    async def parse_thread_create(self, data: Dict) -> None:
-        """
-        Parses `THREAD_CREATE` event. Creates a Thread then caches it, as well as dispatching it afterwards.
+    async def parse_thread_create(self, data: dict) -> None:
+        """Parses the ``THREAD_CREATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``THREAD_CREATE`` event once
+        received from the gateway. This method creates a new :class:`.Thread` object and caches it.
+        This method calls :meth:`.State.dispatch` with one payload thread (:class:`.Thread`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild_id = int(data["guild_id"])
         guild = self.get_guild(guild_id)
@@ -515,13 +559,18 @@ class State:
 
         self.dispatch("thread_create", thread)
 
-    async def parse_thread_update(self, data: Dict) -> None:
-        """
-        Parses `THREAD_UPDATE` event. Dispatches `before` and `after`.
+    async def parse_thread_update(self, data: dict) -> None:
+        """Parses the ``THREAD_UPDATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``THREAD_UPDATE`` event once
+        received from the gateway. This method updates the :class:`.Thread` object if it was
+        previously cached. This method calls :meth:`.State.dispatch` with two payloads
+        before (:class:`.Thread`) after (:class:`.Thread`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild_id = int(data["guild_id"])
         guild = self.get_guild(guild_id)
@@ -538,13 +587,17 @@ class State:
         before, after = self.update_thread(thread, data)
         self.dispatch("thread_update", before, after)
 
-    async def parse_thread_delete(self, data: Dict) -> None:
-        """
-        Parses `THREAD_DELETE` event. Dispatches the deleted thread.
+    async def parse_thread_delete(self, data: dict) -> None:
+        """Parses the ``THREAD_DELETE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``THREAD_DELETE`` event once
+        received from the gateway. This method deletes the *"dead"* thread from the internal cache.
+        This method calls :meth:`.State.dispatch` with one payload thread (:class:`.Thread`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild_id = int(data["guild_id"])
         guild = self.get_guild(guild_id)
@@ -561,14 +614,18 @@ class State:
         guild._threads.pop(thread.id)
         self.dispatch("thread_delete", thread)
 
-    async def parse_thread_list_sync(self, data: Dict) -> None:
-        """
-        Parses `THREAD_LIST_SYNC` event.
-        Dispatches the created threads under `THREAD_CREATE` and the removed ones under `THREAD_DELETE`.
+    async def parse_thread_list_sync(self, data: dict) -> None:
+        """Parses the ``THREAD_LIST_SYNC`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``THREAD_LIST_SYNC`` event once
+        received from the gateway. This method just syncs the threads when the client get's access.
+        This method calls :meth:`.State.dispatch` for ``THREAD_CREATE`` and ``THREAD_DELETE`` with their
+        respective payloads.
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -601,15 +658,18 @@ class State:
         for thread in previous.values():
             self.dispatch("thread_delete", thread)
 
-    async def parse_thread_members_update(self, data: Dict) -> None:
-        """
-        Parses `THREAD_MEMBERS_UPDATE` event.
-        Dispatches the added thread members under `thread_member_add` and the removed ones
-        under `thread_member_remove`.
+    async def parse_thread_members_update(self, data: dict) -> None:
+        """Parses the ``THREAD_MEMBERS_UPDATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``THREAD_MEMBERS_UPDATE`` event
+        once received from the gateway. This method just updates thread's members to be current.
+        This method calls :meth:`.State.dispatch` ``THREAD_MEMBER_ADD`` and ``THREAD_MEMBER_REMOVE`` with
+        their respective payloads
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -634,41 +694,50 @@ class State:
                 self.dispatch("thread_member_remove", member)
 
     def get_message(self, message_id: int) -> Optional[Message]:
-        """
-        Grabs a message from the cache.
+        """Grabs a :class:`.Message` from the internal cache.
 
-        Parameters:
-            message_id (int): The ID of the message.
+        Parameters
+        ----------
+        message_id: :class:`int`
+            The id of the message to get
 
-        Returns:
-            The [lefi.Message](./message.md) insance corresponding to the ID if found.
-
+        Returns
+        -------
+        Optional[:class:`.Message`]
+            The message if cached.
         """
         return self._messages.get(message_id)
 
     def get_user(self, user_id: int) -> Optional[User]:
-        """
-        Grabs a user from the cache.
+        """Grabs a :class:`.User` from the internal cache.
 
-        Parameters:
-            user_id (int): The ID of the user.
+        Parameters
+        ----------
+        user_id: :class:`int`
+            The id of the user to get
 
-        Returns:
-            The [lefi.User](./user.md) instance corresponding to the ID if found.
-
+        Returns
+        -------
+        Optional[:class:`.User`]
+            The user if cached.
         """
         return self._users.get(user_id)
 
-    def add_user(self, data: Dict) -> User:
-        """
-        Creates a user then caches it.
+    def add_user(self, data: dict) -> User:
+        """Creates a user then caches it.
 
-        Parameters:
-            data (Dict): The data of the user.
+        This method creates a new :class:`.User` object
+        then caches it into :attr:`.State.users`
 
-        Returns:
-            The created [lefi.User](./user.md) instance.
+        Parameters
+        ----------
+        data: :class:`dict`
+            The data to produce a user with
 
+        Returns
+        -------
+        :class:`.User`
+            The newly created user.
         """
         user = User(self, data)
 
@@ -676,15 +745,17 @@ class State:
         return user
 
     def get_guild(self, guild_id: int) -> Optional[Guild]:
-        """
-        Grabs a guild from the cache.
+        """Grabs a :class:`.Guild` from the internal cache.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to get
 
-        Returns:
-            The [lefi.Guild](./guild.md) instance corresponding to the ID if found.
-
+        Returns
+        -------
+        Optional[:class:`.Guild`]
+            The guild if cached.
         """
         return self._guilds.get(guild_id)
 
@@ -693,76 +764,98 @@ class State:
     ) -> Optional[
         Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
     ]:
-        """
-        Grabs a channel from the cache.
+        """Grabs a :class:`.Channel` from the internal cache.
 
-        Parameters:
-            channel_id (int): The ID of the channel.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to get
 
-        Returns:
-            The [lefi.Channel][] instance corresponding to the ID if found.
-
+        Returns
+        -------
+        Optional[Union[:class:`.Channel`, :class:`.DMChannel`]]
+            The channel if cached.
         """
         return self._channels.get(channel_id)
 
     def get_emoji(self, emoji_id: int) -> Optional[Emoji]:
-        """
-        Grabs an emoji from the cache.
+        """Grabs an :class:`.Emoji` from the internal cache.
 
-        Parameters:
-            emoji_id (int): The ID of the emoji.
+        Parameters
+        ----------
+        emoji_id: :class:`int`
+            The id of the emoji to get
 
-        Returns:
-            The [lefi.Emoji](./emoji.md) instance corresponding to the ID if found.
-
+        Returns
+        -------
+        :class:`.Emoji`
+            The emoji if cached.
         """
         return self._emojis.get(emoji_id)
 
-    def create_message(self, data: Dict, channel: Any) -> Message:
+    def create_message(self, data: dict, channel: Any) -> Message:
+        """Creates a :class:`.Message` instance.
+
+        If you're wondering why this is here. Its to use as a syntactic sugar
+        when sending messages. This is used in :meth:`.TextChannel.send`
+
+        Parameters
+        ----------
+        dict: :class:`dict`
+            The raw data of the message
+
+        channel: Any
+            The channel of the message
+
+        Returns
+        -------
+        :class:`.Message`
+            The created message instance.
         """
-        Creates a Message instance.
-
-        Parameters:
-            data (Dict): The data of the message.
-            channel (Any): The [Channel](./channel.md) of the message.
-
-        Returns:
-            The created [lefi.Message](./message.md) instance.
-
-        """
-        return Message(self, data, channel)
+        return Message(self, data, channel)  # type: ignore
 
     def create_channel(
-        self, data: Dict, *args
+        self, data: dict, *args: Any
     ) -> Union[TextChannel, VoiceChannel, CategoryChannel, Channel]:
-        """
-        Creates a Channel instance.
+        """Creates a :class:`.Channel` instance.
 
-        Parameters:
-            data (Dict): The data of the channel.
-            *args (Any): Extra arguments to pass to the channels constructor.
+        If you're wondering why this is here. Its to use as a syntatic sugar
+        for creating channels.
 
-        Returns:
-            The created [lefi.Channel](./channel.md) instance.
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data of the channel
 
+        *args: Any
+            Extra options to pass to the channel's constructor
+
+        Returns
+        -------
+        :class:`.Channel`
+            The created channel instance.
         """
         cls = self.CHANNEL_MAPPING.get(int(data["type"]), Channel)
         channel = cls(self, data, *args)
 
-        self.create_overwrites(channel)
+        self.create_overwrites(channel)  # type: ignore
         return channel  # type: ignore
 
-    def create_guild_channels(self, guild: Guild, data: Dict) -> Guild:
-        """
-        Creates the channels of a guild.
+    def create_guild_channels(self, guild: Guild, data: dict) -> Guild:
+        """Creates the channels of a guild.
 
-        Parameters:
-            guild (lefi.Guild): The [Guild](./guild.md) which to create the channels for.
-            data (Dict): The data of the channels.
+        Parameters
+        ----------
+        guild: :class:`.Guild`
+            The guild to create the channels for
 
-        Returns:
-            The [lefi.Guild](./guild.md) instance passed in.
+        data: :class:`dict`
+            The raw data of the guild
 
+        Returns
+        -------
+        :class:`.Guild`
+            The guild which was passed in.
         """
         if "channels" not in data:
             return guild
@@ -778,17 +871,21 @@ class State:
         guild._channels = channels
         return guild
 
-    def create_guild_members(self, guild: Guild, data: Dict) -> Guild:
-        """
-        Creates the members of a guild.
+    def create_guild_members(self, guild: Guild, data: dict) -> Guild:
+        """Creates the members of a guild.
 
-        Parameters:
-            guild (lefi.Guild): The [Guild](./guild.md) which to create the channels for.
-            data (Dict): The data of the members.
+        Parameters
+        ----------
+        guild: :class:`.Guild`
+            The guild to create the channels for
 
-        Returns:
-            The [lefi.Guild](./guild.md) instance passed in.
+        data: :class:`dict`
+            The raw data of the guild
 
+        Returns
+        -------
+        :class:`.Guild`
+            The guild which was passed in.
         """
         if "members" not in data:
             return guild
@@ -801,17 +898,21 @@ class State:
         guild._members = members
         return guild
 
-    def create_guild_roles(self, guild: Guild, data: Dict) -> Guild:
-        """
-        Creates the roles of a guild.
+    def create_guild_roles(self, guild: Guild, data: dict) -> Guild:
+        """Creates the roles of a guild.
 
-        Parameters:
-            guild (lefi.Guild): The [Guild](./guild.md) which to create the channels for.
-            data (Dict): The data of the roles.
+        Parameters
+        ----------
+        guild: :class:`.Guild`
+            The guild to create the channels for
 
-        Returns:
-            The [lefi.Guild][] instance passed in.
+        data: :class:`dict`
+            The raw data of the guild
 
+        Returns
+        -------
+        :class:`.Guild`
+            The guild which was passed in.
         """
         if "roles" not in data:
             return guild
@@ -822,17 +923,21 @@ class State:
         guild._roles = roles
         return guild
 
-    def create_guild_emojis(self, guild: Guild, data: Dict) -> Guild:
-        """
-        Creates the emojis of a guild.
+    def create_guild_emojis(self, guild: Guild, data: dict) -> Guild:
+        """Creates the emojis of a guild.
 
-        Parameters:
-            guild (lefi.Guild): The [Guild](./guild.md) which to create the emojis for.
-            data (Dict): The data of the emojis.
+        Parameters
+        ----------
+        guild: :class:`.Guild`
+            The guild to create the channels for
 
-        Returns:
-            The [lefi.Guild][] instance passed in.
+        data: :class:`dict`
+            The raw data of the guild
 
+        Returns
+        -------
+        :class:`.Guild`
+            The guild which was passed in.
         """
         if "emojis" not in data:
             return guild
@@ -848,17 +953,21 @@ class State:
         guild._emojis = emojis
         return guild
 
-    def create_guild_voice_states(self, guild: Guild, data: Dict) -> Guild:
-        """
-        Creates the voice states of a guild.
+    def create_guild_voice_states(self, guild: Guild, data: dict) -> Guild:
+        """Creates the voice states of a guild.
 
-        Parameters:
-            guild (lefi.Guild): The guild which to create the voice states for.
-            data (Dict): The data of the voice states.
+        Parameters
+        ----------
+        guild: :class:`.Guild`
+            The guild to create the channels for
 
-        Returns:
-            The [lefi.Guild][] instance passed in.
+        data: :class:`dict`
+            The raw data of the guild
 
+        Returns
+        -------
+        :class:`.Guild`
+            The guild which was passed in.
         """
         voice_states = {
             int(payload["user_id"]): VoiceState(self, payload)
@@ -868,15 +977,13 @@ class State:
         guild._voice_states = voice_states
         return guild
 
-    def create_overwrites(
-        self,
-        channel: Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel],
-    ) -> None:
-        """
-        Creates the overwrites of a channel.
+    def create_overwrites(self, channel: Channel) -> None:
+        """Creates the overwrites of a channel.
 
-        Parameters:
-            channel (lefi.Channel): The [Channel](./channel.md) which to create the overwrites for.
+        Parameters
+        ----------
+        channel: :class:`.Channel`
+            The channel which to create overwrites for
         """
         if isinstance(channel, DMChannel):
             return
@@ -900,7 +1007,23 @@ class State:
 
         channel._overwrites = ows
 
-    def update_guild(self, guild: Guild, data: Dict):
+    def update_guild(self, guild: Guild, data: dict) -> Tuple[Guild, Guild]:
+        """Updates a guild
+
+        parameters
+        ----------
+        guild: :class:`.Guild`
+            The guild to update
+
+        data: :class:`dict`
+            The new raw data to update to
+
+        Returns
+        -------
+        Tuple[:class:`.Guild`, :class:`.Guild`]
+            A tuple containing the guild before and after updating.
+        """
+
         before = guild._copy()
 
         self.create_guild_channels(guild, data)
@@ -912,7 +1035,22 @@ class State:
         guild._data = data
         return before, guild
 
-    def update_channel(self, channel: Channel, data: Dict):
+    def update_channel(self, channel: Channel, data: dict) -> Tuple[Channel, Channel]:
+        """Updates a channel
+
+        Parameters
+        ----------
+        channel: :class:`.Channel`
+            The channel to update
+
+        data: :class:`dict`
+            The new data to update to
+
+        Returns
+        -------
+        Tuple[:class:`.Channel`, :class:`.Channel`]
+            A tuple containing the channel before and after updating.
+        """
         before = channel._copy()
 
         channel._data = data
@@ -920,7 +1058,22 @@ class State:
 
         return before, channel
 
-    def update_thread(self, thread: Thread, data: Dict):
+    def update_thread(self, thread: Thread, data: dict) -> Tuple[Thread, Thread]:
+        """Updates a thread channel
+
+        Parameters
+        ----------
+        channel: :class:`.Thread`
+            The thread channel to update
+
+        data: :class:`dict`
+            The new data to update to
+
+        Returns
+        -------
+        Tuple[:class:`.Channel`, :class:`.Channel`]
+            A tuple containing the thread channel before and after updating.
+        """
         before = thread._copy()
         thread._data = data
 
@@ -930,40 +1083,59 @@ class State:
         return before, thread
 
     def add_voice_client(self, guild_id: int, voice_client: VoiceClient) -> None:
-        """
-        Adds a voice client to the cache.
+        """Adds a voice client to the internal cache.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-            voice_client (lefi.VoiceClient): The voice client to add.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild
 
+        voice_client: :class:`.VoiceClient`
+            The voice client to cache.
         """
         self._voice_clients[guild_id] = voice_client
 
     def get_voice_client(self, guild_id: int) -> Optional[VoiceClient]:
-        """
-        Grabs a voice client from the cache.
+        """Grabs a :class:`.VoiceClient` from the internal cache.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to grab from
 
-        Returns:
-            The [lefi.VoiceClient][] instance corresponding to the ID if found.
-
+        Returns
+        -------
+        Optional[:class:`.VoiceClient`]
+            The voice client instance if cached.
         """
         return self._voice_clients.get(guild_id)
 
     def remove_voice_client(self, guild_id: int) -> None:
-        """
-        Removes a voice client from the cache.
+        """Removes a voice client from the internal cache.
 
-        Parameters:
-            guild_id (int): The ID of the guild.
-
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            The id of the guild to delete
         """
         self._voice_clients.pop(guild_id, None)
 
-    def create_member(self, data: Dict, guild: Guild) -> Member:
+    def create_member(self, data: dict, guild: Guild) -> Member:
+        """Creates a member
+
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw member data
+
+        guild: :class:`.Guild`
+            The member's guild
+
+        Returns
+        -------
+        :class:`.Member`
+            The newly created member instance.
+        """
         member = Member(self, data, guild)
 
         for role_data in data["roles"]:
@@ -972,5 +1144,17 @@ class State:
 
         return member
 
-    def create_user(self, data: Dict) -> User:
+    def create_user(self, data: dict) -> User:
+        """Creates a user
+
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw user data
+
+        Returns
+        -------
+        :class:`.User`
+            The newly created user instance.
+        """
         return User(self, data)
