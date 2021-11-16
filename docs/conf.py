@@ -61,8 +61,7 @@ html_theme_options = {
     "navigation_with_keys": True,
 }
 
-pygments_style = "sphinx"
-pygments_dark_style = "monokai"
+pygments_style = "native"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

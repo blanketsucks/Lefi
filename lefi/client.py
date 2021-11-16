@@ -190,8 +190,6 @@ class Client:
             @client.on("message_create")
             async def on_message2(message: lefi.Message) -> None:
                 print(message.content)
-            @client.on("message_create")
-
 
         Returns
         -------
