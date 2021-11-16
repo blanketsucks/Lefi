@@ -19,3 +19,4 @@ API-Reference
     :maxdepth: 1
 
     api-reference
+    internals
