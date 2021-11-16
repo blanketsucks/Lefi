@@ -107,5 +107,5 @@ only run once in the client's lifetime.
 
    One time events take precedence over regular events.
 
-And that's all the basics for now. I suggest checking out :ref:`api-reference`
+And that's all the basics for now. I suggest checking out :doc:`API-Reference <../API/Public-API-Reference>`
 Good luck with the coding!
