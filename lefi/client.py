@@ -314,11 +314,21 @@ class Client:
 
     def run(self) -> None:
         """A blocking version of :meth:`start`"""
+        self.loop.run_until_complete(self.start())
+
         try:
-            self.loop.run_until_complete(self.start())
             self.loop.run_forever()
         except KeyboardInterrupt:
             self.loop.run_until_complete(self.close())
+        finally:
+            for task in asyncio.all_tasks(self.loop):
+                if task.done() or task.cancelled():
+                    continue
+
+                task.cancel()
+
+            self.loop.run_until_complete(self.loop.shutdown_asyncgens())
+            self.loop.close()
 
     async def login(self) -> None:
         """A method which attempts to login

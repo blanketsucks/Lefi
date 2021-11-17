@@ -95,10 +95,13 @@ class BaseWebsocketClient:
         max_concurrency: int = data["session_start_limit"]["max_concurrency"]
 
         async with Ratelimiter(max_concurrency, 1) as handler:
+            loop = self.client.loop
+
             self.websocket = await self.client.http.ws_connect(data["url"])
 
-            await self.identify()
-            asyncio.gather(self.start_heartbeat(), self.read_messages())
+            loop.create_task(self.identify())
+            self.heartbeat_task = loop.create_task(self.start_heartbeat())
+            loop.create_task(self.read_messages())
 
             handler.release()
 
@@ -244,10 +247,14 @@ class BaseWebsocketClient:
         This is used to keep the client alive. We set :attr:`.BaseWebsocketClient.last_heartbeat` here
         """
         while self.websocket and not self.websocket.closed:
-            self.seq += 1
 
             await self.websocket.send_json({"op": OpCodes.HEARTBEAT, "d": self.seq})
             self.last_heartbeat = datetime.datetime.now()
+
+            self.seq += 1
             logger.info("HEARTBEAT SENT")
 
-            await asyncio.sleep(self.heartbeat_delay / 1000)
+            try:
+                await asyncio.sleep(self.heartbeat_delay / 1000)
+            except asyncio.CancelledError:
+                pass
