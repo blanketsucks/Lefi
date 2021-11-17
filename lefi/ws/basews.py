@@ -163,7 +163,7 @@ class BaseWebsocketClient:
             try:
                 return await parser(data)
             except Exception as error:
-                logger.exception(error)
+                await self.client.on_error(event, error)
 
     async def reconnect(self) -> None:
         """Reconnects the websocket.

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+import traceback
 
 from typing import (
     TYPE_CHECKING,
@@ -381,6 +382,23 @@ class Client:
 
         futures.append((future, check))
         return await asyncio.wait_for(future, timeout=timeout)
+
+    async def on_error(self, event: str, error: Exception) -> None:
+        """An error handler for events.
+
+        This method handles errors caught when dispatching events.
+        This was added to allow users to override this said action.
+
+        Parameters
+        ----------
+        event: :class:`str`
+            The event which raised the error
+
+        error: :class:`Exception`
+            The error that was caught
+        """
+        print(f"Error when dispatching {event}")
+        traceback.print_exception(type(error), error, error.__traceback__)
 
     @property
     def guilds(self) -> List[Guild]:
