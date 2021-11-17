@@ -95,13 +95,10 @@ class BaseWebsocketClient:
         max_concurrency: int = data["session_start_limit"]["max_concurrency"]
 
         async with Ratelimiter(max_concurrency, 1) as handler:
-            loop = self.client.loop
-
             self.websocket = await self.client.http.ws_connect(data["url"])
 
-            loop.create_task(self.identify())
-            self.heartbeat_task = loop.create_task(self.start_heartbeat())
-            loop.create_task(self.read_messages())
+            await self.identify()
+            asyncio.gather(self.start_heartbeat(), self.read_messages())
 
             handler.release()
 
