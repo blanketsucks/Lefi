@@ -213,9 +213,9 @@ class CDNAsset(AttachmentMixin):
         return cls(state, path, False, icon_hash)
 
     @classmethod
-    def from_sticker_pack_banner(cls, state: State, pack_id: int) -> CDNAsset:
-        path = f"app-assets/710982414301790216/store/{pack_id}.png"
-        return cls(state, path, False, str(pack_id))
+    def from_sticker_pack_banner(cls, state: State, banner_id: int) -> CDNAsset:
+        path = f"app-assets/710982414301790216/store/{banner_id}.png"
+        return cls(state, path, False, str(banner_id))
 
     @classmethod
     def from_team_icon(cls, state: State, team_id: int, icon_hash: str) -> CDNAsset:

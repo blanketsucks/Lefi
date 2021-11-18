@@ -19,10 +19,44 @@ from .wsclient import VoiceWebSocketClient
 
 if TYPE_CHECKING:
     from .client import VoiceClient
+    from .listeners import AudioListener
 
     Encrypter = Callable[[bytes, bytes], bytes]
+    RTCPDecrypter = Callable[[bytes], bytes]
+    RTPDecrypter = Callable[["RTPPacket"], bytes]
 
 __all__ = ("VoiceProtocol",)
+
+UNSIGNED_INT = struct.Struct(">I")
+UNSIGNED_SHORT = struct.Struct(">H")
+
+
+class RTPPacket:
+    def __init__(self, payload: bytes) -> None:
+        self.version = payload[0] >> 6
+        self.marker = payload[1] >> 7
+        self.padding = payload[0] >> 5 & 1
+        self.extension = payload[0] >> 4 & 1
+        self.type = payload[1] & 0x7F
+        self.cc = payload[0] & 0x0F
+
+        self.csrcs: Tuple[Any, ...] = ()
+        self.sequence = UNSIGNED_SHORT.unpack_from(payload, 2)[0]
+        self.timestamp = UNSIGNED_INT.unpack_from(payload, 4)[0]
+        self.ssrc = UNSIGNED_INT.unpack_from(payload, 8)[0]
+
+        self.payload = payload[12:]
+        self.header = payload[:12]
+        self.data: Optional[bytes] = None
+
+        if self.cc:
+            fmt = ">%sI" % self.cc
+            offset = struct.calcsize(fmt) + 12
+            self.csrcs = struct.unpack(fmt, payload[12:offset])
+            self.payload = payload[offset:]
+
+    def is_rtcp(self) -> bool:
+        return 200 <= self.type <= 204
 
 
 class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
@@ -40,10 +74,21 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         self.sequence = 0
         self.lite_nonce = 0
         self.encoder = _opus.OpusEncoder()
+        self.decoder = _opus.OpusDecoder()
         self.supported_modes: Dict[str, Encrypter] = {
             "xsalsa20_poly1305": self.encrypt_xsalsa20_poly1305,
             "xsalsa20_poly1305_suffix": self.encrypt_xsalsa20_poly1305_suffix,
             "xsalsa20_poly1305_lite": self.encrypt_xsalsa20_poly1305_lite,
+        }
+        self.rtcp_descrypters: Dict[str, RTCPDecrypter] = {
+            "xsalsa20_poly1305": self.decrypt_rtcp_xsalsa20_poly1305,
+            "xsalsa20_poly1305_suffix": self.decrypt_rtcp_xsalsa20_poly1305_suffix,
+            "xsalsa20_poly1305_lite": self.decrypt_rtcp_xsalsa20_poly1305_lite,
+        }
+        self.rtp_descrypters: Dict[str, RTPDecrypter] = {
+            "xsalsa20_poly1305": self.decrypt_rtp_xsalsa20_poly1305,
+            "xsalsa20_poly1305_suffix": self.decrypt_rtp_xsalsa20_poly1305_suffix,
+            "xsalsa20_poly1305_lite": self.decrypt_rtp_xsalsa20_poly1305_lite,
         }
 
         self._secret_box: Optional[nacl.secret.SecretBox] = None
@@ -57,6 +102,10 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
     def ssrc(self) -> Optional[int]:
         return self.websocket.ssrc
 
+    @property
+    def listener(self) -> Optional[AudioListener]:
+        return self.client._listener
+
     # Protocol related functions
 
     def __call__(self, *args, **kwargs) -> VoiceProtocol:
@@ -69,6 +118,25 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
 
     def datagram_received(self, data: bytes, addr: Tuple[str, int]) -> None:
         self.queue.put_nowait(data)
+
+        if self.listener:
+            ssrc = UNSIGNED_INT.unpack_from(data, 8)[0]
+            user_data = self.websocket.get_user(ssrc)
+
+            if not user_data:
+                return
+
+            if not self.listener.filter(user_data):
+                return
+
+            packet = RTPPacket(data)
+            if packet.is_rtcp():
+                data = self.decrypt_rtcp_voice_packet(data)
+                packet = RTPPacket(data)
+            else:
+                packet.data = self.decrypt_rtp_voice_packet(packet)
+
+            self.listener.feed(packet)
 
     async def sendto(self, data: bytes) -> None:
         if not hasattr(self, "transport"):
@@ -113,9 +181,9 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         packet[0] = 0x80
         packet[1] = 0x78
 
-        struct.pack_into(">H", packet, 2, self.sequence)
-        struct.pack_into(">I", packet, 4, self.timestamp)
-        struct.pack_into(">I", packet, 8, self.ssrc)
+        UNSIGNED_SHORT.pack_into(packet, 2, self.sequence)
+        UNSIGNED_INT.pack_into(packet, 4, self.timestamp)
+        UNSIGNED_INT.pack_into(packet, 8, self.ssrc)
 
         return packet
 
@@ -147,9 +215,48 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
         nonce = self.generate_xsalsa20_poly1305_lite_nonce()
         return header + self.encrypt(data, nonce) + nonce[:4]
 
+    def decrypt_rtp_xsalsa20_poly1305(self, packet: RTPPacket) -> bytes:
+        nonce = bytearray(24)
+        nonce[:12] = packet.header
+
+        return self.encrypt(packet.payload, nonce)
+
+    def decrypt_rtcp_xsalsa20_poly1305(self, data: bytes) -> bytes:
+        nonce = bytearray(24)
+        nonce[:8] = data[:8]
+
+        return data[:8] + self.decrypt(data[8:], nonce)
+
+    def decrypt_rtp_xsalsa20_poly1305_suffix(self, packet: RTPPacket) -> bytes:
+        nonce = packet.payload[-24:]
+        return self.encrypt(packet.payload[:-24], nonce)
+
+    def decrypt_rtcp_xsalsa20_poly1305_suffix(self, data: bytes) -> bytes:
+        nonce = data[-24:]
+        header = data[:8]
+
+        return header + self.decrypt(data[8:-24], nonce)
+
+    def decrypt_rtp_xsalsa20_poly1305_lite(self, packet: RTPPacket) -> bytes:
+        nonce = bytearray(24)
+        nonce[:4] = packet.header[:4]
+
+        return self.encrypt(packet.payload[:-4], nonce)
+
+    def decrypt_rtcp_xsalsa20_poly1305_lite(self, data: bytes) -> bytes:
+        nonce = bytearray(24)
+        nonce[:4] = data[-4:]
+        header = data[:8]
+
+        return header + self.decrypt(data[8:-4], nonce)
+
     def encrypt(self, data: bytes, nonce: bytes) -> bytes:
         box = self.create_secret_box()
         return box.encrypt(bytes(data), bytes(nonce)).ciphertext
+
+    def decrypt(self, data: bytes, nonce: bytes) -> bytes:
+        box = self.create_secret_box()
+        return box.decrypt(bytes(data), bytes(nonce))
 
     def create_voice_packet(self, data: bytes) -> bytes:
         header = self.create_rtp_header()
@@ -157,6 +264,14 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
 
         encrypt = self.supported_modes[self.websocket.mode]  # type: ignore
         return encrypt(header, encoded)
+
+    def decrypt_rtcp_voice_packet(self, data: bytes) -> bytes:
+        decypter = self.rtcp_descrypters[self.websocket.mode]  # type: ignore
+        return decypter(data)
+
+    def decrypt_rtp_voice_packet(self, packet: RTPPacket) -> bytes:
+        decypter = self.rtp_descrypters[self.websocket.mode]  # type: ignore
+        return decypter(packet)
 
     async def send_voice_packet(self, data: bytes) -> None:
         self.increment("sequence", 1, 0xFFFF)

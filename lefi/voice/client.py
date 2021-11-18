@@ -3,10 +3,12 @@ from __future__ import annotations
 import asyncio
 from typing import TYPE_CHECKING, Optional, Dict
 
+
 from ..errors import VoiceException
 from .wsclient import VoiceWebSocketClient
 from .protocol import VoiceProtocol
 from .player import AudioPlayer, AudioStream
+from .listeners import AudioDestination, AudioListener
 
 if TYPE_CHECKING:
     from ..state import State
@@ -34,6 +36,7 @@ class VoiceClient:
             self, self.channel.guild.id, self._state.client.user.id
         )
         self.protocol: VoiceProtocol = VoiceProtocol(self)
+        self._listener: Optional[AudioListener] = None
 
     @property
     def loop(self) -> asyncio.AbstractEventLoop:
@@ -45,6 +48,10 @@ class VoiceClient:
         Returns the current player. If no player is playing, returns None.
         """
         return self._player
+
+    @property
+    def listener(self) -> Optional[AudioListener]:
+        return self._listener
 
     async def voice_state_update(self, data: Dict) -> None:
         self.session_id = data["session_id"]

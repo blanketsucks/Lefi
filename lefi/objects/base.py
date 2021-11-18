@@ -11,6 +11,7 @@ from ..utils import Snowflake, ChannelHistoryIterator, grouper
 from .mentions import AllowedMentions
 
 if TYPE_CHECKING:
+    from .stickers import Sticker
     from .message import Message
     from ..state import State
 
@@ -31,8 +32,8 @@ class Messageable(Snowflake):
         file: Optional[File] = None,
         files: Optional[List[File]] = None,
         rows: Optional[List[ActionRow]] = None,
+        stickers: Optional[List[Sticker]] = None,
         allowed_mentions: Optional[AllowedMentions] = None,
-        **kwargs,
     ) -> Message:
         """
         Sends a message to the channel.
@@ -49,6 +50,10 @@ class Messageable(Snowflake):
         """
         embeds = [] if embeds is None else embeds
         files = [] if files is None else files
+        sticker_ids = [] if stickers is None else [s.id for s in stickers]
+
+        if len(sticker_ids) > 3:
+            raise ValueError("Maximum of 3 stickers can be sent at once.")
 
         message_reference = None
 
@@ -72,7 +77,7 @@ class Messageable(Snowflake):
             allowed_mentions=allowed_mentions.to_dict()
             if allowed_mentions is not None
             else None,
-            **kwargs,
+            sticker_ids=sticker_ids,
         )
 
         message = self._state.create_message(data, self)

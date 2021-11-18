@@ -19,3 +19,4 @@ from .attachments import *
 from .threads import *
 from .audit_logs import *
 from .mentions import *
+from .stickers import *

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import collections
+from functools import cached_property
 import logging
 from typing import (
     TYPE_CHECKING,
@@ -37,6 +38,11 @@ from .objects import (
     Component,
     InteractionType,
     ComponentType,
+    Integration,
+    DeletedIntegration,
+    Invite,
+    DeletedInvite,
+    Sticker,
 )
 from .voice import VoiceClient, VoiceState
 
@@ -52,6 +58,40 @@ __all__ = (
 T = TypeVar("T")
 
 logger = logging.getLogger(__name__)
+
+
+class Chunk:
+    def __init__(self, state: State, data: Dict) -> None:
+        self._state = state
+        self._data = data
+
+    @property
+    def guild_id(self) -> int:
+        return int(self._data["guild_id"])
+
+    @property
+    def guild(self) -> Guild:
+        return self._state.get_guild(self.guild_id)  # type: ignore
+
+    @cached_property
+    def members(self) -> List[Member]:
+        return [self._state.create_member(m, self.guild) for m in self._data["members"]]
+
+    @property
+    def index(self) -> int:
+        return self._data["chunk_index"]
+
+    @property
+    def count(self) -> int:
+        return self._data["chunk_count"]
+
+    @property
+    def not_found(self) -> List[int]:
+        return self._data.get("not_found", [])
+
+    @property
+    def nonce(self) -> Optional[str]:
+        return self._data.get("nonce")
 
 
 class Cache(collections.OrderedDict[Union[int, str], T]):
@@ -133,6 +173,7 @@ class State:
         ]()
         self._emojis = Cache[Emoji]()
         self._voice_clients = Cache[VoiceClient]()
+        self._stickers = Cache[Sticker]()
 
     @property
     def user(self) -> User:
@@ -231,7 +272,9 @@ class State:
         self.create_guild_channels(guild, data)
         self.create_guild_roles(guild, data)
         self.create_guild_members(guild, data)
+        self.create_guild_emojis(guild, data)
         self.create_guild_voice_states(guild, data)
+        self.create_guild_stickers(guild, data)
 
         self._guilds[guild.id] = guild
         self.dispatch("guild_create", guild)
@@ -539,6 +582,299 @@ class State:
             if member:
                 self.dispatch("thread_member_remove", member)
 
+    async def parse_channel_pins_update(self, data: Dict) -> None:
+        """
+        Parses the `CHANNEL_PINS_UPDATE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        channel = self.get_channel(int(data["channel_id"]))
+        if not channel:
+            return
+
+        self.dispatch("channel_pins_update", channel)
+
+    async def parse_guild_ban_add(self, data: Dict) -> None:
+        """
+        Parses the `GUILD_BAN_ADD` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        user = self.create_user(data["user"])
+        guild._members.pop(user.id, None)
+
+        self.dispatch("guild_ban_add", guild, user)
+
+    async def parse_guild_ban_remove(self, data: Dict) -> None:
+        """
+        Parses the `GUILD_BAN_REMOVE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        user = self.create_user(data["user"])
+        self.dispatch("guild_ban_remove", guild, user)
+
+    async def parse_guild_emojis_update(self, data: Dict) -> None:
+        """
+        Parses the `GUILD_EMOJIS_UPDATE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        emojis = {int(e["id"]): Emoji(self, e, guild) for e in data.get("emojis", [])}
+
+        guild._emojis.update(emojis)
+        self.dispatch("guild_emojis_update", guild, emojis.values())
+
+    async def parse_guild_intergration_update(self, data: Dict) -> None:
+        """
+        Parses the `GUILD_INTEGRATIONS_UPDATE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        self.dispatch("guild_integrations_update", guild)
+
+    async def parse_guild_member_add(self, data: Dict) -> None:
+        """
+        Parses the `GUILD_MEMBER_ADD` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        member = Member(self, data, guild)
+        guild._members[member.id] = member
+
+        self.dispatch("guild_member_add", member)
+
+    async def parse_guild_member_remove(self, data: Dict) -> None:
+        """
+        Parses the `GUILD_MEMBER_REMOVE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        user = self.create_user(data["user"])
+        guild._members.pop(user.id, None)
+
+        self.dispatch("guild_member_remove", guild, user)
+
+    async def parse_guild_member_update(self, data: Dict) -> None:
+        """
+        Parses the `GUILD_MEMBER_UPDATE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        member = guild.get_member(int(data["user"]["id"]))
+        if member is None:
+            return
+
+        after = self.create_member(data, guild)
+
+        guild._members[member.id] = after
+        self.dispatch("guild_member_update", member, after)
+
+    async def parse_guild_members_chunk(self, data: Dict) -> None:
+        """
+        Parses the `GUILD_MEMBERS_CHUNK` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        chunk = Chunk(self, data)
+
+        for member in chunk.members:
+            chunk.guild._members[member.id] = member
+
+        self.dispatch("guild_members_chunk", chunk)
+
+    async def parse_guild_role_create(self, data: Dict) -> None:
+        """
+        Parses the `GUILD_ROLE_CREATE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        role = Role(self, data, guild)
+        guild._roles[role.id] = role
+
+        self.dispatch("guild_role_create", role)
+
+    async def parse_guild_role_update(self, data: Dict) -> None:
+        """
+        Parses the `GUILD_ROLE_UPDATE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        role = guild.get_role(int(data["role"]["id"]))
+        if role is None:
+            return
+
+        before = role._copy()
+        role._data = data["role"]
+
+        self.dispatch("guild_role_update", before, role)
+
+    async def parse_guild_role_delete(self, data: Dict) -> None:
+        """
+        Parses the `GUILD_ROLE_DELETE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        role_id = int(data["role_id"])
+        role = guild._roles.pop(role_id, None)
+        if role is None:
+            return
+
+        self.dispatch("guild_role_delete", role)
+
+    async def parse_integration_create(self, data: Dict) -> None:
+        """
+        Parses the `INTEGRATION_CREATE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        integration = Integration(self, data, guild)
+        self.dispatch("integration_create", integration)
+
+    async def parse_integration_update(self, data: Dict) -> None:
+        """
+        Parses the `INTEGRATION_UPDATE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        integration = Integration(self, data, guild)
+        self.dispatch("integration_update", integration)
+
+    async def parse_integration_delete(self, data: Dict) -> None:
+        """
+        Parses the `INTEGRATION_DELETE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        guild = self.get_guild(int(data["guild_id"]))
+        if not guild:
+            return
+
+        integration = DeletedIntegration(self, data, guild)
+        self.dispatch("integration_delete", integration)
+
+    async def parse_invite_create(self, data: Dict) -> None:
+        """
+        Parses the `INVITE_CREATE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        invite = Invite(self, data)
+        self.dispatch("invite_create", invite)
+
+    async def parse_invite_delete(self, data: Dict) -> None:
+        """
+        Parses the `INVITE_DELETE` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        invite = DeletedInvite(self, data)
+        self.dispatch("invite_delete", invite)
+
+    async def parse_message_delete_bulk(self, data: Dict) -> None:
+        """
+        Parses the `MESSAGE_DELETE_BULK` event.
+
+        Parameters:
+            data (Dict): The raw data.
+
+        """
+        messages = []
+        for message_id in data["ids"]:
+
+            message = self._messages.pop(message_id, None)
+            if not message:
+                d = data.copy()
+                d["id"] = message_id
+
+                message = DeletedMessage(d)  # type: ignore
+
+            messages.append(message)
+
+        self.dispatch("message_delete_bulk", messages)
+
     def get_message(self, message_id: int) -> Optional[Message]:
         """
         Grabs a message from the cache.
@@ -774,6 +1110,28 @@ class State:
         guild._voice_states = voice_states
         return guild
 
+    def create_guild_stickers(self, guild: Guild, data: Dict) -> Guild:
+        payload = data.get("stickers")
+        if not payload:
+            return guild
+
+        stickers = {int(sticker["id"]): Sticker(self, sticker) for sticker in payload}
+
+        self._stickers.update(stickers)  # type: ignore
+        guild._stickers = stickers
+
+        return guild
+
+    def get_sticker(self, sticker_id: int) -> Optional[Sticker]:
+        """
+        Grabs a sticker from the cache.
+
+        Returns:
+            The [lefi.Sticker](./sticker.md) instance corresponding to the ID if found.
+
+        """
+        return self._stickers.get(sticker_id)
+
     def create_overwrites(
         self,
         channel: Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel],
@@ -810,10 +1168,11 @@ class State:
         before = guild._copy()
 
         self.create_guild_channels(guild, data)
-        self.create_guild_members(guild, data)
         self.create_guild_roles(guild, data)
+        self.create_guild_members(guild, data)
         self.create_guild_emojis(guild, data)
         self.create_guild_voice_states(guild, data)
+        self.create_guild_stickers(guild, data)
 
         guild._data = data
         return before, guild

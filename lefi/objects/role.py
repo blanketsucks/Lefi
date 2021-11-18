@@ -63,6 +63,9 @@ class Role(Snowflake):
     def __repr__(self) -> str:
         return f"<Role id={self.id} name={self.name!r} position={self.position}>"
 
+    def _copy(self) -> Role:
+        return Role(self._state, self._data, self._guild)
+
     async def delete(self) -> None:
         """
         Deletes the role from its guild.
@@ -102,7 +105,6 @@ class Role(Snowflake):
             mentionable=mentionable,
         )
 
-        self._data = data
         return self
 
     @property

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from .channel import TextChannel, VoiceChannel
     from .guild import Guild
 
-__all__ = ("Invite", "PartialInvite")
+__all__ = ("Invite", "PartialInvite", "DeletedInvite")
 
 
 class InviteMixin:
@@ -38,6 +38,34 @@ class InviteMixin:
         The invite URL.
         """
         return f"https://discord.gg/{self.code}"
+
+
+class DeletedInvite(InviteMixin):
+    def __init__(self, state: State, data: Dict) -> None:
+        self._state = state
+        self._data = data
+
+    @property
+    def channel_id(self) -> int:
+        return int(self._data["channel_id"])
+
+    @property
+    def channel(self) -> Optional[Union[TextChannel, VoiceChannel]]:
+        """
+        The channel the invite is for.
+        """
+        return self._state.get_channel(self.channel_id)  # type: ignore
+
+    @property
+    def guild_id(self) -> int:
+        return int(self._data["guild_id"])
+
+    @property
+    def guild(self) -> Optional[Guild]:
+        """
+        The guild the invite is for.
+        """
+        return self._state.get_guild(self.guild_id)
 
 
 class PartialInvite(InviteMixin):

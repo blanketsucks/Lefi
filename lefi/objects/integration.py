@@ -10,7 +10,34 @@ if TYPE_CHECKING:
     from ..state import State
     from .guild import Guild
 
-__all__ = ("IntegrationAccount", "IntegrationApplication", "Integration")
+__all__ = (
+    "IntegrationAccount",
+    "IntegrationApplication",
+    "Integration",
+    "DeletedIntegration",
+)
+
+
+class DeletedIntegration:
+    def __init__(self, state: State, data: Dict, guild: Guild) -> None:
+        self._state = state
+        self._data = data
+        self._guild = guild
+
+    @property
+    def id(self) -> int:
+        return int(self._data["id"])
+
+    @property
+    def guild(self) -> Guild:
+        """
+        Returns the guild that the integration is for.
+        """
+        return self._guild
+
+    @property
+    def application_id(self) -> int:
+        return int(self._data["application_id"])
 
 
 class IntegrationAccount:

@@ -26,6 +26,7 @@ from .objects import (
     Message,
     User,
     AppCommand,
+    Sticker,
 )
 from .state import Cache, State
 from .ws import Shard, WebSocketClient
@@ -394,6 +395,11 @@ class Client:
         """List[:class:`.VoiceClient`] The list of voice clients the client has."""
         return list(self._state._voice_clients.values())
 
+    @property
+    def stickers(self) -> List[Sticker]:
+        """List[:class:`.Sticker`] The list of stickers the client has."""
+        return list(self._state._stickers.values())
+
     def get_message(self, id: int) -> Optional[Message]:
         """A method which grabs a message from the cache.
 
@@ -484,6 +490,24 @@ class Client:
             The emoji instance if cached.
         """
         return self._state.get_emoji(id)
+
+    def get_sticker(self, id: int) -> Optional[Sticker]:
+        """A method which grabs a sticker from the cache.
+
+        Grabs a :class:`.Sticker` in the cache corresponding to the passed in id.
+        If the sticker isn't found in the cache this method will return None.
+
+        Parameters
+        ----------
+        id: :class:`int`
+            The sticker's ID
+
+        Returns
+        -------
+        Optional[:class:`.Sticker`]
+            The sticker instance if cached.
+        """
+        return self._state.get_sticker(id)
 
     async def fetch_user(self, user_id: int) -> User:
         """A method which makes an API call to fetch a user.

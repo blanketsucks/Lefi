@@ -32,6 +32,7 @@ from ..utils import MemberIterator, AuditLogIterator
 from .threads import Thread
 from .attachments import CDNAsset
 from .flags import Permissions, SystemChannelFlags
+from .stickers import Sticker
 
 if TYPE_CHECKING:
     from ..state import State
@@ -69,6 +70,7 @@ class Guild:
         self._emojis: Dict[int, Emoji] = {}
         self._voice_states: Dict[int, VoiceState] = {}
         self._threads: Dict[int, Thread] = {}
+        self._stickers: Dict[int, Sticker] = {}
 
         self._state = state
         self._data = data
@@ -85,6 +87,7 @@ class Guild:
         copy._emojis = self._emojis.copy()
         copy._voice_states = self._voice_states.copy()
         copy._threads = self._threads.copy()
+        copy._stickers = self._stickers.copy()
 
         return copy
 
@@ -842,6 +845,22 @@ class Guild:
         The list of [lefi.Emoji](./emoji.md) instances belonging to the guild.
         """
         return list(self._emojis.values())
+
+    @property
+    def stickers(self) -> List[Sticker]:
+        """
+        The list of [lefi.Sticker](./sticker.md) instances belonging to the guild.
+        """
+        return list(self._stickers.values())
+
+    @property
+    def categories(self) -> List[CategoryChannel]:
+        """
+        The list of categories instances belonging to the guild.
+        """
+        return [
+            channel for channel in self.channels if isinstance(channel, CategoryChannel)
+        ]
 
     @property
     def default_role(self) -> Role:
