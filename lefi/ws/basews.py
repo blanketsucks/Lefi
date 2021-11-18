@@ -4,7 +4,7 @@ import asyncio
 import datetime
 import logging
 import sys
-from typing import TYPE_CHECKING, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 
 import aiohttp
 
@@ -21,11 +21,53 @@ logger = logging.getLogger(__name__)
 
 
 class BaseWebsocketClient:
+    """The base websocket client
+
+    This is the base websocket client classed used
+    for all of the websocket clients in this library. This is used
+    to communicate with the discord gateway. This class handles event receiving
+    and event dispatching as well as keeping the client alive.
+
+    Parameters
+    ----------
+    client: :class:`.Client`
+        The client which is being connected
+
+    intents: :class:`.Intents`
+        The intents to IDENTIFY with
+
+    Attributes
+    ----------
+    intents: :class:`.Intents`
+        The intents used when IDENTIFYING
+
+    websocket: :class:`.aiohttp.ClientWebSocketResponse`
+        The internal websocket. This is the one that is connected to discord
+
+    client: :class:`.Client`
+        The connected client
+
+    closed: :class:`bool`
+        If the websocket is closed or not
+
+    seq: :class:`int`
+        The last sequence number received
+
+    last_heartbeat: Optional[:class:`.datetime.datetime`]
+        The time of the last sent heartbeat
+
+    latency: :class:`float`
+        The time inbetween sending a heartbeat and then
+        discord acknowledging the heartbeat. This is in miliseconds
+
+    heartbeat_delay: :class:`float`
+        How long to wait before sending another heartbeat
+    """
+
     def __init__(
         self,
         client: Client,
         intents: Optional[Intents] = None,
-        shard_ids: Optional[List[int]] = None,
     ) -> None:
         self.intents: Intents = Intents.default() if intents is None else intents
         self.websocket: aiohttp.ClientWebSocketResponse = None  # type: ignore
@@ -37,15 +79,19 @@ class BaseWebsocketClient:
         self.latency: float = float("inf")
         self.heartbeat_delay: float = 0
 
-    async def _get_gateway(self) -> Dict:
-        http = self.client.http
-        return await http.get_bot_gateway()
-
     async def start(self) -> None:
+        """Connects to the gateway.
+
+        This method calls :meth:`.HTTPClient.get_bot_gateway`, this gets the url
+        and other information such as max_concurrency and shards. We connect to the websocket
+        with a ratelimiter. This is to ensure we follow the max concurreny given to us.
+
+        Raises
+        ------
+        :exc:`KeyError`
+            This is likely due to invalid authorization.
         """
-        Starts the connection to the websocket and begins parsing messages from the gateway.
-        """
-        data = await self._get_gateway()
+        data = await self.client.http.get_bot_gateway()
         max_concurrency: int = data["session_start_limit"]["max_concurrency"]
 
         async with Ratelimiter(max_concurrency, 1) as handler:
@@ -57,12 +103,17 @@ class BaseWebsocketClient:
             handler.release()
 
     async def close(self):
+        """Handles closing the websocket."""
         if self.websocket is not None:
             await self.websocket.close()
 
     async def read_messages(self) -> None:
-        """
-        Reads the messages from received from the websocket and parses them.
+        """Reads messages sent from the websocket.
+
+        This method reads all sent messages from the websocket
+        then decides what action to take depending on the message's OpCode.
+        This is where the library handles events. For every heartbeat acknowledge we
+        also calculate the latency.
         """
         async for message in self.websocket:
             if message.type is aiohttp.WSMsgType.TEXT:
@@ -90,13 +141,19 @@ class BaseWebsocketClient:
         await self.websocket.close()
         logger.info("WEBSOCKET CLOSED")
 
-    async def dispatch(self, event: str, data: Dict) -> None:
-        """
-        Dispatches an event and its data to the parsers.
+    async def dispatch(self, event: str, data: dict) -> None:
+        """Dispatches an event and its data to the parsers.
 
-        Parameters:
-            event (str): The event being dispatched.
-            data (Dict): The raw data of the event.
+        Basically just calls the corresponding parser.
+        If a ``READY`` event is passed, we set `session_id`.
+
+        Parameters
+        ----------
+        event: :class:`str`
+            The name of the event to dispatch
+
+        data: :class:`dict`
+            The raw data of the event
         """
         logger.info(f"DISPATCHED EVENT: {event}")
         if event == "READY":
@@ -106,11 +163,13 @@ class BaseWebsocketClient:
             try:
                 return await parser(data)
             except Exception as error:
-                logger.exception(error)
+                await self.client.on_error(event, error)
 
     async def reconnect(self) -> None:
-        """
-        Closes the websocket if it isn't then tries to establish a new connection.
+        """Reconnects the websocket.
+
+        This the websocket is not closed this method
+        will close it manually and restart the connection.
         """
         if not self.websocket and self.websocket.closed:
             await self.websocket.close()
@@ -119,8 +178,10 @@ class BaseWebsocketClient:
         await self.start()
 
     async def resume(self) -> None:
-        """
-        Sends a resume payload to the websocket.
+        """Sends a ``RESUME`` payload
+
+        This method sends a ``RESUME`` payload to the websocket
+        This is done when we receive a ``RESUME`` OpCode
         """
         payload = {
             "op": OpCodes.RESUME,
@@ -131,8 +192,10 @@ class BaseWebsocketClient:
         await self.websocket.send_json(payload)
 
     async def identify(self) -> None:
-        """
-        Sends an identify payload to the websocket.
+        """Sends a ``IDENTIFY`` payload
+
+        This method sends a ``IDENTIFY`` payload to the websocket
+        This is done when we receive a ``IDENTIFY`` OpCode
         """
         data = await self.websocket.receive()
         self.heartbeat_delay = data.json()["d"]["heartbeat_interval"]
@@ -158,13 +221,10 @@ class BaseWebsocketClient:
         self_mute: bool = False,
         self_deaf: bool = False,
     ) -> None:
-        """
-        Sends a guild_voice_state_update payload to the websocket.
-        Parameters:
-            guild_id (int): The guild ID to update.
-            channel_id (int): The voice channel ID to move to.
-            self_mute (bool): Whether or not to mute yourself.
-            self_deaf (bool): Whether or not to deafen yourself.
+        """Sends a ``VOICE_STATE_UPDATE`` payload
+
+        This method sends a ``VOICE_STATE_UPDATE`` payload
+        when we receive a ``VOICE_STATE_UPDATE`` OpCode
         """
         payload = {
             "op": OpCodes.VOICE_STATE_UPDATE,
@@ -178,16 +238,20 @@ class BaseWebsocketClient:
         await self.websocket.send_json(payload)
 
     async def start_heartbeat(self) -> None:
-        """
-        Starts the heartbeat loop.
-        Info:
-            This can be blocked, which causes the heartbeat to stop.
+        """Starts the heartbeat loop.
+
+        This method starts a loop, which sends heartbeats.
+        This is used to keep the client alive. We set :attr:`.BaseWebsocketClient.last_heartbeat` here
         """
         while self.websocket and not self.websocket.closed:
-            self.seq += 1
 
             await self.websocket.send_json({"op": OpCodes.HEARTBEAT, "d": self.seq})
             self.last_heartbeat = datetime.datetime.now()
+
+            self.seq += 1
             logger.info("HEARTBEAT SENT")
 
-            await asyncio.sleep(self.heartbeat_delay / 1000)
+            try:
+                await asyncio.sleep(self.heartbeat_delay / 1000)
+            except asyncio.CancelledError:
+                pass

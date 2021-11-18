@@ -15,31 +15,61 @@ logger = logging.getLogger(__name__)
 
 
 class Ratelimiter:
-    """
-    A class representing a Ratelimiter.
+    """A class which acts as a ratelimiter for the API.
 
-    Attributes:
-        http (HTTPClient): The [HTTPClient](./http.md) instance.
-        route (Route): The Route instance.
-        method (str): The method to use.
-        kwargs (dict): The kwargs to use.
-        loop (asyncio.AbstractEventLoop): The event loop.
-        global_ (asyncio.Event): The global event.
-        return_data (Union[dict, str]): The return data.
-        error_return (Optional[HTTPException]): The error return.
+    This class is used to create semaphores and handle said semaphores.
+    This is used for concurrent requests.
 
+    .. warning::
+
+        This class is used internally and isn't meant to be used directly.
+        Any modifications to this class can break request handling.
+
+    Parameters
+    ----------
+    http: :class:`.HTTPClient`
+        The HTTPClient to handle requests for
+
+    route: :class:`.Route`
+        The route which is being called upon by the HTTPClient
+
+    method: :class:`str`
+        The method to request with E.g `POST` and `GET`
+
+    **kwargs: Any
+        Extra options to pass to :meth:`aiohttp.ClientSession.request`
+
+    Attributes
+    ----------
+    loop: :class:`asyncio.AbstractEventLoop`
+        The event loop being used
+
+    global_: :class:`asyncio.Event`
+        The global ratelimit event
+
+    http: :class:`.HTTPClient`
+        The HTTPClient being used
+
+    bucket: :class:`str`
+        The :class:`.Route`'s bucket
+
+    route: :class:`.Route`
+        The route being request upon
+
+    method: :class:`str`
+        The method to request with
+
+    kwargs: Any
+        Extra options passed to :class:`.Ratelimiter`'s constructor
+
+    return_data: Union[:class:`dict`, :class:`str`]
+        The returned data after requesting is finished
+
+    error_return: Optional[HTTPException]:
+        Same as ``return_data`` except for errors
     """
 
     def __init__(self, http: HTTPClient, route: Route, method: str, **kwargs) -> None:
-        """
-        Initializes the Ratelimiter.
-
-        Parameters:
-            http (HTTPClient): The [HTTPClient](./http.md) instance.
-            route (Route): The Route instance.
-            method (str): The method to use.
-            kwargs (dict): The kwargs to use.
-        """
         self.loop: asyncio.AbstractEventLoop = http.loop
         self.global_: asyncio.Event = asyncio.Event()
         self.http: HTTPClient = http
@@ -53,11 +83,12 @@ class Ratelimiter:
         self.global_.set()
 
     async def set_semaphore(self) -> asyncio.Semaphore:
-        """
-        Sets the semaphore for the bucket.
+        """Sets the semaphore for the bucket.
 
-        Returns:
-            The asyncio.Semaphore for the bucket.
+        Returns
+        -------
+        :class:`asyncio.Semaphore`
+            The newly created semaphore set on the bucket
         """
         if semaphore := self.http.semaphores.get(self.bucket):
             return semaphore
@@ -73,31 +104,38 @@ class Ratelimiter:
         return semaphore
 
     async def release(self, semaphore: asyncio.Semaphore, delay: float) -> None:
-        """
-        Releases the semaphore after a delay.
+        """Releases the semaphore after a delay.
 
-        Parameters:
-            semaphore: The semaphore to release.
-            delay: The delay after which semaphore is to be released.
+        Parameters
+        ----------
+        semaphore: :class:`asyncio.Semaphore`
+            The semaphore to release after a delay
+
+        delay: :class:`float`
+            The time to wait in seconds before releasing
         """
         await asyncio.sleep(delay)
         semaphore.release()
 
     def global_ratelimit_set(self, delay: float) -> None:
-        """
-        Sets the global ratelimit.
+        """Sets the global ratelimit.
 
-        Parameters:
-            delay: The delay to set for the global ratelimit.
+        This is used when the handler encounters a global ratelimit.
+
+        Parameters
+        ----------
+        delay: :class:`float`
+            How long in seconds to wait before setting the event
         """
         self.loop.call_later(delay, self.global_.set)
 
     async def request(self) -> Any:
-        """
-        Makes a request to the route.
+        """Makes a request to the route.
 
-        Returns:
-            The response from the route.
+        Returns
+        -------
+        Any
+            The returned data from the request
         """
         semaphore = self.http.semaphores.get(self.bucket, await self.set_semaphore())
         session = self.http.session

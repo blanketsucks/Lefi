@@ -16,16 +16,19 @@ __all__ = (
 
 class ClientException(Exception):
     """Base class for all exceptions."""
+
     pass
 
 
 class VoiceException(ClientException):
     """Base class for all voice exceptions."""
+
     pass
 
 
 class OpusNotFound(VoiceException):
     """Raised whenever a user attempts to use voice without having the Opus library installed."""
+
     pass
 
 
@@ -59,19 +62,23 @@ class HTTPException(ClientException):
 
 class Unauthorized(HTTPException):
     """Represents a 401 HTTP error."""
+
     pass
 
 
 class BadRequest(HTTPException):
     """Represents a 400 HTTP error."""
+
     pass
 
 
 class Forbidden(HTTPException):
     """Represents a 403 HTTP error."""
+
     pass
 
 
 class NotFound(HTTPException):
     """Represents a 404 HTTP error."""
+
     pass

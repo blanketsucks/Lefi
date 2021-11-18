@@ -557,7 +557,7 @@ class Guild:
             compute_prune_count=compute_prune_count,
         )
 
-        if compute_prune_count:
+        if compute_prune_count and data is not None:
             return data["pruned"]
 
         return None

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+import traceback
 
 from typing import (
     TYPE_CHECKING,
@@ -191,8 +192,6 @@ class Client:
             @client.on("message_create")
             async def on_message2(message: lefi.Message) -> None:
                 print(message.content)
-            @client.on("message_create")
-
 
         Returns
         -------
@@ -317,11 +316,21 @@ class Client:
 
     def run(self) -> None:
         """A blocking version of :meth:`start`"""
+        self.loop.run_until_complete(self.start())
+
         try:
-            self.loop.run_until_complete(self.start())
             self.loop.run_forever()
         except KeyboardInterrupt:
             self.loop.run_until_complete(self.close())
+        finally:
+            for task in asyncio.all_tasks(self.loop):
+                if task.done() or task.cancelled():
+                    continue
+
+                task.cancel()
+
+            self.loop.run_until_complete(self.loop.shutdown_asyncgens())
+            self.loop.close()
 
     async def login(self) -> None:
         """A method which attempts to login
@@ -374,6 +383,23 @@ class Client:
 
         futures.append((future, check))
         return await asyncio.wait_for(future, timeout=timeout)
+
+    async def on_error(self, event: str, error: Exception) -> None:
+        """An error handler for events.
+
+        This method handles errors caught when dispatching events.
+        This was added to allow users to override this said action.
+
+        Parameters
+        ----------
+        event: :class:`str`
+            The event which raised the error
+
+        error: :class:`Exception`
+            The error that was caught
+        """
+        print(f"Error when dispatching {event}")
+        traceback.print_exception(type(error), error, error.__traceback__)
 
     @property
     def guilds(self) -> List[Guild]:

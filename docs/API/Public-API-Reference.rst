@@ -11,14 +11,14 @@ Client
     :members:
 
 Errors
-~~~~~~
+------
 Client errors
-^^^^^^^^^^^^^
+~~~~~~~~~~~~~
 .. autoexception:: lefi.errors.ClientException
     :inherited-members:
 
 Voice errors
-^^^^^^^^^^^^
+~~~~~~~~~~~~
 .. autoexception:: lefi.errors.VoiceException
     :inherited-members:
 
@@ -26,7 +26,7 @@ Voice errors
     :show-inheritance:
 
 HTTP errors
-^^^^^^^^^^^
+~~~~~~~~~~~
 .. autoexception:: lefi.errors.HTTPException
     :show-inheritance:
     :inherited-members:
@@ -42,11 +42,3 @@ HTTP errors
 
 .. autoexception:: lefi.errors.Unauthorized
     :show-inheritance:
-
-Internals
-=========
-
-HTTPClient
-----------
-.. autoclass:: lefi.http.HTTPClient
-    :members:
