@@ -1,12 +1,15 @@
-# Lefi
-[![Documentation Status](https://readthedocs.org/projects/lefi/badge/?version=latest)](https://lefi.readthedocs.io/en/latest/?badge=latest)
-![Pytests](https://github.com/an-dyy/Lefi/actions/workflows/run-pytest.yml/badge.svg?event=push)
-![Mypy](https://github.com/an-dyy/Lefi/actions/workflows/mypy.yml/badge.svg?event=push)
-[![PyPI version](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.python.org/pypi/lefi/)
-[![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/QPFXzFbqrK)
-
-
-A discord API wrapper focused on clean code, and usability
+<div align="center">
+    <br>
+        <img src="https://github.com/an-dyy/Lefi/raw/master/docs/logo.png"</img>
+    </br>
+    <br>
+        <a href="https://lefi.readthedocs.io/en/latest/"><img src="https://img.shields.io/readthedocs/lefi"</img>
+        <a href="https://pypi.org/project/lefi/"><img src="https://img.shields.io/pypi/dm/lefi?color=gre"</img>
+        <a href="https://discord.com/invite/QPFXzFbqrK"><img src="https://img.shields.io/discord/907106240537169980?label=DISCORD"</img>
+        <a href="https://github.com/an-dyy/Lefi/releases"><img src="https://img.shields.io/github/v/release/an-dyy/lefi?include_prereleases&sort=semver"</img>
+    </br>
+    A discord API wrapper focused on clean code, and usability
+</div>
 
 ## Installation
 
