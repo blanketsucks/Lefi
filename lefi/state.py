@@ -737,12 +737,15 @@ class State:
                 self.dispatch("thread_member_remove", member)
 
     async def parse_channel_pins_update(self, data: Dict) -> None:
-        """
-        Parses the `CHANNEL_PINS_UPDATE` event.
+        """Parses the ``CHANNEL_PINS_UPDATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``CHANNEL_PINS_UPDATE`` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.Message`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         channel = self.get_channel(int(data["channel_id"]))
         if not channel:
@@ -751,12 +754,15 @@ class State:
         self.dispatch("channel_pins_update", channel)
 
     async def parse_guild_ban_add(self, data: Dict) -> None:
-        """
-        Parses the `GUILD_BAN_ADD` event.
+        """Parses the ``GUILD_BAN_ADD`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_BAN_ADD`` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.Member`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -768,12 +774,15 @@ class State:
         self.dispatch("guild_ban_add", guild, user)
 
     async def parse_guild_ban_remove(self, data: Dict) -> None:
-        """
-        Parses the `GUILD_BAN_REMOVE` event.
+        """Parses the ``GUILD_BAN_REMOVE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_BAN_REMOVE`` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.Member`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -783,12 +792,15 @@ class State:
         self.dispatch("guild_ban_remove", guild, user)
 
     async def parse_guild_emojis_update(self, data: Dict) -> None:
-        """
-        Parses the `GUILD_EMOJIS_UPDATE` event.
+        """Parses the ``GUILD_EMOJIS_UPDATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_EMOJIS_UPDATE`` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with two payloads (:class:`.Guild` and a list of :class:`.Emoji`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -800,12 +812,15 @@ class State:
         self.dispatch("guild_emojis_update", guild, emojis.values())
 
     async def parse_guild_intergration_update(self, data: Dict) -> None:
-        """
-        Parses the `GUILD_INTEGRATIONS_UPDATE` event.
+        """Parses the ``GUILD_INTEGRATIONS_UPDATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_INTEGRATIONS_UPDATE`` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.Guild`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -814,12 +829,15 @@ class State:
         self.dispatch("guild_integrations_update", guild)
 
     async def parse_guild_member_add(self, data: Dict) -> None:
-        """
-        Parses the `GUILD_MEMBER_ADD` event.
+        """Parses the ``GUILD_MEMBER_ADD`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_MEMBER_ADD`` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.Member`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -831,12 +849,15 @@ class State:
         self.dispatch("guild_member_add", member)
 
     async def parse_guild_member_remove(self, data: Dict) -> None:
-        """
-        Parses the `GUILD_MEMBER_REMOVE` event.
+        """Parses the ``GUILD_MEMBER_REMOVE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_MEMBER_REMOVE`` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with two payloads (:class:`.Guild` and :class:`.User`)
 
+        Parameters
+        ----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -848,12 +869,16 @@ class State:
         self.dispatch("guild_member_remove", guild, user)
 
     async def parse_guild_member_update(self, data: Dict) -> None:
-        """
-        Parses the `GUILD_MEMBER_UPDATE` event.
+        """Parses the ``GUILD_MEMBER_UPDATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_MEMBER_UPDATE`` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with two payloads before (:class:`.Member`)
+        and after (:class:`.Member`)
 
+        Parameters
+        -----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -869,12 +894,15 @@ class State:
         self.dispatch("guild_member_update", member, after)
 
     async def parse_guild_members_chunk(self, data: Dict) -> None:
-        """
-        Parses the `GUILD_MEMBERS_CHUNK` event.
+        """Parses the ``GUILD_MEMBERS_CHUNK`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_MEMBERS_CHUNK`` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.Chunk`)
 
+        Parameters
+        -----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         chunk = Chunk(self, data)
 
@@ -884,12 +912,15 @@ class State:
         self.dispatch("guild_members_chunk", chunk)
 
     async def parse_guild_role_create(self, data: Dict) -> None:
-        """
-        Parses the `GUILD_ROLE_CREATE` event.
+        """Parses the ``GUILD_ROLE_CREATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_ROLE_CREATE`` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.Role`)
 
+        Parameters
+        -----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -901,12 +932,16 @@ class State:
         self.dispatch("guild_role_create", role)
 
     async def parse_guild_role_update(self, data: Dict) -> None:
-        """
-        Parses the `GUILD_ROLE_UPDATE` event.
+        """Parses the ``GUILD_ROLE_UPDATE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_ROLE_UPDATE`` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with two payloads before (:class:`.Role`)
+        and after (:class:`.Role`)
 
+        Parameters
+        -----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -922,12 +957,15 @@ class State:
         self.dispatch("guild_role_update", before, role)
 
     async def parse_guild_role_delete(self, data: Dict) -> None:
-        """
-        Parses the `GUILD_ROLE_DELETE` event.
+        """Parses the ``GUILD_ROLE_DELETE`` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the ``GUILD_ROLE_DELETE`` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.Role`)
 
+        Parameters
+        -----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -941,12 +979,15 @@ class State:
         self.dispatch("guild_role_delete", role)
 
     async def parse_integration_create(self, data: Dict) -> None:
-        """
-        Parses the `INTEGRATION_CREATE` event.
+        """Parses the `INTEGRATION_CREATE` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the `INTEGRATION_CREATE` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.Integration`)
 
+        Parameters
+        -----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -956,12 +997,15 @@ class State:
         self.dispatch("integration_create", integration)
 
     async def parse_integration_update(self, data: Dict) -> None:
-        """
-        Parses the `INTEGRATION_UPDATE` event.
+        """Parses the `INTEGRATION_UPDATE` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the `INTEGRATION_UPDATE` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.Integration`)
 
+        Parameters
+        -----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -971,12 +1015,15 @@ class State:
         self.dispatch("integration_update", integration)
 
     async def parse_integration_delete(self, data: Dict) -> None:
-        """
-        Parses the `INTEGRATION_DELETE` event.
+        """Parses the `INTEGRATION_DELETE` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the `INTEGRATION_UPDATE` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.Integration`)
 
+        Parameters
+        -----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         guild = self.get_guild(int(data["guild_id"]))
         if not guild:
@@ -986,34 +1033,43 @@ class State:
         self.dispatch("integration_delete", integration)
 
     async def parse_invite_create(self, data: Dict) -> None:
-        """
-        Parses the `INVITE_CREATE` event.
+        """Parses the `INVITE_CREATE` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the `INVITE_CREATE` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.Invite`)
 
+        Parameters
+        -----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         invite = Invite(self, data)
         self.dispatch("invite_create", invite)
 
     async def parse_invite_delete(self, data: Dict) -> None:
-        """
-        Parses the `INVITE_DELETE` event.
+        """Parses the `INVITE_DELETE` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the `INVITE_DELETE` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (:class:`.DeletedInvite`)
 
+        Parameters
+        -----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         invite = DeletedInvite(self, data)
         self.dispatch("invite_delete", invite)
 
     async def parse_message_delete_bulk(self, data: Dict) -> None:
-        """
-        Parses the `MESSAGE_DELETE_BULK` event.
+        """Parses the `MESSAGE_DELETE_BULK` event.
 
-        Parameters:
-            data (Dict): The raw data.
+        This method parses the raw data received from the `MESSAGE_DELETE_BULK` event once
+        received from the gateway. This method calls :meth:`.State.dispatch` with one payload (a list of :class:`.Message` or :class:`.DeletedMessage`)
 
+        Parameters
+        -----------
+        data: :class:`dict`
+            The raw data received from the gateway
         """
         messages = []
         for message_id in data["ids"]:
@@ -1128,6 +1184,22 @@ class State:
             The emoji if cached.
         """
         return self._emojis.get(emoji_id)
+
+    def get_sticker(self, sticker_id: int) -> Optional[Sticker]:
+        """
+        Gets a sticker from the cache.
+
+        Parameters
+        ----------
+        sticker_id: :class:`int`
+            The ID of the sticker.
+
+        Returns
+        -------
+        Optional[:class:`.Sticker`]
+            The sticker if it exists in the cache, otherwise ``None``.
+        """
+        return self._stickers.get(sticker_id)
 
     def create_message(self, data: dict, channel: Any) -> Message:
         """Creates a :class:`.Message` instance.
@@ -1314,6 +1386,21 @@ class State:
         return guild
 
     def create_guild_stickers(self, guild: Guild, data: Dict) -> Guild:
+        """Creates the stickers of a guild.
+
+        Parameters
+        ----------
+        guild: :class:`.Guild`
+            The guild to create the channels for
+
+        data: :class:`dict`
+            The raw data of the guild
+
+        Returns
+        -------
+        :class:`.Guild`
+            The guild which was passed in.
+        """
         payload = data.get("stickers")
         if not payload:
             return guild
@@ -1324,16 +1411,6 @@ class State:
         guild._stickers = stickers
 
         return guild
-
-    def get_sticker(self, sticker_id: int) -> Optional[Sticker]:
-        """
-        Grabs a sticker from the cache.
-
-        Returns:
-            The [lefi.Sticker](./sticker.md) instance corresponding to the ID if found.
-
-        """
-        return self._stickers.get(sticker_id)
 
     def create_overwrites(
         self,
