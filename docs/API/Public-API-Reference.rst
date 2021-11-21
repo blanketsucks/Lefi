@@ -24,6 +24,21 @@ CDN Asset
     :show-inheritance:
     :inherited-members:
 
+Base models
+-----------
+
+Messageable
+~~~~~~~~~~~
+.. autoclass:: lefi.base.Messageable
+    :members:
+
+BaseTextChannel
+~~~~~~~~~~~~~~~
+.. autoclass:: lefi.base.BaseTextChannel
+    :members:
+
+
+
 Errors
 ------
 Client errors
