@@ -10,6 +10,20 @@ Client
 .. autoclass:: lefi.client.Client
     :members:
 
+Attachment
+~~~~~~~~~~
+.. autoclass:: lefi.attachments.Attachment
+    :members:
+    :show-inheritance:
+    :inherited-members:
+
+CDN Asset
+~~~~~~~~~
+.. autoclass:: lefi.attachments.CDNAsset
+    :members:
+    :show-inheritance:
+    :inherited-members:
+
 Errors
 ------
 Client errors
