@@ -10,6 +10,34 @@ Client
 .. autoclass:: lefi.client.Client
     :members:
 
+TextChannel
+~~~~~~~~~~~
+.. autoclass:: lefi.channel.TextChannel
+    :members:
+    :show-inheritance:
+    :inherited-members:
+
+VoiceChannel
+~~~~~~~~~~~~
+.. autoclass:: lefi.channel.VoiceChannel
+    :members:
+    :show-inheritance:
+    :inherited-members:
+
+CategoryChannel
+~~~~~~~~~~~~~~~
+.. autoclass:: lefi.channel.CategoryChannel
+    :members:
+    :show-inheritance:
+    :inherited-members:
+
+DMChannel
+~~~~~~~~~
+.. autoclass:: lefi.channel.DMChannel
+    :members:
+    :show-inheritance:
+    :inherited-members:
+
 Attachment
 ~~~~~~~~~~
 .. autoclass:: lefi.attachments.Attachment
@@ -36,8 +64,6 @@ BaseTextChannel
 ~~~~~~~~~~~~~~~
 .. autoclass:: lefi.base.BaseTextChannel
     :members:
-
-
 
 Errors
 ------
