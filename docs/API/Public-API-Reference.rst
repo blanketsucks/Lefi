@@ -179,6 +179,15 @@ BaseTextChannel
 .. autoclass:: lefi.base.BaseTextChannel
     :members:
 
+Lefi models
+-----------
+Models which don't directly relate to discord.
+
+File
+~~~~
+.. autoclass:: lefi.File
+    :members:
+
 Discord models
 --------------
 Models which represent discord objects.
