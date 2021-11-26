@@ -228,6 +228,11 @@ Embed
 .. autoclass:: Embed
     :members:
 
+Emoji
+~~~~~
+.. autoclass:: Emoji
+    :members:
+
 Exceptions
 ----------
 .. currentmodule:: lefi.errors
