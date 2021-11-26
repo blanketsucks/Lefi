@@ -1,15 +1,13 @@
 import os
 import sys
 
-import lefi
-
 sys.path.insert(0, os.path.abspath(".."))
 
 project = "Lefi"
 copyright = "2021, Andy"
 author = "Andy"
 
-release = lefi.__version__
+release = "0.2.3a"
 
 extensions = [
     "sphinx.ext.autodoc",
