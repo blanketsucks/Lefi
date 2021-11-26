@@ -19,6 +19,9 @@ extensions = [
 autodoc_member_order = "bysource"
 autodoc_typehints = "description"
 autodoc_class_signature = "separated"
+
+autodoc_default_options = {"exclude-members": "__init__"}
+
 add_module_names = True
 
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]

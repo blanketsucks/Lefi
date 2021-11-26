@@ -8,7 +8,7 @@ from ..utils.payload import update_payload
 if TYPE_CHECKING:
 
     class _EmbedItem(Protocol):
-        data: Dict[str, Any]
+        data: dict
 
     class EmbedFooter(_EmbedItem):
         text: str
@@ -54,40 +54,52 @@ class EmbedItem:
 
 
 class Embed:
-    """
-    Represents a discord embed.
+    """Represents an embed.
 
+    Parameters
+    ----------
+    title: Optional[:class:`str`]
+        The title of the embed
+
+    description: Optional[:class:`str`]
+        The description of the embed
+
+    url: Optional[:class:`str`]
+        The url of the embed
+
+    timestamp: Optional[:class:`datetime.datetime`]
+        The timestamp of the embed
+
+    color: Optional[:class:`int`]
+        The color of the embed
     """
 
     def __init__(self, **kwargs) -> None:
-        """
-        Parameters:
-            **kwargs: The attributes of the embed
-
-        """
         self._data = kwargs
 
     @classmethod
-    def from_dict(cls: Type[Embed], data: Dict) -> Embed:
-        """
-        Creates an Embed object from a dictionary.
+    def from_dict(cls: Type[Embed], data: dict) -> Embed:
+        """Creates an Embed object from a dict.
 
-        Parameters:
-            data (Dict): The dictionary to create the embed from.
+        Parameters
+        ----------
+        data: :class:`dict`
+            The data to create the embed from
 
-        Returns:
-            The created embed
-
+        Returns
+        -------
+        :class:`.Embed`
+            A created embed from the dict.
         """
         return cls(**data)
 
-    def to_dict(self) -> Dict:
-        """
-        Turns the Embed into a dictionary.
+    def to_dict(self) -> dict:
+        """Creates a dict from the embed.
 
-        Returns:
-            The created dictionary.
-
+        Returns
+        -------
+        :class:`dict`
+            The dict created from the embed.
         """
         payload = self._data.copy()
 
@@ -106,19 +118,19 @@ class Embed:
 
     @property
     def title(self) -> Optional[str]:
-        """
-        The embed's title.
-        """
+        """The embed's title."""
         return self._data.get("title")
 
     @title.setter
     def title(self, title: str) -> None:
-        """
-        Set the embeds title, characters cannot be more than 256 characters.
+        """Set the embed's title.
 
-        Parameters:
-            title (str): The new title to use.
+        Characters cannot be more than 256 characters.
 
+        Parameters
+        ----------
+        title: :class:`str`
+            The title to set
         """
         if len(title) > 256:
             raise ValueError("Title cannot have more than 256 characters")
@@ -127,19 +139,19 @@ class Embed:
 
     @property
     def description(self) -> Optional[str]:
-        """
-        The the embed's description.
-        """
+        """The the embed's description."""
         return self._data.get("description")
 
     @description.setter
     def description(self, description: str) -> None:
-        """
-        Set the embed's description, characters cannot be more than 4096 characters.
+        """Set the embed's description.
 
-        Parameters:
-            description (str): The new description to use.
+        Characters cannot be more than 4096 characters.
 
+        Parameters
+        ----------
+        description: :class:`str`
+            The description to set
         """
         if len(description) > 4096:
             raise ValueError("Description cannot have more than 4096 characters")
@@ -148,199 +160,200 @@ class Embed:
 
     @property
     def url(self) -> Optional[str]:
-        """
-        The embed's url.
-        """
+        """The embed's url."""
         return self._data.get("url")
 
     @url.setter
     def url(self, url: str) -> None:
-        """
-        Sets the embed's url.
+        """Sets the embed's url.
 
-        Parameters:
-            url (str): The new url to use.
-
+        Parameters
+        ----------
+        url: :class:`str`
+            The url to set
         """
         self._data["url"] = url
 
     @property
-    def timestamp(self) -> Optional[str]:
-        """
-        The embed's timestamp.
-        """
-        if timestamp := self._data.get("timestamp"):
-            return timestamp.isoformat()
-
-        return None
+    def timestamp(self) -> Optional[datetime.datetime]:
+        """The embed's timestamp."""
+        return self._data.get("timestamp")
 
     @timestamp.setter
     def timestamp(self, timestamp: datetime.datetime) -> None:
-        """
-        Sets the embed's timestamp.
+        """Sets the embed's timestamp.
 
-        Parameters:
-            timestamp (datetime.datetime): The datetime.datetime object to use.
-
+        Parameters
+        ----------
+        timestamp: :class:`datetime.datetime`
+            The datetime.datetime to use as the timestamp
         """
         self._data["timestamp"] = timestamp
 
     @property
     def color(self) -> Optional[int]:
-        """
-        The embed's color.
-        """
+        """The embed's color."""
         return self._data.get("color")
 
     @color.setter
     def color(self, color: int) -> None:
-        """
-        Sets the embed's color.
+        """Sets the embed's color.
 
-        Parameters:
-            color (int): The new color to use.
-
+        Parameters
+        ----------
+        color: :class:`int`
+            The color to set
         """
         self._data["color"] = color
 
     @property
     def footer(self) -> Optional[EmbedFooter]:
-        """
-        The embed's footer.
-        """
+        """The embed's footer."""
         return self._data.get("footer")
 
     def set_footer(self, text: str, icon_url: Optional[str] = None) -> None:
-        """
-        Sets the embed's footer.
+        """Sets the embed's footer.
 
-        Parameters:
-            text (str): The text of the footer.
-            icon_url (Optional[str]): The icon url of the footer.
+        Parameters
+        ----------
+        text: :class:`str`
+            The text of the footer
 
+        icon_url: Optional[:class:`str`]
+            The icon url of the footer
         """
         self._data["footer"] = EmbedItem(text=text, icon_url=icon_url)
 
     @property
     def image(self) -> Optional[EmbedImage]:
-        """
-        The embed's image.
-        """
+        """The embed's image."""
         return self._data.get("image")
 
     def set_image(
         self, url: str, height: Optional[int] = None, width: Optional[int] = None
     ) -> None:
-        """
-        Sets the embed's image.
+        """Sets the embed's image.
 
-        Parameters:
-            url (str): The url of the image
-            height (Optional[int]): The height of the image.
-            width (Optional[int]): The width of the image.
+        Parameters
+        ----------
+        url: :class:`str`
+            The url of the image
 
+        height: Optional[:class``int`]
+            The height of the image
+
+        width: Optional[:class:`int`]
+            The width of the image
         """
         self._data["image"] = EmbedItem(url=url, height=height, width=width)
 
     @property
     def thumbnail(self) -> Optional[EmbedThumbnail]:
-        """
-        The embed's thumbnail.
-        """
+        """The embed's thumbnail."""
         return self._data.get("thumbnail")
 
     def set_thumbnail(
         self, url: str, height: Optional[int] = None, width: Optional[int] = None
     ) -> None:
-        """
-        Sets the embed's thumbnail.
+        """Sets the embed's thumbnail.
 
-        Parameters:
-            url (str): The url of the image
-            height (Optional[int]): The height of the thumbnail.
-            width (Optional[int]): The width of the thumbnail.
+        Parameters
+        ----------
+        url: :class:`str`
+            The url of the image
 
+        height: Optional[:class:`int`]
+            The height of the thumbnail
+
+        width: Optional[:class:`int`]
+            The width of the thumbnail
         """
         self._data["thumbnail"] = EmbedItem(url=url, height=height, width=width)
 
     @property
     def video(self) -> Optional[EmbedVideo]:
-        """
-        The embed's video.
-        """
+        """The embed's video."""
         return self._data.get("video")
 
     def set_video(
         self, url: str, height: Optional[int] = None, width: Optional[int] = None
     ) -> None:
-        """
-        Sets the embed's video.
+        """Sets the embed's video.
 
-        Parameters:
-            url (str): The url of the video
-            height (Optional[int]): The height of the video.
-            width (Optional[int]): The width of the video.
+        Parameters
+        ----------
+        url: :class:`str`
+            The url of the video
 
+        height: Optional[:class:`int`]
+            The height of the video
+
+        width: Optional[:class:`int`]
+            The width of the video
         """
         self._data["thumbnail"] = EmbedItem(url=url, height=height, width=width)
 
     @property
     def provider(self) -> Optional[EmbedProvider]:
-        """
-        The embed's provider.
-        """
+        """The embed's provider."""
         return self._data.get("provider")
 
     def set_provider(
         self, name: Optional[str] = None, url: Optional[str] = None
     ) -> None:
-        """
-        Sets the embed's provider.
+        """Sets the embed's provider.
 
-        Parameters:
-            name (Optional[str]): The name of the provider.
-            url (Optional[str]): The url of the provider.
+        Parameters
+        ----------
+        name: Optional[:class:`str`]
+            The name of the provider
 
+        url: Optional[:class:`str`]
+            The url of the provider
         """
         self._data["thumbnail"] = EmbedItem(name=name, url=url)
 
     @property
     def author(self) -> Optional[EmbedAuthor]:
-        """
-        The embed's author.
-        """
+        """The embed's author."""
         return self._data.get("author")
 
     def set_author(
         self, name: str, url: Optional[str] = None, icon_url: Optional[str] = None
     ) -> None:
-        """
-        Sets the embed's author.
+        """Sets the embed's author.
 
-        Parameters:
-            name (str): The name of the author.
-            url (Optional[str]): The url of the author.
-            icon_url (Optional[str]): The icon url of the author.
+        Parameters
+        ----------
+        name: :class:`str`
+            The name of the author
 
+        url: Optional[:class:`str`]
+            The url of the author
+
+        icon_url: Optional[:class:`str`]
+            The icon url of the author
         """
         self._data["author"] = EmbedItem(name=name, url=url, icon_url=icon_url)
 
     @property
     def fields(self) -> Optional[List[EmbedField]]:
-        """
-        The embed's fields.
-        """
+        """The embed's fields."""
         return self._data.get("fields")
 
     def add_field(self, name: str, value: str, inline: bool = False) -> None:
-        """
-        Adds a field to the embed.
+        """Adds a field to the embed.
 
-        Parameters:
-            name (str): The fields name.
-            value (str): The value of the field.
-            inline (bool): Whether or not the field is inline.
+        Parameters
+        ----------
+        name: :class:`str`
+            The fields name
 
+        value: :class:`str`
+            The value of the field
+
+        inline: :class:`bool`
+            Whether or not the field is inline
         """
         self._data.setdefault("fields", []).append(
             EmbedItem(name=name, value=value, inline=inline)

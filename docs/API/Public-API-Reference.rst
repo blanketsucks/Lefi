@@ -18,7 +18,7 @@ Version
 Client
 ------
 .. autoclass:: Client
-    :exclude-members: __init__, application_command, on, once
+    :exclude-members: application_command, on, once
     :members:
 
     .. autodecorator:: lefi.Client.application_command
@@ -172,13 +172,11 @@ Base models which some models extend.
 Messageable
 ~~~~~~~~~~~
 .. autoclass:: lefi.base.Messageable
-    :exclude-members: __init__
     :members:
 
 BaseTextChannel
 ~~~~~~~~~~~~~~~
 .. autoclass:: lefi.base.BaseTextChannel
-    :exclude-members: __init__
     :members:
 
 Discord models
@@ -192,47 +190,48 @@ Models which represent discord objects.
 TextChannel
 ~~~~~~~~~~~
 .. autoclass:: TextChannel
-    :exclude-members: __init__
     :inherited-members:
     :members:
 
 VoiceChannel
 ~~~~~~~~~~~~
 .. autoclass:: VoiceChannel
-    :exclude-members: __init__
     :inherited-members:
     :members:
 
 CategoryChannel
 ~~~~~~~~~~~~~~~
 .. autoclass:: CategoryChannel
-    :exclude-members: __init__
     :inherited-members:
     :members:
 
 DMChannel
 ~~~~~~~~~
 .. autoclass:: DMChannel
-    :exclude-members: __init__
     :inherited-members:
     :members:
 
 Attachment
 ~~~~~~~~~~
 .. autoclass:: Attachment
-    :exclude-members: __init__
     :inherited-members:
     :members:
 
 CDN Asset
 ~~~~~~~~~
 .. autoclass:: CDNAsset
-    :exclude-members: __init__
     :inherited-members:
+    :members:
+
+Embed
+~~~~~
+.. autoclass:: Embed
     :members:
 
 Exceptions
 ----------
+.. currentmodule:: lefi.errors
+
 Exceptions which the wrapper can raise.
 
 Client errors
@@ -243,33 +242,33 @@ Client errors
 
 Voice errors
 ~~~~~~~~~~~~
-.. autoexception:: lefi.errors.VoiceException
+.. autoexception:: VoiceException
     :exclude-members: __init__, __new__
     :inherited-members:
 
-.. autoexception:: lefi.errors.OpusNotFound
+.. autoexception:: OpusNotFound
     :exclude-members: __init__, __new__
     :show-inheritance:
 
 HTTP errors
 ~~~~~~~~~~~
-.. autoexception:: lefi.errors.HTTPException
+.. autoexception:: HTTPException
     :exclude-members: __init__, __new__
     :show-inheritance:
     :inherited-members:
 
-.. autoexception:: lefi.errors.BadRequest
+.. autoexception:: BadRequest
     :exclude-members: __init__, __new__
     :show-inheritance:
 
-.. autoexception:: lefi.errors.Forbidden
+.. autoexception:: Forbidden
     :exclude-members: __init__, __new__
     :show-inheritance:
 
-.. autoexception:: lefi.errors.NotFound
+.. autoexception:: NotFound
     :exclude-members: __init__, __new__
     :show-inheritance:
 
-.. autoexception:: lefi.errors.Unauthorized
+.. autoexception:: Unauthorized
     :exclude-members: __init__, __new__
     :show-inheritance:
