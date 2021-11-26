@@ -1,13 +1,15 @@
 import os
 import sys
 
+import lefi
+
 sys.path.insert(0, os.path.abspath(".."))
 
 project = "Lefi"
 copyright = "2021, Andy"
 author = "Andy"
 
-release = "0.2.3a"
+release = lefi.__version__
 
 extensions = [
     "sphinx.ext.autodoc",
@@ -18,8 +20,8 @@ extensions = [
 
 autodoc_member_order = "bysource"
 autodoc_typehints = "description"
-add_module_names = False
-
+autodoc_class_signature = "separated"
+add_module_names = True
 
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
