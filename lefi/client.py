@@ -256,8 +256,8 @@ class Client:
     ) -> Callable[..., AppCommand]:
         """A decorator which adds an application command.
 
-        This decorator added an application command. Currently only supporting
-        slash commands. The function being decorator will be called when this command is invoked.
+        This decorator adds an application command. Currently only supporting
+        slash commands. The function being decorated will be called when this command is invoked.
 
         Parameters
         ----------
@@ -402,22 +402,22 @@ class Client:
 
     @property
     def guilds(self) -> List[Guild]:
-        """List[:class:`.Guild`] The list of guilds the client is in."""
+        """The list of guilds the client is in."""
         return list(self._state._guilds.values())
 
     @property
     def channels(self) -> List[Union[Channel, DMChannel]]:
-        """List[Union[:class:`.Channel`, :class:`.DMChannel`]] The list of channels the client can see."""
+        """The list of channels the client can see."""
         return list(self._state._channels.values())
 
     @property
     def users(self) -> List[User]:
-        """List[:class:`.User`] The list of users that the client can see."""
+        """The list of users that the client can see."""
         return list(self._state._users.values())
 
     @property
     def voice_clients(self) -> List[VoiceClient]:
-        """List[:class:`.VoiceClient`] The list of voice clients the client has."""
+        """The list of voice clients the client has."""
         return list(self._state._voice_clients.values())
 
     def get_message(self, id: int) -> Optional[Message]:
@@ -470,7 +470,7 @@ class Client:
 
         Returns
         -------
-        Optional[Union[:class:`.Channel`, :class`.DMChannel`]]
+        Optional[Union[:class:`.Channel`, :class:`.DMChannel`]]
             The channel instance if cached.
         """
         return self._state.get_channel(id)
@@ -540,10 +540,6 @@ class Client:
 
         This method does an API call to fetch an invite corresponding to the code passed in.
 
-        .. note ::
-
-            This should only really be used when the corresponding `get_` method returns None.
-
         Parameters
         ----------
         code: :class:`str`
@@ -591,10 +587,6 @@ class Client:
         """A method which makes an API call to fetch a guild template.
 
         This method does an API call to fetch a guild template corresponding to the code passed in.
-
-        .. note ::
-
-            This should only really be used when the corresponding `get_` method returns None.
 
         Parameters
         ----------

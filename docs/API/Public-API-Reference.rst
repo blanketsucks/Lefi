@@ -3,7 +3,7 @@
 API-Reference
 =============
 The public API-Reference of the wrapper. This shows all public
-methods and classes. To see internal method and classes refer to :doc:`Internal API-Reference <Internal-API-Reference>`
+methods and classes. To see internal methods and classes refer to :doc:`Internal API-Reference <Internal-API-Reference>`
 
 Version
 -------
