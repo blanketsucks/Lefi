@@ -242,6 +242,12 @@ Emoji
 .. autoclass:: Emoji
     :members:
 
+Guild
+~~~~~
+.. autoclass:: Guild
+    :exclude-members: __init__
+    :members:
+
 Exceptions
 ----------
 .. currentmodule:: lefi.errors

@@ -4,11 +4,9 @@ from typing import (
     TYPE_CHECKING,
     Dict,
     List,
-    Literal,
     NamedTuple,
     Optional,
     Union,
-    overload,
     Any,
 )
 
@@ -17,10 +15,8 @@ from .emoji import Emoji
 from .enums import (
     ChannelType,
     ExplicitContentFilterLevel,
-    GuildPremiumTier,
     MessageNotificationLevel,
     MFALevel,
-    NSFWLevel,
     VerificationLevel,
     AuditLogsEvent,
 )
@@ -51,18 +47,9 @@ class BanEntry(NamedTuple):
 
 
 class Guild:
-    """
-    Represents a Guild.
-    """
+    """Represents a Guild."""
 
     def __init__(self, state: State, data: Dict) -> None:
-        """
-        Creates a new Guild instance.
-
-        Parameters:
-            state (lefi.State): The state instance.
-            data (Dict): The guild data.
-        """
         self._channels: Dict[int, GuildChannels] = {}
         self._members: Dict[int, Member] = {}
         self._roles: Dict[int, Role] = {}
@@ -163,21 +150,79 @@ class Guild:
         afk_timeout: Optional[int] = None,
         default_message_notifications: Optional[MessageNotificationLevel] = None,
         verification_level: Optional[VerificationLevel] = None,
-        features: Optional[List[str]] = None,
         system_channel: Optional[TextChannel] = None,
         system_channel_flags: Optional[SystemChannelFlags] = None,
         preferred_locale: Optional[str] = None,
         rules_channel: Optional[TextChannel] = None,
         public_updates_channel: Optional[TextChannel] = None,
     ) -> Guild:
-        """
-        Edits the guild.
+        """Edits the guild.
 
-        Parameters:
-            **kwargs (Any): Options to pass to [lefi.HTTPClient.modify_guild][]
+        Parameters
+        ----------
+        name: Optional[:class:`str`]
+            The new name to set for the guild
 
-        Returns:
-            The [Guild](./guild.md) after editing
+        description: Optional[:class:`str`]
+            The new description to set for the guild
+
+        icon: Optional[:class:`bytes`]
+            The new icon to set for the guild
+
+        banner: Optional[:class:`bytes`]
+            The new banner to set for the guild
+
+        splash: Optional[:class:`bytes`]
+            The new splash to set for the guild
+
+        discovery_splash: Optional[:class:`bytes`]
+            The new discovery splash to set for the guild
+
+        region: Optional[Union[:class:`str`, :class:`.VoiceRegion`]]
+            The new region to set for the guild
+
+        afk_channel: Optional[:class:`.VoiceChannel`]
+            The voice channel to put AFK users in
+
+        owner: Optional[:class:`.Snowflake`]
+            The new owner of the guild. This is used for transferring
+
+        afk_timeout: Optional[:class:`int`]
+            The new AFK timeout
+
+        default_message_notifications: Optional[:class:`.MessageNotificationLevel`]
+            The new default message notifcation level
+
+        verification_level: Optional[:class:`.VerificationLevel`]
+            The new verification level of the guild
+
+        system_channel: Optional[:class:`.TextChannel`]
+            The new system channel of the guild
+
+        system_channel_flags: Optional[:class:`SystemChannelFlags`]
+            The new system channel flags
+
+        preferred_locale: Optional[:class:`str`]
+            The new locale of the guild. This should be an ISO 639 code
+
+        rules_channel: Optional[:class:`.TextChannel`]
+            The new rules channel of the guild
+
+        public_updates_channel: Optional[:class:`.TextChannel`]
+            The new public updates channel of the guild
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to edit this guild.
+
+        Returns
+        -------
+        :class:`.Guild`
+            The guild after editting.
         """
         region = region.name if isinstance(region, VoiceRegion) else region
         notif = (
@@ -206,7 +251,6 @@ class Guild:
             if public_updates_channel
             else None,
             preferred_locale=preferred_locale,
-            features=features,
             system_channel_flags=system_channel_flags.value
             if system_channel_flags
             else None,
@@ -225,16 +269,40 @@ class Guild:
         overwrites: Optional[Dict[Union[Member, Role], Permissions]] = None,
         parent: Optional[CategoryChannel] = None,
     ) -> TextChannel:
-        """
-        Creates a new text channel in the guild.
+        """Creates a text channel in the guild.
 
-        Parameters:
-            name (str): The name of the channel.
-            topic (str): The topic of the channel.
-            position (int): The position of the channel.
-            nsfw (bool): Whether the channel is nsfw.
-            parent (lefi.CategoryChannel): The parent category of the channel.
+        Parameters
+        ----------
+        name: :class:`str`
+            The name of the channel
 
+        topic: Optional[:class:`str`]
+            The new topic of the channel
+
+        position: Optional[:class:`int`]
+            The new position of the channel
+
+        nsfw: Optional[:class:`bool`]
+            Whether or not the channel should be marked as NSFW
+
+        overwrites: Optional[Dict[Union[:class:`.Member`, :class:`.Role`], :class:`.Permissions`]]
+            The new overwrites of the channel
+
+        parent: Optional[:class:`.CategoryChannel`]
+            The category to create the channel in
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to create this channel.
+
+        Returns
+        -------
+        :class:`.TextChannel`
+            The newly created text channel.
         """
         data = await self._create_channel(
             name=name,
@@ -259,20 +327,40 @@ class Guild:
         overwrites: Optional[Dict[Union[Member, Role], Permissions]] = None,
         parent: Optional[CategoryChannel] = None,
     ) -> VoiceChannel:
-        """
-        Creates a new voice channel in the guild.
+        """Creates a voice channel in the guild.
 
-        Parameters:
-            name (str): The name of the channel.
-            bitrate (int): The bitrate of the channel.
-            user_limit (int): The user limit of the channel.
-            position (int): The position of the channel.
-            parent (lefi.CategoryChannel): The parent category of the channel.
-            overwrites (Dict[Union[lefi.Member, lefi.Role], lefi.Permissions]): The overwrites of the channel.
+        Parameters
+        ----------
+        name: :class:`str`
+            The name of the channel
 
-        Returns:
-            The newly created [lefi.VoiceChannel] instance.
+        bitrate: Optional[:class:`int`]
+            The bitrate of the voice channel
 
+        user_limit: Optional[:class:`int`]
+            The max amount of users to allow in the voice channel
+
+        position: Optional[:class:`int`]
+            The new position of the channel
+
+        overwrites: Optional[Dict[Union[:class:`.Member`, :class:`.Role`], :class:`.Permissions`]]
+            The new overwrites of the channel
+
+        parent: Optional[:class:`.CategoryChannel`]
+            The category to create the channel in
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to create this channel.
+
+        Returns
+        -------
+        :class:`.VoiceChannel`
+            The newly created voice channel.
         """
         data = await self._create_channel(
             name=name,
@@ -294,18 +382,31 @@ class Guild:
         position: Optional[int] = None,
         overwrites: Optional[Dict[Union[Member, Role], Permissions]] = None,
     ) -> CategoryChannel:
-        """
-        Creates a new category in the guild.
+        """Creates a new category in the guild.
 
-        Parameters:
-            name (str): The name of the category.
-            position (int): The position of the category.
-            parent (lefi.CategoryChannel): The parent category of the category.
-            overwrites (Dict[Union[lefi.Member, lefi.Role], lefi.Permissions]): The overwrites of the category.
+        Parameters
+        ----------
+        name: :class:`str`
+            The name of the category channel
 
-        Returns:
-            The newly created [lefi.CategoryChannel] instance.
+        position: Optional[:class:`int`]
+            The position of the category channel
 
+        overwrites: Optional[Dict[Union[:class:`.Member`, :class:`.Role`], :class:`.Permissions`]]
+            The overwrites to create the channel with
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to create this category.
+
+        Returns
+        -------
+        :class:`.CategoryChannel`
+            The newly created category channel.
         """
         data = await self._create_channel(
             name=name,
@@ -317,64 +418,141 @@ class Guild:
         channel = self._state.create_channel(data, self)
         return channel  # type: ignore
 
-    async def create_role(self, name: str, **kwargs) -> Role:
+    async def create_role(
+        self,
+        name: str,
+        permissions: Optional[Permissions] = None,
+        color: Optional[int] = None,
+        hoist: Optional[bool] = None,
+        mentionable: Optional[bool] = None,
+        icon: Optional[bytes] = None,
+        unicode_emoji: Optional[str] = None,
+    ) -> Role:
+        """Creates a new role in the guild.
+
+        Parameters
+        ----------
+        name: :class:`str`
+            The name of the role
+
+        permissions: Optional[:class:`.Permissions`]
+            The permissions to give the role
+
+        color: Optional[:class:`int`]
+            The color of the role
+
+        hoist: Optional[:class:`bool`]
+            If the role should be hoisted or not
+
+        mentionable: Optional[:class:`bool`]
+            If the role should be mentionable or not
+
+        icon: Optional[:class:`bytes`]
+            The icon of the role
+
+        unicode_emoji: Optional[:class:`str`]
+            The emoji for the role
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to create this role.
+
+        Returns
+        -------
+        :class:`.Role`
+            The newly created role.
         """
-        Creates a new role in the guild.
+        data = await self._state.http.create_guild_role(
+            self.id,
+            name=name,
+            permissions=permissions.value if permissions else None,
+            color=color,
+            hoist=hoist or False,
+            mentionable=mentionable or False,
+            icon=icon,
+            unicode_emoji=unicode_emoji,
+        )
 
-        Parameters:
-            name (str): The name of the role.
-            **kwargs (Any): Extra options to pass to [lefi.HTTPClient.create_guild_role][].
-
-        Returns:
-            The newly created [lefi.Role](./role.md) instance.
-
-        """
-        data = await self._state.http.create_guild_role(self.id, name=name, **kwargs)
         role = Role(self._state, data, self)
 
         self._roles[role.id] = role
         return role
 
     async def kick(self, user: Snowflake) -> None:
-        """
-        Kicks a member from the guild.
+        """Kicks a member from the guild.
 
-        Parameters:
-            user (lefi.User): The user to kick.
+        Parameters
+        ----------
+        user: :class:`.Snowflake`
+            The user to kick from the guild
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to kick this user.
         """
         await self._state.http.remove_guild_member(self.id, user.id)
 
     async def ban(self, user: Snowflake, *, delete_message_days: int = 0) -> None:
-        """
-        Bans a member from the guild.
+        """Bans a member from the guild.
 
-        Parameters:
-            member (lefi.Member): The member to ban.
-            delete_message_days (int): The number of days to delete messages for.
+        Parameters
+        ----------
+        user: :class:`.Snowflake`
+            The user to ban from the guild
 
+        delete_message_days: :class:`int`
+            The number of days to delete messages for
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to ban this user.
         """
         await self._state.http.create_guild_ban(
             self.id, user.id, delete_message_days=delete_message_days
         )
 
     async def unban(self, user: Snowflake) -> None:
-        """
-        Unbans a member from the guild.
+        """Unbans a member from the guild.
 
-        Parameters:
-            user (lefi.User): The user to unban.
+        Parameters
+        ----------
+        user: :class:`.Snowflake`
+            The user to unban from the guild
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to ban this user.
         """
         await self._state.http.remove_guild_ban(self.id, user.id)
 
     async def fetch_bans(self) -> List[BanEntry]:
-        """
-        Fetches the bans from the guild.
+        """Fetches the bans from the guild.
 
-        Returns:
-            A list of [lefi.BanEntry](./banentry.md) instances.
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
 
+        Returns
+        -------
+        List[:class:`.BanEntry`]
+            A list of ban entries for the guild.
         """
         data = await self._state.http.get_guild_bans(self.id)
 
@@ -384,15 +562,22 @@ class Guild:
         ]
 
     async def fetch_ban(self, user: Snowflake) -> BanEntry:
-        """
-        Fetches the ban from the guild.
+        """Fetches the ban from the guild for a specific user.
 
-        Parameters:
-            user (lefi.User): The user to fetch the ban for.
+        Parameters
+        ----------
+        user: :class:`.Snowflake`
+            The user to fetch for
 
-        Returns:
-            The [lefi.BanEntry](./banentry.md) instance.
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
 
+        Returns
+        -------
+        :class:`.BanEntry`
+            The ban entry for the user.
         """
         data = await self._state.http.get_guild_ban(self.id, user.id)
         user = User(self._state, data["user"])
@@ -400,59 +585,89 @@ class Guild:
         return BanEntry(user, data["reason"])
 
     async def fetch_invites(self) -> List[Invite]:
-        """
-        Fetches the guild's invites.
+        """Fetches the guild's invites.
 
-        Returns:
-            A list of [lefi.Invite](./invite.md) instances.
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
 
+        Returns
+        -------
+        List[:class:`.Invite`]
+            A list of invites fetched from the guild.
         """
         data = await self._state.http.get_guild_invites(self.id)
         return [Invite(self._state, payload) for payload in data]
 
     async def fetch_integrations(self) -> List[Integration]:
-        """
-        Fetches the guild's integrations.
+        """Fetches the guild's integrations.
 
-        Returns:
-            A list of [lefi.Integration](./integration.md) instances.
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
 
+        Returns
+        -------
+        List[:class:`.Integration`]
+            A list of the guild's integrations.
         """
         data = await self._state.http.get_guild_integrations(self.id)
         return [Integration(self._state, payload, self) for payload in data]
 
-    async def fetch_vanity_url(self):
-        """
-        Fetches the guild's vanity url.
+    async def fetch_vanity_url(self) -> PartialInvite:
+        """Fetches the guild's vanity url.
 
-        Returns:
-            The vanity url.
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
 
+        Returns
+        -------
+        :class:`.PartialInvite`
+            The guild's vanity url.
         """
         data = await self._state.http.get_guild_vanity_url(self.id)
         return PartialInvite(data)
 
     async def fetch_templates(self) -> List[GuildTemplate]:
-        """
-        Fetches the guild's templates.
+        """Fetches the guild's templates.
 
-        Returns:
-            A list of [lefi.GuildTemplate](./template.md) instances.
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
 
+        Returns
+        -------
+        List[:class:`.GuildTemplate`]
+            A list of the guild's templates
         """
         data = await self._state.http.get_guild_templates(self.id)
         return [GuildTemplate(self._state, payload) for payload in data]
 
     async def fetch_member(self, user_id: int) -> Member:
-        """
-        Fetches a member from the guild.
+        """Fetches a member from the guild.
 
-        Parameters:
-            user_id (int): The id of the user to fetch.
+        Parameters
+        ----------
+        user_id: :class:`int`
+            The id of the user to fetch
 
-        Returns:
-            The [lefi.Member](./member.md) instance.
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
 
+        :exc:`.NotFound`
+            The user id passed was invalid.
+
+        Returns
+        -------
+        :class:`.Member`
+            The fetched member.
         """
         data = await self._state.http.get_guild_member(self.id, user_id)
         return self._state.create_member(data, self)
@@ -460,16 +675,25 @@ class Guild:
     async def fetch_members(
         self, *, limit: int = 100, after: Optional[int] = None
     ) -> List[Member]:
-        """
-        Fetches the guild's members.
+        """Fetches the guild's members.
 
-        Parameters:
-            limit (int): The number of members to fetch.
-            after (int): The id of the member to start at.
+        Parameters
+        ----------
+        limit: :class:`int`
+            The max amount of members to return
 
-        Returns:
-            A list of [lefi.Member](./member.md) instances.
+        after: Optional[:class:`int`]
+            Fetch members after this member's id
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        List[:class:`.Member`]
+            A list of fetched members.
         """
         data = await self._state.http.list_guild_members(
             self.id, limit=limit, after=after
@@ -477,12 +701,17 @@ class Guild:
         return [self._state.create_member(payload, self) for payload in data]
 
     async def fetch_roles(self) -> List[Role]:
-        """
-        Fetches the guild's roles.
+        """Fetches the guild's roles.
 
-        Returns:
-            A list of [lefi.Role](./role.md) instances.
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
 
+        Returns
+        -------
+        List[:class:`.Role`]
+            A list of the fetched roles.
         """
         data = await self._state.http.get_guild_roles(self.id)
         return [Role(self._state, payload, self) for payload in data]
@@ -490,16 +719,25 @@ class Guild:
     async def fetch_prune_count(
         self, *, days: int = 7, roles: Optional[List[Role]] = None
     ) -> int:
-        """
-        Fetches the number of members that would be pruned.
+        """Fetches the number of members that would be pruned.
 
-        Parameters:
-            days (int): The number of days to prune for.
-            roles (List[lefi.Role]): The roles to include.
+        Parameters
+        ----------
+        days: :class:`int`
+            The number of days to prune for
 
-        Returns:
-            The number of members that would be pruned.
+        roles: List[:class:`.Role`]
+            The roles to include
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`int`
+            The amount of members that would be pruned.
         """
         include_roles = [r.id for r in roles] if roles else None
 
@@ -508,43 +746,32 @@ class Guild:
         )
         return data["pruned"]
 
-    @overload
     async def prune(
         self,
         *,
         days: int = 7,
         roles: Optional[List[Role]] = None,
-        compute_prune_count: Literal[True],
-    ) -> int:
-        ...
-
-    @overload
-    async def prune(
-        self,
-        *,
-        days: int = 7,
-        roles: Optional[List[Role]] = None,
-        compute_prune_count: Literal[False],
-    ) -> None:
-        ...
-
-    async def prune(
-        self,
-        *,
-        days: int = 7,
-        roles: Optional[List[Role]] = None,
-        compute_prune_count: bool = True,
+        compute_prune_count: bool = False,
     ) -> Optional[int]:
-        """
+        """Prunes the guild.
         Prunes the guild.
+        Parameters
+        ----------
+        days: :class:`int`
+            The number of days to prune for
 
-        Parameters:
-            days (int): The number of days to prune for.
-            roles (List[lefi.Role]): The roles to include.
+        roles: List[:class:`.Role`]
+            The roles to include
 
-        Returns:
-            The number of members that were pruned.
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
 
+        Returns
+        -------
+        :class:`int`
+            The amount of members pruned.
         """
         include_roles = [r.id for r in roles] if roles else None
         data = await self._state.http.begin_guild_prune(
@@ -560,29 +787,43 @@ class Guild:
         return None
 
     async def fetch_voice_regions(self) -> List[VoiceRegion]:
-        """
-        Fetches the guild's voice regions.
+        """Fetches the guild's voice regions.
 
-        Returns:
-            A list of [lefi.VoiceRegion](./voiceregion.md) instances.
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
 
+        Returns
+        -------
+        List[:class:`.VoiceRegion`]
+            A list of the fetched voice regions.
         """
         data = await self._state.http.get_guild_voice_regions(self.id)
         return [VoiceRegion(payload) for payload in data]
 
-    def query(self, q: str, *, limit: int = 1) -> MemberIterator:
+    def query(self, query: str, *, limit: int = 1) -> MemberIterator:
+        """Queries the guild for a specific string.
+
+        Parameters
+        ----------
+        query: :class:`str`
+            The query string
+
+        limit: :class:`int`
+            The maximum number of results to return
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`.MemberIterator`
+            A :class:`.AsyncIterator` for the fetched members.
         """
-        Queries the guild for a specific string.
-
-        Parameters:
-            q (str): The query string.
-            limit (int): The maximum number of results to return.
-
-        Returns:
-            A list of [lefi.Member](./member.md) instances.
-
-        """
-        coro = self._state.http.search_guild_members(self.id, query=q, limit=limit)
+        coro = self._state.http.search_guild_members(self.id, query=query, limit=limit)
         return MemberIterator(self._state, self, coro)
 
     def audit_logs(
@@ -592,18 +833,38 @@ class Guild:
         action: Optional[AuditLogsEvent] = None,
         limit: Optional[int] = None,
     ) -> AuditLogIterator:
-        """
-        Returns an iterator for the guild's audit logs.
+        """Returns an iterator for the guild's audit logs.
 
-        Example:
-            ```py
+        Examples
+        --------
+        Getting the guild's audit logs: ::
+
             async for entry in guild.audit_logs():
                 print(f"Action: {entry.action.name}. Target: {entry.target}. Reason: {entry.reason}")
 
                 for change in entry.changes:
                     print(f"Change: {change.key} - {change.before} -> {change.after}")
-            ```
 
+        Parameters
+        ----------
+        user: Optional[:class:`.Snowflake`]
+            The user to filter audit logs for
+
+        action: Optional[:class:`.AuditLogsEvent`]
+            The action to filter by
+
+        limit: Optional[:class:`int`]
+            The max amount of audit log entries to return
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`.AuditLogIterator`
+            An :class:`.AsyncIterator` for the fetched audit logs.
         """
         user_id = user.id if user else None
         action_type = action.value if action else None
@@ -614,12 +875,17 @@ class Guild:
         return AuditLogIterator(self._state, self, coro)
 
     async def fetch_active_threads(self) -> List[Thread]:
-        """
-        Fetches the guild's active threads.
+        """Fetches the guild's active threads.
 
-        Returns:
-            A list of [lefi.Thread](./thread.md) instances.
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
 
+        Returns
+        -------
+        List[:class:`.Thread`]
+            A list of threads currently active.
         """
         data = await self._state.http.list_active_threads(self.id)
         return self._create_threads(data)
@@ -631,14 +897,18 @@ class Guild:
         self_mute: bool = False,
         self_deaf: bool = False,
     ) -> None:
-        """
-        Changes the guild's voice state.
+        """Changes the guild's voice state.
 
-        Parameters:
-            channel (lefi.VoiceChannel): The voice channel to move to.
-            self_mute (bool): Whether to mute the bot.
-            self_deaf (bool): Whether to deafen the bot.
+        Parameters
+        ----------
+        channel: Optional[:class:`.VoiceChannel`]
+            The voice channel to move to
 
+        self_mute: :class:`bool`
+            Whether the client user should be muted or not
+
+        self_deaf: :class:`bool`
+            Whether the client user should be deafened or not
         """
         ws = self._state.get_websocket(self.id)
         await ws.change_guild_voice_state(
@@ -646,110 +916,118 @@ class Guild:
         )
 
     def get_member(self, member_id: int) -> Optional[Member]:
-        """
-        Gets a member from the guilds member cache.
+        """Gets a member from the guild's member cache.
 
-        Parameters:
-            member_id (int): The ID of the member.
+        Parameters
+        ----------
+        member_id: :class:`int`
+            The id of the member to get
 
-        Returns:
-            The [lefi.Member](./member.md) instance corresponding to the ID if found.
-
+        Returns
+        -------
+        Optional[:class:`.Member`]
+            The member grabbed from the cache.
         """
         return self._members.get(member_id)
 
     def get_channel(self, channel_id: int) -> Optional[GuildChannels]:
-        """
-        Gets a channel from the guilds channel cache.
+        """Gets a channel from the guilds channel cache.
 
-        Parameters:
-            channel_id (int): The ID of the channel.
+        Parameters
+        ----------
+        channel_id: :class:`int`
+            The id of the channel to get
 
-        Returns:
-            The [lefi.Channel](./channel.md) instance corresponding to the ID if found.
-
+        Returns
+        -------
+        Optional[Union[:class:`TextChannel`, :class:`VoiceChannel`, :class:`CategoryChannel`]]
+            The channel grabbed from the cache.
         """
         return self._channels.get(channel_id)
 
     def get_role(self, role_id: int) -> Optional[Role]:
-        """
-        Gets a role from the guilds role cache.
+        """Gets a role from the guilds role cache.
 
-        Parameters:
-            role_id (int): The ID of the role.
+        Parameters
+        ----------
+        role_id: :class:`int`
+            The id of the role to get
 
-        Returns:
-            The [lefi.Role](./role.md) instance corresponding to the ID if found.
-
+        Returns
+        -------
+        Optional[:class:`.Role`]
+            The role grabbed from the cache.
         """
         return self._roles.get(role_id)
 
     def get_emoji(self, emoji_id: int) -> Optional[Emoji]:
-        """
-        Gets an emoji from the guilds emoji cache.
+        """Gets an emoji from the guilds emoji cache.
 
-        Parameters:
-            emoji_id (int): The ID of the emoji.
+        Parameters
+        ----------
+        emoji_id: :class:`int`
+            The id of the emoji to get
 
-        Returns:
-            The [lefi.Emoji](./emoji.md) instance corresponding to the ID if found.
-
+        Returns
+        -------
+        Optional[:class:`.Emoji`]
+            The emoji grabbed from the cache.
         """
         return self._emojis.get(emoji_id)
 
     def get_voice_state(self, member_id: int) -> Optional[VoiceState]:
-        """
-        Gets a voice state from the guilds voice state cache.
+        """Gets a voice state from the guilds voice state cache.
 
-        Parameters:
-            member_id (int): The ID of the member.
+        Parameters
+        ----------
+        member_id: :class:`int`
+            The id of the member to get
 
-        Returns:
-            The [lefi.VoiceState][] instance corresponding to the ID if found.
-
+        Returns
+        -------
+        Optional[:class:`.VoiceState`]
+            The voice state grabbed from the cache.
         """
         return self._voice_states.get(member_id)
 
     def get_thread(self, thread_id: int) -> Optional[Thread]:
-        """
-        Gets a thread from the guilds thread cache.
+        """Gets a thread from the guilds thread cache.
 
-        Parameters:
-            thread_id (int): The ID of the thread.
+        Parameters
+        ----------
+        thread_id: :class:`int`
+            The id of the thread to get
 
-        Returns:
-            The [lefi.Thread](./thread.md) instance corresponding to the ID if found.
-
+        Returns
+        -------
+        Optional[:class:`.Thread`]
+            The thread grabbed from the cache.
         """
         return self._threads.get(thread_id)
 
     @property
     def voice_client(self) -> Optional[VoiceClient]:
-        """
-        The guild's voice client if it exists.
-        """
+        """The guild's voice client if it exists."""
         return self._state.get_voice_client(self.id)
 
     @property
     def id(self) -> int:
-        """
-        The ID of the guild.
-        """
+        """The ID of the guild."""
         return int(self._data["id"])
 
     @property
     def name(self) -> str:
-        """
-        The name of the guild.
-        """
+        """The name of the guild."""
         return self._data["name"]
 
     @property
     def description(self) -> Optional[str]:
+        """The description of the guild."""
         return self._data["description"]
 
     @property
     def banner(self) -> Optional[CDNAsset]:
+        """The banner of the guild."""
         banner_hash = self._data["banner"]
         if not banner_hash:
             return None
@@ -758,9 +1036,7 @@ class Guild:
 
     @property
     def icon(self) -> Optional[CDNAsset]:
-        """
-        The icon of the guild.
-        """
+        """The icon of the guild."""
         icon_hash = self._data["icon"]
         if not icon_hash:
             return None
@@ -769,16 +1045,12 @@ class Guild:
 
     @property
     def icon_hash(self) -> str:
-        """
-        The icon hash of the guild.
-        """
+        """The icon hash of the guild."""
         return self._data["icon_hash"]
 
     @property
     def splash(self) -> Optional[CDNAsset]:
-        """
-        The guild's splash.
-        """
+        """The guild's splash."""
         splash_hash = self._data["splash"]
         if not splash_hash:
             return None
@@ -787,9 +1059,7 @@ class Guild:
 
     @property
     def discovery_splash(self) -> Optional[CDNAsset]:
-        """
-        The guilds discovery splash.
-        """
+        """The guilds discovery splash."""
         discovery_splash = self._data["discovery_splash"]
         if not discovery_splash:
             return None
@@ -800,9 +1070,7 @@ class Guild:
 
     @property
     def owner(self) -> Optional[Union[User, Member]]:
-        """
-        The owner of the guild.
-        """
+        """The owner of the guild."""
         if owner := self.get_member(self.owner_id):
             return owner
         else:
@@ -810,112 +1078,80 @@ class Guild:
 
     @property
     def owner_id(self) -> int:
-        """
-        The ID of the owner.
-        """
+        """The ID of the owner."""
         return int(self._data["owner_id"])
 
     @property
     def channels(self) -> List[GuildChannels]:
-        """
-        The list of [lefi.Channel](./channel.md) instances belonging to the guild.
-        """
+        """The list of channels belonging to the guild."""
         return list(self._channels.values())
 
     @property
     def members(self) -> List[Member]:
-        """
-        The list of [lefi.Member](./member.md) instances belonging to the guild.
-        """
+        """A list of members belonging to the guild."""
         return list(self._members.values())
 
     @property
     def roles(self) -> List[Role]:
-        """
-        The list of [lefi.Role](./role.md) instances belonging to the guild.
-        """
+        """A list of roles belonging to the guild."""
         return list(self._roles.values())
 
     @property
     def emojis(self) -> List[Emoji]:
-        """
-        The list of [lefi.Emoji](./emoji.md) instances belonging to the guild.
-        """
+        """The list of emojis belonging to the guild."""
         return list(self._emojis.values())
 
     @property
     def default_role(self) -> Role:
-        """
-        The guild's default role.
-        """
+        """The guild's default role."""
         return self.get_role(self.id)  # type: ignore
 
     @property
     def member_count(self) -> int:
-        """
-        The guild's member count.
-        """
+        """The guild's member count."""
         return len(self._members)
 
     @property
     def afk_channel_id(self) -> int:
-        """
-        The ID of the guild's AFK channel.
-        """
+        """The ID of the guild's AFK channel."""
         return int(self._data["afk_channel_id"])
 
     @property
     def afk_channel(self) -> Optional[GuildChannels]:
-        """
-        The guild's AFK channel.
-        """
+        """The guild's AFK channel."""
         return self.get_channel(self.afk_channel_id)
 
     @property
     def afk_timeout(self) -> int:
-        """
-        The guild's AFK timeout.
-        """
+        """The guild's AFK timeout."""
         return int(self._data["afk_timeout"])
 
     @property
     def verification_level(self) -> VerificationLevel:
-        """
-        The guild's verification level.
-        """
+        """The guild's verification level."""
         return VerificationLevel(self._data["verification_level"])
 
     @property
     def default_message_notifications(self) -> MessageNotificationLevel:
-        """
-        The guild's default message notification level.
-        """
+        """The guild's default message notification level."""
         return MessageNotificationLevel(self._data["default_message_notifications"])
 
     @property
     def explicit_content_filter(self) -> ExplicitContentFilterLevel:
-        """
-        The guild's explicit content filter level.
-        """
+        """The guild's explicit content filter level."""
         return ExplicitContentFilterLevel(self._data["explicit_content_filter"])
 
     @property
     def features(self) -> List[str]:
-        """
-        The guild's features.
-        """
+        """The guild's features."""
         return self._data["features"]
 
     @property
     def mfa_level(self) -> MFALevel:
-        """
-        The guild's MFA level.
-        """
+        """The guild's MFA level."""
         return MFALevel(self._data["mfa_level"])
 
     @property
     def application_id(self) -> Optional[int]:
-        """
-        The ID of the guild's application.
-        """
+        """The ID of the guild's application."""
         return self._data["application_id"]
