@@ -3,7 +3,7 @@
     <p>
         <a href="https://lefi.readthedocs.io/en/latest/"><img src="https://img.shields.io/readthedocs/lefi"</img></a>
         <a href="https://pypi.org/project/lefi/"><img src="https://img.shields.io/pypi/dm/lefi?color=gre"</img></a>
-        <a href="https://discord.com/invite/QPFXzFbqrK"><img src="https://img.shields.io/discord/907106240537169980?label=DISCORD"</img></a>
+        <a href="https://discord.com/invite/QPFXzFbqrK"><img src="https://img.shields.io/discord/907106240537169980?label=discord"</img></a>
         <a href="https://github.com/an-dyy/Lefi/releases"><img src="https://img.shields.io/github/v/release/an-dyy/lefi?include_prereleases&sort=semver"</img></a>
     </p>
     A discord API wrapper focused on clean code, and usability
