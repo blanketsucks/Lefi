@@ -248,6 +248,20 @@ Guild
     :exclude-members: __init__
     :members:
 
+Integrations
+~~~~~~~~~~~~
+.. autoclass:: Integration
+    :exclude-members: __init__
+    :members:
+
+.. autoclass:: IntegrationApplication
+    :exclude-members: __init__
+    :members:
+
+.. autoclass:: IntegrationAccount
+    :exclude-members: __init__
+    :members:
+
 Exceptions
 ----------
 .. currentmodule:: lefi.errors

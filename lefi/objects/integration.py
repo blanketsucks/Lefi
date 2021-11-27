@@ -14,17 +14,9 @@ __all__ = ("IntegrationAccount", "IntegrationApplication", "Integration")
 
 
 class IntegrationAccount:
-    """
-    Represents an IntegrationAccount.
-    """
+    """Represents an IntegrationAccount."""
 
-    def __init__(self, data: Dict[str, Any]) -> None:
-        """
-        Creates an IntegrationAccount.
-
-        Parameters:
-            data (Dict[str, Any]): The data to use to create the object.
-        """
+    def __init__(self, data: dict) -> None:
         self._data = data
 
     def __repr__(self) -> str:
@@ -32,32 +24,19 @@ class IntegrationAccount:
 
     @property
     def id(self) -> str:
-        """
-        Returns the ID of the integration account.
-        """
+        """the id of the integration account."""
         return self._data["id"]
 
     @property
     def name(self) -> str:
-        """
-        Returns the name of the integration account.
-        """
+        """The name of the integration account."""
         return self._data["name"]
 
 
 class IntegrationApplication:
-    """
-    Represents an IntegrationApplication.
-    """
+    """Represents an IntegrationApplication."""
 
-    def __init__(self, state: State, data: Dict[str, Any]) -> None:
-        """
-        Represents an integration application.
-
-        Parameters:
-            state (State): The state to use.
-            data (Dict[str, Any]): The data to use to create the object.
-        """
+    def __init__(self, state: State, data: dict) -> None:
         self._state = state
         self._data = data
 
@@ -66,44 +45,32 @@ class IntegrationApplication:
 
     @property
     def id(self) -> int:
-        """
-        Returns the ID of the integration application.
-        """
+        """the id of the integration application."""
         return int(self._data["id"])
 
     @property
     def name(self) -> str:
-        """
-        Returns the name of the integration application.
-        """
+        """The name of the integration application."""
         return self._data["name"]
 
     @property
     def icon(self) -> Optional[str]:
-        """
-        Returns the icon of the integration application.
-        """
+        """The icon of the integration application."""
         return self._data["icon"]
 
     @property
     def description(self) -> str:
-        """
-        Returns the description of the integration application.
-        """
+        """The description of the integration application."""
         return self._data["description"]
 
     @property
     def summary(self) -> str:
-        """
-        Returns the summary of the integration application.
-        """
+        """The summary of the integration application."""
         return self._data["summary"]
 
     @property
     def bot(self) -> Optional[User]:
-        """
-        Returns the bot [User](./user.md) of the integration application.
-        """
+        """The user of the integration application."""
         bot = self._data.get("bot")
         if not bot:
             return None
@@ -112,18 +79,9 @@ class IntegrationApplication:
 
 
 class Integration:
-    """
-    Represents an Integration.
-    """
+    """Represents an Integration."""
 
-    def __init__(self, state: State, data: Dict[str, Any], guild: Guild) -> None:
-        """
-        Creates an Integration.
-
-        Parameters:
-            state (State): The [State](./state.md) to use.
-            data (Dict[str, Any]): The data to use to create the object.
-        """
+    def __init__(self, state: State, data: dict, guild: Guild) -> None:
         self._state = state
         self._data = data
         self._guild = guild
@@ -133,93 +91,67 @@ class Integration:
 
     @property
     def guild(self) -> Guild:
-        """
-        Returns the [Guild](./guild.md) of the integration.
-        """
+        """The guild of the integration."""
         return self._guild
 
     @property
     def id(self) -> int:
-        """
-        Returns the ID of the integration.
-        """
+        """The ID of the integration."""
         return int(self._data["id"])
 
     @property
     def name(self) -> str:
-        """
-        Returns the name of the integration.
-        """
+        """The name of the integration."""
         return self._data["name"]
 
     @property
     def type(self) -> str:
-        """
-        Returns the type of the integration.
-        """
+        """The type of integration."""
         return self._data["type"]
 
     @property
     def enabled(self) -> bool:
-        """
-        Returns whether the integration is enabled.
-        """
+        """Whether the integration is enabled or not."""
         return self._data["enabled"]
 
     @property
     def syncing(self) -> bool:
-        """
-        Returns whether the integration is syncing.
-        """
+        """Whether the integration is syncing or not."""
         return self._data.get("syncing", False)
 
     @property
     def role_id(self) -> Optional[int]:
-        """
-        Returns the ID of the role.
-        """
+        """The id of the integration role."""
         return self._data.get("role_id")
 
     @property
     def role(self) -> Optional[Role]:
-        """
-        Returns the [Role](./role.md).
-        """
+        """ """
         return self._guild.get_role(self.role_id) if self.role_id else None
 
     @property
     def enable_emoticons(self) -> bool:
-        """
-        Returns whether emoticons are enabled.
-        """
+        """Whether emoticons are enabled or not."""
         return self._data.get("enable_emoticons", False)
 
     @property
     def expire_behavior(self) -> Optional[int]:
-        """
-        Returns the expire behavior.
-        """
+        """The expire behavior of the integration."""
         return self._data.get("expire_behavior")
 
     @property
     def expire_grace_period(self) -> Optional[int]:
-        """
-        Returns the expire grace period.
-        """
+        """the expire grace period of the integration."""
         return self._data.get("expire_grace_period")
 
     @property
     def account(self) -> IntegrationAccount:
-        """
-        Returns the [IntegrationAccount]().
-        """
+        """The integration's account."""
         return IntegrationAccount(self._data["account"])
 
     @property
     def application(self) -> Optional[IntegrationApplication]:
-        """
-        Returns the [IntegrationApplication]().
-        """
+        """The integration's application."""
         application = self._data.get("application")
         if not application:
             return None
@@ -228,9 +160,7 @@ class Integration:
 
     @property
     def synced_at(self) -> Optional[datetime.datetime]:
-        """
-        Returns the time the integration was last synced.
-        """
+        """The time which the integration was last synced."""
         timestamp = self._data.get("synced_at")
         if not timestamp:
             return None
@@ -239,20 +169,20 @@ class Integration:
 
     @property
     def subscriber_count(self) -> Optional[int]:
-        """
-        Returns the subscriber count.
-        """
+        """The subscriber count of the integration."""
         return self._data.get("subscriber_count")
 
     @property
     def revoked(self) -> bool:
-        """
-        Returns whether the integration is revoked.
-        """
+        """Whether the integration is revoked or not."""
         return self._data.get("revoked", False)
 
     async def delete(self) -> None:
-        """
-        Deletes the integration.
+        """Deletes the integration
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         await self._state.http.delete_guild_integration(self._guild.id, self.id)
