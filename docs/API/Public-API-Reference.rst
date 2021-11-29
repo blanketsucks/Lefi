@@ -277,6 +277,14 @@ InviteBase
 .. autoclass:: lefi.invite.InviteBase
     :members:
 
+Member
+~~~~~~
+.. autoclass:: Member
+    :exclude-members: __init__, flags, locale, mfa_enabled, premium_type, verified, email
+    :show-inheritance:
+    :inherited-members:
+    :members:
+
 Exceptions
 ----------
 .. currentmodule:: lefi.errors
