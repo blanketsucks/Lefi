@@ -18,7 +18,7 @@ Version
 Client
 ------
 .. autoclass:: Client
-    :exclude-members: application_command, on, once
+    :exclude-members: __init__, application_command, on, once
     :members:
 
     .. autodecorator:: lefi.Client.application_command
@@ -245,21 +245,36 @@ Emoji
 Guild
 ~~~~~
 .. autoclass:: Guild
-    :exclude-members: __init__
     :members:
 
 Integrations
 ~~~~~~~~~~~~
 .. autoclass:: Integration
-    :exclude-members: __init__
     :members:
 
 .. autoclass:: IntegrationApplication
-    :exclude-members: __init__
     :members:
 
 .. autoclass:: IntegrationAccount
-    :exclude-members: __init__
+    :members:
+
+Invite
+~~~~~~
+.. autoclass:: Invite
+    :show-inheritance:
+    :inherited-members:
+    :members:
+
+PartialInvite
+~~~~~~~~~~~~~
+.. autoclass:: PartialInvite
+    :show-inheritance:
+    :inherited-members:
+    :members:
+
+InviteBase
+~~~~~~~~~~
+.. autoclass:: lefi.invite.InviteBase
     :members:
 
 Exceptions

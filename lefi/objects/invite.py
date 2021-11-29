@@ -14,9 +14,8 @@ if TYPE_CHECKING:
 __all__ = ("Invite", "PartialInvite")
 
 
-class InviteMixin:
-    """
-    The base class for Invite and PartialInvite.
+class InviteBase:
+    """The base class for :class:`.Invite` and :class:`.PartialInvite`.
     """
 
     _data: Dict[str, Any]
@@ -27,120 +26,86 @@ class InviteMixin:
 
     @property
     def code(self) -> str:
-        """
-        The invite code.
+        """The invite code.
         """
         return self._data["code"]
 
     @property
     def url(self) -> str:
-        """
-        The invite URL.
+        """The invite's URL.
         """
         return f"https://discord.gg/{self.code}"
 
 
-class PartialInvite(InviteMixin):
-    """
-    Represents a partial invite.
+class PartialInvite(InviteBase):
+    """Represents a partial invite.
 
-    This is a partial invite, which is an invite that has not been fully parsed.
-
-    Attributes:
-        code: The invite code.
-        url: The invite URL.
+    This is a partial invite, which is an invite with limited information.
     """
 
-    def __init__(self, data: Dict[str, Any]) -> None:
-        """
-        Creates a partial invite.
-
-        Parameters:
-            data: The data to create the invite from.
-        """
+    def __init__(self, data: dict) -> None:
         self._data = data
 
     @property
     def uses(self) -> int:
-        """
-        The number of times this invite has been used.
+        """The number of times this invite has been used.
         """
         return self._data["uses"]
 
 
-class Invite(InviteMixin):
-    """
-    Represents an invite.
-
-    Attributes:
-        code: The invite code.
-        url: The invite URL.
+class Invite(InviteBase):
+    """Represents an invite.
     """
 
     def __init__(self, state: State, data: Dict[str, Any]) -> None:
-        """
-        Creates an Invite.
-
-        Parameters:
-            state (lefi.State): The [State](./state.md) to create the invite in.
-            data: The data to create the invite from.
-        """
         self._data = data
         self._state = state
 
     @property
     def guild(self) -> Optional[Guild]:
-        """
-        The [Guild](./guild.md) this invite is for.
+        """The guild which the invite belongs to.
         """
         return self._state.get_guild(self._data.get("guild", {}).get("id", 0))
 
     @property
     def channel(self) -> Optional[Union[TextChannel, VoiceChannel]]:
-        """
-        The [Channel](./channel.md) this invite is for.
+        """The channel that the invite leads to.
         """
         return self._state.get_channel(int(self._data["channel"]["id"]))  # type: ignore
 
     @property
     def inviter(self) -> Optional[User]:
-        """
-        The [User](./user.md) who created this invite.
+        """The user which created the invite.
         """
         return self._state.get_user(self._data.get("inviter", {}).get("id", 0))
 
     @property
     def uses(self) -> Optional[int]:
-        """
-        The number of times this invite has been used.
+        """The number of times this invite has been used.
         """
         return self._data.get("uses")
 
     @property
     def max_uses(self) -> Optional[int]:
-        """
-        The maximum number of times this invite can be used.
+        """The maximum number of times this invite can be used.
         """
         return self._data.get("max_uses")
 
     @property
     def max_age(self) -> Optional[int]:
-        """
-        The maximum age of this invite.
+        """The maximum age of this invite.
         """
         return self._data.get("max_age")
 
     @property
     def temporary(self) -> bool:
-        """
-        Whether this invite is temporary.
+        """Whether this invite is temporary or not.
         """
         return self._data.get("temporary", False)
 
     @property
     def created_at(self) -> Optional[datetime.datetime]:
-        """
-        The creation time of this invite.
+        """The creation time of this invite.
         """
         created_at = self._data.get("created_at")
         if created_at:
@@ -150,8 +115,7 @@ class Invite(InviteMixin):
 
     @property
     def target_type(self) -> Optional[InviteTargetType]:
-        """
-        The target [Type]() of this invite.
+        """The target type of this invite.
         """
         target_type = self._data.get("target_type")
         if target_type is None:
@@ -161,8 +125,7 @@ class Invite(InviteMixin):
 
     @property
     def target_user(self) -> Optional[User]:
-        """
-        The target [User](./user.md) of this invite.
+        """The target user of this invite.
         """
         user = self._data.get("target_user")
         if not user:
@@ -172,24 +135,25 @@ class Invite(InviteMixin):
 
     @property
     def approximate_presence_count(self) -> Optional[int]:
-        """
-        The approximate number of members in the guild this invite is for.
+        """The approximate number of members in the guild this invite is for.
         """
         return self._data.get("approximate_presence_count")
 
     @property
     def approximate_member_count(self) -> Optional[int]:
-        """
-        The approximate number of members in the guild this invite is for.
+        """The approximate number of members in the guild this invite is for.
         """
         return self._data.get("approximate_member_count")
 
-    async def delete(self) -> Invite:
-        """
-        Deletes this invite.
+    async def delete(self) -> None:
+        """Deletes this invite.
 
-        Returns:
-            The deleted invite.
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete this invite.
         """
         await self._state.http.delete_invite(self.code)
-        return self
