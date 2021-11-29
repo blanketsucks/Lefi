@@ -285,6 +285,11 @@ Member
     :inherited-members:
     :members:
 
+AllowedMentions
+~~~~~~~~~~~~~~~
+.. autoclass:: AllowedMentions
+    :members:
+
 Exceptions
 ----------
 .. currentmodule:: lefi.errors
