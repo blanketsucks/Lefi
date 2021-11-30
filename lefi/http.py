@@ -1028,8 +1028,6 @@ class HTTPClient:
         :class:`dict`
             A dict representing the editted message object
         """
-        form = self.form_helper(files)  # type: ignore
-
         payload: dict = {}
         update_payload(
             payload,

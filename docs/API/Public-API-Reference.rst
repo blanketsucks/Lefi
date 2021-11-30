@@ -300,6 +300,11 @@ DeletedMessage
 .. autoclass:: DeletedMessage
     :members:
 
+Overwrite
+~~~~~~~~~
+.. autoclass:: Overwrite
+    :members:
+
 Exceptions
 ----------
 .. currentmodule:: lefi.errors

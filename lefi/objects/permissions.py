@@ -9,17 +9,9 @@ __all__ = ("Overwrite",)
 
 
 class Overwrite:
-    """
-    Represents an overwrite.
-    """
+    """Represents an overwrite."""
 
-    def __init__(self, data: Dict) -> None:
-        """
-        Initialize the Overwrite.
-
-        Parameters:
-            data (Dict): The data to initialize the Overwrite with.
-        """
+    def __init__(self, data: dict) -> None:
         self._data = data
 
     def __repr__(self) -> str:
@@ -27,28 +19,20 @@ class Overwrite:
 
     @property
     def id(self) -> int:
-        """
-        The ID of the overwrite.
-        """
+        """The id of the overwrite."""
         return int(self._data["id"])
 
     @property
     def type(self) -> OverwriteType:
-        """
-        The [OverwriteType]().
-        """
+        """The overwrite type."""
         return OverwriteType(self._data["type"])
 
     @property
     def allow(self) -> Permissions:
-        """
-        Value of all allowed [Permission]()s.
-        """
+        """Values of all allowed permissions."""
         return Permissions(int(self._data.get("allow", 0)))
 
     @property
     def deny(self) -> Permissions:
-        """
-        Value of all denied [Permission]()s.
-        """
+        """Value of all denied permissions."""
         return Permissions(int(self._data.get("deny", 0)))
