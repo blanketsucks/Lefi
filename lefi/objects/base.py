@@ -34,7 +34,6 @@ class Messageable(Snowflake):
         files: Optional[List[File]] = None,
         rows: Optional[List[ActionRow]] = None,
         allowed_mentions: Optional[AllowedMentions] = None,
-        **kwargs,
     ) -> Message:
         """Sends a message to the target.
 
@@ -67,53 +66,49 @@ class Messageable(Snowflake):
         allowed_mentions: Optional[:class:`.AllowedMentions`]
             The allowed mentions of this message
 
-        **kwargs: Any
-            Extra options to pass to :meth:`.HTTPClient.send_message`
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to send messages.
 
         Returns
         -------
         :class:`.Message`
             A message object representing the sent message.
         """
-        embeds = [] if embeds is None else embeds
-        files = [] if files is None else files
+        req = self._state.client.http.send_message
 
-        message_reference = None
+        message_reference = reference.to_reference() if reference else None
+        actionrows_ = [r.to_dict() for r in rows] if rows else []
+        embeds_ = [e.to_dict() for e in embeds] if embeds else []
+        files = files if files is not None else []
 
         if embed is not None:
-            embeds.append(embed)
+            embeds_.append(embed.to_dict())
 
         if file is not None:
             files.append(file)
 
-        if reference is not None:
-            message_reference = reference.to_reference()
-
-        data = await self._state.http.send_message(
-            channel_id=self.id,
+        channel = getattr(self, "channel", self)
+        data = await req(
+            channel_id=channel.id,
             content=content,
             tts=tts,
-            embeds=[embed.to_dict() for embed in embeds],
+            embeds=embeds_,
             message_reference=message_reference,
             files=files,
-            components=[row.to_dict() for row in rows] if rows is not None else None,
-            allowed_mentions=allowed_mentions.to_dict()
-            if allowed_mentions is not None
-            else None,
-            **kwargs,
+            components=actionrows_,
+            allowed_mentions=allowed_mentions,  # type: ignore
         )
 
-        message = self._state.create_message(data, self)
+        rows = rows or []
+        for row in rows:
+            row._cache_components(self._state)
 
-        if rows is not None and data.get("components"):
-            for row in rows:
-                for component in row.components:
-                    self._state._components[component.custom_id] = (
-                        component.callback,
-                        component,
-                    )
-
-        return message
+        return self._state.create_message(data, channel)
 
     async def fetch_message(self, message_id: int) -> Message:
         """Fetches a message.

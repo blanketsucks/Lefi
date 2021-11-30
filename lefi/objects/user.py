@@ -7,6 +7,7 @@ from .channel import DMChannel
 from .enums import PremiumType
 from .attachments import CDNAsset
 from .flags import UserFlags
+from .base import Messageable
 
 if TYPE_CHECKING:
     from ..state import State
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
 __all__ = ("User",)
 
 
-class User(Snowflake):
+class User(Messageable, Snowflake):
     """
     Represents a user.
     """
@@ -51,22 +52,6 @@ class User(Snowflake):
         self._channel = DMChannel(self._state, data)
 
         return self._channel
-
-    async def send(self, content: str) -> Message:
-        """
-        Sends a message to the user.
-
-        Parameters:
-            content (str): The content of the message.
-
-        Returns:
-            The [lefi.Message](./message.md) instance of the message sent.
-
-        """
-        if self._channel is None:
-            self._channel = await self.create_dm_channel()
-
-        return await self._channel.send(content)
 
     @property
     def username(self) -> str:
