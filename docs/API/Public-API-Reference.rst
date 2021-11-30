@@ -315,6 +315,16 @@ GuildTemplate
 .. autoclass:: GuildTemplate
     :members:
 
+Thread
+~~~~~~
+.. autoclass:: Thread
+    :members:
+
+ThreadMember
+~~~~~~~~~~~~
+.. autoclass:: ThreadMember
+    :members:
+
 Exceptions
 ----------
 .. currentmodule:: lefi.errors
