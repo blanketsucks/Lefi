@@ -305,6 +305,11 @@ Overwrite
 .. autoclass:: Overwrite
     :members:
 
+Role
+~~~~
+.. autoclass:: Role
+    :members:
+
 Exceptions
 ----------
 .. currentmodule:: lefi.errors

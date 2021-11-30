@@ -13,49 +13,32 @@ __all__ = ("Role", "PartialRole")
 
 
 class PartialRole(Snowflake):
-    def __init__(self, data: Dict, guild: Guild):
+    """A role object with limited information."""
+
+    def __init__(self, data: dict, guild: Guild):
         self._data = data
         self._guild = guild
 
     @property
     def guild(self) -> Guild:
-        """
-        Returns the guild the role is in.
-        """
+        """The guild which the role belongs to."""
         return self._guild
 
     @property
     def name(self) -> str:
-        """
-        Returns the name of the role.
-        """
+        """The name of the role."""
         return self._data["name"]
 
     @property
     def id(self) -> int:  # type: ignore
-        """
-        Returns the id of the role.
-        """
+        """The id of the role."""
         return int(self._data["id"])
 
 
 class Role(Snowflake):
-    """
-    Represents a role.
-
-    Attributes:
-        id (int): The ID of the role.
-    """
+    """Represents a role."""
 
     def __init__(self, state: State, data: Dict, guild: Guild) -> None:
-        """
-        Creates a Role object.
-
-        Parameters:
-            state (State): The [State](./state.md) of the client.
-            data (Dict): The data of the role.
-            guild (Guild): The [Guild](./guild.md) the role is in.
-        """
         self._state = state
         self._data = data
         self._guild = guild
@@ -64,8 +47,15 @@ class Role(Snowflake):
         return f"<Role id={self.id} name={self.name!r} position={self.position}>"
 
     async def delete(self) -> None:
-        """
-        Deletes the role from its guild.
+        """Deletes the role.
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete this role.
         """
         await self._state.http.delete_guild_role(self.guild.id, self.id)
 
@@ -78,19 +68,37 @@ class Role(Snowflake):
         hoist: Optional[bool] = None,
         mentionable: Optional[bool] = None,
     ) -> Role:
-        """
-        Edits the role.
+        """Edits the role.
 
-        Parameters:
-            name (Optional[str]): The new name of the role.
-            permissions (Optional[Permissions]): The new permissions of the role.
-            color (Optional[int]): The new color of the role.
-            hoist (Optional[bool]): Whether or not to hoist the role.
-            mentionable (Optional[bool]): Whether or not the role is mentionable.
+        Parameters
+        ----------
+        name: Optional[:class:`str`]
+            The new name of the role
 
-        Returns:
-            The role after editing.
+        permissions: Optional[:class:`.Permissions`]
+            The new permissions of the role
 
+        color: Optional[:class:`int`]
+            The new color of the role
+
+        hoist: Optional[:class:`bool`]
+            Whether to hoist the role or not
+
+        mentionable: Optional[:class:`bool`]
+            Whether to make the role mentionable or not
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to edit this role.
+
+        Returns
+        -------
+        :class:`.Role`
+            The role after editting.
         """
         data = await self._state.http.modify_guild_role(
             guild_id=self.guild.id,
@@ -107,63 +115,45 @@ class Role(Snowflake):
 
     @property
     def guild(self) -> Guild:
-        """
-        The [lefi.Guild](./guild.md) instance which the role belongs to.
-        """
+        """The guild of the role."""
         return self._guild
 
     @property
     def id(self) -> int:  # type: ignore
-        """
-        The ID of the role.
-        """
+        """The id of the role."""
         return int(self._data["id"])
 
     @property
     def name(self) -> str:
-        """
-        The name of the role.
-        """
+        """The name of the role."""
         return self._data["name"]
 
     @property
     def color(self) -> int:
-        """
-        The color of the role.
-        """
+        """The color of the role."""
         return int(self._data["color"])
 
     @property
     def hoist(self) -> bool:
-        """
-        Whether or not the role is hoisted.
-        """
+        """Whether or not the role is hoisted."""
         return self._data["hoist"]
 
     @property
     def position(self) -> int:
-        """
-        The position of the role.
-        """
+        """The position of the role."""
         return int(self._data["position"])
 
     @property
     def permissions(self) -> Permissions:
-        """
-        The [Permission](./permission.md)s of the role.
-        """
+        """The permissions of the role."""
         return Permissions(int(self._data["permissions"]))
 
     @property
     def managed(self) -> bool:
-        """
-        Whether or not the role is managed.
-        """
+        """Whether the role is managed or not."""
         return self._data["managed"]
 
     @property
     def mentionable(self) -> bool:
-        """
-        Whether or not the role is mentionable.
-        """
+        """Whether or not the role is mentionable."""
         return self._data["mentionable"]
