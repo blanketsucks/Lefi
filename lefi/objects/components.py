@@ -20,6 +20,7 @@ from .enums import ButtonStyle, ComponentType
 if TYPE_CHECKING:
     from .emoji import Emoji
     from .interactions import Interaction
+    from ..state import State
 
 __all__ = (
     "ActionRow",
@@ -379,6 +380,10 @@ class ActionRow(Component, metaclass=ActionRowMeta):
             "type": int(ComponentType.ACTIONROW),
             "components": [c.to_dict() for c in self.components],
         }
+
+    def _cache_components(self, state: State) -> None:
+        for component in self.components:
+            state._components[component.custom_id] = (component.callback, component)
 
 
 def button(style: ButtonStyle, label: str, **kwargs) -> Callable[..., Button]:

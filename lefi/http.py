@@ -981,7 +981,7 @@ class HTTPClient:
         content: Optional[str] = None,
         embeds: Optional[List[dict]] = None,
         allowed_mentions: Optional[dict] = None,
-        files: Optional[List[File]] = None,
+        attachments: Optional[List[dict]] = None,
         components: Optional[List[dict]] = None,
     ) -> dict:
         """A method which makes an API call to send a message.
@@ -1006,8 +1006,8 @@ class HTTPClient:
         allowed_mentions: Optional[:class:`dict`]
             A dict representing the allowed mentions to edit with
 
-        files: Optional[List[:class:`.File`]]
-            A list of files to edit the message with
+        attachments: Optional[List[:class:`dict`]]
+            A list of attachments to edit the message with
 
         components: Optional[List[dict]]
             A list of message components to edit the message with
@@ -1037,7 +1037,7 @@ class HTTPClient:
             embeds=embeds,
             allowed_mentions=allowed_mentions,
             components=components,
-            files=form,
+            attachments=attachments,
         )
         return await self.request(
             "PATCH",

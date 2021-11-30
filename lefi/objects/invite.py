@@ -15,8 +15,7 @@ __all__ = ("Invite", "PartialInvite")
 
 
 class InviteBase:
-    """The base class for :class:`.Invite` and :class:`.PartialInvite`.
-    """
+    """The base class for :class:`.Invite` and :class:`.PartialInvite`."""
 
     _data: Dict[str, Any]
 
@@ -26,14 +25,12 @@ class InviteBase:
 
     @property
     def code(self) -> str:
-        """The invite code.
-        """
+        """The invite code."""
         return self._data["code"]
 
     @property
     def url(self) -> str:
-        """The invite's URL.
-        """
+        """The invite's URL."""
         return f"https://discord.gg/{self.code}"
 
 
@@ -48,14 +45,12 @@ class PartialInvite(InviteBase):
 
     @property
     def uses(self) -> int:
-        """The number of times this invite has been used.
-        """
+        """The number of times this invite has been used."""
         return self._data["uses"]
 
 
 class Invite(InviteBase):
-    """Represents an invite.
-    """
+    """Represents an invite."""
 
     def __init__(self, state: State, data: Dict[str, Any]) -> None:
         self._data = data
@@ -63,50 +58,42 @@ class Invite(InviteBase):
 
     @property
     def guild(self) -> Optional[Guild]:
-        """The guild which the invite belongs to.
-        """
+        """The guild which the invite belongs to."""
         return self._state.get_guild(self._data.get("guild", {}).get("id", 0))
 
     @property
     def channel(self) -> Optional[Union[TextChannel, VoiceChannel]]:
-        """The channel that the invite leads to.
-        """
+        """The channel that the invite leads to."""
         return self._state.get_channel(int(self._data["channel"]["id"]))  # type: ignore
 
     @property
     def inviter(self) -> Optional[User]:
-        """The user which created the invite.
-        """
+        """The user which created the invite."""
         return self._state.get_user(self._data.get("inviter", {}).get("id", 0))
 
     @property
     def uses(self) -> Optional[int]:
-        """The number of times this invite has been used.
-        """
+        """The number of times this invite has been used."""
         return self._data.get("uses")
 
     @property
     def max_uses(self) -> Optional[int]:
-        """The maximum number of times this invite can be used.
-        """
+        """The maximum number of times this invite can be used."""
         return self._data.get("max_uses")
 
     @property
     def max_age(self) -> Optional[int]:
-        """The maximum age of this invite.
-        """
+        """The maximum age of this invite."""
         return self._data.get("max_age")
 
     @property
     def temporary(self) -> bool:
-        """Whether this invite is temporary or not.
-        """
+        """Whether this invite is temporary or not."""
         return self._data.get("temporary", False)
 
     @property
     def created_at(self) -> Optional[datetime.datetime]:
-        """The creation time of this invite.
-        """
+        """The creation time of this invite."""
         created_at = self._data.get("created_at")
         if created_at:
             return datetime.datetime.fromisoformat(created_at)
@@ -115,8 +102,7 @@ class Invite(InviteBase):
 
     @property
     def target_type(self) -> Optional[InviteTargetType]:
-        """The target type of this invite.
-        """
+        """The target type of this invite."""
         target_type = self._data.get("target_type")
         if target_type is None:
             return None
@@ -125,8 +111,7 @@ class Invite(InviteBase):
 
     @property
     def target_user(self) -> Optional[User]:
-        """The target user of this invite.
-        """
+        """The target user of this invite."""
         user = self._data.get("target_user")
         if not user:
             return None
@@ -135,14 +120,12 @@ class Invite(InviteBase):
 
     @property
     def approximate_presence_count(self) -> Optional[int]:
-        """The approximate number of members in the guild this invite is for.
-        """
+        """The approximate number of members in the guild this invite is for."""
         return self._data.get("approximate_presence_count")
 
     @property
     def approximate_member_count(self) -> Optional[int]:
-        """The approximate number of members in the guild this invite is for.
-        """
+        """The approximate number of members in the guild this invite is for."""
         return self._data.get("approximate_member_count")
 
     async def delete(self) -> None:

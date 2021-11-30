@@ -134,6 +134,20 @@ class Attachment(AttachmentMixin):
         """
         return self.filename.startswith("SPOILER_")
 
+    def to_dict(self) -> dict:
+        """Creates a dict from the attachment.
+
+        Returns
+        -------
+        :class:`dict`
+            The dict representing the attachment.
+        """
+        return {
+            "id": self.id,
+            "description": self.description,
+            "filename": self.filename,
+        }
+
     async def to_file(self) -> File:
         """Turns the attachment into a :class:`.File`
 

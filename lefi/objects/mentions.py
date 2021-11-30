@@ -37,6 +37,7 @@ class AllowedMentions:
     replied_user: :class:`bool`
         If mentioning replied users is allowed or not
     """
+
     def __init__(
         self,
         *,

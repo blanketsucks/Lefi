@@ -18,8 +18,7 @@ __all__ = ("Member",)
 
 
 class Member(User):
-    """Represents a member of a guild.
-    """
+    """Represents a member of a guild."""
 
     def __init__(self, state: State, data: dict, guild: Guild) -> None:
         super().__init__(state, data["user"])
@@ -45,7 +44,9 @@ class Member(User):
             Your client doesn't have permissions to add roles to this user.
         """
         for role in roles:
-            await self._state.http.add_guild_member_role(self._guild.id, self.id, role.id)
+            await self._state.http.add_guild_member_role(
+                self._guild.id, self.id, role.id
+            )
             self._roles[role.id] = role
 
     async def remove_roles(self, *roles: Role) -> None:
@@ -65,7 +66,9 @@ class Member(User):
             Your client doesn't have permissions to remove roles from this user.
         """
         for role in roles:
-            await self._state.http.remove_guild_member_role(self._guild.id, self.id, role.id)
+            await self._state.http.remove_guild_member_role(
+                self._guild.id, self.id, role.id
+            )
             self._roles.pop(role.id, None)
 
     async def edit(
@@ -173,32 +176,27 @@ class Member(User):
 
     @property
     def voice(self) -> Optional[VoiceState]:
-        """The voice state of the member.
-        """
+        """The voice state of the member."""
         return self._guild.get_voice_state(self.id)
 
     @property
     def nick(self) -> Optional[str]:
-        """The nickname of of member.
-        """
+        """The nickname of of member."""
         return self._member.get("nick")
 
     @property
     def roles(self) -> List[Role]:
-        """The roles which the member has.
-        """
+        """The roles which the member has."""
         return list(self._roles.values())
 
     @property
     def joined_at(self) -> datetime.datetime:
-        """The time at which the member joined the guild.
-        """
+        """The time at which the member joined the guild."""
         return datetime.datetime.fromisoformat(self._member["joined_at"])
 
     @property
     def premium_since(self) -> Optional[datetime.datetime]:
-        """How long the member has been a premium.
-        """
+        """How long the member has been a premium."""
         timestamp = self._member.get("premium_since")
         if timestamp is None:
             return None
@@ -207,20 +205,17 @@ class Member(User):
 
     @property
     def deaf(self) -> bool:
-        """Whether or not the member is deafend.
-        """
+        """Whether or not the member is deafend."""
         return self._member["deaf"]
 
     @property
     def mute(self) -> bool:
-        """Whether or not the member is muted.
-        """
+        """Whether or not the member is muted."""
         return self._member["mute"]
 
     @property
     def permissions(self) -> Permissions:
-        """The permissions of the member.
-        """
+        """The permissions of the member."""
         base = Permissions.none()
 
         if self._guild.owner_id == self.id:
@@ -236,8 +231,7 @@ class Member(User):
 
     @property
     def guild_avatar(self) -> Optional[CDNAsset]:
-        """The guild avatar of the member.
-        """
+        """The guild avatar of the member."""
         guild_avatar_hash = self._member.get("avatar")
         if not guild_avatar_hash:
             return None

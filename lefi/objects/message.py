@@ -3,11 +3,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
 import datetime
 
+from lefi.utils.payload import update_payload
+
 from ..utils import Snowflake
 from .embed import Embed
 from .threads import Thread
 from .attachments import Attachment
 from .components import ActionRow
+from .mentions import AllowedMentions
 
 if TYPE_CHECKING:
     from ..state import State
@@ -22,38 +25,33 @@ __all__ = ("Message", "DeletedMessage")
 
 
 class DeletedMessage:
+    """Represents a deleted message.
+
+    This is given instead of a regular :class:`.Message` in `MESSAGE_DELETE` if the
+    message isn't cached beforehand.
+
+    Attributes
+    ----------
+    id: :class:`int`
+        The id of the message
+
+    channel_id: :class:`int`
+        The id of the message's channel
+
+    guild_id: Optional[:class:`int`]
+        The id of the guild where the message was deleted, if there is one
     """
-    Represents a deleted message.
 
-    Attributes:
-        id (int): The ID of the message.
-        channel_id (int): The ID of the channel which the message was in.
-        guild_id (Optional[int]): The ID of the guild which the message was in.
-
-    """
-
-    def __init__(self, data: Dict) -> None:
-        self.id: int = int(data["id"])
-        self.channel_id: int = int(data["channel_id"])
-        self.guild_id: Optional[int] = (
-            int(data["guild_id"]) if "guild_id" in data else None
-        )
+    def __init__(self, data: dict) -> None:
+        self.id = int(data["id"])
+        self.channel_id = int(data["channel_id"])
+        self.guild_id = int(data["guild_id"]) if "guild_id" in data else None
 
 
 class Message:
-    """
-    Represents a message.
-    """
+    """Represents a message."""
 
-    def __init__(self, state: State, data: Dict, channel: Channels) -> None:
-        """
-        Creates a Message object.
-
-        Parameters:
-            state (State): The [State](./state.md) of the client.
-            data (Dict): The data of the message.
-            channel (Channels): The [Channel](./channel.md) the message was sent in.
-        """
+    def __init__(self, state: State, data: dict, channel: Channels) -> None:
         self._channel = channel
         self._state = state
         self._data = data
@@ -68,62 +66,94 @@ class Message:
         content: Optional[str] = None,
         *,
         embeds: Optional[List[Embed]] = None,
+        allowed_mentions: Optional[AllowedMentions] = None,
+        attachments: Optional[List[Attachment]] = None,
         rows: Optional[List[ActionRow]] = None,
-        **kwargs,
     ) -> Message:
-        ...
+        """Edits the message.
+
+        Parameters
+        ----------
+        content: Optional[:class:`str`]
+            The new content of the message
+
+        embeds: Optional[List[Embed]]
+            A list of new embeds for the message, max is 10 embeds at a time
+
+        allowed_mentions: Optional[AllowedMentions]
+            The new allowed mentions of the message
+
+        attachments: Optional[List[Attachment]]
+            A list of new attachments to edit the message with
+
+        rows: Optional[List[ActionRow]]
+            A list of action rows to send with the message
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to edit this message.
+
+        Returns
+        -------
+        :class:`.Message`
+            The message after editting.
         """
-        Edits the message.
+        req = self._state.client.http.edit_message
 
-        Parameters:
-            content (Optional[str]): The content of the message.
-            embeds (Optional[List[lefi.Embed]]): The list of embeds.
-            rows (Optional[List[ActionRow]]): The rows to send with the message.
-            kwargs (Any): The options to pass to [lefi.HTTPClient.edit_message](./http.md#lefi.HTTPClient.edit_message).
+        embeds_ = [e.to_dict() for e in embeds] if embeds else []
+        actionrows_ = [r.to_dict() for r in rows] if rows else []
+        attachments_ = [a.to_dict() for a in attachments] if attachments else []
+        mentions = allowed_mentions.to_dict() if allowed_mentions else None
 
-        Returns:
-            The message after being editted.
-
-        """
-        embeds = [] if embeds is None else embeds
-
-        data = await self._state.client.http.edit_message(
+        data = await req(
             channel_id=self.channel.id,
             message_id=self.id,
             content=content,
-            embeds=[embed.to_dict() for embed in embeds],
-            components=[row.to_dict() for row in rows] if rows is not None else None,
+            embeds=embeds_,
+            components=actionrows_,
+            allowed_mentions=mentions,
+            attachments=attachments_,
         )
 
-        if rows is not None and data.get("components"):
-            for row in rows:
-                for component in row.components:
-                    self._state._components[component.custom_id] = (
-                        component.callback,
-                        component,
-                    )
+        rows = rows or []
+        for row in rows:
+            row._cache_components(self._state)
 
         self._data = data
         return self
 
     async def crosspost(self) -> Message:
-        """
-        Crossposts the message.
+        """Crossposts the message.
 
-        Returns:
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`.Message`
             The message being crossposted.
-
         """
         data = await self._state.http.crosspost_message(self.channel.id, self.id)
         return self._state.create_message(data, self.channel)
 
     async def add_reaction(self, reaction: str) -> None:
-        """
-        Adds a reaction to the message.
+        """Adds a reaction to the message.
 
-        Parameters:
-            reaction (str): The reaction to add.
+        Parameters
+        ----------
+        reaction: :class:`str`
+            The reaction to add
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
         """
         await self._state.http.create_reaction(
             channel_id=self.channel.id, message_id=self.id, emoji=reaction
@@ -132,13 +162,23 @@ class Message:
     async def remove_reaction(
         self, reaction: str, user: Optional[Snowflake] = None
     ) -> None:
-        """
-        Removes a reaction from the message.
+        """Removes a reaction from the message.
 
-        Parameters:
-            reaction (str): The reaction to remove.
-            user (Optional[Snowflake]): The message to remove the reaction from.
+        Parameters
+        ----------
+        reaction: :class:`str`
+            The reaction to remove from the message
 
+        user: Optional[:class:`.Snowflake`]
+            The user to remove the reaction from
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            SOmething went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to remove this reaction.
         """
         await self._state.http.delete_reaction(
             channel_id=self.channel.id,
@@ -148,22 +188,43 @@ class Message:
         )
 
     async def pin(self) -> None:
-        """
-        Pins the message.
+        """Pins the message.
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to pin this message.
         """
         await self._state.http.pin_message(self.channel.id, self.id)
         self._pinned = True
 
     async def unpin(self) -> None:
-        """
-        Unpins the message.
+        """Unpins the message.
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to unpin this message.
         """
         await self._state.http.unpin_message(self.channel.id, self.id)
         self._pinned = False
 
     async def delete(self) -> None:
-        """
-        Deletes the message.
+        """Deletes the message.
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to delete this message.
         """
         await self._state.http.delete_message(self.channel.id, self.id)
         self._state._messages.pop(self.id, None)
@@ -171,16 +232,28 @@ class Message:
     async def create_thread(
         self, *, name: str, auto_archive_duration: Optional[int] = None
     ) -> Thread:
-        """
-        Creates a thread from the message.
+        """Creates a thread from the message.
 
-        Parameters:
-            name (str): The name of the thread.
-            auto_archive_duration (Optional[int]): The amount of time to archive the thread.
+        Parameters
+        ----------
+        name: :class:`str`
+            The name of the thread
 
-        Returns:
-            The created thread.
+        auto_archive_duration: Optional[:class:`int`]
+            The time it takes to auto archive the thread
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to create this thread.
+
+        Returns
+        -------
+        :class:`.Thread`
+            The newly created thread.
         """
         if not self.guild:
             raise TypeError("Cannot a create thread in a DM channel.")
@@ -200,7 +273,16 @@ class Message:
 
         return Thread(self._state, self.guild, data)
 
-    def to_reference(self) -> Dict:
+    def to_reference(self) -> dict:
+        """Creates a reference dict from the message.
+
+        This is used for replies.
+
+        Returns
+        -------
+        :class:`dict`
+            The created dict for the message.
+        """
         payload = {"message_id": self.id, "channel_id": self.channel.id}
 
         if self.guild:
@@ -210,44 +292,32 @@ class Message:
 
     @property
     def id(self) -> int:
-        """
-        The ID of the message.
-        """
+        """The id of the message."""
         return int(self._data["id"])
 
     @property
     def created_at(self) -> datetime.datetime:
-        """
-        The time the message was created at.
-        """
+        """The time the message was created at."""
         return datetime.datetime.fromisoformat(self._data["timestamp"])
 
     @property
     def channel(self) -> Channels:
-        """
-        The [lefi.Channel](./channel.md) which the message is in.
-        """
+        """The channel which the message belongs to."""
         return self._channel
 
     @property
     def guild(self) -> Optional[Guild]:
-        """
-        The [lefi.Guild](./guild.md) which the message is in.
-        """
+        """The guild which the message belongs to."""
         return self._channel.guild
 
     @property
     def content(self) -> str:
-        """
-        The content of the message.
-        """
+        """The content of the message."""
         return self._data["content"]
 
     @property
     def author(self) -> Union[User, Member]:
-        """
-        The author of the message.
-        """
+        """The author of the message."""
         if self.guild is None:
             return self._state.get_user(int(self._data["author"]["id"]))  # type: ignore
 
@@ -258,10 +328,12 @@ class Message:
 
     @property
     def embeds(self) -> List[Embed]:
+        """The embeds of the message."""
         return [Embed.from_dict(embed) for embed in self._data["embeds"]]
 
     @property
     def attachments(self) -> List[Attachment]:
+        """The attachments of the message."""
         return [
             Attachment(self._state, attachment)
             for attachment in self._data["attachments"]
@@ -269,7 +341,5 @@ class Message:
 
     @property
     def pinned(self) -> bool:
-        """
-        Whether the message is pinned.
-        """
+        """Whether the message is pinned or not."""
         return self._pinned
