@@ -290,6 +290,16 @@ AllowedMentions
 .. autoclass:: AllowedMentions
     :members:
 
+Message
+~~~~~~~
+.. autoclass:: Message
+    :members:
+
+DeletedMessage
+~~~~~~~~~~~~~~
+.. autoclass:: DeletedMessage
+    :members:
+
 Exceptions
 ----------
 .. currentmodule:: lefi.errors
