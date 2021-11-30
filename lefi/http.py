@@ -328,7 +328,7 @@ class HTTPClient:
         """
         return {
             "name": f"file-{index}" if index else "file",
-            "value": file,
+            "value": file.fp,
             "filename": file.filename,
             "content_type": "application/octect-stream",
         }
@@ -981,7 +981,7 @@ class HTTPClient:
         content: Optional[str] = None,
         embeds: Optional[List[dict]] = None,
         allowed_mentions: Optional[dict] = None,
-        attachments: Optional[List[dict]] = None,
+        files: Optional[List[File]] = None,
         components: Optional[List[dict]] = None,
     ) -> dict:
         """A method which makes an API call to send a message.
@@ -1006,8 +1006,8 @@ class HTTPClient:
         allowed_mentions: Optional[:class:`dict`]
             A dict representing the allowed mentions to edit with
 
-        attachments: Optional[List[:class:`dict`]]
-            A list of attachments to edit the message with
+        files: Optional[List[:class:`.File`]]
+            A list of files to edit the message with
 
         components: Optional[List[dict]]
             A list of message components to edit the message with
@@ -1028,14 +1028,16 @@ class HTTPClient:
         :class:`dict`
             A dict representing the editted message object
         """
+        form = self.form_helper(files)  # type: ignore
+
         payload: dict = {}
         update_payload(
             payload,
             content=content,
             embeds=embeds,
             allowed_mentions=allowed_mentions,
-            attachments=attachments,
             components=components,
+            files=form,
         )
         return await self.request(
             "PATCH",
