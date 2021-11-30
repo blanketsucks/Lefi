@@ -325,6 +325,13 @@ ThreadMember
 .. autoclass:: ThreadMember
     :members:
 
+User
+~~~~
+.. autoclass:: User
+    :show-inheritance:
+    :inherited-members:
+    :members:
+
 Exceptions
 ----------
 .. currentmodule:: lefi.errors
