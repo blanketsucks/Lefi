@@ -13,18 +13,9 @@ __all__ = ("GuildTemplate",)
 
 
 class GuildTemplate:
-    """
-    Represents a guild template.
-    """
+    """Represents a guild template."""
 
-    def __init__(self, state: State, data: Dict[str, Any]) -> None:
-        """
-        Creates a GuildTemplate.
-
-        Parameters:
-            state (State): The [State](./state.md) of the client.
-            data (Dict[str, Any]): The data of the guild template.
-        """
+    def __init__(self, state: State, data: dict) -> None:
         self._state = state
         self._data = data
 
@@ -33,88 +24,79 @@ class GuildTemplate:
 
     @property
     def code(self) -> str:
-        """
-        The template code.
-        """
+        """The template code."""
         return self._data["code"]
 
     @property
     def name(self) -> str:
-        """
-        The template name.
-        """
+        """The template name."""
         return self._data["name"]
 
     @property
     def description(self) -> str:
-        """
-        The template description.
-        """
+        """The template description."""
         return self._data["description"]
 
     @property
     def usage_count(self) -> int:
-        """
-        The number of times this template has been used.
-        """
+        """The number of times this template has been used."""
         return self._data["usage_count"]
 
     @property
     def creator_id(self) -> int:
-        """
-        The ID of the user who created this template.
-        """
+        """The id of the user who created this template."""
         return int(self._data["creator_id"])
 
     @property
     def creator(self) -> Optional[User]:
-        """
-        The user who created this template.
-        """
+        """The user who created this template."""
         return self._state.get_user(self.creator_id)
 
     @property
     def created_at(self) -> datetime.datetime:
-        """
-        When this template was created.
-        """
+        """When this template was created."""
         return datetime.datetime.fromisoformat(self._data["created_at"])
 
     @property
     def updated_at(self) -> datetime.datetime:
-        """
-        When this template was last updated.
-        """
+        """When this template was last updated."""
         return datetime.datetime.fromisoformat(self._data["updated_at"])
 
     @property
     def source_guild_id(self) -> int:
-        """
-        The ID of the guild this template was created from.
-        """
+        """The id of the guild this template was created from."""
         return int(self._data["source_guild_id"])
 
     @property
     def source_guild(self) -> Optional[Guild]:
-        """
-        The [Guild](./guild.md) this template was created from.
-        """
+        """The guild which the template was created from."""
         return self._state.get_guild(self.source_guild_id)
 
     @property
     def is_dirty(self) -> Optional[bool]:
-        """
-        Whether this template is dirty.
-        """
+        """Whether this template is dirty or not."""
         return self._data["is_dirty"]
 
     async def create_guild(self, name: str, *, icon: Optional[bytes] = None) -> Guild:
-        """
-        Creates a [Guild](./guild.md) from this template.
+        """Creates a guild from the template.
 
-        Parameters:
-            name: The name of the guild.
-            icon: The icon of the guild.
+        Parameters
+        ----------
+        name: :class:`str`
+            The name of the guild
+
+        icon: Optional[:class:`bytes`]
+            The icon of the guild
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        Returns
+        -------
+        :class:`.Guild`
+            The newly created guild.
         """
         from .guild import Guild
 

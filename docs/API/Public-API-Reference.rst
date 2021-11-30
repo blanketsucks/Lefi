@@ -310,6 +310,11 @@ Role
 .. autoclass:: Role
     :members:
 
+GuildTemplate
+~~~~~~~~~~~~~
+.. autoclass:: GuildTemplate
+    :members:
+
 Exceptions
 ----------
 .. currentmodule:: lefi.errors
