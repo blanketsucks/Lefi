@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 import inspect
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
 from .command import Command
+from .converters import _CONVERTERS
+
+if TYPE_CHECKING:
+    from .context import Context
 
 __all__ = ("StringParser",)
 
@@ -35,6 +39,7 @@ class StringParser:
         self.arguments: List[str] = []
         self.content = content
         self.prefix = prefix
+        self.context: Context
 
     def find_command(self) -> Optional[str]:
         """
@@ -109,12 +114,12 @@ class StringParser:
 
         return keyword_arguments, arguments
 
-    async def convert(
-        self, parameter: inspect.Parameter, data: Union[List[str], str]
-    ) -> Any:
-        if parameter.annotation is not parameter.empty and callable(
-            parameter.annotation
-        ):
+    async def convert(self, parameter: inspect.Parameter, data: str) -> Any:
+        name = parameter.annotation.removeprefix("lefi.")
+        if converter := _CONVERTERS.get(name):
+            return await converter.convert(self.context, data)
+
+        if parameter.annotation is not parameter.empty and callable(parameter.annotation):
             return parameter.annotation(data)
 
         return str(data)

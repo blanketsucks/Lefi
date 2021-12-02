@@ -35,6 +35,7 @@ class Context:
         self.command: Optional[Command] = None
         self._message = message
         self.parser = parser
+        self.parser.context = self
         self.bot = bot
 
     def __repr__(self) -> str:
