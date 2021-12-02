@@ -44,14 +44,8 @@ class CommandOption:
         self.autocomplete: bool = kwargs.get("autocomplete", False)
 
     def to_dict(self) -> Dict:
-        choices = (
-            [choice.to_dict() for choice in self.choices]
-            if self.choices is not None
-            else []
-        )
-        options = (
-            [opt.to_dict() for opt in self.options] if self.options is not None else []
-        )
+        choices = [choice.to_dict() for choice in self.choices] if self.choices is not None else []
+        options = [opt.to_dict() for opt in self.options] if self.options is not None else []
 
         channel_types = [int(type_) for type_ in self.channel_types]
 
@@ -100,9 +94,7 @@ class AppCommand:
 
         for option in self.options:
             if not re.findall(self.NAME_REGEX, option.name):
-                raise TypeError(
-                    f"Option name: {option.name} does not match {self.NAME_REGEX}"
-                )
+                raise TypeError(f"Option name: {option.name} does not match {self.NAME_REGEX}")
 
     async def _create_options(self) -> List[Dict]:
         options: List[Dict] = []
@@ -110,21 +102,13 @@ class AppCommand:
         for argument in await self.parser.parse_arguments():
             name, type = argument
 
-            options.append(
-                CommandOption(
-                    name, description="\u200b", required=True, type=type
-                ).to_dict()
-            )
+            options.append(CommandOption(name, description="\u200b", required=True, type=type).to_dict())
 
         return options
 
     async def register(self) -> None:
         http = self.client.http
-        options = (
-            await self._create_options()
-            if not self.options
-            else [opt.to_dict() for opt in self.options]
-        )
+        options = await self._create_options() if not self.options else [opt.to_dict() for opt in self.options]
 
         if self.guild_ids is None:
             await http.create_global_application_command(

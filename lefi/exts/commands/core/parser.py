@@ -24,9 +24,7 @@ class StringParser:
         prefix (Union[Tuple[str], str]): The prefix of the command.
     """
 
-    def __init__(
-        self, content: str, prefix: Union[str, Tuple[str, ...], List[str]]
-    ) -> None:
+    def __init__(self, content: str, prefix: Union[str, Tuple[str, ...], List[str]]) -> None:
         """
         Initialize a StringParser.
 
@@ -103,14 +101,10 @@ class StringParser:
                     continue
 
                 if parameter.kind is parameter.POSITIONAL_OR_KEYWORD:
-                    arguments.append(
-                        await self.convert(parameter, self.arguments[index - 1])
-                    )
+                    arguments.append(await self.convert(parameter, self.arguments[index - 1]))
 
                 elif parameter.kind is parameter.KEYWORD_ONLY:
-                    keyword_arguments[argument] = await self.convert(
-                        parameter, " ".join(self.arguments[index - 1 :])
-                    )
+                    keyword_arguments[argument] = await self.convert(parameter, " ".join(self.arguments[index - 1 :]))
 
         return keyword_arguments, arguments
 

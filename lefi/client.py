@@ -148,9 +148,7 @@ class Client:
         if not inspect.iscoroutinefunction(func):
             raise TypeError("Callback must be a coroutine")
 
-        callbacks = self.events.setdefault(
-            name, Cache[Callable[..., Coroutine]](maxlen=1 if overwrite else None)
-        )
+        callbacks = self.events.setdefault(name, Cache[Callable[..., Coroutine]](maxlen=1 if overwrite else None))
 
         if overwrite is False:
             callbacks.maxlen = None
@@ -160,9 +158,7 @@ class Client:
 
         callbacks[func] = func  # type: ignore
 
-    def on(
-        self, event_name: Optional[str] = None, overwrite: bool = False
-    ) -> Callable[..., Callable[..., Coroutine]]:
+    def on(self, event_name: Optional[str] = None, overwrite: bool = False) -> Callable[..., Callable[..., Coroutine]]:
         """A decorator that registers the decorated function to an event.
 
         Parameters
@@ -204,9 +200,7 @@ class Client:
 
         return inner
 
-    def once(
-        self, event_name: Optional[str] = None
-    ) -> Callable[..., Callable[..., Coroutine]]:
+    def once(self, event_name: Optional[str] = None) -> Callable[..., Callable[..., Coroutine]]:
         """A decorator that registers one time callbacks.
 
         Similar to :meth:`on` it registers a callback to an event, but also
@@ -251,9 +245,7 @@ class Client:
 
         return inner
 
-    def application_command(
-        self, name: str, description: Optional[str] = None, **kwargs
-    ) -> Callable[..., AppCommand]:
+    def application_command(self, name: str, description: Optional[str] = None, **kwargs) -> Callable[..., AppCommand]:
         """A decorator which adds an application command.
 
         This decorator adds an application command. Currently only supporting
@@ -349,9 +341,7 @@ class Client:
         await self.login()
         await self.connect()
 
-    async def wait_for(
-        self, event: str, *, check: Callable[..., bool] = None, timeout: float = None
-    ) -> Any:
+    async def wait_for(self, event: str, *, check: Callable[..., bool] = None, timeout: float = None) -> Any:
         """A method which waits for an event to be dispatched.
 
         This method will wait until the specified event is dispatched
@@ -533,9 +523,7 @@ class Client:
         data = await self.http.get_user(user_id)
         return self._state.add_user(data)
 
-    async def fetch_invite(
-        self, code: str, *, with_counts: bool = False, with_expiration: bool = False
-    ) -> Invite:
+    async def fetch_invite(self, code: str, *, with_counts: bool = False, with_expiration: bool = False) -> Invite:
         """A method which makes an API call to fetch an invite.
 
         This method does an API call to fetch an invite corresponding to the code passed in.
@@ -556,9 +544,7 @@ class Client:
         :class:`.Invite`
             The fetched invite.
         """
-        data = await self.http.get_invite(
-            code, with_counts=with_counts, with_expiration=with_expiration
-        )
+        data = await self.http.get_invite(code, with_counts=with_counts, with_expiration=with_expiration)
         return Invite(data=data, state=self._state)
 
     async def fetch_guild(self, guild_id: int) -> Guild:

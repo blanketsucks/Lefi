@@ -16,9 +16,7 @@ def test_find() -> None:
 
 
 def test_find_list() -> None:
-    look_through = [
-        FakeObj(id_, name) for id_, name in zip(range(4), ["A", "A", "B", "B"])
-    ]
+    look_through = [FakeObj(id_, name) for id_, name in zip(range(4), ["A", "A", "B", "B"])]
     res = lefi.utils.find(look_through, lambda o: o.id < 3 and o.name == "A")
 
     assert isinstance(res, list)

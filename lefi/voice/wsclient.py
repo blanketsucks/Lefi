@@ -107,9 +107,7 @@ class VoiceWebSocketClient:
 
         elif data["op"] == OpCodes.HELLO:
             interval = payload["heartbeat_interval"] / 1000
-            self._heartbeat_handler = self.client.loop.create_task(
-                self.start_heartbeat(interval)
-            )
+            self._heartbeat_handler = self.client.loop.create_task(self.start_heartbeat(interval))
 
     async def read_messages(self) -> None:
         while not self.closed:
@@ -132,9 +130,7 @@ class VoiceWebSocketClient:
         return [mode for mode in modes if mode in supported][0]
 
     async def udp_connect(self) -> None:
-        await self.client.loop.create_datagram_endpoint(
-            self.client.protocol, remote_addr=self.remote_addr
-        )
+        await self.client.loop.create_datagram_endpoint(self.client.protocol, remote_addr=self.remote_addr)
 
     async def _perform_ip_discovery(self, mode: str) -> None:
         packet = bytearray(70)

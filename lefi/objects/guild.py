@@ -76,10 +76,7 @@ class Guild:
         return copy
 
     def _create_threads(self, data: Dict) -> List[Thread]:
-        threads = {
-            int(thread["id"]): Thread(self._state, self, thread)
-            for thread in data.get("threads", [])
-        }
+        threads = {int(thread["id"]): Thread(self._state, self, thread) for thread in data.get("threads", [])}
 
         for member in data.get("members", []):
             thread = threads.get(int(member["id"]))
@@ -225,11 +222,7 @@ class Guild:
             The guild after editting.
         """
         region = region.name if isinstance(region, VoiceRegion) else region
-        notif = (
-            default_message_notifications.value
-            if default_message_notifications
-            else None
-        )
+        notif = default_message_notifications.value if default_message_notifications else None
 
         data = await self._state.http.modify_guild(
             guild_id=self.id,
@@ -247,13 +240,9 @@ class Guild:
             verification_level=verification_level.value if verification_level else None,
             system_channel_id=system_channel.id if system_channel else None,
             rules_channel_id=rules_channel.id if rules_channel else None,
-            public_updates_channel_id=public_updates_channel.id
-            if public_updates_channel
-            else None,
+            public_updates_channel_id=public_updates_channel.id if public_updates_channel else None,
             preferred_locale=preferred_locale,
-            system_channel_flags=system_channel_flags.value
-            if system_channel_flags
-            else None,
+            system_channel_flags=system_channel_flags.value if system_channel_flags else None,
         )
 
         self._data = data
@@ -519,9 +508,7 @@ class Guild:
         :exc:`.Forbidden`
             Your client doesn't have permissions to ban this user.
         """
-        await self._state.http.create_guild_ban(
-            self.id, user.id, delete_message_days=delete_message_days
-        )
+        await self._state.http.create_guild_ban(self.id, user.id, delete_message_days=delete_message_days)
 
     async def unban(self, user: Snowflake) -> None:
         """Unbans a member from the guild.
@@ -556,10 +543,7 @@ class Guild:
         """
         data = await self._state.http.get_guild_bans(self.id)
 
-        return [
-            BanEntry(User(self._state, payload["user"]), payload["reason"])
-            for payload in data
-        ]
+        return [BanEntry(User(self._state, payload["user"]), payload["reason"]) for payload in data]
 
     async def fetch_ban(self, user: Snowflake) -> BanEntry:
         """Fetches the ban from the guild for a specific user.
@@ -672,9 +656,7 @@ class Guild:
         data = await self._state.http.get_guild_member(self.id, user_id)
         return self._state.create_member(data, self)
 
-    async def fetch_members(
-        self, *, limit: int = 100, after: Optional[int] = None
-    ) -> List[Member]:
+    async def fetch_members(self, *, limit: int = 100, after: Optional[int] = None) -> List[Member]:
         """Fetches the guild's members.
 
         Parameters
@@ -695,9 +677,7 @@ class Guild:
         List[:class:`.Member`]
             A list of fetched members.
         """
-        data = await self._state.http.list_guild_members(
-            self.id, limit=limit, after=after
-        )
+        data = await self._state.http.list_guild_members(self.id, limit=limit, after=after)
         return [self._state.create_member(payload, self) for payload in data]
 
     async def fetch_roles(self) -> List[Role]:
@@ -716,9 +696,7 @@ class Guild:
         data = await self._state.http.get_guild_roles(self.id)
         return [Role(self._state, payload, self) for payload in data]
 
-    async def fetch_prune_count(
-        self, *, days: int = 7, roles: Optional[List[Role]] = None
-    ) -> int:
+    async def fetch_prune_count(self, *, days: int = 7, roles: Optional[List[Role]] = None) -> int:
         """Fetches the number of members that would be pruned.
 
         Parameters
@@ -741,9 +719,7 @@ class Guild:
         """
         include_roles = [r.id for r in roles] if roles else None
 
-        data = await self._state.http.get_guild_prune_count(
-            guild_id=self.id, days=days, include_roles=include_roles
-        )
+        data = await self._state.http.get_guild_prune_count(guild_id=self.id, days=days, include_roles=include_roles)
         return data["pruned"]
 
     async def prune(
@@ -911,9 +887,7 @@ class Guild:
             Whether the client user should be deafened or not
         """
         ws = self._state.get_websocket(self.id)
-        await ws.change_guild_voice_state(
-            self.id, channel.id if channel else None, self_mute, self_deaf
-        )
+        await ws.change_guild_voice_state(self.id, channel.id if channel else None, self_mute, self_deaf)
 
     def get_member(self, member_id: int) -> Optional[Member]:
         """Gets a member from the guild's member cache.
@@ -1064,9 +1038,7 @@ class Guild:
         if not discovery_splash:
             return None
 
-        return CDNAsset.from_guild_discovery_splash(
-            self._state, self.id, discovery_splash
-        )
+        return CDNAsset.from_guild_discovery_splash(self._state, self.id, discovery_splash)
 
     @property
     def owner(self) -> Optional[Union[User, Member]]:

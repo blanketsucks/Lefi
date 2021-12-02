@@ -160,9 +160,7 @@ class Thread(BaseTextChannel):
         :exc:`.forbidden`
             your client doesn't have permissions to add this member.
         """
-        await self._state.http.add_thread_member(
-            channel_id=self.id, member_id=member.id
-        )
+        await self._state.http.add_thread_member(channel_id=self.id, member_id=member.id)
 
     async def remove_member(self, member: Member) -> None:
         """Removes a user from this thread.
@@ -180,9 +178,7 @@ class Thread(BaseTextChannel):
         :exc:`.forbidden`
             your client doesn't have permissions to remove this member.
         """
-        await self._state.http.remove_thread_member(
-            channel_id=self.id, member_id=member.id
-        )
+        await self._state.http.remove_thread_member(channel_id=self.id, member_id=member.id)
 
     async def fetch_members(self) -> List[ThreadMember]:
         """Fetches the members of this thread.

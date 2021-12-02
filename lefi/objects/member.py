@@ -44,9 +44,7 @@ class Member(User):
             Your client doesn't have permissions to add roles to this user.
         """
         for role in roles:
-            await self._state.http.add_guild_member_role(
-                self._guild.id, self.id, role.id
-            )
+            await self._state.http.add_guild_member_role(self._guild.id, self.id, role.id)
             self._roles[role.id] = role
 
     async def remove_roles(self, *roles: Role) -> None:
@@ -66,9 +64,7 @@ class Member(User):
             Your client doesn't have permissions to remove roles from this user.
         """
         for role in roles:
-            await self._state.http.remove_guild_member_role(
-                self._guild.id, self.id, role.id
-            )
+            await self._state.http.remove_guild_member_role(self._guild.id, self.id, role.id)
             self._roles.pop(role.id, None)
 
     async def edit(
@@ -236,6 +232,4 @@ class Member(User):
         if not guild_avatar_hash:
             return None
 
-        return CDNAsset.from_guild_member_avatar(
-            self._state, self._guild.id, self.id, guild_avatar_hash
-        )
+        return CDNAsset.from_guild_member_avatar(self._state, self._guild.id, self.id, guild_avatar_hash)

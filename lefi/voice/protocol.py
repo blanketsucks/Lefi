@@ -62,9 +62,7 @@ class VoiceProtocol(asyncio.streams.FlowControlMixin, asyncio.DatagramProtocol):
     def __call__(self, *args, **kwargs) -> VoiceProtocol:
         return self
 
-    def connection_made(
-        self, transport: Any
-    ) -> None:  # This is Any because mypy keeps complaining
+    def connection_made(self, transport: Any) -> None:  # This is Any because mypy keeps complaining
         self.transport = cast(asyncio.DatagramTransport, transport)
 
     def datagram_received(self, data: bytes, addr: Tuple[str, int]) -> None:

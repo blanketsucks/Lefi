@@ -205,23 +205,17 @@ class CDNAsset(AttachmentMixin):
         return cls(state, path, animated, icon_hash)
 
     @classmethod
-    def from_guild_splash(
-        cls, state: State, guild_id: int, splash_hash: str
-    ) -> CDNAsset:
+    def from_guild_splash(cls, state: State, guild_id: int, splash_hash: str) -> CDNAsset:
         path = f"splashes/{guild_id}/{splash_hash}.png"
         return cls(state, path, False, splash_hash)
 
     @classmethod
-    def from_guild_discovery_splash(
-        cls, state: State, guild_id: int, discovery_hash: str
-    ):
+    def from_guild_discovery_splash(cls, state: State, guild_id: int, discovery_hash: str):
         path = f"discovery-splashes/{guild_id}/{discovery_hash}.png"
         return cls(state, path, False, discovery_hash)
 
     @classmethod
-    def from_guild_banner(
-        cls, state: State, guild_id: int, banner_hash: str
-    ) -> CDNAsset:
+    def from_guild_banner(cls, state: State, guild_id: int, banner_hash: str) -> CDNAsset:
         path = f"banners/{guild_id}/{banner_hash}.png"
         return cls(state, path, False, banner_hash)
 
@@ -245,39 +239,29 @@ class CDNAsset(AttachmentMixin):
         return cls(state, path, animated, avatar_hash)
 
     @classmethod
-    def from_guild_member_avatar(
-        cls, state: State, guild_id: int, user_id: int, avatar_hash: str
-    ) -> CDNAsset:
+    def from_guild_member_avatar(cls, state: State, guild_id: int, user_id: int, avatar_hash: str) -> CDNAsset:
         animated, format = is_animated(avatar_hash)
 
         path = f"guilds/{guild_id}/users/{user_id}/avatars/{avatar_hash}.{format}"
         return cls(state, path, animated, avatar_hash)
 
     @classmethod
-    def from_application_icon(
-        cls, state: State, application_id: int, icon_hash: str
-    ) -> CDNAsset:
+    def from_application_icon(cls, state: State, application_id: int, icon_hash: str) -> CDNAsset:
         path = f"app-icons/{application_id}/{icon_hash}.png"
         return cls(state, path, False, icon_hash)
 
     @classmethod
-    def from_application_cover(
-        cls, state: State, application_id: int, cover_hash: str
-    ) -> CDNAsset:
+    def from_application_cover(cls, state: State, application_id: int, cover_hash: str) -> CDNAsset:
         path = f"app-icons/{application_id}/{cover_hash}.png"
         return cls(state, path, False, cover_hash)
 
     @classmethod
-    def from_application_asset(
-        cls, state: State, application_id: int, asset_hash: str
-    ) -> CDNAsset:
+    def from_application_asset(cls, state: State, application_id: int, asset_hash: str) -> CDNAsset:
         path = f"app-assets/{application_id}/{asset_hash}.png"
         return cls(state, path, False, asset_hash)
 
     @classmethod
-    def from_achievement_icon(
-        cls, state: State, achievement_id: int, icon_hash: str
-    ) -> CDNAsset:
+    def from_achievement_icon(cls, state: State, achievement_id: int, icon_hash: str) -> CDNAsset:
         path = f"achievements/{achievement_id}/{icon_hash}.png"
         return cls(state, path, False, icon_hash)
 

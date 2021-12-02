@@ -169,9 +169,7 @@ class BaseTextChannel(Messageable):
         messages: Iterable[:class:`.Message`]
             The messages to delete
         """
-        await self._state.http.bulk_delete_messages(
-            self.id, message_ids=[msg.id for msg in messages]
-        )
+        await self._state.http.bulk_delete_messages(self.id, message_ids=[msg.id for msg in messages])
 
     async def purge(
         self,
@@ -212,9 +210,7 @@ class BaseTextChannel(Messageable):
             check = lambda _: True
 
         iterator = self.history(limit=limit, before=before, around=around, after=after)
-        to_delete: List[Message] = [
-            message async for message in iterator if check(message)
-        ]
+        to_delete: List[Message] = [message async for message in iterator if check(message)]
 
         for message in to_delete:
             delta = now - message.created_at

@@ -27,9 +27,7 @@ class File:
         The file's path
     """
 
-    def __init__(
-        self, fp: Union[str, PathLike[str], BinaryIO], *, filename: Optional[str] = None
-    ) -> None:
+    def __init__(self, fp: Union[str, PathLike[str], BinaryIO], *, filename: Optional[str] = None) -> None:
         if isinstance(fp, (str, PathLike)):
             self.source = open(fp, "rb")
         else:

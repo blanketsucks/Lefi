@@ -27,9 +27,7 @@ T_co = TypeVar("T_co", covariant=True)
 class ConverterMeta(type):
     __convert_type__: Type
 
-    def __new__(
-        cls: Type[ConverterMeta], name: str, bases: Tuple[Type, ...], attrs: dict
-    ) -> ConverterMeta:
+    def __new__(cls: Type[ConverterMeta], name: str, bases: Tuple[Type, ...], attrs: dict) -> ConverterMeta:
         attrs["__convert_type__"] = attrs["__orig_bases__"][0].__args__[0]
         return super().__new__(cls, name, bases, attrs)
 
@@ -38,6 +36,7 @@ class Converter(Generic[T_co], metaclass=ConverterMeta):
     """A base converter class.
     All converters should inherit this class.
     """
+
     __convert_type__: Type
     ID_REGEX: ClassVar[re.Pattern] = re.compile(r"([0-9]{15,20})$")
     MENTION_REGEX: ClassVar[re.Pattern] = re.compile(r"<(?:@(?:!|&)?|#)([0-9]{15,20})>$")

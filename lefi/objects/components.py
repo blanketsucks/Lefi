@@ -325,9 +325,7 @@ class SelectMenu(Component):
 class ActionRowMeta(type):
     __components__: List[Component]
 
-    def __new__(
-        cls: Type[ActionRowMeta], name: str, bases: Tuple[Type, ...], attrs: Dict
-    ) -> ActionRowMeta:
+    def __new__(cls: Type[ActionRowMeta], name: str, bases: Tuple[Type, ...], attrs: Dict) -> ActionRowMeta:
         components: List[Component] = []
 
         for value in attrs.copy().values():

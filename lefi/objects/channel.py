@@ -72,9 +72,7 @@ class Channel:
         """
         await self._state.http.delete_channel(self.id)
 
-    async def edit_permissions(
-        self, target: Union[Member, Role], **permissions: bool
-    ) -> None:
+    async def edit_permissions(self, target: Union[Member, Role], **permissions: bool) -> None:
         """Edits the permissions for the given target.
 
         Targets can be either a :class:`.Member` or a :class:`.Role`
@@ -407,9 +405,7 @@ class TextChannel(Channel, BaseTextChannel):  # type: ignore
         """
         if auto_archive_duration is not None:
             if auto_archive_duration not in (60, 1440, 4320, 10080):
-                raise ValueError(
-                    "auto_archive_duration must be 60, 1440, 4320 or 10080"
-                )
+                raise ValueError("auto_archive_duration must be 60, 1440, 4320 or 10080")
 
         if not type:
             type = ChannelType.PRIVATE_THREAD
@@ -464,9 +460,7 @@ class TextChannel(Channel, BaseTextChannel):  # type: ignore
                 limit=limit,
             )
         else:
-            data = await self._state.http.list_private_archived_threads(
-                channel_id=self.id, before=before, limit=limit
-            )
+            data = await self._state.http.list_private_archived_threads(channel_id=self.id, before=before, limit=limit)
 
         return self.guild._create_threads(data)
 
@@ -503,11 +497,7 @@ class TextChannel(Channel, BaseTextChannel):  # type: ignore
     @property
     def last_message(self) -> Optional[Message]:
         """The last message sent in this channel."""
-        return (
-            self._state.get_message(self.last_message_id)
-            if self.last_message_id
-            else None
-        )
+        return self._state.get_message(self.last_message_id) if self.last_message_id else None
 
     @property
     def slowmode(self) -> int:

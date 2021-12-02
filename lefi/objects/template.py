@@ -100,8 +100,6 @@ class GuildTemplate:
         """
         from .guild import Guild
 
-        data = await self._state.http.create_guild_from_template(
-            code=self.code, name=name, icon=icon
-        )
+        data = await self._state.http.create_guild_from_template(code=self.code, name=name, icon=icon)
 
         return Guild(state=self._state, data=data)

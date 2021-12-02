@@ -155,13 +155,9 @@ class Message:
         :exc:`.HTTPException`
             Something went wrong while making the request.
         """
-        await self._state.http.create_reaction(
-            channel_id=self.channel.id, message_id=self.id, emoji=reaction
-        )
+        await self._state.http.create_reaction(channel_id=self.channel.id, message_id=self.id, emoji=reaction)
 
-    async def remove_reaction(
-        self, reaction: str, user: Optional[Snowflake] = None
-    ) -> None:
+    async def remove_reaction(self, reaction: str, user: Optional[Snowflake] = None) -> None:
         """Removes a reaction from the message.
 
         Parameters
@@ -229,9 +225,7 @@ class Message:
         await self._state.http.delete_message(self.channel.id, self.id)
         self._state._messages.pop(self.id, None)
 
-    async def create_thread(
-        self, *, name: str, auto_archive_duration: Optional[int] = None
-    ) -> Thread:
+    async def create_thread(self, *, name: str, auto_archive_duration: Optional[int] = None) -> Thread:
         """Creates a thread from the message.
 
         Parameters
@@ -260,9 +254,7 @@ class Message:
 
         if auto_archive_duration is not None:
             if auto_archive_duration not in (60, 1440, 4320, 10080):
-                raise ValueError(
-                    "auto_archive_duration must be 60, 1440, 4320 or 10080"
-                )
+                raise ValueError("auto_archive_duration must be 60, 1440, 4320 or 10080")
 
         data = await self._state.http.start_thread_with_message(
             channel_id=self.channel.id,
@@ -334,10 +326,7 @@ class Message:
     @property
     def attachments(self) -> List[Attachment]:
         """The attachments of the message."""
-        return [
-            Attachment(self._state, attachment)
-            for attachment in self._data["attachments"]
-        ]
+        return [Attachment(self._state, attachment) for attachment in self._data["attachments"]]
 
     @property
     def pinned(self) -> bool:

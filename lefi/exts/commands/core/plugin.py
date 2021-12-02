@@ -28,9 +28,7 @@ class PluginMeta(type):
     __commands__: Dict[str, Command]
     __listeners__: Dict[str, List[Tuple[Coroutine, bool]]]
 
-    def __new__(
-        cls: Type[PluginMeta], name: str, bases: Tuple[Type], attrs: Dict, **kwargs
-    ) -> PluginMeta:
+    def __new__(cls: Type[PluginMeta], name: str, bases: Tuple[Type], attrs: Dict, **kwargs) -> PluginMeta:
         commands: Dict[str, Command] = {}
         listeners: Dict[str, List[Tuple[Coroutine, bool]]] = {}
 
@@ -50,9 +48,7 @@ class PluginMeta(type):
         return super().__new__(cls, name, bases, attrs)
 
     @staticmethod
-    def on(
-        name: Optional[str] = None, overwrite: bool = False
-    ) -> Callable[..., Coroutine]:
+    def on(name: Optional[str] = None, overwrite: bool = False) -> Callable[..., Coroutine]:
         def inner(func: Coroutine) -> Coroutine:
             func.__listener_data__ = (name or func.__name__, func, overwrite)  # type: ignore
             return func

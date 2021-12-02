@@ -178,9 +178,7 @@ class Interaction:
             self.id, self.token, type=InteractionResponse.MESSAGE, data=payload
         )
 
-        data = await self._state.http.get_original_interaction_response(
-            self.application_id, self.token
-        )
+        data = await self._state.http.get_original_interaction_response(self.application_id, self.token)
 
         self._responded = True
         self._origin = self._state.create_message(data, self.channel)
@@ -224,18 +222,14 @@ class Interaction:
                         component,
                     )
 
-        data = await self._state.http.edit_original_interaction_response(
-            self.application_id, self.token, **payload
-        )
+        data = await self._state.http.edit_original_interaction_response(self.application_id, self.token, **payload)
         return self._state.create_message(data, self.channel)
 
     async def delete_origin(self) -> None:
         """
         Deletes the original response message.
         """
-        await self._state.http.delete_original_interaction_response(
-            self.application_id, self.token
-        )
+        await self._state.http.delete_original_interaction_response(self.application_id, self.token)
 
     async def defer(self) -> None:
         """
@@ -258,9 +252,7 @@ class Interaction:
         if self._responded:
             raise TypeError("Responded to this interaction already")
 
-        await self._state.http.create_interaction_response(
-            self.id, self.token, type=InteractionResponse.PONG
-        )
+        await self._state.http.create_interaction_response(self.id, self.token, type=InteractionResponse.PONG)
         self._responded = True
 
     async def edit_message(

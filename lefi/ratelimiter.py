@@ -140,9 +140,7 @@ class Ratelimiter:
         semaphore = self.http.semaphores.get(self.bucket, await self.set_semaphore())
         session = self.http.session
 
-        await asyncio.gather(
-            self.global_.wait(), semaphore.acquire(), self.route.lock.acquire()
-        )
+        await asyncio.gather(self.global_.wait(), semaphore.acquire(), self.route.lock.acquire())
         resp = await session.request(self.method, self.route.url, **self.kwargs)
         data = await self.http.json_or_text(resp)
 
@@ -156,16 +154,12 @@ class Ratelimiter:
             await self.request()
 
         if 300 > resp.status >= 200:
-            logger.info(
-                f"{resp.status}: {self.method} ROUTE: {self.route.url} REMAINING: {remaining}"
-            )
+            logger.info(f"{resp.status}: {self.method} ROUTE: {self.route.url} REMAINING: {remaining}")
             return data
 
         if resp.status == 429:
             retry_after: float = data["retry_after"]  # type: ignore
-            logger.info(
-                f"RATELIMITED: {self.method} ROUTE: {self.route.url} RETRY: {retry_after}"
-            )
+            logger.info(f"RATELIMITED: {self.method} ROUTE: {self.route.url} RETRY: {retry_after}")
             if data.get("global", False):  # type: ignore
                 self.global_.clear()
 
@@ -174,9 +168,7 @@ class Ratelimiter:
             await self.request()
 
         if not 300 > resp.status >= 200:
-            logger.info(
-                f"FAILED: {self.method} : ROUTE: {self.route.url} STATUS: {resp.status}"
-            )
+            logger.info(f"FAILED: {self.method} : ROUTE: {self.route.url} STATUS: {resp.status}")
             raise self.http.ERRORS.get(resp.status, HTTPException)(data)
 
     async def __aenter__(self) -> Ratelimiter:

@@ -109,9 +109,7 @@ class Embed:
 
                 continue
 
-            elif isinstance(item, list) and all(
-                isinstance(obj, EmbedItem) for obj in item
-            ):
+            elif isinstance(item, list) and all(isinstance(obj, EmbedItem) for obj in item):
                 payload[name] = [update_payload({}, **field.data) for field in item]
 
         return payload
@@ -229,9 +227,7 @@ class Embed:
         """The embed's image."""
         return self._data.get("image")
 
-    def set_image(
-        self, url: str, height: Optional[int] = None, width: Optional[int] = None
-    ) -> None:
+    def set_image(self, url: str, height: Optional[int] = None, width: Optional[int] = None) -> None:
         """Sets the embed's image.
 
         Parameters
@@ -252,9 +248,7 @@ class Embed:
         """The embed's thumbnail."""
         return self._data.get("thumbnail")
 
-    def set_thumbnail(
-        self, url: str, height: Optional[int] = None, width: Optional[int] = None
-    ) -> None:
+    def set_thumbnail(self, url: str, height: Optional[int] = None, width: Optional[int] = None) -> None:
         """Sets the embed's thumbnail.
 
         Parameters
@@ -275,9 +269,7 @@ class Embed:
         """The embed's video."""
         return self._data.get("video")
 
-    def set_video(
-        self, url: str, height: Optional[int] = None, width: Optional[int] = None
-    ) -> None:
+    def set_video(self, url: str, height: Optional[int] = None, width: Optional[int] = None) -> None:
         """Sets the embed's video.
 
         Parameters
@@ -298,9 +290,7 @@ class Embed:
         """The embed's provider."""
         return self._data.get("provider")
 
-    def set_provider(
-        self, name: Optional[str] = None, url: Optional[str] = None
-    ) -> None:
+    def set_provider(self, name: Optional[str] = None, url: Optional[str] = None) -> None:
         """Sets the embed's provider.
 
         Parameters
@@ -318,9 +308,7 @@ class Embed:
         """The embed's author."""
         return self._data.get("author")
 
-    def set_author(
-        self, name: str, url: Optional[str] = None, icon_url: Optional[str] = None
-    ) -> None:
+    def set_author(self, name: str, url: Optional[str] = None, icon_url: Optional[str] = None) -> None:
         """Sets the embed's author.
 
         Parameters
@@ -355,6 +343,4 @@ class Embed:
         inline: :class:`bool`
             Whether or not the field is inline
         """
-        self._data.setdefault("fields", []).append(
-            EmbedItem(name=name, value=value, inline=inline)
-        )
+        self._data.setdefault("fields", []).append(EmbedItem(name=name, value=value, inline=inline))

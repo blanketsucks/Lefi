@@ -36,9 +36,7 @@ class InteractionWeb:
 
     async def handle_interactions(self, request: web.Request) -> web.Response:
         if not await self.validate_security(request):
-            return web.Response(
-                text="Could not verify request was from discord.", status=401
-            )
+            return web.Response(text="Could not verify request was from discord.", status=401)
 
         data = await request.json()
         interaction_type = InteractionType(data["type"])

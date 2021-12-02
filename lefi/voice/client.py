@@ -30,9 +30,7 @@ class VoiceClient:
         self.session_id: Optional[str] = None
         self.endpoint: Optional[str] = None
         self.token: Optional[str] = None
-        self.ws: VoiceWebSocketClient = VoiceWebSocketClient(
-            self, self.channel.guild.id, self._state.client.user.id
-        )
+        self.ws: VoiceWebSocketClient = VoiceWebSocketClient(self, self.channel.guild.id, self._state.client.user.id)
         self.protocol: VoiceProtocol = VoiceProtocol(self)
 
     @property

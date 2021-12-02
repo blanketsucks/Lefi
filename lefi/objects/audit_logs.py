@@ -101,15 +101,11 @@ __all__ = (
 )
 
 
-def _get(
-    getter: Callable[[int], Optional[T]], value: Optional[int]
-) -> Union[T, Object]:
+def _get(getter: Callable[[int], Optional[T]], value: Optional[int]) -> Union[T, Object]:
     return getter(value) or Object(id=value)  # type: ignore
 
 
-def _handle_channel_snowflake(
-    change: AuditLogChange, value: str
-) -> Union[Channel, Object]:
+def _handle_channel_snowflake(change: AuditLogChange, value: str) -> Union[Channel, Object]:
     guild = change.entry.guild
     return _get(guild.get_channel, int(value))
 
@@ -162,9 +158,7 @@ def _handle_guild(change: AuditLogChange, value: str) -> Union[Guild, Object]:
     return _get(state.get_guild, int(value))
 
 
-def _handle_roles(
-    change: AuditLogChange, value: List[Dict[str, Any]]
-) -> List[Union[Role, PartialRole]]:
+def _handle_roles(change: AuditLogChange, value: List[Dict[str, Any]]) -> List[Union[Role, PartialRole]]:
     guild = change.entry.guild
     roles = []
 
@@ -189,9 +183,7 @@ def _handle_enum(cls: Type[T]) -> Callable[[AuditLogChange, int], T]:
 
 def _handle_type(change: AuditLogChange, value: int) -> int:
     entry = change.entry
-    if entry.action.name.startswith("CHANNEL") or entry.action.name.startswith(
-        "THREAD"
-    ):
+    if entry.action.name.startswith("CHANNEL") or entry.action.name.startswith("THREAD"):
         return ChannelType(value)
 
     return value
@@ -309,9 +301,7 @@ class AuditLogChange:
 
 
 class AuditLogEntry:
-    def __init__(
-        self, users: Dict[int, User], state: State, guild: Guild, data: Dict
-    ) -> None:
+    def __init__(self, users: Dict[int, User], state: State, guild: Guild, data: Dict) -> None:
         self._state = state
         self._guild = guild
         self._data = data
@@ -326,9 +316,7 @@ class AuditLogEntry:
 
     @property
     def changes(self) -> List[AuditLogChange]:
-        return [
-            AuditLogChange(self, change) for change in self._data.get("changes", [])
-        ]
+        return [AuditLogChange(self, change) for change in self._data.get("changes", [])]
 
     @property
     def action(self) -> AuditLogsEvent:

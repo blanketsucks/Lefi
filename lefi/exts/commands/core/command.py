@@ -80,9 +80,7 @@ def check(check: Callable[..., bool]) -> Callable[..., Union[Command, Coroutine]
     return inner
 
 
-def cooldown(
-    uses: int, time: float, type: CooldownType
-) -> Callable[..., Union[Command, Coroutine]]:
+def cooldown(uses: int, time: float, type: CooldownType) -> Callable[..., Union[Command, Coroutine]]:
     """
     A decorator to add a cooldown to a command.
 
