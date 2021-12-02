@@ -15,7 +15,7 @@ import inspect
 import re
 import sys
 
-from lefi import Object, User, Member, utils
+from lefi import Object, User, Member, Guild, utils
 
 if TYPE_CHECKING:
     from .context import Context
@@ -152,7 +152,7 @@ class UserConverter(Converter[User]):
 class MemberConverter(Converter[Member]):
     @staticmethod
     async def convert(ctx: Context, data: str) -> Member:
-        """Converts the string given into a User.
+        """Converts the string given into a Member.
 
         Accepted arguments:
         - id or mention
@@ -204,6 +204,51 @@ class MemberConverter(Converter[Member]):
             return member_
 
         raise TypeError(f"{data!r} cannot be converted to a Member")
+
+
+class GuildConverter(Converter[Guild]):
+    @staticmethod
+    async def convert(ctx: Context, data: str) -> Guild:
+        """Converts the string given into a Guild.
+
+        Accepted arguments:
+        - name
+        - id
+
+        Parameters
+        ----------
+        ctx: :class:`.Context`
+            The invocation context
+
+        data: :class:`str`
+            The data to convert into a :class:`.Guild`
+
+        Raises
+        ------
+        :exc:`TypeError`
+            The data given couldn't be converted.
+
+        Returns
+        -------
+        :class:`.Guild`
+            The Guild instance from the data given.
+        """
+        found = Converter.ID_REGEX.match(data)
+        bot = ctx.bot
+
+        if found is not None:
+            guild_id = int(found.group(1))
+            guild = bot.get_guild(guild_id) or await bot.fetch_guild(guild_id)
+
+            if guild is not None:
+                return guild
+
+            raise TypeError(f"{data!r} cannot be converted to Guild")
+
+        if guild_ := utils.get(bot.guilds, name=data):
+            return guild_
+
+        raise TypeError(f"{data!r} cannot be converted to Guild")
 
 
 _CONVERTERS: Dict[str, Type[Converter]] = {}
