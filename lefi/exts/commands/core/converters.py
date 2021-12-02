@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from .context import Context
 
 
-T = TypeVar("T", int, Snowflake)
+T_co = TypeVar("T_co", covariant=True)
 
 
 class ConverterMeta(type):
@@ -34,12 +34,12 @@ class ConverterMeta(type):
         return super().__new__(cls, name, bases, attrs)
 
 
-class Converter(Generic[T], metaclass=ConverterMeta):
+class Converter(Generic[T_co], metaclass=ConverterMeta):
     __convert_type__: Type
     """A base converter class."""
 
     @staticmethod
-    async def convert(ctx: Context, data: str) -> Optional[T]:
+    async def convert(ctx: Context, data: str) -> Optional[T_co]:
         """Converts a string into the corresponding type.
 
         Parameters
@@ -84,6 +84,7 @@ class ObjectConverter(Converter[Object]):
         if found is not None:
             return Object(id=int(found.group(1)))
 
+        return None
 
 _CONVERTERS: Dict[str, Type[Converter]] = {}
 for name, object in inspect.getmembers(sys.modules[__name__], inspect.isclass):
