@@ -38,7 +38,7 @@ class Converter(Generic[T_co], metaclass=ConverterMeta):
     """A base converter class.
     All converters should inherit this class.
     """
-    __convert_type__: Type = None
+    __convert_type__: Type
     ID_REGEX: ClassVar[re.Pattern] = re.compile(r"([0-9]{15,20})$")
     MENTION_REGEX: ClassVar[re.Pattern] = re.compile(r"<(?:@(?:!|&)?|#)([0-9]{15,20})>$")
 
@@ -141,13 +141,11 @@ class UserConverter(Converter[User]):
         discriminator: str = data[-4:]
 
         if len(data) > 5 and data[-5] == "#" and discriminator.isdigit():
-            if user := utils.get(
-                bot.users, username=username, discriminator=int(discriminator)
-            ):
-                return user
+            if user_ := utils.get(bot.users, username=username, discriminator=int(discriminator)):
+                return user_
 
-        if user := utils.get(bot.users, username=data):
-            return user
+        if user_ := utils.get(bot.users, username=data):
+            return user_
 
         raise TypeError(f"{data!r} cannot be converted to a User")
 
