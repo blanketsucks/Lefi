@@ -4108,7 +4108,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing the fetched user object.
         """
-        return await self.request("GET", Route(f"users/{user_id}"))
+        return await self.request("GET", Route(f"/users/{user_id}"))
 
     async def get_current_user(self) -> dict:
         """Fetches the current authorized user.
