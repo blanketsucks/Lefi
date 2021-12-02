@@ -63,7 +63,7 @@ class ObjectConverter(Converter[Object]):
     MENTION_REGEX: ClassVar[re.Pattern] = re.compile(r"<(?:@(?:!|&)?|#)([0-9]{15,20})>$")
 
     @staticmethod
-    async def convert(ctx: Context, data: str) -> Optional[Object]:
+    async def convert(ctx: Context, data: str) -> Object:
         """Converts the string given into a Object.
 
         Parameters
@@ -81,10 +81,11 @@ class ObjectConverter(Converter[Object]):
         """
         found = ObjectConverter.ID_REGEX.match(data) or ObjectConverter.MENTION_REGEX.match(data)
 
-        if found is not None:
-            return Object(id=int(found.group(1)))
+        if found is None:
+            raise TypeError(f"{data!r} cannot be converted to Object")
+        
+        return Object(id=int(found.group(1)))
 
-        return None
 
 _CONVERTERS: Dict[str, Type[Converter]] = {}
 for name, object in inspect.getmembers(sys.modules[__name__], inspect.isclass):
