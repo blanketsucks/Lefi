@@ -60,9 +60,7 @@ class Converter(Generic[T], metaclass=ConverterMeta):
 
 class ObjectConverter(Converter[Object]):
     ID_REGEX: ClassVar[re.Pattern] = re.compile(r"([0-9]{15,20})$")
-    MENTION_REGEX: ClassVar[re.Pattern] = re.compile(
-        r"<(?:@(?:!|&)?|#)([0-9]{15,20})>$"
-    )
+    MENTION_REGEX: ClassVar[re.Pattern] = re.compile(r"<(?:@(?:!|&)?|#)([0-9]{15,20})>$")
 
     @staticmethod
     async def convert(ctx: Context, data: str) -> Optional[Object]:
@@ -81,12 +79,10 @@ class ObjectConverter(Converter[Object]):
         Optional[:class:`.Object`]
             The created Object instance from the data given.
         """
-        found = ObjectConverter.ID_REGEX.match(
-            data
-        ) or ObjectConverter.MENTION_REGEX.match(data)
+        found = ObjectConverter.ID_REGEX.match(data) or ObjectConverter.MENTION_REGEX.match(data)
 
         if found is not None:
-            return Object(id=found.group(1))
+            return Object(id=int(found.group(1)))
 
 
 _CONVERTERS: Dict[str, Type[Converter]] = {}
