@@ -5,21 +5,33 @@ from typing import (
     TypeVar,
     Generic,
     ClassVar,
-    Optional,
     Type,
     Tuple,
     Dict,
+    Union,
+    Any,
 )
 
 import inspect
 import re
 import sys
 
-from lefi import Object, User, Member, Guild, utils
+from lefi import Object, User, Member, Guild, Channel, TextChannel, VoiceChannel, CategoryChannel, ChannelType, utils
 
 if TYPE_CHECKING:
     from .context import Context
 
+__all__ = (
+    "Converter",
+    "ObjectConverter",
+    "UserConverter",
+    "MemberConverter",
+    "GuildConverter",
+    "GuildChannelConverter",
+    "TextChannelConverter",
+    "VoiceChannelConverter",
+    "CategoryChannelConverter",
+)
 
 T_co = TypeVar("T_co", covariant=True)
 
@@ -251,7 +263,157 @@ class GuildConverter(Converter[Guild]):
         raise TypeError(f"{data!r} cannot be converted to Guild")
 
 
-_CONVERTERS: Dict[str, Type[Converter]] = {}
+class GuildChannelConverter(Converter[Channel]):
+    @staticmethod
+    async def convert(ctx: Context, data: str, *, type: Type[Channel] = Channel) -> Any:
+        """Converts the string given into a guild channel.
+
+        Accepted arguments:
+        - mention
+        - name
+        - id
+
+        Parameters
+        ----------
+        ctx: :class:`.Context`
+            The invocation context
+
+        data: :class:`str`
+            The data to convert into a channel
+
+        type: Type[:class:`Channel`]
+            The type of channel to accept. This is used internally for the
+            other channel converters
+
+        Raises
+        ------
+        :exc:`TypeError`
+            The data given couldn't be converted.
+
+        Returns
+        -------
+        Union[:class:`.Channel`, :class:`.CategoryChannel`]
+            The channel instance from the data given.
+        """
+        found = Converter.ID_REGEX.match(data) or Converter.MENTION_REGEX.match(data)
+        guild = ctx.guild
+
+        if guild is None:
+            raise TypeError(f"{data!r} cannot be converted to a {type!r} inside of a DMChannel")
+
+        if found is not None:
+            channel_id = int(found.group(1))
+
+            if channel := guild.get_channel(channel_id) or await ctx.bot.fetch_channel(channel_id):
+                if isinstance(channel, type):
+                    return channel
+
+                elif channel.type is ChannelType.CATEGORY and type is CategoryChannel:
+                    return channel
+
+        if channel_ := utils.get(guild.channels, name=data):
+            if isinstance(channel_, type):
+                return channel_
+
+            elif channel_.type is ChannelType.CATEGORY and type is CategoryChannel:
+                return channel_
+
+        raise TypeError(f"{data!r} cannot be converted to {type!r}")
+
+
+class TextChannelConverter(Converter[TextChannel]):
+    @staticmethod
+    async def convert(ctx: Context, data: str) -> TextChannel:
+        """Converts the string given into a text channel.
+
+        Accepted arguments:
+        - mention
+        - name
+        - id
+
+        Parameters
+        ----------
+        ctx: :class:`.Context`
+            The invocation context
+
+        data: :class:`str`
+            The data to convert into a channel
+
+        Raises
+        ------
+        :exc:`TypeError`
+            The data given couldn't be converted.
+
+        Returns
+        -------
+        :class:`.TextChannel`
+            The channel instance from the data given.
+        """
+        return await GuildChannelConverter.convert(ctx, data, type=TextChannel)
+
+
+class VoiceChannelConverter(Converter[VoiceChannel]):
+    @staticmethod
+    async def convert(ctx: Context, data: str) -> VoiceChannel:
+        """Converts the string given into a voice channel.
+
+        Accepted arguments:
+        - mention
+        - name
+        - id
+
+        Parameters
+        ----------
+        ctx: :class:`.Context`
+            The invocation context
+
+        data: :class:`str`
+            The data to convert into a channel
+
+        Raises
+        ------
+        :exc:`TypeError`
+            The data given couldn't be converted.
+
+        Returns
+        -------
+        :class:`.VoiceChannel`
+            The channel instance from the data given.
+        """
+        return await GuildChannelConverter.convert(ctx, data, type=VoiceChannel)
+
+
+class CategoryChannelConverter(Converter[CategoryChannel]):
+    @staticmethod
+    async def convert(ctx: Context, data: str) -> CategoryChannel:
+        """Converts the string given into a category channel.
+
+        Accepted arguments:
+        - name
+        - id
+
+        Parameters
+        ----------
+        ctx: :class:`.Context`
+            The invocation context
+
+        data: :class:`str`
+            The data to convert into a channel
+
+        Raises
+        ------
+        :exc:`TypeError`
+            The data given couldn't be converted.
+
+        Returns
+        -------
+        :class:`.CategoryChannel`
+            The channel instance from the data given.
+        """
+        return await GuildChannelConverter.convert(ctx, data, type=CategoryChannel)  # type: ignore
+
+
+_CONVERTERS: Dict[str, Union[Type[Converter], Converter]] = {}
 for name, object in inspect.getmembers(sys.modules[__name__], inspect.isclass):
     if not issubclass(object, Converter) or name == "Converter":
         continue

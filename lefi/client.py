@@ -523,6 +523,33 @@ class Client:
         data = await self.http.get_user(user_id)
         return self._state.add_user(data)
 
+    async def fetch_channel(self, channel_id: int) -> Channel:
+        """A method which makes an API call to fetch a channel.
+
+        This method does an API call to fetch a channel corresponding to the id passed in.
+
+        .. note ::
+
+            This should only really be used when the corresponding `get_` method returns None.
+
+        Parameters
+        ----------
+        user_id: :class:`int`
+            The channel's ID
+
+        Returns
+        -------
+        :class:`.Channel`
+            The fetched channel.
+        """
+        data = await self.http.get_channel(channel_id)
+
+        if data["type"] == 4:
+            guild = self.get_guild(int(data["guild_id"]))
+            return self._state.create_channel(data, guild)
+
+        return self._state.create_channel(data)
+
     async def fetch_invite(self, code: str, *, with_counts: bool = False, with_expiration: bool = False) -> Invite:
         """A method which makes an API call to fetch an invite.
 

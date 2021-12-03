@@ -7,6 +7,7 @@ from typing import (
     List,
     Optional,
     Union,
+    Protocol,
 )
 from functools import cached_property
 
