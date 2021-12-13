@@ -7,11 +7,13 @@ from enum import IntEnum
 import aiohttp
 import asyncio
 
+from .protocol import UNSIGNED_INT, UNSIGNED_SHORT
+
 if TYPE_CHECKING:
     from ..state import State
-    from .protocol import VoiceClient
+    from .client import VoiceClient
 
-__all__ = ("OpCodes", "VoiceWebSocketClient")
+__all__ = ("OpCodes", "VoiceWebSocketClient", "UserVoiceData")
 
 
 class OpCodes(IntEnum):
@@ -43,9 +45,7 @@ class UserVoiceData:
         self.user = state.get_user(user_id)
 
     def __repr__(self) -> str:
-        return (
-            f"<UserVoiceData ssrc={self.ssrc} user_id={self.user_id} user={self.user}>"
-        )
+        return f"<UserVoiceData ssrc={self.ssrc} user_id={self.user_id} user={self.user}>"
 
 
 class VoiceWebSocketClient:
@@ -142,15 +142,13 @@ class VoiceWebSocketClient:
 
         elif data["op"] == OpCodes.HELLO:
             interval = payload["heartbeat_interval"] / 1000
-            self._heartbeat_handler = self.client.loop.create_task(
-                self.start_heartbeat(interval)
-            )
+            self._heartbeat_handler = self.client.loop.create_task(self.start_heartbeat(interval))
 
         elif data["op"] == OpCodes.SPEAKING:
             user_id = int(payload["user_id"])
             ssrc = payload["ssrc"]
 
-            data = self.add_user(user_id, ssrc)
+            data = self.add_user(ssrc, user_id)
             self.state.dispatch("speaking_update", data, bool(payload["speaking"]))
 
         elif data["op"] == OpCodes.CLIENT_CONNECT:
@@ -179,22 +177,20 @@ class VoiceWebSocketClient:
         await self._perform_ip_discovery(mode)
 
     def select_mode(self, modes: List[str]) -> str:
-        supported = self.client.protocol.supported_modes.keys()
+        supported = self.client.protocol.SUPPORTED_MODES
         return [mode for mode in modes if mode in supported][0]
 
     async def udp_connect(self) -> None:
-        await self.client.loop.create_datagram_endpoint(
-            self.client.protocol, remote_addr=self.remote_addr
-        )
+        await self.client.loop.create_datagram_endpoint(self.client.protocol, remote_addr=self.remote_addr)
 
     async def _perform_ip_discovery(self, mode: str) -> None:
         packet = bytearray(70)
 
-        struct.pack_into(">H", packet, 0, 0x1)
-        struct.pack_into(">H", packet, 2, 70)
-        struct.pack_into(">I", packet, 4, self.ssrc)
+        UNSIGNED_SHORT.pack_into(packet, 0, 0x1)
+        UNSIGNED_SHORT.pack_into(packet, 2, 70)
+        UNSIGNED_INT.pack_into(packet, 4, self.ssrc)
 
-        await self.client.protocol.sendto(packet)
+        await self.client.protocol.write(packet)
         data = await self.client.protocol.read()
 
         start = 4

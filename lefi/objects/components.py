@@ -20,6 +20,7 @@ from .enums import ButtonStyle, ComponentType
 if TYPE_CHECKING:
     from .emoji import Emoji
     from .interactions import Interaction
+    from ..state import State
 
 __all__ = (
     "ActionRow",
@@ -32,40 +33,74 @@ __all__ = (
 
 
 class Component:
-    """
-    Represents a message component.
+    """Represents a message component.
+
+    .. note::
+
+        This is just a base class.
+
+    Attributes
+    ----------
+    callback: Callable
+        The callback of the component
+
+    custom_id: :class:`str`
+        The custom id of the callback
     """
 
     callback: Callable
     custom_id: str
 
     def to_dict(self) -> Dict:
+        """Creates a payload representing the component."""
         raise NotImplementedError
 
 
 class Button(Component):
-    """
-    Represents a button component.
+    """Represents a button component.
 
-    Attributes:
-        style (ComponentStyle): The style of the button.
-        label (str): The button's label.
-        custom_id (str): The buttons custom_id.
-        disabled (bool): Whether the button is disabled or not.
-        emoji (Optional[str]): The emoji to use for the button.
-        url (Optional[str]): The url of the button
-        callback (Coroutine): The coroutine to run after the button is pressed.
+    Parameters
+    ----------
+    style: :class:`ButtonStyle`
+        The style of button to create
 
+    label: :class:`str`
+        The label of the button
+
+    custom_id: Optional[:class:`str`]
+        The custom id to set for the button
+
+    disabled: Optional[:class:`bool`]
+        Whether or not the button should be marked as disabled
+
+    emoji: Optional[:class:`.Emoji`]
+        The emoji to set for the button
+
+    url: Optional[:class:`str`]
+        The url to use for url styled buttons
+
+    Attributes
+    ----------
+    style: :class:`.ButtonStyle`
+        The style of the button
+
+    label: :class:`str`
+        The label of the button
+
+    custom_id: :class:`str`
+        The custom id of the button
+
+    disabled: :class:`bool`
+        If the button is disabled or not
+
+    emoji: Optional[Union[:class:`str`, :class:`.Emoji`]]
+        The emoji of the button
+
+    url Optional[:class:`str`]
+        The url of the button
     """
 
     def __init__(self, style: ButtonStyle, label: str, **kwargs) -> None:
-        """
-        Parameters:
-            style (ComponentStyle): The style to use.
-            label (str): The label to use.
-            callback (Coroutine): The callback to use.
-
-        """
         self.style: ButtonStyle = style
         self.label: str = label
 
@@ -74,10 +109,30 @@ class Button(Component):
         self.emoji: Optional[Emoji] = kwargs.get("emoji")
         self.url: Optional[str] = kwargs.get("url")
 
-    async def callback(self, interaction: Interaction, button: Component) -> None:
+    async def callback(self, interaction: Interaction, button: Button) -> None:
+        """The button's callback.
+
+        This is ran everytime the button is pressed. By default this does nothing and
+        requires the user to override this method in order for an action to be done.
+
+        Parameters
+        ----------
+        interaction: :class:`.Interaction`
+            The interaction which "activated" the button
+
+        button: :class:`.Button`
+            The button which was pressed
+        """
         raise NotImplementedError
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
+        """Creates a dict from the button.
+
+        Returns
+        -------
+        :class:`dict`
+            The dict representing the button.
+        """
         payload = {
             "style": int(self.style),
             "type": int(ComponentType.BUTTON),
@@ -85,9 +140,17 @@ class Button(Component):
             "label": self.label,
         }
 
+        emoji = None
+        if self.emoji is not None:
+            if isinstance(self.emoji, Emoji):
+                emoji = {"name": self.emoji.name, "id": self.emoji.id}
+
+            elif isinstance(self.emoji, str):
+                emoji = {"name": self.emoji}
+
         return update_payload(
             payload,
-            emoji=self.emoji,
+            emoji=emoji,
             custom_id=self.custom_id,
             url=self.url,
             disabled=self.disabled,
@@ -95,28 +158,44 @@ class Button(Component):
 
 
 class Option:
-    """
-    Represents an option for a select menu.
+    """Represents an option for a select menu.
 
-    Attributes:
-        label (str): The label of the option.
-        value (str): The value of the option.
-        description (Optional[str]): The description.
-        emoji (Optional[Union[str, Emoji]]): The emoji for the option.
-        default (bool): Whether or not the option is the default option.
+    Parameters
+    ----------
+    label: :class:`str`
+        The label of the option
 
+    value: :class:`str`
+        The value of the option
+
+    description: Optional[:class:`str`]
+        The description for the option
+
+    emoji: Optional[Union[:class:`str`, :class:`.Emoji`]]
+        The emoji for this option
+
+    default: Optional[:class:`bool`]
+        Whether or not this option should be selected by default
+
+    Attributes
+    ----------
+    label: :class:`str`
+        The label of the option
+
+    value: :class:`str`
+        The value of the option
+
+    description: Optional[:class:`str`]
+        The description of the option
+
+    emoji: Optional[Union[:class:`str`, :class:`.Emoji`]]
+        The emoji of the option
+
+    default: :class:`bool`
+        Whether or not the option is the default
     """
 
     def __init__(self, label: str, value: str, **kwargs) -> None:
-        """
-        Parameters:
-            label (str): The label of the option.
-            value (str): The value of the option.
-            description (Optional[str]): The description.
-            emoji (Optional[Union[str, Emoji]]): The emoji for the option.
-            default (bool): Whether or not the option is the default option.
-
-        """
         self.label = label
         self.value = value
 
@@ -124,9 +203,15 @@ class Option:
         self.emoji: Optional[Union[str, Emoji]] = kwargs.get("emoji")
         self.default: bool = kwargs.get("default", False)
 
-    def to_dict(self) -> Dict:
-        emoji = None
+    def to_dict(self) -> dict:
+        """Creates a dict from the option.
 
+        Returns
+        -------
+        :class:`dict`
+            The dict representing the option.
+        """
+        emoji = None
         if self.emoji is not None:
             if isinstance(self.emoji, Emoji):
                 emoji = {"name": self.emoji.name, "id": self.emoji.id}
@@ -145,17 +230,48 @@ class Option:
 
 
 class SelectMenu(Component):
-    """
-    Represents a discord select menu.
+    """Represents a select menu.
 
-    Attributes:
-        custom_id (str): The custom id of the select menu.
-        placeholder (Optional[str]): The placeholder of the select menu.
-        min_values (int): The minimum amount of values that can be choosen.
-        max_values (int): The maximum amount of values that can be choosen.
-        disabled (bool): Whether or not the select menu is disabled.
-        values (List[str]): The list of values choosen after an interaction happens.
+    Parameters
+    ----------
+    options: List[:class:`.Option`]
+        A list of options for the select menu
 
+    custom_id: Optional[:class:`str`]
+        The custom id to give the select menu
+
+    placeholder: Optional[:class:`str`]
+        The placeholder of the select menu
+
+    min_values: Optional[:class:`int`]
+        The minimum values required to select
+
+    max_values: Optional[:class:`int`]
+        The max amount of values that can be selected
+
+    disabled: Optional[:class:`bool`]
+        Whether or not the select menu should be marked as disabled
+
+    Attributes
+    ----------
+    options: List[:class:`.Option`]
+        A list of options connected to the select menu
+
+    custom_id: :class:`str`
+        The custom id of the select menu
+
+    min_values: :class:`int`
+        The minimum values needed to be selected for the select menu
+
+    max_values: :class:`int`
+        The max amount of values that can be selected
+
+    disabled: :class:`bool`
+        Whether or not the select menu is disabled
+
+    values: List[:class:`str`]
+        A list of values selected. This is only set if the select menu
+        was used beforehand
     """
 
     def __init__(self, options: List[Option], **kwargs) -> None:
@@ -170,9 +286,30 @@ class SelectMenu(Component):
         self.values: List[str] = []
 
     async def callback(self, interaction: Interaction, menu: SelectMenu) -> None:
+        """The select menu's callback.
+
+        This is ran everytime the select menu is used. By default this does nothing and
+        requires the user to override this method in order for an action to be done.
+
+        Parameters
+        ----------
+        interaction: :class:`.Interaction`
+            The interaction which "activated" the select menu
+
+        menu: :class:`.SelectMenu`
+            The select menu which was used
+        """
         raise NotImplementedError
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
+        """Creates a dict from the select menu.
+
+        Returns
+        -------
+        :class:`dict`
+            The dict representing the select menu.
+        """
+
         return update_payload(
             {},
             type=int(ComponentType.SELECTMENU),
@@ -188,9 +325,7 @@ class SelectMenu(Component):
 class ActionRowMeta(type):
     __components__: List[Component]
 
-    def __new__(
-        cls: Type[ActionRowMeta], name: str, bases: Tuple[Type, ...], attrs: Dict
-    ) -> ActionRowMeta:
+    def __new__(cls: Type[ActionRowMeta], name: str, bases: Tuple[Type, ...], attrs: Dict) -> ActionRowMeta:
         components: List[Component] = []
 
         for value in attrs.copy().values():
@@ -202,61 +337,82 @@ class ActionRowMeta(type):
 
 
 class ActionRow(Component, metaclass=ActionRowMeta):
+    """Represents a message action row.
+
+    Parameters
+    ----------
+    components: Optional[List[:class:`.Component`]]
+        A list of components connected to the action row
+    """
+
     __components__: List[Component]
 
-    """
-    Represents a message action row.
-
-    Attributes:
-        components (List[Component]): A list of components connected to the action row.
-        callbacks (List[Callable]): A list of callbacks for each child component of the row.
-
-    """
-
     def __init__(self, components: Optional[List[Component]] = None) -> None:
-        """
-        Parameters:
-            components (List[Component]): The list of components connected to the action row.
-
-        """
-
         if components is not None:
             self.__components__.extend(components)
 
     @property
     def components(self) -> List[Component]:
+        """The components which are connected to the action row."""
         return self.__components__
 
     def add(self, component: Component) -> None:
-        """
-        Add a component to the action row.
+        """Add a component to the action row.
 
-        Parameters:
-            component (Component): The component to add.
-
+        Parameters
+        ----------
+        component: :class:`Component`
+            The component to add
         """
         self.components.append(component)
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
+        """Creates a dict from the action row.
+
+        Returns
+        -------
+        :class:`dict`
+            The dict representing the action row.
+        """
         return {
             "type": int(ComponentType.ACTIONROW),
             "components": [c.to_dict() for c in self.components],
         }
 
+    def _cache_components(self, state: State) -> None:
+        for component in self.components:
+            state._components[component.custom_id] = (component.callback, component)
+
 
 def button(style: ButtonStyle, label: str, **kwargs) -> Callable[..., Button]:
-    """
-    A decorator used to create buttons.
+    """A decorator used to create buttons.
+
     This should be decorating the buttons callback.
 
-    Parameters:
-        style (ComponentStyle): The style of the button.
-        label (str): The label of the button.
-        **kwargs: Extra options to give to the button.
+    Parameters
+    ----------
+    style: :class:`.ButtonStyle`
+        The styling to use for the button
 
-    Returns:
-        The created Button instance.
+    label: :class:`str`
+        The label of the button
 
+    custom_id: Optional[:class:`str`]
+        The custom id to set for the button
+
+    disabled: Optional[:class:`bool`]
+        Whether or not the button should be marked as disabled
+
+    emoji: Optional[:class:`.Emoji`]
+        The emoji to set for the button
+
+    url: Optional[:class:`str`]
+        The url to use for url styled buttons
+
+    Returns
+    -------
+    :class:`.Button`
+        The created button instance
     """
 
     def inner(func: Coroutine) -> Button:

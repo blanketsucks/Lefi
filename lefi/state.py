@@ -298,9 +298,7 @@ class State:
         data: :class:`dict`
             The raw data received from the gateway
         """
-        interaction: Interaction = Interaction(
-            self, data, type=InteractionType(data["type"])
-        )
+        interaction: Interaction = Interaction(self, data, type=InteractionType(data["type"]))
 
         if interaction.type is InteractionType.COMPONENT:
             if component := self._components.get(data["data"]["custom_id"]):
@@ -679,15 +677,11 @@ class State:
             previous = guild._threads.copy()
             guild._threads.clear()
         else:
-            previous = {
-                t.id: t for t in guild._threads.values() if t.parent_id in channel_ids
-            }
+            previous = {t.id: t for t in guild._threads.values() if t.parent_id in channel_ids}
             for thread_id in previous:
                 del guild._threads[thread_id]
 
-        threads = {
-            int(d["id"]): Thread(self, guild, d) for d in data.get("threads", [])
-        }
+        threads = {int(d["id"]): Thread(self, guild, d) for d in data.get("threads", [])}
         guild._threads.update(threads)
 
         for member in data.get("members", []):
@@ -722,9 +716,7 @@ class State:
         if not thread:
             return
 
-        new: List[ThreadMember] = [
-            ThreadMember(self, m, thread) for m in data.get("added_members", [])
-        ]
+        new: List[ThreadMember] = [ThreadMember(self, m, thread) for m in data.get("added_members", [])]
         removed: List[int] = [int(id) for id in data.get("removed_member_ids", [])]
 
         for member in new:
@@ -1153,9 +1145,7 @@ class State:
 
     def get_channel(
         self, channel_id: int
-    ) -> Optional[
-        Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]
-    ]:
+    ) -> Optional[Union[TextChannel, DMChannel, VoiceChannel, CategoryChannel, Channel]]:
         """Grabs a :class:`.Channel` from the internal cache.
 
         Parameters
@@ -1222,9 +1212,7 @@ class State:
         """
         return Message(self, data, channel)  # type: ignore
 
-    def create_channel(
-        self, data: dict, *args: Any
-    ) -> Union[TextChannel, VoiceChannel, CategoryChannel, Channel]:
+    def create_channel(self, data: dict, *args: Any) -> Union[TextChannel, VoiceChannel, CategoryChannel, Channel]:
         """Creates a :class:`.Channel` instance.
 
         If you're wondering why this is here. Its to use as a syntatic sugar
@@ -1268,10 +1256,7 @@ class State:
         if "channels" not in data:
             return guild
 
-        channels = {
-            int(payload["id"]): self.create_channel(payload, guild)
-            for payload in data["channels"]
-        }
+        channels = {int(payload["id"]): self.create_channel(payload, guild) for payload in data["channels"]}
 
         for id, channel in channels.items():
             self._channels[id] = channel
@@ -1325,9 +1310,7 @@ class State:
         if "roles" not in data:
             return guild
 
-        roles = {
-            int(payload["id"]): Role(self, payload, guild) for payload in data["roles"]
-        }
+        roles = {int(payload["id"]): Role(self, payload, guild) for payload in data["roles"]}
         guild._roles = roles
         return guild
 
@@ -1350,10 +1333,7 @@ class State:
         if "emojis" not in data:
             return guild
 
-        emojis = {
-            int(payload["id"]): Emoji(self, payload, guild)
-            for payload in data["emojis"]
-        }
+        emojis = {int(payload["id"]): Emoji(self, payload, guild) for payload in data["emojis"]}
 
         for id, emoji in emojis.items():
             self._emojis[id] = emoji
@@ -1377,10 +1357,7 @@ class State:
         :class:`.Guild`
             The guild which was passed in.
         """
-        voice_states = {
-            int(payload["user_id"]): VoiceState(self, payload)
-            for payload in data["voice_states"]
-        }
+        voice_states = {int(payload["user_id"]): VoiceState(self, payload) for payload in data["voice_states"]}
 
         guild._voice_states = voice_states
         return guild
@@ -1429,9 +1406,7 @@ class State:
         if "permission_overwrites" not in channel._data:
             return
 
-        overwrites = [
-            Overwrite(data) for data in channel._data["permission_overwrites"]
-        ]
+        overwrites = [Overwrite(data) for data in channel._data["permission_overwrites"]]
         ows: Dict[Union[Member, Role], Overwrite] = {}
 
         for overwrite in overwrites:

@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 import inspect
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
 from .command import Command
+from .converters import _CONVERTERS
+
+if TYPE_CHECKING:
+    from .context import Context
 
 __all__ = ("StringParser",)
 
@@ -20,9 +24,7 @@ class StringParser:
         prefix (Union[Tuple[str], str]): The prefix of the command.
     """
 
-    def __init__(
-        self, content: str, prefix: Union[str, Tuple[str, ...], List[str]]
-    ) -> None:
+    def __init__(self, content: str, prefix: Union[str, Tuple[str, ...], List[str]]) -> None:
         """
         Initialize a StringParser.
 
@@ -35,6 +37,7 @@ class StringParser:
         self.arguments: List[str] = []
         self.content = content
         self.prefix = prefix
+        self.context: Context
 
     def find_command(self) -> Optional[str]:
         """
@@ -98,23 +101,19 @@ class StringParser:
                     continue
 
                 if parameter.kind is parameter.POSITIONAL_OR_KEYWORD:
-                    arguments.append(
-                        await self.convert(parameter, self.arguments[index - 1])
-                    )
+                    arguments.append(await self.convert(parameter, self.arguments[index - 1]))
 
                 elif parameter.kind is parameter.KEYWORD_ONLY:
-                    keyword_arguments[argument] = await self.convert(
-                        parameter, " ".join(self.arguments[index - 1 :])
-                    )
+                    keyword_arguments[argument] = await self.convert(parameter, " ".join(self.arguments[index - 1 :]))
 
         return keyword_arguments, arguments
 
-    async def convert(
-        self, parameter: inspect.Parameter, data: Union[List[str], str]
-    ) -> Any:
-        if parameter.annotation is not parameter.empty and callable(
-            parameter.annotation
-        ):
+    async def convert(self, parameter: inspect.Parameter, data: str) -> Any:
+        name = parameter.annotation.removeprefix("lefi.")
+        if converter := _CONVERTERS.get(name):
+            return await converter.convert(self.context, data)
+
+        if parameter.annotation is not parameter.empty and callable(parameter.annotation):
             return parameter.annotation(data)
 
         return str(data)

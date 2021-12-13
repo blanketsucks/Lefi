@@ -5,14 +5,17 @@ import time
 from typing import TYPE_CHECKING, Callable, Optional, Protocol, BinaryIO, Union
 import wave
 
+from lefi.voice.protocol import RTPPacket
+
 from . import _opus
 
 if TYPE_CHECKING:
-    from .protocol import VoiceProtocol, RTPPacket
+    from .protocol import VoiceProtocol
     from .wsclient import UserVoiceData
 
 __all__ = (
     "AudioDestination",
+    "BaseAudioDestination",
     "OpusAudioDestination",
     "WaveAudioDestination",
     "AudioListener",
@@ -27,21 +30,32 @@ class AudioDestination(Protocol):
         ...
 
 
-class OpusAudioDestination(AudioDestination):
+class BaseAudioDestination(AudioDestination):
     def __init__(self, stream: Union[BinaryIO, str]) -> None:
-        self.decoder = _opus.OpusDecoder()
-
         if isinstance(stream, str):
             self.stream = open(stream, "wb")
         else:
             self.stream = stream
 
     async def write(self, packet: RTPPacket) -> None:
-        decoded = self.decoder.decode(packet.data)
+        await asyncio.to_thread(self.stream.write, packet.payload)
+
+    def close(self) -> None:
+        self.stream.close()
+
+
+class OpusAudioDestination(BaseAudioDestination):
+    def __init__(self, stream: Union[BinaryIO, str]) -> None:
+        self.decoder = _opus.OpusDecoder()
+        super().__init__(stream)
+
+    async def write(self, packet: RTPPacket) -> None:
+        decoded = self.decoder.decode(packet.payload)
         await asyncio.to_thread(self.stream.write, decoded)
 
     def close(self) -> None:
         self.stream.close()
+        self.decoder.destroy()
 
 
 class WaveAudioDestination(AudioDestination):
@@ -53,7 +67,7 @@ class WaveAudioDestination(AudioDestination):
         self.stream.setframerate(_opus.SAMPLE_RATE)
 
     async def write(self, packet: RTPPacket) -> None:
-        await asyncio.to_thread(self.stream.writeframes, packet.data)
+        await asyncio.to_thread(self.stream.writeframes, packet.payload)
 
     def close(self) -> None:
         self.stream.close()
@@ -66,7 +80,7 @@ class AudioListener:
         self.queue = asyncio.Queue["RTPPacket"]()
         self.loop = protocol._loop
 
-        self._waiter: Optional[asyncio.Task[AudioDestination]] = None
+        self._listening = asyncio.Event()
         self._filter = lambda user: True
 
     def feed(self, packet: RTPPacket) -> None:
@@ -80,9 +94,9 @@ class AudioListener:
     def filter(self, value: Callable[[UserVoiceData], bool]):
         self._filter = value
 
-    async def _listen(
-        self, duration: int, *, timeout: Optional[float]
-    ) -> AudioDestination:
+    async def listen(self, duration: int, *, timeout: Optional[float]) -> AudioDestination:
+        self._listening.clear()
+
         last_spoke = 0.0
         end = time.time() + duration
 
@@ -100,13 +114,9 @@ class AudioListener:
             await self.destination.write(data)
 
         self.destination.close()
+        self._listening.set()
+
         return self.destination
 
-    def listen(
-        self, duration: int, *, timeout: Optional[float] = None
-    ) -> AudioListener:
-        self._waiter = self.loop.create_task(self._listen(duration, timeout=timeout))
-        return self
-
     def is_listening(self) -> bool:
-        return self._waiter is not None and self._waiter.done()
+        return not self._listening.is_set()

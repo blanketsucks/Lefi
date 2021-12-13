@@ -1,66 +1,88 @@
 Internal API-Reference
 ======================
+The interal API-Reference of the wrapper. This shows all internal methods and classes used
+throughout the wrapper.
 
-REST
-----
+.. danger::
 
-Route
-~~~~~
-.. autoclass:: lefi.http.Route
+   All methods and classes shown here are used internally, users shouldn't be touching
+   these and doing so can break the wrapper.
+
+
+HTTP Internals
+--------------
+.. currentmodule:: lefi.http
+
+Endpoint Routes
+~~~~~~~~~~~~~~~
+.. autoclass:: Route
     :members:
 
 HTTPClient
 ~~~~~~~~~~
-.. autoclass:: lefi.http.HTTPClient
+.. autoclass:: HTTPClient
     :members:
 
-Ratelimiter
-~~~~~~~~~~~
+HTTP Ratelimiter
+~~~~~~~~~~~~~~~~
+.. note::
+
+   This ratelimiter uses semaphores set to X-Ratelimit-Limit per bucket. Thus allowing for
+   concurrent requests.
+
 .. autoclass:: lefi.ratelimiter.Ratelimiter
     :members:
 
-Gateway
--------
+Gateway Internals
+-----------------
+.. currentmodule:: lefi.ws
 
-Websocket clients
-~~~~~~~~~~~~~~~~~
-
-Base websocket client
-^^^^^^^^^^^^^^^^^^^^^
-.. autoclass:: lefi.ws.basews.BaseWebsocketClient
+Max Concurrency Ratelimiter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autoclass:: lefi.ws.ratelimiter.Ratelimiter
     :members:
 
-Sharded websocket client
-^^^^^^^^^^^^^^^^^^^^^^^^
-.. autoclass:: lefi.ws.shard.Shard
+BaseWebsocketClient
+~~~~~~~~~~~~~~~~~~~
+.. autoclass:: BaseWebsocketClient
     :members:
-    :inherited-members:
 
-Websocket client
-^^^^^^^^^^^^^^^^
-.. autoclass:: lefi.ws.wsclient.WebSocketClient
-    :members:
-    :inherited-members:
-
-Cache
-~~~~~
-.. autoclass:: lefi.state.Cache
-    :members:
+WebSocketClient
+~~~~~~~~~~~~~~~
+.. autoclass:: WebSocketClient
     :show-inheritance:
     :inherited-members:
-
-State
-~~~~~
-.. autoclass:: lefi.state.State
     :members:
 
-Max concurreny Ratelimiter
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autoclass:: lefi.ws.ratelimiter.Ratelimiter
-   :members:
-
-OpCodes
-~~~~~~~
-.. autoclass:: lefi.ws.opcodes.OpCodes
-    :members:
+Sharded Websocket
+~~~~~~~~~~~~~~~~~
+.. autoclass:: Shard
+    :show-inheritance:
     :inherited-members:
+    :members:
+
+State Internals
+---------------
+.. currentmodule:: lefi.state
+
+State Handler
+~~~~~~~~~~~~~
+.. autoclass:: State
+    :members:
+
+Object Cache
+~~~~~~~~~~~~
+.. autoclass:: Cache
+    :exclude-members: __init__, __new__
+    :inherited-members:
+    :members:
+
+Operation Codes
+---------------
+
+Websocket OpCodes
+~~~~~~~~~~~~~~~~~
+.. autoclass:: lefi.ws.OpCodes
+    :show-inheritance:
+    :inherited-members:
+    :members:

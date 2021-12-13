@@ -5,9 +5,7 @@ from typing import Callable, Iterable, List, Optional, TypeVar, Union
 T = TypeVar("T")
 
 
-def find(
-    iterable: Iterable[T], check: Callable[[T], bool]
-) -> Optional[Union[T, List[T]]]:
+def find(iterable: Iterable[T], check: Callable[[T], bool]) -> Optional[Union[T, List[T]]]:
     """
     Finds the item in the iterable that matches the check.
 

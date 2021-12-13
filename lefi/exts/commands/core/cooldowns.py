@@ -98,9 +98,7 @@ class Cooldown:
                 self.delete_cooldown(message)
                 return True
             else:
-                cooldown.retry_after = (
-                    cooldown.reset_time - datetime.datetime.now()
-                ).total_seconds()
+                cooldown.retry_after = (cooldown.reset_time - datetime.datetime.now()).total_seconds()
                 return False
 
         return True
@@ -115,16 +113,12 @@ class Cooldown:
         cooldown_id = self.get_cooldown_id(message)
 
         if not isinstance(cooldown_id, tuple):
-            self.cooldowns_cache[cooldown_id] = CooldownData(
-                datetime.timedelta(seconds=self.time), None, self.amount
-            )
+            self.cooldowns_cache[cooldown_id] = CooldownData(datetime.timedelta(seconds=self.time), None, self.amount)
             return
 
         guild_id, member_id = cooldown_id
         self.members_cooldowns_cache[guild_id] = {
-            member_id: CooldownData(
-                datetime.timedelta(seconds=self.time), None, self.amount
-            )
+            member_id: CooldownData(datetime.timedelta(seconds=self.time), None, self.amount)
         }
 
     def get_cooldown_reset(self, message: Message) -> Optional[CooldownData]:

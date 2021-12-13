@@ -56,9 +56,7 @@ class FlagMeta(type):
         members: Dict[str, FlagValue] = {}
 
         for attr, value in attrs.copy().items():
-            is_method = callable(value) or isinstance(
-                value, (staticmethod, classmethod)
-            )
+            is_method = callable(value) or isinstance(value, (staticmethod, classmethod))
             if not attr.startswith(("__", "_")) and not is_method:
                 members[attr] = FlagValue(attr, value)  # type: ignore
                 del attrs[attr]

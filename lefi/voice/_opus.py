@@ -306,9 +306,7 @@ class OpusDecoder:
 
     def get_last_packet_duration(self) -> int:
         duration = ctypes.c_int()
-        libopus.opus_decoder_ctl(
-            self._struct, CTL.LAST_PACKET_DURATION, ctypes.byref(duration)
-        )
+        libopus.opus_decoder_ctl(self._struct, CTL.LAST_PACKET_DURATION, ctypes.byref(duration))
 
         return duration.value
 
@@ -316,17 +314,13 @@ class OpusDecoder:
         libopus.opus_decoder_ctl(self._struct, CTL.SET_GAIN, value)
         return value
 
-    def decode(self, data: Optional[bytes], fec: bool = False) -> bytes:
-        size = len(data) if data else 0
+    def decode(self, data: bytes, fec: bool = False) -> bytes:
+        size = len(data)
 
-        if data is None:
-            frame_size = self.get_last_packet_duration() or FRAME_SIZE
-            channels = CHANNELS
-        else:
-            frames = self.get_packet_nb_frames(data)
-            channels = self.get_packet_nb_channels(data)
-            samples_per_frame = self.get_packet_samples_per_frame(data)
-            frame_size = frames * samples_per_frame
+        frames = self.get_packet_nb_frames(data)
+        channels = self.get_packet_nb_channels(data)
+        samples_per_frame = self.get_packet_samples_per_frame(data)
+        frame_size = frames * samples_per_frame
 
         buffer = (ctypes.c_int16 * (frame_size * channels))()
         pointer = ctypes.cast(buffer, c_int16_ptr)

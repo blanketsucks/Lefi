@@ -152,9 +152,7 @@ class HTTPClient:
         except aiohttp.ContentTypeError:
             return await resp.text()
 
-    async def _create_session(
-        self, loop: asyncio.AbstractEventLoop = None
-    ) -> aiohttp.ClientSession:
+    async def _create_session(self, loop: asyncio.AbstractEventLoop = None) -> aiohttp.ClientSession:
         """A method which creates the internal :class:`aiohttp.ClientSession`
 
         This method is used to create the internal :class:`aiohttp.ClientSession` that
@@ -224,9 +222,7 @@ class HTTPClient:
 
             kwargs["data"] = formdata
 
-        async with Ratelimiter(
-            self, route, method, **kwargs, headers=headers
-        ) as handler:
+        async with Ratelimiter(self, route, method, **kwargs, headers=headers) as handler:
             return await handler.request()
 
     async def get_bot_gateway(self) -> dict:
@@ -328,7 +324,7 @@ class HTTPClient:
         """
         return {
             "name": f"file-{index}" if index else "file",
-            "value": file,
+            "value": file.fp,
             "filename": file.filename,
             "content_type": "application/octect-stream",
         }
@@ -402,9 +398,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing the fetched channel.
         """
-        return await self.request(
-            "GET", Route(f"/channels/{channel_id}", channel_id=channel_id)
-        )
+        return await self.request("GET", Route(f"/channels/{channel_id}", channel_id=channel_id))
 
     async def edit_text_channel(
         self,
@@ -589,9 +583,7 @@ class HTTPClient:
         :exc:`.Forbidden`
             Your client doesn't have permissions to delete this channel.
         """
-        return await self.request(
-            "DELETE", Route(f"/channels/{channel_id}", channel_id=channel_id)
-        )
+        return await self.request("DELETE", Route(f"/channels/{channel_id}", channel_id=channel_id))
 
     async def get_channel_messages(
         self,
@@ -680,9 +672,7 @@ class HTTPClient:
         """
         return await self.request(
             "GET",
-            Route(
-                f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id
-            ),
+            Route(f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id),
         )
 
     async def send_message(
@@ -800,9 +790,7 @@ class HTTPClient:
             ),
         )
 
-    async def create_reaction(
-        self, channel_id: int, message_id: int, emoji: str
-    ) -> None:
+    async def create_reaction(self, channel_id: int, message_id: int, emoji: str) -> None:
         """A method which makes an API call to add a reaction.
 
         This method makes an API call to add a reaction to the message specified.
@@ -936,9 +924,7 @@ class HTTPClient:
             params=params,
         )
 
-    async def delete_all_reactions(
-        self, channel_id: int, message_id: int, emoji: str
-    ) -> None:
+    async def delete_all_reactions(self, channel_id: int, message_id: int, emoji: str) -> None:
         """A method which makes an API call to delete all reactions of a message.
 
         This method makes an API call to delete all the reactions of the specified message.
@@ -1034,14 +1020,12 @@ class HTTPClient:
             content=content,
             embeds=embeds,
             allowed_mentions=allowed_mentions,
-            attachments=attachments,
             components=components,
+            attachments=attachments,
         )
         return await self.request(
             "PATCH",
-            Route(
-                f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id
-            ),
+            Route(f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id),
             json=payload,
         )
 
@@ -1071,14 +1055,10 @@ class HTTPClient:
         """
         return await self.request(
             "DELETE",
-            Route(
-                f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id
-            ),
+            Route(f"/channels/{channel_id}/messages/{message_id}", channel_id=channel_id),
         )
 
-    async def bulk_delete_messages(
-        self, channel_id: int, message_ids: List[int]
-    ) -> None:
+    async def bulk_delete_messages(self, channel_id: int, message_ids: List[int]) -> None:
         """A method which makes an API call to bulk delete messages
 
         A method which makes an API call to bulk delete the list of specified messages.
@@ -1106,9 +1086,7 @@ class HTTPClient:
         payload = {"messages": message_ids}
         return await self.request(
             "POST",
-            Route(
-                f"/channels/{channel_id}/messages/bulk-delete", channel_id=channel_id
-            ),
+            Route(f"/channels/{channel_id}/messages/bulk-delete", channel_id=channel_id),
             json=payload,
         )
 
@@ -1163,9 +1141,7 @@ class HTTPClient:
             json=payload,
         )
 
-    async def delete_channel_permissions(
-        self, channel_id: int, overwrite_id: int
-    ) -> None:
+    async def delete_channel_permissions(self, channel_id: int, overwrite_id: int) -> None:
         """A method which makes an API call to delete an overwrite from the channel.
 
         This method calls the API to delete the specified overwrite from the channel.
@@ -1217,9 +1193,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts that represents invites.
         """
-        return await self.request(
-            "GET", Route(f"/channels/{channel_id}/invites", channel_id=channel_id)
-        )
+        return await self.request("GET", Route(f"/channels/{channel_id}/invites", channel_id=channel_id))
 
     async def create_channel_invite(
         self,
@@ -1296,9 +1270,7 @@ class HTTPClient:
             json=payload,
         )
 
-    async def follow_news_channel(
-        self, channel_id: int, webhook_channel_id: int
-    ) -> dict:
+    async def follow_news_channel(self, channel_id: int, webhook_channel_id: int) -> dict:
         """A method which makes an API call to follow a news channel.
 
         This method makes an API call which makes the client follow the
@@ -1353,9 +1325,7 @@ class HTTPClient:
         :exc:`.HTTPException`
             Something went wrong while making the request.
         """
-        return await self.request(
-            "POST", Route(f"/channels/{channel_id}/typing", channel_id=channel_id)
-        )
+        return await self.request("POST", Route(f"/channels/{channel_id}/typing", channel_id=channel_id))
 
     async def get_pinned_messages(self, channel_id: int) -> List[dict]:
         """A method which makes an API call to get a channel's pinned messages.
@@ -1377,9 +1347,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts representing message objects.
         """
-        return await self.request(
-            "GET", Route(f"/channels/{channel_id}/pins", channel_id=channel_id)
-        )
+        return await self.request("GET", Route(f"/channels/{channel_id}/pins", channel_id=channel_id))
 
     async def pin_message(self, channel_id: int, message_id: int) -> None:
         """A method which makes an API call to ping a message.
@@ -1482,9 +1450,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing the newly created thread channel.
         """
-        payload = update_payload(
-            {}, name=name, auto_archive_duration=auto_archive_duration
-        )
+        payload = update_payload({}, name=name, auto_archive_duration=auto_archive_duration)
         return await self.request(
             "POST",
             Route(
@@ -1719,9 +1685,7 @@ class HTTPClient:
         params = update_payload({}, before=before, limit=limit)
         return await self.request(
             "GET",
-            Route(
-                f"/channels/{channel_id}/threads/archived/public", channel_id=channel_id
-            ),
+            Route(f"/channels/{channel_id}/threads/archived/public", channel_id=channel_id),
             params=params,
         )
 
@@ -1837,9 +1801,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts representing emojis.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/emojis", guild_id=guild_id)
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/emojis", guild_id=guild_id))
 
     async def get_guild_emoji(self, guild_id: int, emoji_id: int) -> dict:
         """A method which gets an emoji from a guild.
@@ -1864,9 +1826,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing the emoji.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id)
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id))
 
     async def create_guild_emoji(
         self,
@@ -1995,9 +1955,7 @@ class HTTPClient:
         :exc:`.Forbidden`
             Your client doesn't have permissions to delete this emoji.
         """
-        return await self.request(
-            "DELETE", Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id)
-        )
+        return await self.request("DELETE", Route(f"/guilds/{guild_id}/emojis/{emoji_id}", guild_id=guild_id))
 
     async def create_guild(
         self,
@@ -2121,9 +2079,7 @@ class HTTPClient:
             A dict representing the guild object.
         """
         params = {"with_counts": with_counts}
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}", guild_id=guild_id), params=params
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}", guild_id=guild_id), params=params)
 
     async def get_guild_preview(self, guild_id: int) -> dict:
         """A method which fetches the guild's preview.
@@ -2145,9 +2101,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing the guild's preview
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/preview", guild_id=guild_id)
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/preview", guild_id=guild_id))
 
     async def modify_guild(
         self,
@@ -2258,9 +2212,7 @@ class HTTPClient:
         if "banner" in payload:
             payload["banner"] = bytes_to_data_uri(payload["banner"])
 
-        return await self.request(
-            "PATCH", Route(f"/guilds/{guild_id}", guild_id=guild_id), json=payload
-        )
+        return await self.request("PATCH", Route(f"/guilds/{guild_id}", guild_id=guild_id), json=payload)
 
     async def delete_guild(self, guild_id: int) -> None:
         """A method which deletes a guild.
@@ -2301,9 +2253,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts representing channels.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/channels", guild_id=guild_id)
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/channels", guild_id=guild_id))
 
     async def create_guild_channel(
         self,
@@ -2409,9 +2359,7 @@ class HTTPClient:
             A dict which contains a list of thread channels and a list
             of thread member objects.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/threads/active", guild_id=guild_id)
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/threads/active", guild_id=guild_id))
 
     async def get_guild_member(self, guild_id: int, member_id: int) -> Dict[str, Any]:
         """A method which fetches a member from a guild.
@@ -2439,9 +2387,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing the member object.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/members/{member_id}", guild_id=guild_id)
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/members/{member_id}", guild_id=guild_id))
 
     async def get_guild_audit_log(
         self,
@@ -2498,9 +2444,7 @@ class HTTPClient:
             params=params,
         )
 
-    async def list_guild_members(
-        self, guild_id: int, *, limit: int = 1, after: Optional[int] = None
-    ) -> List[dict]:
+    async def list_guild_members(self, guild_id: int, *, limit: int = 1, after: Optional[int] = None) -> List[dict]:
         """This method fetches a list of members.
 
         This method makes an API call to get a list of the guild's members.
@@ -2533,9 +2477,7 @@ class HTTPClient:
             params=params,
         )
 
-    async def search_guild_members(
-        self, guild_id: int, *, query: str, limit: int = 1
-    ) -> List[dict]:
+    async def search_guild_members(self, guild_id: int, *, query: str, limit: int = 1) -> List[dict]:
         """This method searches the guild's members.
 
         This method makes an API call to search a guild's members
@@ -2621,9 +2563,7 @@ class HTTPClient:
             A dict representing the member if they aren't already
             in the guild.
         """
-        payload = update_payload(
-            {}, access_token=access_token, nick=nick, roles=roles, mute=mute, deaf=deaf
-        )
+        payload = update_payload({}, access_token=access_token, nick=nick, roles=roles, mute=mute, deaf=deaf)
         return await self.request(
             "PUT",
             Route(f"/guilds/{guild_id}/members/{member_id}", guild_id=guild_id),
@@ -2682,18 +2622,14 @@ class HTTPClient:
         :class:`dict`
             A dict representing the member after modifying.
         """
-        payload = update_payload(
-            {}, nick=nick, roles=roles, mute=mute, deaf=deaf, channel_id=channel_id
-        )
+        payload = update_payload({}, nick=nick, roles=roles, mute=mute, deaf=deaf, channel_id=channel_id)
         return await self.request(
             "PATCH",
             Route(f"/guilds/{guild_id}/members/{member_id}", guild_id=guild_id),
             json=payload,
         )
 
-    async def edit_current_member(
-        self, guild_id: int, *, nick: Optional[str] = None
-    ) -> None:
+    async def edit_current_member(self, guild_id: int, *, nick: Optional[str] = None) -> None:
         """A method which edits your client's member.
 
         This method makes an API call to edit the member of the current logged in
@@ -2719,9 +2655,7 @@ class HTTPClient:
             json=payload,
         )
 
-    async def add_guild_member_role(
-        self, guild_id: int, member_id: int, role_id: int
-    ) -> None:
+    async def add_guild_member_role(self, guild_id: int, member_id: int, role_id: int) -> None:
         """This method adds a role to a member
 
         This method makes an API call to add a role to a member in a guild.
@@ -2756,9 +2690,7 @@ class HTTPClient:
             ),
         )
 
-    async def remove_guild_member_role(
-        self, guild_id: int, member_id: int, role_id: int
-    ) -> None:
+    async def remove_guild_member_role(self, guild_id: int, member_id: int, role_id: int) -> None:
         """A method which removes a members role.
 
         This method makes an API call to remove a role from a member in a guild.
@@ -2837,9 +2769,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts representing a ban object.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/bans"), guild_id=guild_id
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/bans"), guild_id=guild_id)
 
     async def get_guild_ban(self, guild_id: int, user_id: int) -> dict:
         """A method which fetches a user ban from the guild.
@@ -2867,13 +2797,9 @@ class HTTPClient:
         :class:`dict`
             A dict representing a ban object.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/bans/{user_id}"), guild_id=guild_id
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/bans/{user_id}"), guild_id=guild_id)
 
-    async def create_guild_ban(
-        self, guild_id: int, user_id: int, *, delete_message_days: int = 0
-    ) -> None:
+    async def create_guild_ban(self, guild_id: int, user_id: int, *, delete_message_days: int = 0) -> None:
         """This method bans a user from the guild.
 
         This method makes an API call to ban a user in a guild.
@@ -2922,9 +2848,7 @@ class HTTPClient:
         :exc:`.HTTPException`
             Something went wrong while making the request.
         """
-        return await self.request(
-            "DELETE", Route(f"/guilds/{guild_id}/bans/{user_id}"), guild_id=guild_id
-        )
+        return await self.request("DELETE", Route(f"/guilds/{guild_id}/bans/{user_id}"), guild_id=guild_id)
 
     async def get_guild_roles(self, guild_id: int) -> List[dict]:
         """A method which fetches a list of the guild's roles.
@@ -2946,9 +2870,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts representing a role.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/roles"), guild_id=guild_id
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/roles"), guild_id=guild_id)
 
     async def create_guild_role(
         self,
@@ -3022,9 +2944,7 @@ class HTTPClient:
         if "icon" in payload:
             payload["icon"] = bytes_to_data_uri(payload["icon"])
 
-        return await self.request(
-            "POST", Route(f"/guilds/{guild_id}/roles", guild_id=guild_id), json=payload
-        )
+        return await self.request("POST", Route(f"/guilds/{guild_id}/roles", guild_id=guild_id), json=payload)
 
     async def modify_guild_role(
         self,
@@ -3129,9 +3049,7 @@ class HTTPClient:
         :exc:`.NotFound`
             The role id was invalid or already deleted.
         """
-        return await self.request(
-            "DELETE", Route(f"/guilds/{guild_id}/roles/{role_id}"), guild_id=guild_id
-        )
+        return await self.request("DELETE", Route(f"/guilds/{guild_id}/roles/{role_id}"), guild_id=guild_id)
 
     async def get_guild_prune_count(
         self, guild_id: int, *, days: int = 7, include_roles: Optional[List[int]] = None
@@ -3168,9 +3086,7 @@ class HTTPClient:
         if include_roles is not None:
             payload["include_roles"] = ",".join(map(str, include_roles))
 
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/prune", guild_id=guild_id), json=payload
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/prune", guild_id=guild_id), json=payload)
 
     async def begin_guild_prune(
         self,
@@ -3216,9 +3132,7 @@ class HTTPClient:
         if include_roles is not None:
             payload["include_roles"] = ",".join(map(str, include_roles))
 
-        return await self.request(
-            "POST", Route(f"/guilds/{guild_id}/prune", guild_id=guild_id), json=payload
-        )
+        return await self.request("POST", Route(f"/guilds/{guild_id}/prune", guild_id=guild_id), json=payload)
 
     async def get_guild_voice_regions(self, guild_id: int) -> List[dict]:
         """Fetches a list of voice region objects for the guild.
@@ -3240,9 +3154,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of voice regions for the guild.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/regions"), guild_id=guild_id
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/regions"), guild_id=guild_id)
 
     async def get_guild_invites(self, guild_id: int) -> List[dict]:
         """Fetches a list of invites from the guild.
@@ -3264,9 +3176,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts representing an invite objects.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/invites"), guild_id=guild_id
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/invites"), guild_id=guild_id)
 
     async def get_guild_integrations(self, guild_id: int) -> List[dict]:
         """Fetches a list of integrations in the guild.
@@ -3288,13 +3198,9 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts representing integration objects.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/integrations"), guild_id=guild_id
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/integrations"), guild_id=guild_id)
 
-    async def delete_guild_integration(
-        self, guild_id: int, integration_id: int
-    ) -> None:
+    async def delete_guild_integration(self, guild_id: int, integration_id: int) -> None:
         """Deletes an integration from the guild.
 
         This method makes an API call to delete an integration in a guild.
@@ -3314,9 +3220,7 @@ class HTTPClient:
         """
         return await self.request(
             "DELETE",
-            Route(
-                f"/guilds/{guild_id}/integrations/{integration_id}", guild_id=guild_id
-            ),
+            Route(f"/guilds/{guild_id}/integrations/{integration_id}", guild_id=guild_id),
         )
 
     async def get_guild_widget_settings(self, guild_id: int) -> dict:
@@ -3339,9 +3243,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing a guild widget object.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/widget"), guild_id=guild_id
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/widget"), guild_id=guild_id)
 
     async def get_guild_widget(self, guild_id: int) -> dict:
         """Gets a guild widget for the guild.
@@ -3363,9 +3265,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing a guild widget.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/widget.json"), guild_id=guild_id
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/widget.json"), guild_id=guild_id)
 
     async def get_guild_vanity_url(self, guild_id: int) -> dict:
         """Gets a guild's vanity url.
@@ -3387,13 +3287,9 @@ class HTTPClient:
         :class:`dict`
             A dict representing an invite.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/vanity-url"), guild_id=guild_id
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/vanity-url"), guild_id=guild_id)
 
-    async def get_guild_widget_image(
-        self, guild_id: int, *, style: Optional[str] = None
-    ) -> bytes:
+    async def get_guild_widget_image(self, guild_id: int, *, style: Optional[str] = None) -> bytes:
         """Gets a guild's widget image.
 
         This method makes an API call to get the widget image in a guild.
@@ -3436,9 +3332,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing a welcome screen object.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/welcome-screen"), guild_id=guild_id
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/welcome-screen"), guild_id=guild_id)
 
     async def modify_guild_welcome_screen(
         self,
@@ -3555,9 +3449,7 @@ class HTTPClient:
         if "icon" in payload:
             payload["icon"] = bytes_to_data_uri(payload["icon"])
 
-        return await self.request(
-            "POST", Route(f"/guilds/templates/{code}"), json=payload
-        )
+        return await self.request("POST", Route(f"/guilds/templates/{code}"), json=payload)
 
     async def get_guild_templates(self, guild_id: int) -> List[dict]:
         """Fetches a list of the guild's templates.
@@ -3579,9 +3471,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts representing guild template objects.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/templates", guild_id=guild_id)
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/templates", guild_id=guild_id))
 
     async def create_guild_template(
         self,
@@ -3730,13 +3620,9 @@ class HTTPClient:
         :class:`dict`
             A dict representing the deleted guild template object.
         """
-        return await self.request(
-            "DELETE", Route(f"/guilds/{guild_id}/templates/{code}", guild_id=guild_id)
-        )
+        return await self.request("DELETE", Route(f"/guilds/{guild_id}/templates/{code}", guild_id=guild_id))
 
-    async def get_invite(
-        self, code: str, *, with_counts: bool = False, with_expiration: bool = False
-    ) -> dict:
+    async def get_invite(self, code: str, *, with_counts: bool = False, with_expiration: bool = False) -> dict:
         """Fetches an invite from the guild.
 
         This method makes an API call to get an invite.
@@ -3794,9 +3680,7 @@ class HTTPClient:
         """
         return await self.request("DELETE", Route(f"/invites/{code}"))
 
-    async def create_stage_instance(
-        self, *, channel_id: int, topic: str, privacy_level: Optional[int] = None
-    ) -> dict:
+    async def create_stage_instance(self, *, channel_id: int, topic: str, privacy_level: Optional[int] = None) -> dict:
         """Makes a stage instance associated with a stage channel.
 
         This method makes an API call to create a stage instance connected
@@ -3826,13 +3710,9 @@ class HTTPClient:
         :class:`dict`
             A dict representing the newly created stage instance.
         """
-        payload = update_payload(
-            {}, channel_id=channel_id, topic=topic, privacy_level=privacy_level
-        )
+        payload = update_payload({}, channel_id=channel_id, topic=topic, privacy_level=privacy_level)
 
-        return await self.request(
-            "POST", Route("/stage-instances", channel_id=channel_id), json=payload
-        )
+        return await self.request("POST", Route("/stage-instances", channel_id=channel_id), json=payload)
 
     async def get_stage_instance(self, channel_id: int) -> dict:
         """Fetches a stage instance.
@@ -3854,9 +3734,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing the fetched stage instance object.
         """
-        return await self.request(
-            "GET", Route(f"/stage-instances/{channel_id}", channel_id=channel_id)
-        )
+        return await self.request("GET", Route(f"/stage-instances/{channel_id}", channel_id=channel_id))
 
     async def modify_stage_instance(
         self,
@@ -3917,9 +3795,7 @@ class HTTPClient:
         :exc:`.HTTPException`
             Something went wrong while making the request.
         """
-        return await self.request(
-            "DELETE", Route(f"/stage-instances/{channel_id}"), channel_id=channel_id
-        )
+        return await self.request("DELETE", Route(f"/stage-instances/{channel_id}"), channel_id=channel_id)
 
     async def get_sticker(self, sticker_id: int) -> dict:
         """Fetch a sticker object.
@@ -3980,9 +3856,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts representing guild stickers.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/stickers", guild_id=guild_id)
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/stickers", guild_id=guild_id))
 
     async def get_guild_sticker(self, guild_id: int, sticker_id: int) -> dict:
         """Fetches a guild sticker
@@ -4007,9 +3881,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing the fetched sticker object.
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/stickers/{sticker_id}", guild_id=guild_id)
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/stickers/{sticker_id}", guild_id=guild_id))
 
     async def modify_guild_sticker(
         self,
@@ -4108,7 +3980,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing the fetched user object.
         """
-        return await self.request("GET", Route(f"users/{user_id}"))
+        return await self.request("GET", Route(f"/users/{user_id}"))
 
     async def get_current_user(self) -> dict:
         """Fetches the current authorized user.
@@ -4127,9 +3999,7 @@ class HTTPClient:
         """
         return await self.request("GET", Route("/users/@me"))
 
-    async def modify_current_user(
-        self, *, username: Optional[str] = None, avatar: Optional[bytes] = None
-    ) -> dict:
+    async def modify_current_user(self, *, username: Optional[str] = None, avatar: Optional[bytes] = None) -> dict:
         """Modifies the current authorized user.
 
         This method makes an API call to modify the current user.
@@ -4197,9 +4067,7 @@ class HTTPClient:
         :exc:`.NotFound`
             The guild id was invalid.
         """
-        await self.request(
-            "DELETE", Route(f"/users/@me/guilds/{guild_id}", guild_id=guild_id)
-        )
+        await self.request("DELETE", Route(f"/users/@me/guilds/{guild_id}", guild_id=guild_id))
 
     async def create_dm_channel(self, recipient_id: int) -> dict:
         """Creates a DM channel to a user.
@@ -4310,9 +4178,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts representing webhook objects
         """
-        return await self.request(
-            "GET", Route(f"/channels/{channel_id}/webhooks", channel_id=channel_id)
-        )
+        return await self.request("GET", Route(f"/channels/{channel_id}/webhooks", channel_id=channel_id))
 
     async def get_guild_webhooks(self, guild_id: int) -> List[dict]:
         """Fetches all webhooks of a guild.
@@ -4334,9 +4200,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts representing webhook objects
         """
-        return await self.request(
-            "GET", Route(f"/guilds/{guild_id}/webhooks", guild_id=guild_id)
-        )
+        return await self.request("GET", Route(f"/guilds/{guild_id}/webhooks", guild_id=guild_id))
 
     async def get_webhook(self, webhook_id: int) -> dict:
         """Fetches a webhook.
@@ -4358,9 +4222,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing the fetched webhook object.
         """
-        return await self.request(
-            "GET", Route(f"/webhooks/{webhook_id}", webhook_id=webhook_id)
-        )
+        return await self.request("GET", Route(f"/webhooks/{webhook_id}", webhook_id=webhook_id))
 
     async def get_webhook_with_token(self, webhook_id: int, webhook_token: str) -> dict:
         """Fetches a webhook without needing authorization.
@@ -4514,13 +4376,9 @@ class HTTPClient:
         :exc:`.Forbidden`
             Your client doesn't have permissions to delete this webhook.
         """
-        await self.request(
-            "DELETE", Route(f"/webhooks/{webhook_id}", webhook_id=webhook_id)
-        )
+        await self.request("DELETE", Route(f"/webhooks/{webhook_id}", webhook_id=webhook_id))
 
-    async def delete_webhook_with_token(
-        self, webhook_id: int, webhook_token: str
-    ) -> None:
+    async def delete_webhook_with_token(self, webhook_id: int, webhook_token: str) -> None:
         """Deletes a webhook with token.
 
         This method makes an API call to delete a webhook.
@@ -4643,9 +4501,7 @@ class HTTPClient:
             params=params,
         )
 
-    async def get_webhook_message(
-        self, webhook_id: int, webhook_token: str, message_id: int
-    ) -> dict:
+    async def get_webhook_message(self, webhook_id: int, webhook_token: str, message_id: int) -> dict:
         """Fetches a webhook message.
 
         This method makes an API call to get a webhook message.
@@ -4757,9 +4613,7 @@ class HTTPClient:
             form=form,
         )
 
-    async def delete_webhook_message(
-        self, webhook_id: int, webhook_token: str, message_id: int
-    ) -> None:
+    async def delete_webhook_message(self, webhook_id: int, webhook_token: str, message_id: int) -> None:
         """Deletes a webhook message.
 
         This method makes an API call to delete a webhook message.
@@ -4810,9 +4664,7 @@ class HTTPClient:
         List[:class:`dict`]
             A list of global application command objects
         """
-        return await self.request(
-            "GET", Route(f"/applications/{application_id}/commands")
-        )
+        return await self.request("GET", Route(f"/applications/{application_id}/commands"))
 
     async def create_global_application_command(
         self,
@@ -4875,13 +4727,9 @@ class HTTPClient:
             type=type,
         )
 
-        return await self.request(
-            "POST", Route(f"/applications/{application_id}/commands"), json=payload
-        )
+        return await self.request("POST", Route(f"/applications/{application_id}/commands"), json=payload)
 
-    async def get_global_application_command(
-        self, application_id: int, command_id: int
-    ) -> dict:
+    async def get_global_application_command(self, application_id: int, command_id: int) -> dict:
         """Fetches a global application command.
 
         This method makes an API call to get a global application command.
@@ -4904,9 +4752,7 @@ class HTTPClient:
         :class:`dict`
             A dict representing the fetched global application command.
         """
-        return await self.request(
-            "GET", Route(f"/applications/{application_id}/commands/{command_id}")
-        )
+        return await self.request("GET", Route(f"/applications/{application_id}/commands/{command_id}"))
 
     async def edit_global_application_command(
         self,
@@ -4974,9 +4820,7 @@ class HTTPClient:
             json=payload,
         )
 
-    async def delete_global_application_command(
-        self, application_id: int, command_id: int
-    ) -> None:
+    async def delete_global_application_command(self, application_id: int, command_id: int) -> None:
         """Deletes a global application command.
 
         This method makes an API call to delete a global application command.
@@ -4994,9 +4838,7 @@ class HTTPClient:
         :exc:`.HTTPException`
             Something went wrong while making the request.
         """
-        await self.request(
-            "DELETE", Route(f"/applications/{application_id}/commands/{command_id}")
-        )
+        await self.request("DELETE", Route(f"/applications/{application_id}/commands/{command_id}"))
 
     async def bulk_overwrite_global_application_commands(
         self, application_id: int, *, commands: List[dict]
@@ -5027,13 +4869,9 @@ class HTTPClient:
         List[:class:`dict`]
             A list of dicts representing application commands.
         """
-        return await self.request(
-            "PUT", Route(f"/applications/{application_id}/commands"), json=commands
-        )
+        return await self.request("PUT", Route(f"/applications/{application_id}/commands"), json=commands)
 
-    async def get_guild_application_commands(
-        self, application_id: int, guild_id: int
-    ) -> List[dict]:
+    async def get_guild_application_commands(self, application_id: int, guild_id: int) -> List[dict]:
         """Fetches a list of application commands from a guild.
 
         This method makes an API call to get guild application commands.
@@ -5133,9 +4971,7 @@ class HTTPClient:
             json=payload,
         )
 
-    async def get_guild_application_command(
-        self, application_id: int, guild_id: int, command_id: int
-    ) -> dict:
+    async def get_guild_application_command(self, application_id: int, guild_id: int, command_id: int) -> dict:
         """Fetches a guild's application command.
 
         This method makes an API call to get a guild application command.
@@ -5237,9 +5073,7 @@ class HTTPClient:
             json=payload,
         )
 
-    async def delete_guild_application_command(
-        self, application_id: int, guild_id: int, command_id: int
-    ) -> None:
+    async def delete_guild_application_command(self, application_id: int, guild_id: int, command_id: int) -> None:
         """Deletes a guild's application command.
 
         This method makes an API call to delete a guild's
@@ -5306,9 +5140,7 @@ class HTTPClient:
             json=commands,
         )
 
-    async def get_guild_application_command_permissions(
-        self, application_id: int, guild_id: int
-    ) -> List[dict]:
+    async def get_guild_application_command_permissions(self, application_id: int, guild_id: int) -> List[dict]:
         """Fetches a list of guild application command permissions objects.
 
         This method makes an API call to get guild application command permissions.
@@ -5339,9 +5171,7 @@ class HTTPClient:
             ),
         )
 
-    async def get_application_command_permissions(
-        self, application_id: int, guild_id: int, command_id: int
-    ) -> dict:
+    async def get_application_command_permissions(self, application_id: int, guild_id: int, command_id: int) -> dict:
         """Fetches a specific application command's permissions.
 
         This method makes an API call to get an application command permissions.
@@ -5512,9 +5342,7 @@ class HTTPClient:
             json=payload,
         )
 
-    async def get_original_interaction_response(
-        self, application_id: int, interaction_token: str
-    ) -> dict:
+    async def get_original_interaction_response(self, application_id: int, interaction_token: str) -> dict:
         """Fetches the original interaction response.
 
         This method makes an API call to get the original interaction response.
@@ -5615,9 +5443,7 @@ class HTTPClient:
             form=form,
         )
 
-    async def delete_original_interaction_response(
-        self, application_id: int, interaction_token: str
-    ) -> None:
+    async def delete_original_interaction_response(self, application_id: int, interaction_token: str) -> None:
         """Deletes an interaction's original response.
 
         This method makes an API call to delete the original interaction response.
@@ -5714,9 +5540,7 @@ class HTTPClient:
             form=form,
         )
 
-    async def get_followup_message(
-        self, application_id: int, interaction_token: str, message_id: int
-    ) -> dict:
+    async def get_followup_message(self, application_id: int, interaction_token: str, message_id: int) -> dict:
         """Fetches an interaction followup message.
 
         This method makes an API call to get a followup message.
@@ -5744,9 +5568,7 @@ class HTTPClient:
         """
         return await self.request(
             "GET",
-            Route(
-                f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}"
-            ),
+            Route(f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}"),
         )
 
     async def edit_followup_message(
@@ -5820,16 +5642,12 @@ class HTTPClient:
 
         return await self.request(
             "PATCH",
-            Route(
-                f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}"
-            ),
+            Route(f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}"),
             json=payload,
             form=form,
         )
 
-    async def delete_followup_message(
-        self, application_id: int, interaction_token: str, message_id: int
-    ) -> None:
+    async def delete_followup_message(self, application_id: int, interaction_token: str, message_id: int) -> None:
         """Deletes an interaction's followup message.
 
         This method makes an API call to delete a followup message.
@@ -5852,7 +5670,5 @@ class HTTPClient:
         """
         await self.request(
             "DELETE",
-            Route(
-                f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}"
-            ),
+            Route(f"/webhooks/{application_id}/{interaction_token}/messages/{message_id}"),
         )

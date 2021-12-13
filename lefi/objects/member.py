@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, Dict, List, Optional
 
-from ..utils import Snowflake
 from .flags import Permissions
 from .user import User
 from ..voice import VoiceState
@@ -19,58 +18,54 @@ __all__ = ("Member",)
 
 
 class Member(User):
-    """
-    Represents a member of a guild.
+    """Represents a member of a guild."""
 
-    Attributes:
-        guild (lefi.Guild): The [lefi.Guild](./guild.md) instance which the member belongs to.
-
-    """
-
-    def __init__(self, state: State, data: Dict, guild: Guild) -> None:
-        """
-        Creates a Member instance.
-
-        Parameters:
-            state (lefi.State): The [State](./state.md) instance.
-            data (dict): The data of the [Member](./member.md).
-            guild (lefi.Guild): The [Guild](./guild.md) instance.
-        """
+    def __init__(self, state: State, data: dict, guild: Guild) -> None:
         super().__init__(state, data["user"])
         state.add_user(data["user"])
         self._roles: Dict[int, Role] = {}
         self._member = data
-        self.guild = guild
+        self._guild = guild
 
-    async def add_role(self, role: Role) -> Member:
+    async def add_roles(self, *roles: Role) -> None:
+        """Adds role(s) to the member.
+
+        Parameters
+        ----------
+        roles: :class:`.Role`
+            The role(s) to add to the member.
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to add roles to this user.
         """
-        Adds a role to the member.
+        for role in roles:
+            await self._state.http.add_guild_member_role(self._guild.id, self.id, role.id)
+            self._roles[role.id] = role
 
-        Parameters:
-            role (lefi.Role): The [Role](./role.md) to add.
+    async def remove_roles(self, *roles: Role) -> None:
+        """Removes role(s) from the member.
 
-        Returns:
-            The Member instance.
+        Parameters
+        ----------
+        role: :class:`.Role`
+            The role(s) to remove from the member.
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to remove roles from this user.
         """
-        await self._state.http.add_guild_member_role(self.guild.id, self.id, role.id)
-        self._roles[role.id] = role
-
-        return self
-
-    async def remove_role(self, role: Role) -> Member:
-        """
-        Removes a role from the member.
-
-        Parameters:
-            role (lefi.Role): The [Role](./role.md) to remove.
-
-        Returns:
-            The Member instance.
-        """
-        await self._state.http.remove_guild_member_role(self.guild.id, self.id, role.id)
-        self._roles.pop(role.id, None)
-
-        return self
+        for role in roles:
+            await self._state.http.remove_guild_member_role(self._guild.id, self.id, role.id)
+            self._roles.pop(role.id, None)
 
     async def edit(
         self,
@@ -81,22 +76,45 @@ class Member(User):
         deaf: Optional[bool] = None,
         channel: Optional[VoiceChannel] = None
     ) -> Member:
-        """
-        Edits the member.
+        """Edits the member.
 
-        Parameters:
-            nick (str): The new nickname.
-            roles (list): The new list of roles.
-            mute (bool): Whether the member is muted or not.
-            deaf (bool): Whether the member is deafened or not.
-            channel (lefi.VoiceChannel): The new [VoiceChannel](./channel.md#lefi.VoiceChannel).
+        Parameters
+        ----------
+        nick: Optional[:class:`str`]
+            The new nickname of the member
 
+        roles: Optional[List[:class:`.Role`]]
+            The list of roles the member should have.
+            Pass an empty list to remove all roles
+
+        mute: Optional[:class:`bool`]
+            Whether the member should be muted or not
+
+        deaf: Optional[:class:`bool`]
+            Whether the member should be deafend or not
+
+        channel: Optional[:class:`.VoiceChannel`]
+            The new voice channel to put the member in.
+            Pass None to kick them out of a voice channel
+
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to edit this member.
+
+        Returns
+        -------
+        :class:`.Member`
+            The member after editting.
         """
         channel_id = channel.id if channel else None
         roles = roles or []
 
         data = await self._state.http.edit_guild_member(
-            guild_id=self.guild.id,
+            guild_id=self._guild.id,
             member_id=self.id,
             nick=nick,
             roles=[role.id for role in roles],
@@ -109,67 +127,72 @@ class Member(User):
         return self
 
     async def kick(self) -> None:
-        """
-        Kicks the member from the guild.
+        """Kicks the member from the guild.
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to kick this member.
         """
-        await self.guild.kick(self)
+        await self._guild.kick(self)
 
     async def ban(self, *, delete_message_days: int = 0) -> None:
-        """
-        Bans the member from the guild.
+        """Bans the member from the guild.
 
-        Parameters:
-            delete_message_days (int): The number of days to delete messages for.
+        Parameters
+        ----------
+        delete_message_days: :class:`int`
+            Number of days to delete messages for
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to ban this member.
         """
-        await self.guild.ban(self, delete_message_days=delete_message_days)
+        await self._guild.ban(self, delete_message_days=delete_message_days)
 
     async def unban(self) -> None:
-        """
-        Unbans the member from the guild.
+        """Unbans the member from the guild.
 
+        Raises
+        ------
+        :exc:`.HTTPException`
+            Something went wrong while making the request.
+
+        :exc:`.Forbidden`
+            Your client doesn't have permissions to unban this member.
         """
-        await self.guild.unban(self)
+        await self._guild.unban(self)
 
     @property
     def voice(self) -> Optional[VoiceState]:
-        """
-        Returns the voice state of the member.
-
-        Returns:
-            lefi.VoiceState: The voice state of the member.
-
-        """
-        return self.guild.get_voice_state(self.id)
+        """The voice state of the member."""
+        return self._guild.get_voice_state(self.id)
 
     @property
     def nick(self) -> Optional[str]:
-        """
-        The nickname of of member.
-        """
+        """The nickname of of member."""
         return self._member.get("nick")
 
     @property
     def roles(self) -> List[Role]:
-        """
-        The [Role](./role.md)s of the member.
-        """
+        """The roles which the member has."""
         return list(self._roles.values())
 
     @property
     def joined_at(self) -> datetime.datetime:
-        """
-        A [datetime.datetime](https://docs.python.org/3/library/datetime.html#datetime.datetime) instance
-        representing when the member joined the guild.
-        """
+        """The time at which the member joined the guild."""
         return datetime.datetime.fromisoformat(self._member["joined_at"])
 
     @property
     def premium_since(self) -> Optional[datetime.datetime]:
-        """
-        How long the member has been a premium.
-        """
+        """How long the member has been a premium."""
         timestamp = self._member.get("premium_since")
         if timestamp is None:
             return None
@@ -178,26 +201,20 @@ class Member(User):
 
     @property
     def deaf(self) -> bool:
-        """
-        Whether or not the member is deafend.
-        """
+        """Whether or not the member is deafend."""
         return self._member["deaf"]
 
     @property
     def mute(self) -> bool:
-        """
-        Whether or not the member is muted.
-        """
+        """Whether or not the member is muted."""
         return self._member["mute"]
 
     @property
     def permissions(self) -> Permissions:
-        """
-        The permissions of the member.
-        """
+        """The permissions of the member."""
         base = Permissions.none()
 
-        if self.guild.owner_id == self.id:
+        if self._guild.owner_id == self.id:
             return Permissions.all()
 
         for role in self.roles:
@@ -210,10 +227,9 @@ class Member(User):
 
     @property
     def guild_avatar(self) -> Optional[CDNAsset]:
+        """The guild avatar of the member."""
         guild_avatar_hash = self._member.get("avatar")
         if not guild_avatar_hash:
             return None
 
-        return CDNAsset.from_guild_member_avatar(
-            self._state, self.guild.id, self.id, guild_avatar_hash
-        )
+        return CDNAsset.from_guild_member_avatar(self._state, self._guild.id, self.id, guild_avatar_hash)

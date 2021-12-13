@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Optional, Dict
+from typing import TYPE_CHECKING, Callable, Optional, Dict
 
 
 from ..errors import VoiceException
-from .wsclient import VoiceWebSocketClient
+from .wsclient import VoiceWebSocketClient, UserVoiceData
 from .protocol import VoiceProtocol
 from .player import AudioPlayer, AudioStream
 from .listeners import AudioDestination, AudioListener
@@ -32,9 +32,7 @@ class VoiceClient:
         self.session_id: Optional[str] = None
         self.endpoint: Optional[str] = None
         self.token: Optional[str] = None
-        self.ws: VoiceWebSocketClient = VoiceWebSocketClient(
-            self, self.channel.guild.id, self._state.client.user.id
-        )
+        self.ws: VoiceWebSocketClient = VoiceWebSocketClient(self, self.channel.guild.id, self._state.client.user.id)
         self.protocol: VoiceProtocol = VoiceProtocol(self)
         self._listener: Optional[AudioListener] = None
 
@@ -100,17 +98,23 @@ class VoiceClient:
 
     def is_connected(self) -> bool:
         """
-        Wether the client is connected to the voice channel.
+        Whether the client is connected to the voice channel.
 
         """
         return self._connected
 
     def is_playing(self) -> bool:
         """
-        Wether the client is playing.
+        Whether the client is playing.
 
         """
         return self._player is not None and self._player.is_playing()
+
+    def is_listening(self) -> bool:
+        """
+        Whether the client is listening.
+        """
+        return self._listener is not None and self._listener.is_listening()
 
     def play(self, stream: AudioStream, *, volume: float = 1.0) -> AudioPlayer:
         """
@@ -131,3 +135,31 @@ class VoiceClient:
         player.set_volume(volume)
 
         return player.play()
+
+    async def listen(
+        self,
+        destination: AudioDestination,
+        duration: int,
+        *,
+        timeout: Optional[float] = None,
+        filter: Optional[Callable[[UserVoiceData], bool]] = None
+    ) -> None:
+        """
+        Listens for an audio stream. If the client is either connected or already listening it raises an error.
+
+        Parameters:
+            destination (AudioDestination): The destination to listen to.
+            duration (int): The duration to listen for.
+            timeout (float): The timeout to listen for.
+
+        """
+
+        if self.is_listening():
+            raise VoiceException("Client is already listening")
+
+        self._listener = listener = AudioListener(self.protocol, destination)
+        if filter:
+            listener.filter = filter
+
+        await listener.listen(duration, timeout=timeout)
+        self._listener = None

@@ -124,9 +124,7 @@ class BaseWebsocketClient:
 
                 if recieved_data["op"] == OpCodes.HEARTBEAT_ACK:
                     if self.last_heartbeat is not None:
-                        self.latency = (
-                            datetime.datetime.now() - self.last_heartbeat
-                        ).total_seconds() * 1000
+                        self.latency = (datetime.datetime.now() - self.last_heartbeat).total_seconds() * 1000
 
                     logger.info("HEARTBEAT ACKNOWLEDGED")
 

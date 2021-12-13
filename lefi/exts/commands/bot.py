@@ -186,9 +186,7 @@ class Bot(lefi.Client):
 
         return ctx
 
-    async def get_prefix(
-        self, message: lefi.Message
-    ) -> Union[str, Tuple[str, ...], List[str]]:
+    async def get_prefix(self, message: lefi.Message) -> Union[str, Tuple[str, ...], List[str]]:
         """
         Get the prefix for a message.
 

@@ -76,9 +76,7 @@ class AsyncIterator(Generic[_T]):
 
 
 class MemberIterator(AsyncIterator["Member"]):
-    def __init__(
-        self, state: State, guild: Guild, coroutine: Coroutine[None, None, List[Dict]]
-    ) -> None:
+    def __init__(self, state: State, guild: Guild, coroutine: Coroutine[None, None, List[Dict]]) -> None:
         self._state = state
         self.guild = guild
 

@@ -31,9 +31,7 @@ class MusicPlugin(commands.Plugin):
 
         return data["url"], data["title"]
 
-    async def ensure_voice(
-        self, ctx: commands.Context
-    ) -> Optional[lefi.voice.VoiceClient]:
+    async def ensure_voice(self, ctx: commands.Context) -> Optional[lefi.voice.VoiceClient]:
         if not ctx.guild:
             await ctx.send("This command can only be used in a server.")
             return None

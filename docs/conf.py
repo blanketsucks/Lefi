@@ -18,8 +18,11 @@ extensions = [
 
 autodoc_member_order = "bysource"
 autodoc_typehints = "description"
-add_module_names = False
+autodoc_class_signature = "separated"
 
+autodoc_default_options = {"exclude-members": "__init__"}
+
+add_module_names = True
 
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
@@ -31,7 +34,8 @@ html_theme_options = {
     "announcement": "<a href='https://discord.com/invite/QPFXzFbqrK'>Join the discord!</a>",
 }
 
-pygments_style = "native"
+pygments_style = "default"
+pygments_dark_style = "native"
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
